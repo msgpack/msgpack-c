@@ -47,7 +47,7 @@ AC_CACHE_CHECK([for __sync_* atomic operations], msgpack_cv_atomic_ops, [
 	AC_TRY_LINK([
 		int atomic_sub(int i) { return __sync_sub_and_fetch(&i, 1); }
 		int atomic_add(int i) { return __sync_add_and_fetch(&i, 1); }
-	], [], msgpack_cv_atomic_ops="yes")
+	], [atomic_sub(1); atomic_add(1);], msgpack_cv_atomic_ops="yes")
 	])
 if test "$msgpack_cv_atomic_ops" != "yes"; then
 	if test "$enable_cxx" = "no"; then
