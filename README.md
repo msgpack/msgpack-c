@@ -50,7 +50,7 @@ To use the library in your program, include msgpack.hpp header and link "msgpack
         obj.as<int>();  // type is mismatched, msgpack::type_error is thrown
     }
 
-API documents and other example codes are available at the [wiki.](http://redmine.msgpack.org/projects/msgpack/wiki)
+API documents and other example codes are available at the [wiki.](http://wiki.msgpack.org/display/MSGPACK/Home)
 
 
 ## License
