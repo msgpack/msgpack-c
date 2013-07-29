@@ -31,8 +31,8 @@ To use the library in your program, include msgpack.hpp header and link "msgpack
         target.push_back("World!");
     
         // Serialize it.
-        msgpack::sbuffer buffer;  // simple buffer
-        msgpack::pack(&buffer, target);
+        msgpack::sbuffer sbuf;  // simple buffer
+        msgpack::pack(&sbuf, target);
     
         // Deserialize the serialized data.
         msgpack::unpacked msg;    // includes memory pool and deserialized object
