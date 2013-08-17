@@ -201,9 +201,10 @@ msgpack_unpack_func(int, _execute)(msgpack_unpack_struct(_context)* ctx, const c
 					push_simple_value(_false);
 				case 0xc3:  // true
 					push_simple_value(_true);
-				//case 0xc4:
-				//case 0xc5:
-				//case 0xc6:
+				case 0xc4: // bin 8
+				case 0xc5: // bin 16
+				case 0xc6: // bin 32
+					again_fixed_trail(NEXT_CS(p), 1 << (((unsigned int)*p) & 0x03));
 				//case 0xc7:
 				//case 0xc8:
 				//case 0xc9:
@@ -223,9 +224,10 @@ msgpack_unpack_func(int, _execute)(msgpack_unpack_struct(_context)* ctx, const c
 				//case 0xd6:  // big integer 16
 				//case 0xd7:  // big integer 32
 				//case 0xd8:  // big float 16
-				//case 0xd9:  // big float 32
-				case 0xda:  // raw 16
-				case 0xdb:  // raw 32
+				case 0xd9:  // raw 8 (str 9)
+				case 0xda:  // raw 16 (str 16)
+				case 0xdb:  // raw 32 (str 32)
+					again_fixed_trail(NEXT_CS(p), 1 << ((((unsigned int)*p) & 0x03) - 1));
 				case 0xdc:  // array 16
 				case 0xdd:  // array 32
 				case 0xde:  // map 16
@@ -306,8 +308,13 @@ msgpack_unpack_func(int, _execute)(msgpack_unpack_struct(_context)* ctx, const c
 			//	// FIXME
 			//	push_variable_value(_big_float, data, n, trail);
 
+			case CS_BIN_8:
+			case CS_RAW_8:
+				again_fixed_trail_if_zero(ACS_RAW_VALUE, *(uint8_t*)n, _raw_zero);
+			case CS_BIN_16:
 			case CS_RAW_16:
 				again_fixed_trail_if_zero(ACS_RAW_VALUE, _msgpack_load16(uint16_t,n), _raw_zero);
+			case CS_BIN_32:
 			case CS_RAW_32:
 				again_fixed_trail_if_zero(ACS_RAW_VALUE, _msgpack_load32(uint32_t,n), _raw_zero);
 			case ACS_RAW_VALUE:

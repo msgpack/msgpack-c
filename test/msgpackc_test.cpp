@@ -422,3 +422,83 @@ TEST(MSGPACKC, simple_buffer_raw)
   msgpack_zone_destroy(&z);
   msgpack_sbuffer_destroy(&sbuf);
 }
+
+TEST(MSGPACKC, unpack_str8)
+{
+  size_t raw_size = 7;
+  const char buf[] = {
+    0xd9, 7, 'f', 'r', 's', 'y', 'u', 'k', 'i'
+  };
+
+  msgpack_zone z;
+  msgpack_zone_init(&z, 2048);
+  msgpack_object obj;
+  msgpack_unpack_return ret;
+  ret = msgpack_unpack(buf, sizeof(buf), NULL, &z, &obj);
+  EXPECT_EQ(MSGPACK_UNPACK_SUCCESS, ret);
+  EXPECT_EQ(MSGPACK_OBJECT_RAW, obj.type);
+  EXPECT_EQ(raw_size, obj.via.raw.size);
+  EXPECT_EQ(0, memcmp("frsyuki", obj.via.raw.ptr, raw_size));
+
+  msgpack_zone_destroy(&z);
+}
+
+TEST(MSGPACKC, unpack_bin8)
+{
+  size_t raw_size = 7;
+  const char buf[] = {
+    0xc4, 7, 'f', 'r', 's', 'y', 'u', 'k', 'i'
+  };
+
+  msgpack_zone z;
+  msgpack_zone_init(&z, 2048);
+  msgpack_object obj;
+  msgpack_unpack_return ret;
+  ret = msgpack_unpack(buf, sizeof(buf), NULL, &z, &obj);
+  EXPECT_EQ(MSGPACK_UNPACK_SUCCESS, ret);
+  EXPECT_EQ(MSGPACK_OBJECT_RAW, obj.type);
+  EXPECT_EQ(raw_size, obj.via.raw.size);
+  EXPECT_EQ(0, memcmp("frsyuki", obj.via.raw.ptr, raw_size));
+
+  msgpack_zone_destroy(&z);
+}
+
+TEST(MSGPACKC, unpack_bin16)
+{
+  size_t raw_size = 7;
+  const char buf[] = {
+    0xc5, 0, 7, 'f', 'r', 's', 'y', 'u', 'k', 'i'
+  };
+
+  msgpack_zone z;
+  msgpack_zone_init(&z, 2048);
+  msgpack_object obj;
+  msgpack_unpack_return ret;
+  ret = msgpack_unpack(buf, sizeof(buf), NULL, &z, &obj);
+  EXPECT_EQ(MSGPACK_UNPACK_SUCCESS, ret);
+  EXPECT_EQ(MSGPACK_OBJECT_RAW, obj.type);
+  EXPECT_EQ(raw_size, obj.via.raw.size);
+  EXPECT_EQ(0, memcmp("frsyuki", obj.via.raw.ptr, raw_size));
+
+  msgpack_zone_destroy(&z);
+}
+
+TEST(MSGPACKC, unpack_bin32)
+{
+  size_t raw_size = 7;
+  const char buf[] = {
+    0xc6, 0, 0, 0, 7, 'f', 'r', 's', 'y', 'u', 'k', 'i'
+  };
+
+  msgpack_zone z;
+  msgpack_zone_init(&z, 2048);
+  msgpack_object obj;
+  msgpack_unpack_return ret;
+  ret = msgpack_unpack(buf, sizeof(buf), NULL, &z, &obj);
+  EXPECT_EQ(MSGPACK_UNPACK_SUCCESS, ret);
+  EXPECT_EQ(MSGPACK_OBJECT_RAW, obj.type);
+  EXPECT_EQ(raw_size, obj.via.raw.size);
+  EXPECT_EQ(0, memcmp("frsyuki", obj.via.raw.ptr, raw_size));
+
+  msgpack_zone_destroy(&z);
+}
