@@ -212,11 +212,20 @@ inline T& operator>> (object o, T& v)
 	return v;
 }
 
+namespace detail {
+template <typename Stream, typename T>
+struct packer_serializer {
+	static packer<Stream>& pack(packer<Stream>& o, const T& v) {
+		v.msgpack_pack(o);
+		return o;
+	}
+};
+}
+
 template <typename Stream, typename T>
 inline packer<Stream>& operator<< (packer<Stream>& o, const T& v)
 {
-	v.msgpack_pack(o);
-	return o;
+	return detail::packer_serializer<Stream, T>::pack(o, v);
 }
 
 template <typename T>

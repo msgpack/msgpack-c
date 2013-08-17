@@ -48,8 +48,15 @@
     template <> \
     void operator<< (object::with_zone& o, const enum& v) \
     { \
-      int tmp = static_cast<enum>(v); \
-      o << tmp; \
+      o << static_cast<int>(v); \
+    } \
+    namespace detail { \
+      template <typename Stream> \
+      struct packer_serializer<Stream, enum> { \
+        static packer<Stream>& pack(packer<Stream>& o, const enum& v) { \
+          return o << static_cast<int>(v); \
+        } \
+      }; \
     } \
   }
 
