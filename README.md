@@ -51,9 +51,7 @@ int main(void) {
 }
 ```
 
-
-API documents and other example codes are available at the [wiki.](http://redmine.msgpack.org/projects/msgpack/wiki)
-
+See [QuickStart for C](QUICKSTART-C.md) and [QuickStart for C++](QUICKSTART-CPP.md) for other example codes.
 
 ## License
 
