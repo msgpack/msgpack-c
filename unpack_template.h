@@ -224,7 +224,7 @@ msgpack_unpack_func(int, _execute)(msgpack_unpack_struct(_context)* ctx, const c
 				//case 0xd6:  // big integer 16
 				//case 0xd7:  // big integer 32
 				//case 0xd8:  // big float 16
-				case 0xd9:  // raw 8 (str 9)
+				case 0xd9:  // raw 8 (str 8)
 				case 0xda:  // raw 16 (str 16)
 				case 0xdb:  // raw 32 (str 32)
 					again_fixed_trail(NEXT_CS(p), 1 << ((((unsigned int)*p) & 0x03) - 1));
