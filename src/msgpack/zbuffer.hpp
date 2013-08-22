@@ -1,7 +1,7 @@
 //
 // MessagePack for C++ deflate buffer implementation
 //
-// Copyright (C) 2010 FURUHASHI Sadayuki
+// Copyright (C) 2010-2013 FURUHASHI Sadayuki and KONDO Takatoshi
 //
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -15,84 +15,144 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 //
-#ifndef MSGPACK_ZBUFFER_HPP__
-#define MSGPACK_ZBUFFER_HPP__
+#ifndef MSGPACK_ZBUFFER_HPP
+#define MSGPACK_ZBUFFER_HPP
 
-#include "zbuffer.h"
 #include <stdexcept>
+#include <zlib.h>
+
+#ifndef MSGPACK_ZBUFFER_RESERVE_SIZE
+#define MSGPACK_ZBUFFER_RESERVE_SIZE 512
+#endif
+
+#ifndef MSGPACK_ZBUFFER_INIT_SIZE
+#define MSGPACK_ZBUFFER_INIT_SIZE 8192
+#endif
 
 namespace msgpack {
 
 
-class zbuffer : public msgpack_zbuffer {
+class zbuffer {
 public:
 	zbuffer(int level = Z_DEFAULT_COMPRESSION,
 			size_t init_size = MSGPACK_ZBUFFER_INIT_SIZE)
+		: data_(nullptr), init_size_(init_size)
 	{
-		if (!msgpack_zbuffer_init(this, level, init_size)) {
+		stream_.zalloc = Z_NULL;
+		stream_.zfree = Z_NULL;
+		stream_.opaque = Z_NULL;
+		stream_.next_out = Z_NULL;
+		stream_.avail_out = 0;
+		if(deflateInit(&stream_, level) != Z_OK) {
 			throw std::bad_alloc();
 		}
 	}
 
 	~zbuffer()
 	{
-		msgpack_zbuffer_destroy(this);
+		deflateEnd(&stream_);
+		::free(data_);
 	}
 
 public:
 	void write(const char* buf, size_t len)
 	{
-		if(msgpack_zbuffer_write(this, buf, len) < 0) {
-			throw std::bad_alloc();
-		}
+		stream_.next_in = (Bytef*)buf;
+		stream_.avail_in = len;
+
+		do {
+			if(stream_.avail_out < MSGPACK_ZBUFFER_RESERVE_SIZE) {
+				if(!expand()) {
+					throw std::bad_alloc();
+				}
+			}
+
+			if(deflate(&stream_, Z_NO_FLUSH) != Z_OK) {
+				throw std::bad_alloc();
+			}
+		} while(stream_.avail_in > 0);
 	}
 
 	char* flush()
 	{
-		char* buf = msgpack_zbuffer_flush(this);
-		if(!buf) {
-			throw std::bad_alloc();
+		while(true) {
+			switch(deflate(&stream_, Z_FINISH)) {
+			case Z_STREAM_END:
+				return data_;
+			case Z_OK:
+				if(!expand()) {
+					throw std::bad_alloc();
+				}
+				break;
+			default:
+				throw std::bad_alloc();
+			}
 		}
-		return buf;
 	}
 
 	char* data()
 	{
-		return base::data;
+		return data_;
 	}
 
 	const char* data() const
 	{
-		return base::data;
+		return data_;
 	}
 
 	size_t size() const
 	{
-		return msgpack_zbuffer_size(this);
+		return (char*)stream_.next_out - data_;
 	}
 
 	void reset()
 	{
-		if(!msgpack_zbuffer_reset(this)) {
+		if(deflateReset(&stream_) != Z_OK) {
 			throw std::bad_alloc();
 		}
+		reset_buffer();
 	}
 
 	void reset_buffer()
 	{
-		msgpack_zbuffer_reset_buffer(this);
+		stream_.avail_out += (char*)stream_.next_out - data_;
+		stream_.next_out = (Bytef*)data_;
 	}
 
 	char* release_buffer()
 	{
-		return msgpack_zbuffer_release_buffer(this);
+		char* tmp = data_;
+		data_ = NULL;
+		stream_.next_out = NULL;
+		stream_.avail_out = 0;
+		return tmp;
 	}
 
 private:
-	typedef msgpack_zbuffer base;
+	bool expand()
+	{
+		size_t used = (char*)stream_.next_out - data_;
+		size_t csize = used + stream_.avail_out;
+		size_t nsize = (csize == 0) ? init_size_ : csize * 2;
 
+		char* tmp = (char*)::realloc(data_, nsize);
+		if(tmp == NULL) {
+			return false;
+		}
+
+		data_ = tmp;
+		stream_.next_out  = (Bytef*)(tmp + used);
+		stream_.avail_out = nsize - used;
+
+		return true;
+	}
 private:
 	zbuffer(const zbuffer&);
+
+private:
+	z_stream stream_;
+	char* data_;
+	size_t init_size_;
 };
 
 

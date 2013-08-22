@@ -10,11 +10,43 @@ SET (exec_prefix "\${prefix}")
 SET (libdir "\${exec_prefix}/lib")
 SET (includedir "\${prefix}/include")
 
+OPTION (MSGPACK_CXX11 "Using c++11 compiler" OFF)
+
+IF (MSGPACK_CXX11)
+   IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+      SET (CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
+   ELSEIF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+      SET (CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
+   ELSEIF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+      MESSAGE ( FATAL_ERROR "MSVC doesn't support C++11 yet.")
+   ENDIF ()
+ENDIF ()
+
 FIND_PACKAGE (GTest)
 FIND_PACKAGE (ZLIB)
 FIND_PACKAGE (Threads)
 IF (GTEST_FOUND AND ZLIB_FOUND AND THREADS_FOUND)
 	OPTION (MSGPACK_BUILD_TESTS "Build msgpack tests." ON)
+ENDIF ()
+
+
+# Files to copy
+
+MACRO (COPY_FILE SOURCE DESTINATION)
+	# COPY_FILE (readme.txt dir1/dir2/) would add new target
+	# that will copy readme.txt to dir1/dir2 where dir1 will be located
+	# in current binary directory.
+	ADD_CUSTOM_COMMAND (
+		OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${DESTINATION}/${SOURCE}
+		COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/${DESTINATION}
+		COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/${SOURCE} ${CMAKE_CURRENT_BINARY_DIR}/${DESTINATION}/${SOURCE}
+	)
+ENDMACRO ()
+
+IF (MSGPACK_CXX11)
+   COPY_FILE (cpp11/zone.hpp src/msgpack/zone.hpp)
+   COPY_FILE (cpp11/define.hpp src/msgpack/type/define.hpp)
+   COPY_FILE (cpp11/tuple.hpp src/msgpack/type/tuple.hpp)
 ENDIF ()
 
 OPTION (MSGPACK_ENABLE_CXX "Enable C++ interface." ON)
@@ -108,6 +140,10 @@ EXECUTE_PROCESS (
 CONFIGURE_FILE (
 	src/msgpack/version.h.in
 	${CMAKE_CURRENT_BINARY_DIR}/src/msgpack/version.h
+)
+CONFIGURE_FILE (
+	src/msgpack/version.hpp.in
+	${CMAKE_CURRENT_BINARY_DIR}/src/msgpack/version.hpp
 )
 
 CONFIGURE_FILE (

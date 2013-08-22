@@ -1,0 +1,17 @@
+#!/bin/sh
+
+if [ "$1" = "clean" ];then
+	rm -f src/msgpack/type/tuple.hpp
+	rm -f src/msgpack/type/define.hpp
+	rm -f src/msgpack/zone.hpp
+else
+	cp -f cpp11/zone.hpp src/msgpack/
+	cp -f cpp11/tuple.hpp src/msgpack/type/
+	cp -f cpp11/define.hpp src/msgpack/type/
+fi
+cp -f cases.mpac           test/
+cp -f cases_compact.mpac   test/
+
+sed -e 's/8\.00/9.00/' < msgpack_vc8.vcproj > msgpack_vc2008.vcproj
+sed -e 's/9\.00/10.00/' -e 's/msgpack_vc8/msgpack_vc2008/' < msgpack_vc8.sln > msgpack_vc2008.sln
+

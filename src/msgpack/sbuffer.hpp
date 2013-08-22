@@ -1,7 +1,7 @@
 //
 // MessagePack for C++ simple buffer implementation
 //
-// Copyright (C) 2008-2009 FURUHASHI Sadayuki
+// Copyright (C) 2008-2013 FURUHASHI Sadayuki and KONDO Takatoshi
 //
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -15,94 +15,99 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 //
-#ifndef MSGPACK_SBUFFER_HPP__
-#define MSGPACK_SBUFFER_HPP__
+#ifndef MSGPACK_SBUFFER_HPP
+#define MSGPACK_SBUFFER_HPP
 
-#include "sbuffer.h"
 #include <stdexcept>
+
+#ifndef MSGPACK_SBUFFER_INIT_SIZE
+#define MSGPACK_SBUFFER_INIT_SIZE 8192
+#endif
 
 namespace msgpack {
 
 
-class sbuffer : public msgpack_sbuffer {
+class sbuffer {
 public:
-	sbuffer(size_t initsz = MSGPACK_SBUFFER_INIT_SIZE)
+	sbuffer(size_t initsz = MSGPACK_SBUFFER_INIT_SIZE):size_(0), alloc_(initsz)
 	{
 		if(initsz == 0) {
-			base::data = NULL;
+			data_ = nullptr;
 		} else {
-			base::data = (char*)::malloc(initsz);
-			if(!base::data) {
+			data_ = (char*)::malloc(initsz);
+			if(!data_) {
 				throw std::bad_alloc();
 			}
 		}
-
-		base::size = 0;
-		base::alloc = initsz;
 	}
 
 	~sbuffer()
 	{
-		::free(base::data);
+		::free(data_);
 	}
 
 public:
 	void write(const char* buf, size_t len)
 	{
-		if(base::alloc - base::size < len) {
+		if(alloc_ - size_ < len) {
 			expand_buffer(len);
 		}
-		memcpy(base::data + base::size, buf, len);
-		base::size += len;
+		::memcpy(data_ + size_, buf, len);
+		size_ += len;
 	}
 
 	char* data()
 	{
-		return base::data;
+		return data_;
 	}
 
 	const char* data() const
 	{
-		return base::data;
+		return data_;
 	}
 
 	size_t size() const
 	{
-		return base::size;
+		return size_;
 	}
 
 	char* release()
 	{
-		return msgpack_sbuffer_release(this);
+		char* tmp = data_;
+		size_ = 0;
+		data_ = nullptr;
+		alloc_ = 0;
+		return tmp;
 	}
 
 	void clear()
 	{
-		msgpack_sbuffer_clear(this);
+		size_ = 0;
 	}
 
 private:
 	void expand_buffer(size_t len)
 	{
-		size_t nsize = (base::alloc > 0) ?
-				base::alloc * 2 : MSGPACK_SBUFFER_INIT_SIZE;
+		size_t nsize = (alloc_ > 0) ?
+				alloc_ * 2 : MSGPACK_SBUFFER_INIT_SIZE;
 	
-		while(nsize < base::size + len) { nsize *= 2; }
+		while(nsize < size_ + len) { nsize *= 2; }
 	
-		void* tmp = realloc(base::data, nsize);
+		void* tmp = ::realloc(data_, nsize);
 		if(!tmp) {
 			throw std::bad_alloc();
 		}
 	
-		base::data = (char*)tmp;
-		base::alloc = nsize;
+		data_ = (char*)tmp;
+		alloc_ = nsize;
 	}
 
 private:
-	typedef msgpack_sbuffer base;
-
-private:
 	sbuffer(const sbuffer&);
+private:
+	size_t size_;
+	char* data_;
+	size_t alloc_;
 };
 
 

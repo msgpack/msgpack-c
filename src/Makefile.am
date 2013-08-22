@@ -62,6 +62,7 @@ nobase_include_HEADERS += \
 		msgpack/fbuffer.hpp \
 		msgpack/pack.hpp \
 		msgpack/unpack.hpp \
+		msgpack/version.hpp \
 		msgpack/object.hpp \
 		msgpack/zone.hpp \
 		msgpack/type.hpp \
@@ -86,6 +87,7 @@ endif
 
 EXTRA_DIST = \
 		msgpack/version.h.in \
+		msgpack/version.hpp.in \
 		msgpack/zone.hpp.erb \
 		msgpack/type/define.hpp.erb \
 		msgpack/type/tuple.hpp.erb

@@ -3,6 +3,27 @@ AC_CONFIG_AUX_DIR(ac)
 AM_INIT_AUTOMAKE(msgpack, 0.5.9)
 AC_CONFIG_HEADER(config.h)
 
+
+AC_LANG_PUSH([C++])
+AC_COMPILE_IFELSE([AC_LANG_SOURCE([
+#if __cplusplus < 201103
+#error
+#endif
+])],
+[
+./preprocess_cpp11
+if test $? != 0; then
+	exit 1
+fi
+],                 
+[
+./preprocess
+if test $? != 0; then
+	exit 1
+fi
+])
+AC_LANG_POP()
+
 AC_SUBST(CFLAGS)
 CFLAGS="-O3 -Wall $CFLAGS"
 
@@ -96,5 +117,6 @@ AC_OUTPUT([Makefile
 		   msgpack.pc
 		   src/Makefile
 		   src/msgpack/version.h
+		   src/msgpack/version.hpp
 		   test/Makefile])
 

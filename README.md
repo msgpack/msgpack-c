@@ -38,6 +38,16 @@ $ make
 $ sudo make install
 ```
 
+If you want to setup C++11 version of msgpack, execute the following command:
+
+```
+$ git clone https://github.com/msgpack/msgpack-c.git
+$ cd msgpack-c
+$ ./bootstrap
+$ ./configure CXXFLAGS="-std=c++11"
+```
+You need the compiler that fully supports C++11.
+
 ##### Using cmake
 You will need gcc (4.1.0 or higher), cmake.
 
@@ -47,6 +57,16 @@ $ cd msgpack-c
 $ cmake .
 $ make
 ```
+
+If you want to setup C++11 version of msgpack, execute the following command:
+
+```
+$ git clone https://github.com/msgpack/msgpack-c.git
+$ cd msgpack-c
+$ cmake -DMSGPACK_CXX11=ON .
+```
+
+You need the compiler that fully supports C++11.
 
 #### Install from package
 

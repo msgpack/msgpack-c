@@ -69,7 +69,7 @@ public:
 
 			msgpack::unpacked result;
 			while(pac.next(&result)) {
-				on_message(result.get(), result.zone());
+				on_message(result.get(), std::move(result.zone()));
 			}
 
 			if(pac.message_size() > 10*1024*1024) {
@@ -78,7 +78,7 @@ public:
 		}
 	}
 
-	void on_message(msgpack::object obj, std::auto_ptr<msgpack::zone> z)
+	void on_message(msgpack::object obj, std::unique_ptr<msgpack::zone> z)
 	{
 		EXPECT_EQ(expect, obj.as<int>());
 	}
@@ -133,7 +133,7 @@ TEST(streaming, basic_compat)
 		pac.buffer_consumed(len);
 
 		while(pac.execute()) {
-			std::auto_ptr<msgpack::zone> z(pac.release_zone());
+			std::unique_ptr<msgpack::zone> z(pac.release_zone());
 			msgpack::object obj = pac.data();
 			pac.reset();
 
@@ -174,10 +174,10 @@ public:
 			pac.buffer_consumed(len);
 
 			while(pac.execute()) {
-				std::auto_ptr<msgpack::zone> z(pac.release_zone());
+				std::unique_ptr<msgpack::zone> z(pac.release_zone());
 				msgpack::object obj = pac.data();
 				pac.reset();
-				on_message(obj, z);
+				on_message(obj, std::move(z));
 			}
 
 			if(pac.message_size() > 10*1024*1024) {
@@ -186,7 +186,7 @@ public:
 		}
 	}
 
-	void on_message(msgpack::object obj, std::auto_ptr<msgpack::zone> z)
+	void on_message(msgpack::object obj, std::unique_ptr<msgpack::zone> z)
 	{
 		EXPECT_EQ(expect, obj.as<int>());
 	}

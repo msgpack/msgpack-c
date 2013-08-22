@@ -21,4 +21,4 @@
 #include "msgpack/unpack.hpp"
 #include "msgpack/sbuffer.hpp"
 #include "msgpack/vrefbuffer.hpp"
-#include "msgpack.h"
+#include "msgpack/version.hpp"

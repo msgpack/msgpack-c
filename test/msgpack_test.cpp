@@ -170,10 +170,10 @@ TEST(MSGPACK, simple_buffer_float)
     float val2;
     obj.convert(&val2);
 
-    if (isnan(val1))
-      EXPECT_TRUE(isnan(val2));
-    else if (isinf(val1))
-      EXPECT_TRUE(isinf(val2));
+    if (std::isnan(val1))
+      EXPECT_TRUE(std::isnan(val2));
+    else if (std::isinf(val1))
+      EXPECT_TRUE(std::isinf(val2));
     else
       EXPECT_TRUE(fabs(val2 - val1) <= kEPS);
   }
@@ -260,10 +260,10 @@ TEST(MSGPACK, simple_buffer_double)
     double val2;
     obj.convert(&val2);
 
-    if (isnan(val1))
-      EXPECT_TRUE(isnan(val2));
-    else if (isinf(val1))
-      EXPECT_TRUE(isinf(val2));
+    if (std::isnan(val1))
+      EXPECT_TRUE(std::isnan(val2));
+    else if (std::isinf(val1))
+      EXPECT_TRUE(std::isinf(val2));
     else
       EXPECT_TRUE(fabs(val2 - val1) <= kEPS);
   }
@@ -901,11 +901,11 @@ public:
     msgpack::type::tuple<bool, msgpack::object> tuple;
     o.convert(&tuple);
 
-    is_double = tuple.get<0>();
+    is_double = get<0>(tuple);
     if (is_double)
-      tuple.get<1>().convert(&value.f);
+      get<1>(tuple).convert(&value.f);
     else
-      tuple.get<1>().convert(&value.i);
+      get<1>(tuple).convert(&value.i);
   }
 };
 
@@ -1097,7 +1097,7 @@ TEST(MSGPACK, vrefbuffer_int64)
         obj.convert(&val);                                              \
         EXPECT_EQ(*it, val);                                            \
         ++it;                                                           \
-        msgpack_zone_free(life);                                        \
+        msgpack::zone::destroy(life);                                   \
       }                                                                 \
       p += sz;                                                          \
     }                                                                   \

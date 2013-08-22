@@ -1,4 +1,4 @@
-#include <msgpack.hpp>
+#include <msgpack.h>
 #include <gtest/gtest.h>
 
 TEST(fixint, size)
