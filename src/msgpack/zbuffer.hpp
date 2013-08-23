@@ -29,7 +29,9 @@ public:
 	zbuffer(int level = Z_DEFAULT_COMPRESSION,
 			size_t init_size = MSGPACK_ZBUFFER_INIT_SIZE)
 	{
-		msgpack_zbuffer_init(this, level, init_size);
+		if (!msgpack_zbuffer_init(this, level, init_size)) {
+			throw std::bad_alloc();
+		}
 	}
 
 	~zbuffer()
