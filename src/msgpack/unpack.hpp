@@ -53,74 +53,74 @@ struct unpack_user {
 };
 
 
-static inline ::msgpack::object template_callback_root(unpack_user* u)
-{ ::msgpack::object o = {}; return o; }
+static inline msgpack::object template_callback_root(unpack_user* u)
+{ msgpack::object o = {}; return o; }
 
-static inline int template_callback_uint8(unpack_user* u, uint8_t d, ::msgpack::object* o)
-{ o->type = ::msgpack::type::POSITIVE_INTEGER; o->via.u64 = d; return 0; }
+static inline int template_callback_uint8(unpack_user* u, uint8_t d, msgpack::object* o)
+{ o->type = msgpack::type::POSITIVE_INTEGER; o->via.u64 = d; return 0; }
 
-static inline int template_callback_uint16(unpack_user* u, uint16_t d, ::msgpack::object* o)
-{ o->type = ::msgpack::type::POSITIVE_INTEGER; o->via.u64 = d; return 0; }
+static inline int template_callback_uint16(unpack_user* u, uint16_t d, msgpack::object* o)
+{ o->type = msgpack::type::POSITIVE_INTEGER; o->via.u64 = d; return 0; }
 
-static inline int template_callback_uint32(unpack_user* u, uint32_t d, ::msgpack::object* o)
-{ o->type = ::msgpack::type::POSITIVE_INTEGER; o->via.u64 = d; return 0; }
+static inline int template_callback_uint32(unpack_user* u, uint32_t d, msgpack::object* o)
+{ o->type = msgpack::type::POSITIVE_INTEGER; o->via.u64 = d; return 0; }
 
-static inline int template_callback_uint64(unpack_user* u, uint64_t d, ::msgpack::object* o)
-{ o->type = ::msgpack::type::POSITIVE_INTEGER; o->via.u64 = d; return 0; }
+static inline int template_callback_uint64(unpack_user* u, uint64_t d, msgpack::object* o)
+{ o->type = msgpack::type::POSITIVE_INTEGER; o->via.u64 = d; return 0; }
 
-static inline int template_callback_int8(unpack_user* u, int8_t d, ::msgpack::object* o)
-{ if(d >= 0) { o->type = ::msgpack::type::POSITIVE_INTEGER; o->via.u64 = d; return 0; }
-		else { o->type = ::msgpack::type::NEGATIVE_INTEGER; o->via.i64 = d; return 0; } }
+static inline int template_callback_int8(unpack_user* u, int8_t d, msgpack::object* o)
+{ if(d >= 0) { o->type = msgpack::type::POSITIVE_INTEGER; o->via.u64 = d; return 0; }
+		else { o->type = msgpack::type::NEGATIVE_INTEGER; o->via.i64 = d; return 0; } }
 
-static inline int template_callback_int16(unpack_user* u, int16_t d, ::msgpack::object* o)
-{ if(d >= 0) { o->type = ::msgpack::type::POSITIVE_INTEGER; o->via.u64 = d; return 0; }
-		else { o->type = ::msgpack::type::NEGATIVE_INTEGER; o->via.i64 = d; return 0; } }
+static inline int template_callback_int16(unpack_user* u, int16_t d, msgpack::object* o)
+{ if(d >= 0) { o->type = msgpack::type::POSITIVE_INTEGER; o->via.u64 = d; return 0; }
+		else { o->type = msgpack::type::NEGATIVE_INTEGER; o->via.i64 = d; return 0; } }
 
-static inline int template_callback_int32(unpack_user* u, int32_t d, ::msgpack::object* o)
-{ if(d >= 0) { o->type = ::msgpack::type::POSITIVE_INTEGER; o->via.u64 = d; return 0; }
-		else { o->type = ::msgpack::type::NEGATIVE_INTEGER; o->via.i64 = d; return 0; } }
+static inline int template_callback_int32(unpack_user* u, int32_t d, msgpack::object* o)
+{ if(d >= 0) { o->type = msgpack::type::POSITIVE_INTEGER; o->via.u64 = d; return 0; }
+		else { o->type = msgpack::type::NEGATIVE_INTEGER; o->via.i64 = d; return 0; } }
 
-static inline int template_callback_int64(unpack_user* u, int64_t d, ::msgpack::object* o)
-{ if(d >= 0) { o->type = ::msgpack::type::POSITIVE_INTEGER; o->via.u64 = d; return 0; }
-		else { o->type = ::msgpack::type::NEGATIVE_INTEGER; o->via.i64 = d; return 0; } }
+static inline int template_callback_int64(unpack_user* u, int64_t d, msgpack::object* o)
+{ if(d >= 0) { o->type = msgpack::type::POSITIVE_INTEGER; o->via.u64 = d; return 0; }
+		else { o->type = msgpack::type::NEGATIVE_INTEGER; o->via.i64 = d; return 0; } }
 
-static inline int template_callback_float(unpack_user* u, float d, ::msgpack::object* o)
-{ o->type = ::msgpack::type::DOUBLE; o->via.dec = d; return 0; }
+static inline int template_callback_float(unpack_user* u, float d, msgpack::object* o)
+{ o->type = msgpack::type::DOUBLE; o->via.dec = d; return 0; }
 
-static inline int template_callback_double(unpack_user* u, double d, ::msgpack::object* o)
-{ o->type = ::msgpack::type::DOUBLE; o->via.dec = d; return 0; }
+static inline int template_callback_double(unpack_user* u, double d, msgpack::object* o)
+{ o->type = msgpack::type::DOUBLE; o->via.dec = d; return 0; }
 
-static inline int template_callback_nil(unpack_user* u, ::msgpack::object* o)
-{ o->type = ::msgpack::type::NIL; return 0; }
+static inline int template_callback_nil(unpack_user* u, msgpack::object* o)
+{ o->type = msgpack::type::NIL; return 0; }
 
-static inline int template_callback_true(unpack_user* u, ::msgpack::object* o)
-{ o->type = ::msgpack::type::BOOLEAN; o->via.boolean = true; return 0; }
+static inline int template_callback_true(unpack_user* u, msgpack::object* o)
+{ o->type = msgpack::type::BOOLEAN; o->via.boolean = true; return 0; }
 
-static inline int template_callback_false(unpack_user* u, ::msgpack::object* o)
-{ o->type = ::msgpack::type::BOOLEAN; o->via.boolean = false; return 0; }
+static inline int template_callback_false(unpack_user* u, msgpack::object* o)
+{ o->type = msgpack::type::BOOLEAN; o->via.boolean = false; return 0; }
 
-static inline int template_callback_array(unpack_user* u, unsigned int n, ::msgpack::object* o)
+static inline int template_callback_array(unpack_user* u, unsigned int n, msgpack::object* o)
 {
-	o->type = ::msgpack::type::ARRAY;
+	o->type = msgpack::type::ARRAY;
 	o->via.array.size = 0;
-	o->via.array.ptr = (::msgpack::object*)u->z->malloc(n*sizeof(::msgpack::object));
+	o->via.array.ptr = (msgpack::object*)u->z->malloc(n*sizeof(msgpack::object));
 	if(o->via.array.ptr == NULL) { return -1; }
 	return 0;
 }
 
-static inline int template_callback_array_item(unpack_user* u, ::msgpack::object* c, ::msgpack::object o)
+static inline int template_callback_array_item(unpack_user* u, msgpack::object* c, msgpack::object o)
 { c->via.array.ptr[c->via.array.size++] = o; return 0; }
 
-static inline int template_callback_map(unpack_user* u, unsigned int n, ::msgpack::object* o)
+static inline int template_callback_map(unpack_user* u, unsigned int n, msgpack::object* o)
 {
-	o->type = ::msgpack::type::MAP;
+	o->type = msgpack::type::MAP;
 	o->via.map.size = 0;
-	o->via.map.ptr = (::msgpack::object_kv*)u->z->malloc(n*sizeof(::msgpack::object_kv));
+	o->via.map.ptr = (msgpack::object_kv*)u->z->malloc(n*sizeof(msgpack::object_kv));
 	if(o->via.map.ptr == NULL) { return -1; }
 	return 0;
 }
 
-static inline int template_callback_map_item(unpack_user* u, ::msgpack::object* c, ::msgpack::object k, ::msgpack::object v)
+static inline int template_callback_map_item(unpack_user* u, msgpack::object* c, msgpack::object k, msgpack::object v)
 {
 	c->via.map.ptr[c->via.map.size].key = k;
 	c->via.map.ptr[c->via.map.size].val = v;
@@ -128,9 +128,9 @@ static inline int template_callback_map_item(unpack_user* u, ::msgpack::object* 
 	return 0;
 }
 
-static inline int template_callback_raw(unpack_user* u, const char* b, const char* p, unsigned int l, ::msgpack::object* o)
+static inline int template_callback_raw(unpack_user* u, const char* b, const char* p, unsigned int l, msgpack::object* o)
 {
-	o->type = ::msgpack::type::RAW;
+	o->type = msgpack::type::RAW;
 	o->via.raw.ptr = p;
 	o->via.raw.size = l;
 	u->referenced = true;
@@ -139,10 +139,10 @@ static inline int template_callback_raw(unpack_user* u, const char* b, const cha
 
 
 struct template_unpack_stack {
-	::msgpack::object obj;
+	msgpack::object obj;
 	size_t count;
 	unsigned int ct;
-	::msgpack::object map_key;
+	msgpack::object map_key;
 };
 
 struct template_context {
@@ -186,7 +186,7 @@ inline void template_init(template_context& ctx)
 	ctx.stack[0].obj = template_callback_root(&ctx.user);
 }
 
-::msgpack::object template_data(template_context const& ctx)
+msgpack::object template_data(template_context const& ctx)
 {
 	return ctx.stack[0].obj;
 }
@@ -214,7 +214,7 @@ int template_execute(template_context& ctx, const char* data, size_t len, size_t
 	*/
 	unpack_user* user = &ctx.user;
 
-	::msgpack::object obj;
+	msgpack::object obj;
 	detail::template_unpack_stack* c = nullptr;
 
 	int ret;
@@ -915,7 +915,7 @@ namespace detail {
 
 inline unpack_return
 unpack_imp(const char* data, size_t len, size_t* off,
-		zone* result_zone, ::msgpack::object* result)
+		zone* result_zone, msgpack::object* result)
 {
 	size_t noff = 0;
 	if(off != NULL) { noff = *off; }
