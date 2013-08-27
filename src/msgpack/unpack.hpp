@@ -47,11 +47,16 @@ namespace msgpack {
 
 namespace detail {
 
-struct unpack_user {
-	zone* z;
-	bool referenced;
+class unpack_user {
+public:
+	zone* z() const { return z_; }
+	void set_z(zone* z) { z_ = z; }
+	bool referenced() const { return referenced_; }
+	void set_referenced(bool referenced) { referenced_ = referenced; }
+private:
+	zone* z_;
+	bool referenced_;
 };
-
 
 static inline object template_callback_root(unpack_user* u)
 { object o = {}; return o; }
@@ -103,7 +108,7 @@ static inline int template_callback_array(unpack_user* u, unsigned int n, object
 {
 	o->type = type::ARRAY;
 	o->via.array.size = 0;
-	o->via.array.ptr = (object*)u->z->malloc(n*sizeof(object));
+	o->via.array.ptr = (object*)u->z()->malloc(n*sizeof(object));
 	if(o->via.array.ptr == NULL) { return -1; }
 	return 0;
 }
@@ -115,7 +120,7 @@ static inline int template_callback_map(unpack_user* u, unsigned int n, object* 
 {
 	o->type = type::MAP;
 	o->via.map.size = 0;
-	o->via.map.ptr = (object_kv*)u->z->malloc(n*sizeof(object_kv));
+	o->via.map.ptr = (object_kv*)u->z()->malloc(n*sizeof(object_kv));
 	if(o->via.map.ptr == NULL) { return -1; }
 	return 0;
 }
@@ -133,26 +138,29 @@ static inline int template_callback_raw(unpack_user* u, const char* b, const cha
 	o->type = type::RAW;
 	o->via.raw.ptr = p;
 	o->via.raw.size = l;
-	u->referenced = true;
+	u->set_referenced(true);
 	return 0;
 }
 
 
-struct template_unpack_stack {
-	object obj;
-	size_t count;
-	unsigned int ct;
-	object map_key;
+class template_unpack_stack {
+public:
+	object obj() const { return obj_; }
+	object& obj() { return obj_; }
+	void setObj(object obj) { obj_ = obj; }
+	size_t count() const { return count_; }
+	void set_count(size_t count) { count_ = count; }
+	size_t decl_count() { return --count_; }
+	unsigned int ct() const { return ct_; }
+	void set_ct(unsigned int ct) { ct_ = ct; }
+	object map_key() const { return map_key_; }
+	void set_map_key(object map_key) { map_key_ = map_key; }
+private:
+	object obj_;
+	size_t count_;
+	unsigned int ct_;
+	object map_key_;
 };
-
-struct template_context {
-	unpack_user user;
-	unsigned int cs;
-	unsigned int trail;
-	unsigned int top;
-	template_unpack_stack stack[MSGPACK_EMBED_STACK_SIZE];
-};
-
 
 inline void init_count(void* buffer)
 {
@@ -178,161 +186,169 @@ inline _msgpack_atomic_counter_t get_count(void* buffer)
 	return *(volatile _msgpack_atomic_counter_t*)buffer;
 }
 
-inline void template_init(template_context& ctx)
-{
-	ctx.cs = CS_HEADER;
-	ctx.trail = 0;
-	ctx.top = 0;
-	ctx.stack[0].obj = template_callback_root(&ctx.user);
-}
+class template_context {
+public:
+	template_context():cs_(CS_HEADER), trail_(0), top_(0)
+	{
+		stack_[0].setObj(template_callback_root(&user_));
+	}
 
-object template_data(template_context const& ctx)
-{
-	return ctx.stack[0].obj;
-}
+	void init()
+	{
+		cs_ = CS_HEADER;
+		trail_ = 0;
+		top_ = 0;
+		stack_[0].setObj(template_callback_root(&user_));
+	}
 
-template <typename T>
-inline unsigned int next_cs(T p)
-{
-	return (unsigned int)*p & 0x1f;
-}
+	object data() const
+	{
+		return stack_[0].obj();
+	}
 
-int template_execute(template_context& ctx, const char* data, size_t len, size_t* off)
-{
-	assert(len >= *off);
+	unpack_user& user()
+	{
+		return user_;
+	}
 
-	const unsigned char* p = (unsigned char*)data + *off;
-	const unsigned char* const pe = (unsigned char*)data + len;
-	const void* n = nullptr;
+	unpack_user const& user() const
+	{
+		return user_;
+	}
 
-	unsigned int trail = ctx.trail;
-	unsigned int cs = ctx.cs;
-	unsigned int top = ctx.top;
-	template_unpack_stack* stack = ctx.stack;
-	/*
-	unsigned int stack_size = ctx.stack_size;
-	*/
-	unpack_user* user = &ctx.user;
+	int execute(const char* data, size_t len, size_t* off)
+	{
+		assert(len >= *off);
 
-	object obj;
-	template_unpack_stack* c = nullptr;
+		const unsigned char* p = (unsigned char*)data + *off;
+		const unsigned char* const pe = (unsigned char*)data + len;
+		const void* n = nullptr;
 
-	int ret;
+		unsigned int trail = trail_;
+		unsigned int cs = cs_;
+		unsigned int top = top_;
+		template_unpack_stack* stack = stack_;
+		unpack_user* user = &user_;
+
+		object obj;
+		template_unpack_stack* c = nullptr;
+
+		int ret;
 
 
-	if(p == pe) { goto _out; }
-	do {
-		switch(cs) {
-		case CS_HEADER:
-			if (0) {
-			} else if(0x00 <= *p && *p <= 0x7f) { // Positive Fixnum
-				if(template_callback_uint8(user, *(uint8_t*)p, &obj) < 0) { goto _failed; }
-				goto _push;
-			} else if(0xe0 <= *p && *p <= 0xff) { // Negative Fixnum
-				if(template_callback_int8(user, *(int8_t*)p, &obj) < 0) { goto _failed; }
-				goto _push;
-			} else if(0xc0 <= *p && *p <= 0xdf) { // Variable
-				switch(*p) {
-				case 0xc0:	// nil
-					if(template_callback_nil(user, &obj) < 0) { goto _failed; }
+		if(p == pe) { goto _out; }
+		do {
+			switch(cs) {
+			case CS_HEADER:
+				if (0) {
+				} else if(0x00 <= *p && *p <= 0x7f) { // Positive Fixnum
+					if(template_callback_uint8(user, *(uint8_t*)p, &obj) < 0) { goto _failed; }
 					goto _push;
-				//case 0xc1:  // string
-				//	again_terminal_trail(next_cs(p), p+1);
-				case 0xc2:	// false
-					if(template_callback_false(user, &obj) < 0) { goto _failed; }
+				} else if(0xe0 <= *p && *p <= 0xff) { // Negative Fixnum
+					if(template_callback_int8(user, *(int8_t*)p, &obj) < 0) { goto _failed; }
 					goto _push;
-				case 0xc3:	// true
-					if(template_callback_true(user, &obj) < 0) { goto _failed; }
-					goto _push;
-				case 0xc4: // bin 8
-				case 0xc5: // bin 16
-				case 0xc6: // bin 32
-					trail = 1 << (((unsigned int)*p) & 0x03);
-					cs = next_cs(p);
+				} else if(0xc0 <= *p && *p <= 0xdf) { // Variable
+					switch(*p) {
+					case 0xc0:	// nil
+						if(template_callback_nil(user, &obj) < 0) { goto _failed; }
+						goto _push;
+					//case 0xc1:  // string
+					//	again_terminal_trail(next_cs(p), p+1);
+					case 0xc2:	// false
+						if(template_callback_false(user, &obj) < 0) { goto _failed; }
+						goto _push;
+					case 0xc3:	// true
+						if(template_callback_true(user, &obj) < 0) { goto _failed; }
+						goto _push;
+					case 0xc4: // bin 8
+					case 0xc5: // bin 16
+					case 0xc6: // bin 32
+						trail = 1 << (((unsigned int)*p) & 0x03);
+						cs = next_cs(p);
+						goto _fixed_trail_again;
+
+					//case 0xc7:
+					//case 0xc8:
+					//case 0xc9:
+					case 0xca:	// float
+					case 0xcb:	// double
+					case 0xcc:	// unsigned int	 8
+					case 0xcd:	// unsigned int 16
+					case 0xce:	// unsigned int 32
+					case 0xcf:	// unsigned int 64
+					case 0xd0:	// signed int  8
+					case 0xd1:	// signed int 16
+					case 0xd2:	// signed int 32
+					case 0xd3:	// signed int 64
+						trail = 1 << (((unsigned int)*p) & 0x03);
+						cs = next_cs(p);
+						goto _fixed_trail_again;
+					//case 0xd4:
+					//case 0xd5:
+					//case 0xd6:  // big integer 16
+					//case 0xd7:  // big integer 32
+					//case 0xd8:  // big float 16
+					case 0xd9:	// raw 8 (str 8)
+					case 0xda:	// raw 16 (str 16)
+					case 0xdb:	// raw 32 (str 32)
+						trail = 1 << ((((unsigned int)*p) & 0x03) - 1);
+						cs = next_cs(p);
+						goto _fixed_trail_again;
+					case 0xdc:	// array 16
+					case 0xdd:	// array 32
+					case 0xde:	// map 16
+					case 0xdf:	// map 32
+						trail = 2 << (((unsigned int)*p) & 0x01);
+						cs = next_cs(p);
+						goto _fixed_trail_again;
+					default:
+						goto _failed;
+					}
+				} else if(0xa0 <= *p && *p <= 0xbf) { // FixRaw
+					trail = (unsigned int)*p & 0x1f;
+					if(trail == 0) { goto _raw_zero; }
+					cs = ACS_RAW_VALUE;
 					goto _fixed_trail_again;
 
-				//case 0xc7:
-				//case 0xc8:
-				//case 0xc9:
-				case 0xca:	// float
-				case 0xcb:	// double
-				case 0xcc:	// unsigned int	 8
-				case 0xcd:	// unsigned int 16
-				case 0xce:	// unsigned int 32
-				case 0xcf:	// unsigned int 64
-				case 0xd0:	// signed int  8
-				case 0xd1:	// signed int 16
-				case 0xd2:	// signed int 32
-				case 0xd3:	// signed int 64
-					trail = 1 << (((unsigned int)*p) & 0x03);
-					cs = next_cs(p);
-					goto _fixed_trail_again;
-				//case 0xd4:
-				//case 0xd5:
-				//case 0xd6:  // big integer 16
-				//case 0xd7:  // big integer 32
-				//case 0xd8:  // big float 16
-				case 0xd9:	// raw 8 (str 8)
-				case 0xda:	// raw 16 (str 16)
-				case 0xdb:	// raw 32 (str 32)
-					trail = 1 << ((((unsigned int)*p) & 0x03) - 1);
-					cs = next_cs(p);
-					goto _fixed_trail_again;
-				case 0xdc:	// array 16
-				case 0xdd:	// array 32
-				case 0xde:	// map 16
-				case 0xdf:	// map 32
-					trail = 2 << (((unsigned int)*p) & 0x01);
-					cs = next_cs(p);
-					goto _fixed_trail_again;
-				default:
+				} else if(0x90 <= *p && *p <= 0x9f) { // FixArray
+					if(top >= MSGPACK_EMBED_STACK_SIZE) { goto _failed; } /* FIXME */
+					if(template_callback_array(user, ((unsigned int)*p) & 0x0f, &stack[top].obj()) < 0) { goto _failed; }
+					if((((unsigned int)*p) & 0x0f) == 0) { obj = stack[top].obj(); goto _push; }
+					stack[top].set_ct(CT_ARRAY_ITEM);
+					stack[top].set_count(((unsigned int)*p) & 0x0f);
+					++top;
+					goto _header_again;
+
+				} else if(0x80 <= *p && *p <= 0x8f) { // FixMap
+					if(top >= MSGPACK_EMBED_STACK_SIZE) { goto _failed; } /* FIXME */
+					if(template_callback_map(user, ((unsigned int)*p) & 0x0f, &stack[top].obj()) < 0) { goto _failed; }
+					if((((unsigned int)*p) & 0x0f) == 0) { obj = stack[top].obj(); goto _push; }
+					stack[top].set_ct(CT_MAP_KEY);
+					stack[top].set_count(((unsigned int)*p) & 0x0f);
+					++top;
+					goto _header_again;
+
+				} else {
 					goto _failed;
 				}
-			} else if(0xa0 <= *p && *p <= 0xbf) { // FixRaw
-				trail = (unsigned int)*p & 0x1f;
-				if(trail == 0) { goto _raw_zero; }
-				cs = ACS_RAW_VALUE;
-				goto _fixed_trail_again;
-
-			} else if(0x90 <= *p && *p <= 0x9f) { // FixArray
-				if(top >= MSGPACK_EMBED_STACK_SIZE) { goto _failed; } /* FIXME */
-				if(template_callback_array(user, ((unsigned int)*p) & 0x0f, &stack[top].obj) < 0) { goto _failed; }
-				if((((unsigned int)*p) & 0x0f) == 0) { obj = stack[top].obj; goto _push; }
-				stack[top].ct = CT_ARRAY_ITEM;
-				stack[top].count = ((unsigned int)*p) & 0x0f;
-				++top;
-				goto _header_again;
-
-			} else if(0x80 <= *p && *p <= 0x8f) { // FixMap
-				if(top >= MSGPACK_EMBED_STACK_SIZE) { goto _failed; } /* FIXME */
-				if(template_callback_map(user, ((unsigned int)*p) & 0x0f, &stack[top].obj) < 0) { goto _failed; }
-				if((((unsigned int)*p) & 0x0f) == 0) { obj = stack[top].obj; goto _push; }
-				stack[top].ct = CT_MAP_KEY;
-				stack[top].count = ((unsigned int)*p) & 0x0f;
-				++top;
-				goto _header_again;
-
-			} else {
-				goto _failed;
-			}
-			// end CS_HEADER
+				// end CS_HEADER
 
 
-		_fixed_trail_again:
-			++p;
+_fixed_trail_again:
+				++p;
 
-		default:
-			if((size_t)(pe - p) < trail) { goto _out; }
-			n = p;	p += trail - 1;
-			switch(cs) {
-			//case CS_
-			//case CS_
-			case CS_FLOAT: {
+			default:
+				if((size_t)(pe - p) < trail) { goto _out; }
+				n = p;	p += trail - 1;
+				switch(cs) {
+				//case CS_
+				//case CS_
+				case CS_FLOAT: {
 					union { uint32_t i; float f; } mem;
 					mem.i = _msgpack_load32(uint32_t,n);
 					if(template_callback_float(user, mem.f, &obj) < 0) { goto _failed; }
 					goto _push; }
-			case CS_DOUBLE: {
+				case CS_DOUBLE: {
 					union { uint64_t i; double f; } mem;
 					mem.i = _msgpack_load64(uint64_t,n);
 #if defined(__arm__) && !(__ARM_EABI__) // arm-oabi
@@ -341,161 +357,173 @@ int template_execute(template_context& ctx, const char* data, size_t len, size_t
 #endif
 					if(template_callback_double(user, mem.f, &obj) < 0) { goto _failed; }
 					goto _push; }
-			case CS_UINT_8:
-				if(template_callback_uint8(user, *(uint8_t*)n, &obj) < 0) { goto _failed; }
-				goto _push;
-			case CS_UINT_16:
-				if(template_callback_uint16(user, _msgpack_load16(uint16_t,n), &obj) < 0) { goto _failed; }
-				goto _push;
-			case CS_UINT_32:
-				if(template_callback_uint32(user, _msgpack_load32(uint32_t,n), &obj) < 0) { goto _failed; }
-				goto _push;
-			case CS_UINT_64:
-				if(template_callback_uint64(user, _msgpack_load64(uint64_t,n), &obj) < 0) { goto _failed; }
-				goto _push;
+				case CS_UINT_8:
+					if(template_callback_uint8(user, *(uint8_t*)n, &obj) < 0) { goto _failed; }
+					goto _push;
+				case CS_UINT_16:
+					if(template_callback_uint16(user, _msgpack_load16(uint16_t,n), &obj) < 0) { goto _failed; }
+					goto _push;
+				case CS_UINT_32:
+					if(template_callback_uint32(user, _msgpack_load32(uint32_t,n), &obj) < 0) { goto _failed; }
+					goto _push;
+				case CS_UINT_64:
+					if(template_callback_uint64(user, _msgpack_load64(uint64_t,n), &obj) < 0) { goto _failed; }
+					goto _push;
 
-			case CS_INT_8:
-				if(template_callback_int8(user, *(int8_t*)n, &obj) < 0) { goto _failed; }
-				goto _push;
-			case CS_INT_16:
-				if(template_callback_int16(user, _msgpack_load16(int16_t,n), &obj) < 0) { goto _failed; }
-				goto _push;
-			case CS_INT_32:
-				if(template_callback_int32(user, _msgpack_load32(int32_t,n), &obj) < 0) { goto _failed; }
-				goto _push;
-			case CS_INT_64:
-				if(template_callback_int64(user, _msgpack_load64(int64_t,n), &obj) < 0) { goto _failed; }
-				goto _push;
+				case CS_INT_8:
+					if(template_callback_int8(user, *(int8_t*)n, &obj) < 0) { goto _failed; }
+					goto _push;
+				case CS_INT_16:
+					if(template_callback_int16(user, _msgpack_load16(int16_t,n), &obj) < 0) { goto _failed; }
+					goto _push;
+				case CS_INT_32:
+					if(template_callback_int32(user, _msgpack_load32(int32_t,n), &obj) < 0) { goto _failed; }
+					goto _push;
+				case CS_INT_64:
+					if(template_callback_int64(user, _msgpack_load64(int64_t,n), &obj) < 0) { goto _failed; }
+					goto _push;
 
-			case CS_BIN_8:
-			case CS_RAW_8:
-				trail = *(uint8_t*)n;
-				if(trail == 0) { goto _raw_zero; }
-				cs = ACS_RAW_VALUE;
-				goto _fixed_trail_again;
-			case CS_BIN_16:
-			case CS_RAW_16:
-				trail = _msgpack_load16(uint16_t, n);
-				if(trail == 0) { goto _raw_zero; }
-				cs = ACS_RAW_VALUE;
-				goto _fixed_trail_again;
-			case CS_BIN_32:
-			case CS_RAW_32:
-				trail = _msgpack_load32(uint32_t, n);
-				if(trail == 0) { goto _raw_zero; }
-				cs = ACS_RAW_VALUE;
-				goto _fixed_trail_again;
-			case ACS_RAW_VALUE:
-			_raw_zero:
-				if(template_callback_raw(user, (const char*)data, (const char*)n, trail, &obj) < 0) { goto _failed; }
-				goto _push;
-			case CS_ARRAY_16:
-				if(top >= MSGPACK_EMBED_STACK_SIZE) { goto _failed; } /* FIXME */
-				if(template_callback_array(user, _msgpack_load16(uint16_t, n), &stack[top].obj) < 0) { goto _failed; }
-				if(_msgpack_load16(uint16_t, n) == 0) { obj = stack[top].obj; goto _push; }
-				stack[top].ct = CT_ARRAY_ITEM;
-				stack[top].count = _msgpack_load16(uint16_t, n);
-				++top;
-				goto _header_again;
-			case CS_ARRAY_32:
-				/* FIXME security guard */
-				if(top >= MSGPACK_EMBED_STACK_SIZE) { goto _failed; } /* FIXME */
-				if(template_callback_array(user, _msgpack_load32(uint32_t, n), &stack[top].obj) < 0) { goto _failed; }
-				if(_msgpack_load32(uint32_t, n) == 0) { obj = stack[top].obj; goto _push; }
-				stack[top].ct = CT_ARRAY_ITEM;
-				stack[top].count = _msgpack_load32(uint32_t, n);
-				++top;
-				goto _header_again;
+				case CS_BIN_8:
+				case CS_RAW_8:
+					trail = *(uint8_t*)n;
+					if(trail == 0) { goto _raw_zero; }
+					cs = ACS_RAW_VALUE;
+					goto _fixed_trail_again;
+				case CS_BIN_16:
+				case CS_RAW_16:
+					trail = _msgpack_load16(uint16_t, n);
+					if(trail == 0) { goto _raw_zero; }
+					cs = ACS_RAW_VALUE;
+					goto _fixed_trail_again;
+				case CS_BIN_32:
+				case CS_RAW_32:
+					trail = _msgpack_load32(uint32_t, n);
+					if(trail == 0) { goto _raw_zero; }
+					cs = ACS_RAW_VALUE;
+					goto _fixed_trail_again;
+				case ACS_RAW_VALUE:
+_raw_zero:
+					if(template_callback_raw(user, (const char*)data, (const char*)n, trail, &obj) < 0) { goto _failed; }
+					goto _push;
+				case CS_ARRAY_16:
+					if(top >= MSGPACK_EMBED_STACK_SIZE) { goto _failed; } /* FIXME */
+					if(template_callback_array(user, _msgpack_load16(uint16_t, n), &stack[top].obj()) < 0) { goto _failed; }
+					if(_msgpack_load16(uint16_t, n) == 0) { obj = stack[top].obj(); goto _push; }
+					stack[top].set_ct(CT_ARRAY_ITEM);
+					stack[top].set_count(_msgpack_load16(uint16_t, n));
+					++top;
+					goto _header_again;
+				case CS_ARRAY_32:
+					/* FIXME security guard */
+					if(top >= MSGPACK_EMBED_STACK_SIZE) { goto _failed; } /* FIXME */
+					if(template_callback_array(user, _msgpack_load32(uint32_t, n), &stack[top].obj()) < 0) { goto _failed; }
+					if(_msgpack_load32(uint32_t, n) == 0) { obj = stack[top].obj(); goto _push; }
+					stack[top].set_ct(CT_ARRAY_ITEM);
+					stack[top].set_count(_msgpack_load32(uint32_t, n));
+					++top;
+					goto _header_again;
 
-			case CS_MAP_16:
-				if(top >= MSGPACK_EMBED_STACK_SIZE) { goto _failed; } /* FIXME */
-				if(template_callback_map(user, _msgpack_load16(uint16_t, n), &stack[top].obj) < 0) { goto _failed; }
-				if(_msgpack_load16(uint16_t, n) == 0) { obj = stack[top].obj; goto _push; }
-				stack[top].ct = CT_MAP_KEY;
-				stack[top].count = _msgpack_load16(uint16_t, n);
-				++top;
+				case CS_MAP_16:
+					if(top >= MSGPACK_EMBED_STACK_SIZE) { goto _failed; } /* FIXME */
+					if(template_callback_map(user, _msgpack_load16(uint16_t, n), &stack[top].obj()) < 0) { goto _failed; }
+					if(_msgpack_load16(uint16_t, n) == 0) { obj = stack[top].obj(); goto _push; }
+					stack[top].set_ct(CT_MAP_KEY);
+					stack[top].set_count(_msgpack_load16(uint16_t, n));
+					++top;
+					goto _header_again;
+				case CS_MAP_32:
+					/* FIXME security guard */
+					if(top >= MSGPACK_EMBED_STACK_SIZE) { goto _failed; } /* FIXME */
+					if(template_callback_map(user, _msgpack_load32(uint32_t, n), &stack[top].obj()) < 0) { goto _failed; }
+					if(_msgpack_load32(uint32_t, n) == 0) { obj = stack[top].obj(); goto _push; }
+					stack[top].set_ct(CT_MAP_KEY);
+					stack[top].set_count(_msgpack_load32(uint32_t, n));
+					++top;
+					goto _header_again;
+
+				default:
+					goto _failed;
+				}
+			}
+
+_push:
+			if(top == 0) { goto _finish; }
+			c = &stack[top-1];
+			switch(c->ct()) {
+			case CT_ARRAY_ITEM:
+				if(template_callback_array_item(user, &c->obj(), obj) < 0) { goto _failed; }
+				if(c->decl_count() == 0) {
+					obj = c->obj();
+					--top;
+					/*printf("stack pop %d\n", top);*/
+					goto _push;
+				}
 				goto _header_again;
-			case CS_MAP_32:
-				/* FIXME security guard */
-				if(top >= MSGPACK_EMBED_STACK_SIZE) { goto _failed; } /* FIXME */
-				if(template_callback_map(user, _msgpack_load32(uint32_t, n), &stack[top].obj) < 0) { goto _failed; }
-				if(_msgpack_load32(uint32_t, n) == 0) { obj = stack[top].obj; goto _push; }
-				stack[top].ct = CT_MAP_KEY;
-				stack[top].count = _msgpack_load32(uint32_t, n);
-				++top;
+			case CT_MAP_KEY:
+				c->set_map_key(obj);
+				c->set_ct(CT_MAP_VALUE);
+				goto _header_again;
+			case CT_MAP_VALUE:
+				if(template_callback_map_item(user, &c->obj(), c->map_key(), obj) < 0) { goto _failed; }
+				if(c->decl_count() == 0) {
+					obj = c->obj();
+					--top;
+					/*printf("stack pop %d\n", top);*/
+					goto _push;
+				}
+				c->set_ct(CT_MAP_KEY);
 				goto _header_again;
 
 			default:
 				goto _failed;
 			}
-		}
-
-_push:
-	if(top == 0) { goto _finish; }
-	c = &stack[top-1];
-	switch(c->ct) {
-	case CT_ARRAY_ITEM:
-		if(template_callback_array_item(user, &c->obj, obj) < 0) { goto _failed; }
-		if(--c->count == 0) {
-			obj = c->obj;
-			--top;
-			/*printf("stack pop %d\n", top);*/
-			goto _push;
-		}
-		goto _header_again;
-	case CT_MAP_KEY:
-		c->map_key = obj;
-		c->ct = CT_MAP_VALUE;
-		goto _header_again;
-	case CT_MAP_VALUE:
-		if(template_callback_map_item(user, &c->obj, c->map_key, obj) < 0) { goto _failed; }
-		if(--c->count == 0) {
-			obj = c->obj;
-			--top;
-			/*printf("stack pop %d\n", top);*/
-			goto _push;
-		}
-		c->ct = CT_MAP_KEY;
-		goto _header_again;
-
-	default:
-		goto _failed;
-	}
 
 _header_again:
-		cs = CS_HEADER;
-		++p;
-	} while(p != pe);
-	goto _out;
+			cs = CS_HEADER;
+			++p;
+		} while(p != pe);
+		goto _out;
 
 
 _finish:
-	stack[0].obj = obj;
-	++p;
-	ret = 1;
-	/*printf("-- finish --\n"); */
-	goto _end;
+		stack[0].setObj(obj);
+		++p;
+		ret = 1;
+		/*printf("-- finish --\n"); */
+		goto _end;
 
 _failed:
-	/*printf("** FAILED **\n"); */
-	ret = -1;
-	goto _end;
+		/*printf("** FAILED **\n"); */
+		ret = -1;
+		goto _end;
 
 _out:
-	ret = 0;
-	goto _end;
+		ret = 0;
+		goto _end;
 
 _end:
-	ctx.cs = cs;
-	ctx.trail = trail;
-	ctx.top = top;
-	*off = p - (const unsigned char*)data;
+		cs_ = cs;
+		trail_ = trail;
+		top_ = top;
+		*off = p - (const unsigned char*)data;
 
-	return ret;
-}
+		return ret;
+	}
 
+private:
+	template <typename T>
+	static unsigned int next_cs(T p)
+	{
+		return (unsigned int)*p & 0x1f;
+	}
 
-
+private:
+	unpack_user user_;
+	unsigned int cs_;
+	unsigned int trail_;
+	unsigned int top_;
+	template_unpack_stack stack_[MSGPACK_EMBED_STACK_SIZE];
+};
 
 } // detail
 
@@ -689,9 +717,9 @@ inline unpacker::unpacker(size_t initial_buffer_size)
 
 	detail::init_count(buffer_);
 
-	detail::template_init(ctx_);
-	ctx_.user.z = z_;
-	ctx_.user.referenced = false;
+	ctx_.init();
+	ctx_.user().set_z(z_);
+	ctx_.user().set_referenced(false);
 }
 
 inline unpacker::~unpacker()
@@ -710,7 +738,7 @@ inline void unpacker::reserve_buffer(size_t size)
 inline void unpacker::expand_buffer(size_t size)
 {
 	if(used_ == off_ && detail::get_count(buffer_) == 1
-			&& !ctx_.user.referenced) {
+		&& !ctx_.user().referenced()) {
 		// rewind buffer
 		free_ += used_ - COUNTER_SIZE;
 		used_ = COUNTER_SIZE;
@@ -749,7 +777,7 @@ inline void unpacker::expand_buffer(size_t size)
 
 		::memcpy(tmp+COUNTER_SIZE, buffer_ + off_, not_parsed);
 
-		if(ctx_.user.referenced) {
+		if(ctx_.user().referenced()) {
 			try {
 				z_->push_finalizer(&detail::decl_count, buffer_);
 			}
@@ -757,7 +785,7 @@ inline void unpacker::expand_buffer(size_t size)
 				::free(tmp);
 				throw;
 			}
-			ctx_.user.referenced = false;
+			ctx_.user().set_referenced(false);
 		} else {
 			detail::decl_count(buffer_);
 		}
@@ -822,8 +850,7 @@ inline bool unpacker::execute()
 inline int unpacker::execute_imp()
 {
 	size_t off = off_;
-	int ret = detail::template_execute(ctx_,
-			buffer_, used_, &off_);
+	int ret = ctx_.execute(buffer_, used_, &off_);
 	if(off_ > off) {
 		parsed_ += off_ - off;
 	}
@@ -832,7 +859,7 @@ inline int unpacker::execute_imp()
 
 inline object unpacker::data()
 {
-	return template_data(ctx_);
+	return ctx_.data();
 }
 
 inline zone* unpacker::release_zone()
@@ -848,7 +875,7 @@ inline zone* unpacker::release_zone()
 
 	zone* old = z_;
 	z_ = r;
-	ctx_.user.z = z_;
+	ctx_.user().set_z(z_);
 
 	return old;
 }
@@ -860,13 +887,13 @@ inline void unpacker::reset_zone()
 
 inline bool unpacker::flush_zone()
 {
-	if(ctx_.user.referenced) {
+	if(ctx_.user().referenced()) {
 		try {
 			z_->push_finalizer(&detail::decl_count, buffer_);
 		} catch (...) {
 			return false;
 		}
-		ctx_.user.referenced = false;
+		ctx_.user().set_referenced(false);
 
 		detail::incr_count(buffer_);
 	}
@@ -876,7 +903,7 @@ inline bool unpacker::flush_zone()
 
 inline void unpacker::reset()
 {
-	detail::template_init(ctx_);
+	ctx_.init();
 	// don't reset referenced flag
 	parsed_ = 0;
 }
@@ -926,12 +953,12 @@ unpack_imp(const char* data, size_t len, size_t* off,
 	}
 
 	detail::template_context ctx;
-	detail::template_init(ctx);
+	ctx.init();
 
-	ctx.user.z = result_zone;
-	ctx.user.referenced = false;
+	ctx.user().set_z(result_zone);
+	ctx.user().set_referenced(false);
 
-	int e = detail::template_execute(ctx, data, len, &noff);
+	int e = ctx.execute(data, len, &noff);
 	if(e < 0) {
 		return UNPACK_PARSE_ERROR;
 	}
@@ -942,7 +969,7 @@ unpack_imp(const char* data, size_t len, size_t* off,
 		return UNPACK_CONTINUE;
 	}
 
-	*result = detail::template_data(ctx);
+	*result = ctx.data();
 
 	if(noff < len) {
 		return UNPACK_EXTRA_BYTES;
