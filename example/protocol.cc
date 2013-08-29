@@ -11,17 +11,17 @@ namespace myprotocol {
 		Get() { }
 		Get(uint32_t f, const std::string& k) :
 			define_type(msgpack_type(f, k)) { }
-		uint32_t&    flags() { return get<0>(); }
-		std::string& key()   { return get<1>(); }
+		uint32_t&    flags() { return msgpack::type::get<0>(*this); }
+		std::string& key()   { return msgpack::type::get<1>(*this); }
 	};
 
 	struct Put : define< tuple<uint32_t, std::string, raw_ref> > {
 		Put() { }
 		Put(uint32_t f, const std::string& k, const char* valref, uint32_t vallen) :
 			define_type(msgpack_type( f, k, raw_ref(valref,vallen) )) { }
-		uint32_t&    flags() { return get<0>(); }
-		std::string& key()   { return get<1>(); }
-		raw_ref&     value() { return get<2>(); }
+		uint32_t&    flags() { return msgpack::type::get<0>(*this); }
+		std::string& key()   { return msgpack::type::get<1>(*this); }
+		raw_ref&     value() { return msgpack::type::get<2>(*this); }
 	};
 
 	struct MultiGet : define< std::vector<Get> > {
