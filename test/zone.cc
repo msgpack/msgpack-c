@@ -63,8 +63,8 @@ TEST(zone, push_finalizer)
 TEST(zone, push_finalizer_unique_ptr)
 {
 	msgpack::zone z;
-	std::unique_ptr<myclass> am(new myclass());
-	z.push_finalizer(std::move(am));
+	msgpack::unique_ptr<myclass> am(new myclass());
+	z.push_finalizer(msgpack::move(am));
 }
 
 

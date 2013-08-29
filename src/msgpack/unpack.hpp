@@ -21,6 +21,7 @@
 #include "object.hpp"
 #include "zone.hpp"
 #include "unpack_define.h"
+#include "cpp_config.hpp"
 
 #include <memory>
 #include <stdexcept>
@@ -59,7 +60,7 @@ private:
 };
 
 static inline object template_callback_root(unpack_user* u)
-{ object o = {}; return o; }
+{ object o; return o; }
 
 static inline int template_callback_uint8(unpack_user* u, uint8_t d, object* o)
 { o->type = type::POSITIVE_INTEGER; o->via.u64 = d; return 0; }
@@ -538,8 +539,8 @@ class unpacked {
 public:
 	unpacked() { }
 
-	unpacked(object obj, std::unique_ptr<msgpack::zone> z) :
-		m_obj(obj), m_zone(std::move(z)) { }
+	unpacked(object obj, msgpack::unique_ptr<msgpack::zone> z) :
+		m_obj(obj), m_zone(msgpack::move(z)) { }
 
 	object& get()
 		{ return m_obj; }
@@ -547,15 +548,15 @@ public:
 	const object& get() const
 		{ return m_obj; }
 
-	std::unique_ptr<msgpack::zone>& zone()
+	msgpack::unique_ptr<msgpack::zone>& zone()
 		{ return m_zone; }
 
-	const std::unique_ptr<msgpack::zone>& zone() const
+	const msgpack::unique_ptr<msgpack::zone>& zone() const
 		{ return m_zone; }
 
 private:
 	object m_obj;
-	std::unique_ptr<msgpack::zone> m_zone;
+	msgpack::unique_ptr<msgpack::zone> m_zone;
 };
 
 
@@ -984,7 +985,7 @@ inline void unpack(unpacked* result,
 		const char* data, size_t len, size_t* offset)
 {
 	object obj;
-	std::unique_ptr<zone> z(new zone());
+	msgpack::unique_ptr<zone> z(new zone());
 
 	unpack_return ret = detail::unpack_imp(
 			data, len, offset, z.get(), &obj);
@@ -993,12 +994,12 @@ inline void unpack(unpacked* result,
 	switch(ret) {
 	case UNPACK_SUCCESS:
 		result->get() = obj;
-		result->zone() = std::move(z);
+		result->zone() = msgpack::move(z);
 		return;
 
 	case UNPACK_EXTRA_BYTES:
 		result->get() = obj;
-		result->zone() = std::move(z);
+		result->zone() = msgpack::move(z);
 		return;
 
 	case UNPACK_CONTINUE:

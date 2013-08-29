@@ -1,6 +1,6 @@
 #include "msgpack.hpp"
 
-#include <math.h>
+#include <cmath>
 #include <string>
 #include <vector>
 #include <map>
@@ -901,11 +901,11 @@ public:
     msgpack::type::tuple<bool, msgpack::object> tuple;
     o.convert(&tuple);
 
-    is_double = get<0>(tuple);
+    is_double = msgpack::type::get<0>(tuple);
     if (is_double)
-      get<1>(tuple).convert(&value.f);
+      msgpack::type::get<1>(tuple).convert(&value.f);
     else
-      get<1>(tuple).convert(&value.i);
+      msgpack::type::get<1>(tuple).convert(&value.i);
   }
 };
 

@@ -15,146 +15,292 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 //
-#ifndef MSGPACK_ZONE_HPP__
-#define MSGPACK_ZONE_HPP__
+#ifndef MSGPACK_ZONE_HPP
+#define MSGPACK_ZONE_HPP
 
-#include "zone.h"
 #include <cstdlib>
 #include <memory>
 #include <vector>
 
+#include "cpp_config.hpp"
+
+#ifndef MSGPACK_ZONE_CHUNK_SIZE
+#define MSGPACK_ZONE_CHUNK_SIZE 8192
+#endif
+
+#ifndef MSGPACK_ZONE_ALIGN
+#define MSGPACK_ZONE_ALIGN sizeof(int)
+#endif
+
 <% GENERATION_LIMIT = 15 %>
 namespace msgpack {
 
+class zone {
+    struct finalizer {
+        finalizer(void (*func)(void*), void* data):func_(func), data_(data) {}
+        void operator()() { func_(data_); }
+        void (*func_)(void*);
+        void* data_;
+    };
+    struct finalizer_array {
+        finalizer_array():tail_(nullptr), end_(nullptr), array_(nullptr) {}
+        void call() {
+            finalizer* fin = tail_;
+            for(; fin != array_; --fin) (*(fin-1))();
+        }
+        ~finalizer_array() {
+            call();
+            ::free(array_);
+        }
+        void clear() {
+            call();
+            tail_ = array_;
+        }
+        void push(void (*func)(void* data), void* data)
+        {
+            finalizer* fin = tail_;
+            
+            if(fin == end_) {
+                push_expand(func, data);
+                return;
+            }
+            
+            fin->func_ = func;
+            fin->data_ = data;
+            
+            ++tail_;
+        }
+        void push_expand(void (*func)(void*), void* data) {
+            const size_t nused = end_ - array_;
+            size_t nnext;
+            if(nused == 0) {
+                nnext = (sizeof(finalizer) < 72/2) ?
+                    72 / sizeof(finalizer) : 8;
+            } else {
+                nnext = nused * 2;
+            }
+            finalizer* tmp =
+                (finalizer*)::realloc(array_, sizeof(finalizer) * nnext);
+            if(!tmp) {
+                throw std::bad_alloc();
+            }
+            array_  = tmp;
+            end_    = tmp + nnext;
+            tail_   = tmp + nused;
+            new (tail_) finalizer(func, data);
 
-class zone : public msgpack_zone {
+            ++tail_;
+        }
+        finalizer* tail_;
+        finalizer* end_;
+        finalizer* array_;
+    };
+    struct chunk {
+        chunk* next_;
+    };
+    struct chunk_list {
+        chunk_list(size_t chunk_size)
+        {
+            chunk* c = (chunk*)::malloc(sizeof(chunk) + chunk_size);
+            if(!c) {
+                throw std::bad_alloc();
+            }
+            
+            head_ = c;
+            free_ = chunk_size;
+            ptr_  = ((char*)c) + sizeof(chunk);
+            c->next_ = nullptr;
+        }
+        ~chunk_list()
+        {
+            chunk* c = head_;
+            while(true) {
+                chunk* n = c->next_;
+                ::free(c);
+                if(n) {
+                    c = n;
+                } else {
+                    break;
+                }
+            }
+        }
+        void clear(size_t chunk_size)
+        {
+            chunk* c = head_;
+            while(true) {
+                chunk* n = c->next_;
+                if(n) {
+                    ::free(c);
+                    c = n;
+                } else {
+                    break;
+                }
+            }
+            head_->next_ = nullptr;
+            free_ = chunk_size;
+            ptr_  = ((char*)head_) + sizeof(chunk);
+        }
+        size_t free_;
+        char* ptr_;
+        chunk* head_;
+    };
+    size_t chunk_size_;
+    chunk_list chunk_list_;
+    finalizer_array finalizer_array_;
+    
 public:
-	zone(size_t chunk_size = MSGPACK_ZONE_CHUNK_SIZE);
-	~zone();
+    zone(size_t chunk_size = MSGPACK_ZONE_CHUNK_SIZE);
 
 public:
-	void* malloc(size_t size);
-	void* malloc_no_align(size_t size);
+    static zone* create(size_t chunk_size);
+    static void destroy(zone* zone);
+    void* malloc(size_t size);
+    void* malloc_no_align(size_t size);
 
-	void push_finalizer(void (*func)(void*), void* data);
+    void push_finalizer(void (*func)(void*), void* data);
 
-	template <typename T>
-	void push_finalizer(std::auto_ptr<T> obj);
+    template <typename T>
+    void push_finalizer(msgpack::unique_ptr<T> obj);
 
-	void clear();
+    void clear();
 
-	void swap(zone& o);
-	static void* operator new(std::size_t size) throw(std::bad_alloc)
-	{
-		void* p = ::malloc(size);
-		if (!p) throw std::bad_alloc();
-		return p;
-	}
-	static void operator delete(void *p) throw()
-	{
-		::free(p);
-	}
-	<%0.upto(GENERATION_LIMIT) {|i|%>
-	template <typename T<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
-	T* allocate(<%=(1..i).map{|j|"A#{j} a#{j}"}.join(', ')%>);
-	<%}%>
+    void swap(zone& o);
+
+    <%0.upto(GENERATION_LIMIT) {|i|%>
+    template <typename T<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
+    T* allocate(<%=(1..i).map{|j|"A#{j} a#{j}"}.join(', ')%>);
+    <%}%>
 
 private:
-	void undo_malloc(size_t size);
+    void undo_malloc(size_t size);
 
-	template <typename T>
-	static void object_destructor(void* obj);
+    template <typename T>
+    static void object_destructor(void* obj);
 
-	typedef msgpack_zone base;
-
-private:
-	zone(const zone&);
+    void* malloc_expand(size_t size);
 };
 
 
-
-inline zone::zone(size_t chunk_size)
+inline zone* zone::create(size_t chunk_size)
 {
-	msgpack_zone_init(this, chunk_size);
+    zone* z = (zone*)::malloc(sizeof(zone) + chunk_size);
+    if (!z) {
+        return nullptr;
+    }
+    try {
+        new (z) zone(chunk_size);
+    }
+    catch (...) {
+        ::free(z);
+        return nullptr;
+    }
+    return z;
 }
 
-inline zone::~zone()
+inline void zone::destroy(zone* z)
 {
-	msgpack_zone_destroy(this);
+    z->~zone();
+    ::free(z);
+}
+
+inline zone::zone(size_t chunk_size):chunk_size_(chunk_size), chunk_list_(chunk_size_)
+{
 }
 
 inline void* zone::malloc(size_t size)
 {
-	void* ptr = msgpack_zone_malloc(this, size);
-	if(!ptr) {
-		throw std::bad_alloc();
-	}
-	return ptr;
+    return malloc_no_align(
+        ((size)+((MSGPACK_ZONE_ALIGN)-1)) & ~((MSGPACK_ZONE_ALIGN)-1));
 }
 
 inline void* zone::malloc_no_align(size_t size)
 {
-	void* ptr = msgpack_zone_malloc_no_align(this, size);
-	if(!ptr) {
-		throw std::bad_alloc();
-	}
-	return ptr;
+    if(chunk_list_.free_ < size) {
+        return malloc_expand(size);
+    }
+
+    char* ptr = chunk_list_.ptr_;
+    chunk_list_.free_ -= size;
+    chunk_list_.ptr_  += size;
+
+    return ptr;
+}
+
+inline void* zone::malloc_expand(size_t size)
+{
+    chunk_list* const cl = &chunk_list_;
+
+    size_t sz = chunk_size_;
+
+    while(sz < size) {
+        sz *= 2;
+    }
+
+    chunk* c = (chunk*)::malloc(sizeof(chunk) + sz);
+
+    char* ptr = ((char*)c) + sizeof(chunk);
+
+    c->next_  = cl->head_;
+    cl->head_ = c;
+    cl->free_ = sz - size;
+    cl->ptr_  = ptr + size;
+
+    return ptr;
 }
 
 inline void zone::push_finalizer(void (*func)(void*), void* data)
 {
-	if(!msgpack_zone_push_finalizer(this, func, data)) {
-		throw std::bad_alloc();
-	}
+    finalizer_array_.push(func, data);
 }
 
 template <typename T>
-inline void zone::push_finalizer(std::auto_ptr<T> obj)
+inline void zone::push_finalizer(msgpack::unique_ptr<T> obj)
 {
-	if(!msgpack_zone_push_finalizer(this, &zone::object_destructor<T>, obj.get())) {
-		throw std::bad_alloc();
-	}
-	obj.release();
+    finalizer_array_.push(&zone::object_destructor<T>, obj.get());
+    obj.release();
 }
 
 inline void zone::clear()
 {
-	msgpack_zone_clear(this);
+    finalizer_array_.clear();
+    chunk_list_.clear(chunk_size_);
 }
 
 inline void zone::swap(zone& o)
 {
-	msgpack_zone_swap(this, &o);
+    std::swap(*this, o);
 }
 
 template <typename T>
 void zone::object_destructor(void* obj)
 {
-	reinterpret_cast<T*>(obj)->~T();
+    reinterpret_cast<T*>(obj)->~T();
 }
 
 inline void zone::undo_malloc(size_t size)
 {
-	base::chunk_list.ptr  -= size;
-	base::chunk_list.free += size;
+    chunk_list_.ptr_  -= size;
+    chunk_list_.free_ += size;
 }
 
 <%0.upto(GENERATION_LIMIT) {|i|%>
 template <typename T<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
 T* zone::allocate(<%=(1..i).map{|j|"A#{j} a#{j}"}.join(', ')%>)
 {
-	void* x = malloc(sizeof(T));
-	if(!msgpack_zone_push_finalizer(this, &zone::object_destructor<T>, x)) {
-		undo_malloc(sizeof(T));
-		throw std::bad_alloc();
-	}
-	try {
-		return new (x) T(<%=(1..i).map{|j|"a#{j}"}.join(', ')%>);
-	} catch (...) {
-		--base::finalizer_array.tail;
-		undo_malloc(sizeof(T));
-		throw;
-	}
+    void* x = malloc(sizeof(T));
+    try {
+        finalizer_array_.push(&zone::object_destructor<T>, x);
+    } catch (...) {
+        undo_malloc(sizeof(T));
+        throw;
+    }
+    try {
+        return new (x) T(<%=(1..i).map{|j|"a#{j}"}.join(', ')%>);
+    } catch (...) {
+        --finalizer_array_.tail_;
+        undo_malloc(sizeof(T));
+        throw;
+    }
 }
 <%}%>
 

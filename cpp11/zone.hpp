@@ -22,6 +22,8 @@
 #include <memory>
 #include <vector>
 
+#include "cpp_config.hpp"
+
 #ifndef MSGPACK_ZONE_CHUNK_SIZE
 #define MSGPACK_ZONE_CHUNK_SIZE 8192
 #endif
@@ -158,7 +160,7 @@ public:
 	void push_finalizer(void (*func)(void*), void* data);
 
 	template <typename T>
-	void push_finalizer(std::unique_ptr<T> obj);
+	void push_finalizer(msgpack::unique_ptr<T> obj);
 
 	void clear();
 
@@ -250,7 +252,7 @@ inline void zone::push_finalizer(void (*func)(void*), void* data)
 }
 
 template <typename T>
-inline void zone::push_finalizer(std::unique_ptr<T> obj)
+inline void zone::push_finalizer(msgpack::unique_ptr<T> obj)
 {
 	finalizer_array_.push(&zone::object_destructor<T>, obj.get());
 	obj.release();

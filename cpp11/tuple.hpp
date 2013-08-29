@@ -19,15 +19,9 @@
 #define MSGPACK_TYPE_TUPLE_HPP
 
 #include "msgpack/object.hpp"
-#include <tuple>
+#include "msgpack/cpp_config.hpp"
 
 namespace msgpack {
-namespace type {
-
-template <typename... Args>
-using tuple = std::tuple<Args...>;
-
-} // type
 
 // --- Pack ( from tuple to packer stream ---
 template <typename Stream, typename Tuple, std::size_t N>
@@ -36,7 +30,7 @@ struct Packer {
 		packer<Stream>& o,
 		const Tuple& v) {
         Packer<Stream, Tuple, N-1>::pack(o, v);
-        o.pack(std::get<N-1>(v));
+        o.pack(type::get<N-1>(v));
     }
 };
 
@@ -45,7 +39,7 @@ struct Packer<Stream, Tuple, 1> {
     static void pack (
 		packer<Stream>& o,
 		const Tuple& v) {
-        o.pack(std::get<0>(v));
+        o.pack(type::get<0>(v));
     }
 };
 
@@ -66,7 +60,7 @@ struct Converter {
         object o,
 		Tuple& v) {
         Converter<Tuple, N-1>::convert(o, v);
-        o.via.array.ptr[N-1].convert<typename std::remove_reference<decltype(std::get<N-1>(v))>::type>(&std::get<N-1>(v));
+        o.via.array.ptr[N-1].convert<typename std::remove_reference<decltype(type::get<N-1>(v))>::type>(&type::get<N-1>(v));
     }
 };
 
@@ -75,7 +69,7 @@ struct Converter<Tuple, 1> {
     static void convert (
         object o,
 		Tuple& v) {
-        o.via.array.ptr[0].convert<typename std::remove_reference<decltype(std::get<0>(v))>::type>(&std::get<0>(v));
+        o.via.array.ptr[0].convert<typename std::remove_reference<decltype(type::get<0>(v))>::type>(&type::get<0>(v));
     }
 };
 
@@ -96,7 +90,7 @@ struct TupleToObjectWithZone {
 		object::with_zone& o,
 		const Tuple& v) {
         TupleToObjectWithZone<Tuple, N-1>::convert(o, v);
-        o.via.array.ptr[N-1] = object(std::get<N-1>(v), o.zone);
+        o.via.array.ptr[N-1] = object(type::get<N-1>(v), o.zone);
     }
 };
 
@@ -105,7 +99,7 @@ struct TupleToObjectWithZone<Tuple, 1> {
     static void convert (
 		object::with_zone& o,
 		const Tuple& v) {
-        o.via.array.ptr[0] = object(std::get<0>(v), o.zone);
+        o.via.array.ptr[0] = object(type::get<0>(v), o.zone);
     }
 };
 

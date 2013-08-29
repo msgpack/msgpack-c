@@ -110,6 +110,13 @@ struct tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> {
 	<%0.upto(i) {|j|%>
 	A<%=j%> a<%=j%>;<%}%>
 };
+
+template <int N, typename A0<%1.upto(i) {|j|%>, typename A<%=j%><%}%>> 
+inline typename type::tuple_element<type::tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>>, N>::reference get(type::tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>>& t)
+{ return t.get<N>(); }
+template <int N, typename A0<%1.upto(i) {|j|%>, typename A<%=j%><%}%>> 
+inline typename type::const_tuple_element<type::tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>>, N>::const_reference get(type::tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> const& t)
+{ return t.get<N>(); }
 <%}%>
 
 inline tuple<> make_tuple()
@@ -125,7 +132,6 @@ tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> make_tuple(typename tuple_type<A0>::tr
 <%}%>
 
 }  // namespace type
-
 
 inline type::tuple<>& operator>> (
 		object o,
