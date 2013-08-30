@@ -42,7 +42,13 @@ typedef long _msgpack_atomic_counter_t;
 #define _msgpack_sync_decr_and_fetch(ptr) InterlockedDecrement(ptr)
 #define _msgpack_sync_incr_and_fetch(ptr) InterlockedIncrement(ptr)
 #elif defined(__GNUC__) && ((__GNUC__*10 + __GNUC_MINOR__) < 41)
+
+#if defined(__cplusplus)
+#define _msgpack_atomic_counter_header "gcc_atomic.hpp"
+#else
 #define _msgpack_atomic_counter_header "gcc_atomic.h"
+#endif
+
 #else
 typedef unsigned int _msgpack_atomic_counter_t;
 #define _msgpack_sync_decr_and_fetch(ptr) __sync_sub_and_fetch(ptr, 1)

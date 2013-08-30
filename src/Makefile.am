@@ -8,14 +8,8 @@ libmsgpack_la_SOURCES = \
 		vrefbuffer.c \
 		zone.c
 
-if ENABLE_CXX
-libmsgpack_la_SOURCES += \
-		object.cpp
-endif
-
 if ENABLE_GCC_CXX_ATOMIC
-libmsgpack_la_SOURCES += \
-		gcc_atomic.cpp
+	CXXFLAGS="$CXXFLAGS -DENABLE_GCC_CXX_ATOMIC"
 endif
 
 

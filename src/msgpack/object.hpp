@@ -412,6 +412,67 @@ packer<Stream>& operator<< (packer<Stream>& o, const object& v)
 	}
 }
 
+std::ostream& operator<< (std::ostream& s, const object o)
+{
+	switch(o.type) {
+	case type::NIL:
+		s << "nil";
+		break;
+
+	case type::BOOLEAN:
+		s << (o.via.boolean ? "true" : "false");
+		break;
+
+	case type::POSITIVE_INTEGER:
+		s << o.via.u64;
+		break;
+
+	case type::NEGATIVE_INTEGER:
+		s << o.via.i64;
+		break;
+
+	case type::DOUBLE:
+		s << o.via.dec;
+		break;
+
+	case type::RAW:
+		(s << '"').write(o.via.raw.ptr, o.via.raw.size) << '"';
+		break;
+
+	case type::ARRAY:
+		s << "[";
+		if(o.via.array.size != 0) {
+			object* p(o.via.array.ptr);
+			s << *p;
+			++p;
+			for(object* const pend(o.via.array.ptr + o.via.array.size);
+					p < pend; ++p) {
+				s << ", " << *p;
+			}
+		}
+		s << "]";
+		break;
+
+	case type::MAP:
+		s << "{";
+		if(o.via.map.size != 0) {
+			object_kv* p(o.via.map.ptr);
+			s << p->key << "=>" << p->val;
+			++p;
+			for(object_kv* const pend(o.via.map.ptr + o.via.map.size);
+					p < pend; ++p) {
+				s << ", " << p->key << "=>" << p->val;
+			}
+		}
+		s << "}";
+		break;
+
+	default:
+		// FIXME
+		s << "#<UNKNOWN " << (uint16_t)o.type << ">";
+	}
+	return s;
+}
 
 }  // namespace msgpack
 

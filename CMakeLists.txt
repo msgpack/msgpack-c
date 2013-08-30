@@ -63,12 +63,6 @@ int main(int argc, char * argv[])
 }
 " MSGPACK_ENABLE_GCC_CXX_ATOMIC)
 
-IF (MSGPACK_ENABLE_CXX)
-	LIST (APPEND msgpack_SOURCES
-		src/object.cpp
-	)
-ENDIF ()
-
 IF (MSGPACK_ENABLE_GCC_CXX_ATOMIC)
 	LIST (APPEND msgpack_SOURCES
 		src/gcc_atomic.cpp
