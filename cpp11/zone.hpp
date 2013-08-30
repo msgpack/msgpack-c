@@ -59,15 +59,15 @@ private:
 		void push(void (*func)(void* data), void* data)
 		{
 			finalizer* fin = tail_;
-			
+
 			if(fin == end_) {
 				push_expand(func, data);
 				return;
 			}
-			
+
 			fin->func_ = func;
 			fin->data_ = data;
-			
+
 			++tail_;
 		}
 		void push_expand(void (*func)(void*), void* data) {
@@ -80,7 +80,7 @@ private:
 				nnext = nused * 2;
 			}
 			finalizer* tmp =
-				(finalizer*)::realloc(array_, sizeof(finalizer) * nnext);
+				static_cast<finalizer*>(::realloc(array_, sizeof(finalizer) * nnext));
 			if(!tmp) {
 				throw std::bad_alloc();
 			}
@@ -101,14 +101,14 @@ private:
 	struct chunk_list {
 		chunk_list(size_t chunk_size)
 		{
-			chunk* c = (chunk*)::malloc(sizeof(chunk) + chunk_size);
+			chunk* c = static_cast<chunk*>(::malloc(sizeof(chunk) + chunk_size));
 			if(!c) {
 				throw std::bad_alloc();
 			}
-			
+
 			head_ = c;
 			free_ = chunk_size;
-			ptr_  = ((char*)c) + sizeof(chunk);
+			ptr_  = reinterpret_cast<char*>(c) + sizeof(chunk);
 			c->next_ = nullptr;
 		}
 		~chunk_list()
@@ -138,7 +138,7 @@ private:
 			}
 			head_->next_ = nullptr;
 			free_ = chunk_size;
-			ptr_  = ((char*)head_) + sizeof(chunk);
+			ptr_  = reinterpret_cast<char*>(head_) + sizeof(chunk);
 		}
 		size_t free_;
 		char* ptr_;
@@ -147,7 +147,7 @@ private:
 	size_t chunk_size_;
 	chunk_list chunk_list_;
 	finalizer_array finalizer_array_;
-	
+
 public:
 	zone(size_t chunk_size = MSGPACK_ZONE_CHUNK_SIZE);
 
@@ -166,7 +166,7 @@ public:
 
 	void swap(zone& o);
 
-	
+
 	template <typename T, typename... Args>
 	T* allocate(Args... args);
 
@@ -181,7 +181,7 @@ private:
 
 inline zone* zone::create(size_t chunk_size)
 {
-	zone* z = (zone*)::malloc(sizeof(zone) + chunk_size);
+	zone* z = static_cast<zone*>(::malloc(sizeof(zone) + chunk_size));
 	if (!z) {
 		return nullptr;
 	}
@@ -234,9 +234,9 @@ inline void* zone::malloc_expand(size_t size)
 		sz *= 2;
 	}
 
-	chunk* c = (chunk*)::malloc(sizeof(chunk) + sz);
+	chunk* c = static_cast<chunk*>(::malloc(sizeof(chunk) + sz));
 
-	char* ptr = ((char*)c) + sizeof(chunk);
+	char* ptr = reinterpret_cast<char*>(c) + sizeof(chunk);
 
 	c->next_  = cl->head_;
 	cl->head_ = c;

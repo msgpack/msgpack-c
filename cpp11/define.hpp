@@ -74,7 +74,7 @@ struct define_imp {
 	static void unpack(msgpack::object o, Tuple& t) {
 		define_imp<Tuple, N-1>::unpack(o, t);
 		const size_t size = o.via.array.size;
-		if(size <= N-1) { return; } 
+		if(size <= N-1) { return; }
 		o.via.array.ptr[N-1].convert(&std::get<N-1>(t));
 	}
 	static void object(msgpack::object* o, msgpack::zone* z, Tuple const& t) {
@@ -91,7 +91,7 @@ struct define_imp<Tuple, 1> {
 	}
 	static void unpack(msgpack::object o, Tuple& t) {
 		const size_t size = o.via.array.size;
-		if(size <= 0) { return; } 
+		if(size <= 0) { return; }
 		o.via.array.ptr[0].convert(&std::get<0>(t));
 	}
 	static void object(msgpack::object* o, msgpack::zone* z, Tuple const& t) {
@@ -109,24 +109,24 @@ struct define {
 	void msgpack_pack(Packer& pk) const
 	{
 		pk.pack_array(sizeof...(Args));
-		
+
 		define_imp<tuple<Args&...>, sizeof...(Args)>::pack(pk, a);
 	}
 	void msgpack_unpack(msgpack::object o)
 	{
 		if(o.type != type::ARRAY) { throw type_error(); }
-		
+
 		define_imp<tuple<Args&...>, sizeof...(Args)>::unpack(o, a);
 	}
 	void msgpack_object(msgpack::object* o, msgpack::zone* z) const
 	{
 		o->type = type::ARRAY;
-		o->via.array.ptr = (object*)z->malloc(sizeof(object)*sizeof...(Args));
+		o->via.array.ptr = static_cast<object*>(z->malloc(sizeof(object)*sizeof...(Args)));
 		o->via.array.size = sizeof...(Args);
-		
+
 		define_imp<tuple<Args&...>, sizeof...(Args)>::object(o, z, a);
 	}
-	
+
 	tuple<Args&...> a;
 };
 

@@ -44,7 +44,7 @@ namespace detail {
 			throw type_error();
 		}
 	};
-	
+
 	template <typename T>
 	struct convert_integer_sign<T, false> {
 		static inline T convert(object o) {

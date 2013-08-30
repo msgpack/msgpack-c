@@ -57,7 +57,7 @@ public:
 public:
 	void write(const char* buf, size_t len)
 	{
-		stream_.next_in = (Bytef*)buf;
+		stream_.next_in = reinterpret_cast<Bytef*>(const_cast<char*>(buf));
 		stream_.avail_in = len;
 
 		do {
@@ -115,8 +115,8 @@ public:
 
 	void reset_buffer()
 	{
-		stream_.avail_out += (char*)stream_.next_out - data_;
-		stream_.next_out = (Bytef*)data_;
+		stream_.avail_out += reinterpret_cast<char*>(stream_.next_out) - data_;
+		stream_.next_out = reinterpret_cast<Bytef*>(data_);
 	}
 
 	char* release_buffer()
@@ -131,17 +131,17 @@ public:
 private:
 	bool expand()
 	{
-		size_t used = (char*)stream_.next_out - data_;
+		size_t used = reinterpret_cast<char*>(stream_.next_out) - data_;
 		size_t csize = used + stream_.avail_out;
 		size_t nsize = (csize == 0) ? init_size_ : csize * 2;
 
-		char* tmp = (char*)::realloc(data_, nsize);
+		char* tmp = static_cast<char*>(::realloc(data_, nsize));
 		if(tmp == NULL) {
 			return false;
 		}
 
 		data_ = tmp;
-		stream_.next_out  = (Bytef*)(tmp + used);
+		stream_.next_out  = reinterpret_cast<Bytef*>(tmp + used);
 		stream_.avail_out = nsize - used;
 
 		return true;

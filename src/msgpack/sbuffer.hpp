@@ -98,7 +98,7 @@ private:
 			throw std::bad_alloc();
 		}
 	
-		data_ = (char*)tmp;
+		data_ = static_cast<char*>(tmp);
 		alloc_ = nsize;
 	}
 

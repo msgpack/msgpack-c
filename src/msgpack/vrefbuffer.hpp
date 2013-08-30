@@ -56,23 +56,23 @@ private:
 	};
 public:
 	vrefbuffer(size_t ref_size = MSGPACK_VREFBUFFER_REF_SIZE,
-			size_t chunk_size = MSGPACK_VREFBUFFER_CHUNK_SIZE)
+			   size_t chunk_size = MSGPACK_VREFBUFFER_CHUNK_SIZE)
 		:ref_size_(ref_size), chunk_size_(chunk_size)
 	{
 		size_t nfirst = (sizeof(iovec) < 72/2) ?
 			72 / sizeof(iovec) : 8;
 
-		iovec* array = (iovec*)::malloc(
-			sizeof(iovec) * nfirst);
+		iovec* array = static_cast<iovec*>(::malloc(
+			sizeof(iovec) * nfirst));
 		if(!array) {
 			throw std::bad_alloc();
 		}
-		
+
 		tail_  = array;
 		end_   = array + nfirst;
 		array_ = array;
 
-		chunk* c = (chunk*)::malloc(sizeof(chunk) + chunk_size);
+		chunk* c = static_cast<chunk*>(::malloc(sizeof(chunk) + chunk_size));
 		if(!c) {
 			::free(array);
 			throw std::bad_alloc();
@@ -80,10 +80,10 @@ public:
 		inner_buffer* const ib = &inner_buffer_;
 
 		ib->free = chunk_size;
-		ib->ptr	 = ((char*)c) + sizeof(chunk);
+		ib->ptr	 = reinterpret_cast<char*>(c) + sizeof(chunk);
 		ib->head = c;
 		c->next = nullptr;
-		
+
 	}
 
 	~vrefbuffer()
@@ -117,17 +117,17 @@ public:
 			const size_t nused = tail_ - array_;
 			const size_t nnext = nused * 2;
 
-			iovec* nvec = (iovec*)::realloc(
-				array_, sizeof(iovec)*nnext);
+			iovec* nvec = static_cast<iovec*>(::realloc(
+				array_, sizeof(iovec)*nnext));
 			if(!nvec) {
 				throw std::bad_alloc();
 			}
-			
+
 			array_ = nvec;
 			end_   = nvec + nnext;
 			tail_  = nvec + nused;
 		}
-		
+
 		tail_->iov_base = (char*)buf;
 		tail_->iov_len	= len;
 		++tail_;
@@ -143,24 +143,26 @@ public:
 				sz = len;
 			}
 
-			chunk* c = (chunk*)::malloc(sizeof(chunk) + sz);
+			chunk* c = static_cast<chunk*>(::malloc(sizeof(chunk) + sz));
 			if(!c) {
 				throw std::bad_alloc();
 			}
-			
+
 			c->next = ib->head;
 			ib->head = c;
 			ib->free = sz;
-			ib->ptr	 = ((char*)c) + sizeof(chunk);
+			ib->ptr	 = reinterpret_cast<char*>(c) + sizeof(chunk);
 		}
 
 		char* m = ib->ptr;
 		::memcpy(m, buf, len);
 		ib->free -= len;
 		ib->ptr	 += len;
-		
+
 		if(tail_ != array_ && m ==
-			(const char*)((tail_ - 1)->iov_base) + (tail_ - 1)->iov_len) {
+			static_cast<const char*>(
+				const_cast<const void *>((tail_ - 1)->iov_base)
+			) + (tail_ - 1)->iov_len) {
 			(tail_ - 1)->iov_len += len;
 			return;
 		} else {
@@ -182,7 +184,7 @@ public:
 	{
 		size_t sz = chunk_size_;
 
-		chunk* empty = (chunk*)::malloc(sizeof(chunk) + sz);
+		chunk* empty = static_cast<chunk*>(::malloc(sizeof(chunk) + sz));
 		if(!empty) {
 			throw std::bad_alloc();
 		}
@@ -198,8 +200,8 @@ public:
 				nnext *= 2;
 			}
 
-			iovec* nvec = (iovec*)::realloc(
-				to->array_, sizeof(iovec)*nnext);
+			iovec* nvec = static_cast<iovec*>(::realloc(
+				to->array_, sizeof(iovec)*nnext));
 			if(!nvec) {
 				::free(empty);
 				throw std::bad_alloc();
@@ -211,7 +213,7 @@ public:
 		}
 
 		::memcpy(to->tail_, array_, sizeof(iovec)*nused);
-			
+
 		to->tail_ += nused;
 		tail_ = array_;
 
@@ -225,18 +227,18 @@ public:
 		}
 		last->next = toib->head;
 		toib->head = ib->head;
-			
+
 		if(toib->free < ib->free) {
 			toib->free = ib->free;
 			toib->ptr  = ib->ptr;
 		}
-			
+
 		ib->head = empty;
 		ib->free = sz;
-		ib->ptr	 = ((char*)empty) + sizeof(chunk);
-			
+		ib->ptr	 = reinterpret_cast<char*>(empty) + sizeof(chunk);
+
 	}
-		
+
 	void clear()
 	{
 		chunk* c = inner_buffer_.head->next;
@@ -251,7 +253,7 @@ public:
 		c = ib->head;
 		c->next = nullptr;
 		ib->free = chunk_size_;
-		ib->ptr	 = ((char*)c) + sizeof(chunk);
+		ib->ptr	 = reinterpret_cast<char*>(c) + sizeof(chunk);
 
 		tail_ = array_;
 	}

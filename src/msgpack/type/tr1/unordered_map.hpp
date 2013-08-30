@@ -77,7 +77,7 @@ inline void operator<< (object::with_zone& o, const MSGPACK_STD_TR1::unordered_m
 		o.via.map.ptr  = NULL;
 		o.via.map.size = 0;
 	} else {
-		object_kv* p = (object_kv*)o.zone->malloc(sizeof(object_kv)*v.size());
+		object_kv* p = static_cast<object_kv*>(o.zone->malloc(sizeof(object_kv)*v.size()));
 		object_kv* const pend = p + v.size();
 		o.via.map.ptr  = p;
 		o.via.map.size = v.size();
@@ -127,7 +127,7 @@ inline void operator<< (object::with_zone& o, const MSGPACK_STD_TR1::unordered_m
 		o.via.map.ptr  = NULL;
 		o.via.map.size = 0;
 	} else {
-		object_kv* p = (object_kv*)o.zone->malloc(sizeof(object_kv)*v.size());
+		object_kv* p = static_cast<object_kv*>(o.zone->malloc(sizeof(object_kv)*v.size()));
 		object_kv* const pend = p + v.size();
 		o.via.map.ptr  = p;
 		o.via.map.size = v.size();
