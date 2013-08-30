@@ -427,7 +427,7 @@ TEST(MSGPACKC, unpack_str8)
 {
   size_t raw_size = 7;
   const char buf[] = {
-    0xd9, 7, 'f', 'r', 's', 'y', 'u', 'k', 'i'
+    (char)0xd9, 7, 'f', 'r', 's', 'y', 'u', 'k', 'i'
   };
 
   msgpack_zone z;
@@ -447,7 +447,7 @@ TEST(MSGPACKC, unpack_bin8)
 {
   size_t raw_size = 7;
   const char buf[] = {
-    0xc4, 7, 'f', 'r', 's', 'y', 'u', 'k', 'i'
+    (char)0xc4, 7, 'f', 'r', 's', 'y', 'u', 'k', 'i'
   };
 
   msgpack_zone z;
@@ -467,7 +467,7 @@ TEST(MSGPACKC, unpack_bin16)
 {
   size_t raw_size = 7;
   const char buf[] = {
-    0xc5, 0, 7, 'f', 'r', 's', 'y', 'u', 'k', 'i'
+    (char)0xc5, 0, 7, 'f', 'r', 's', 'y', 'u', 'k', 'i'
   };
 
   msgpack_zone z;
@@ -487,7 +487,7 @@ TEST(MSGPACKC, unpack_bin32)
 {
   size_t raw_size = 7;
   const char buf[] = {
-    0xc6, 0, 0, 0, 7, 'f', 'r', 's', 'y', 'u', 'k', 'i'
+    (char)0xc6, 0, 0, 0, 7, 'f', 'r', 's', 'y', 'u', 'k', 'i'
   };
 
   msgpack_zone z;
