@@ -15,8 +15,8 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-#ifndef MSGPACK_ZBUFFER_H__
-#define MSGPACK_ZBUFFER_H__
+#ifndef MSGPACK_ZBUFFER_H
+#define MSGPACK_ZBUFFER_H
 
 #include "sysdep.h"
 #include <stdlib.h>

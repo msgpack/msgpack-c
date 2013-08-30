@@ -15,8 +15,8 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 //
-#ifndef MSGPACK_TYPE_BOOL_HPP__
-#define MSGPACK_TYPE_BOOL_HPP__
+#ifndef MSGPACK_TYPE_BOOL_HPP
+#define MSGPACK_TYPE_BOOL_HPP
 
 #include "msgpack/object.hpp"
 #include <vector>

@@ -12,8 +12,8 @@
  *    limitations under the License.
  */
 
-#ifndef MSGPACK_GCC_ATOMIC_H__
-#define MSGPACK_GCC_ATOMIC_H__
+#ifndef MSGPACK_GCC_ATOMIC_H
+#define MSGPACK_GCC_ATOMIC_H
 
 #if defined(__cplusplus)
 extern "C" {
@@ -30,4 +30,4 @@ int _msgpack_sync_incr_and_fetch(volatile _msgpack_atomic_counter_t* ptr);
 #endif
 
 
-#endif // MSGPACK_GCC_ATOMIC_H__
+#endif // MSGPACK_GCC_ATOMIC_H

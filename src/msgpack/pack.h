@@ -15,8 +15,8 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-#ifndef MSGPACK_PACK_H__
-#define MSGPACK_PACK_H__
+#ifndef MSGPACK_PACK_H
+#define MSGPACK_PACK_H
 
 #include "pack_define.h"
 #include "object.h"

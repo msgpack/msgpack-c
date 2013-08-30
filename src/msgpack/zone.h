@@ -15,8 +15,8 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-#ifndef MSGPACK_ZONE_H__
-#define MSGPACK_ZONE_H__
+#ifndef MSGPACK_ZONE_H
+#define MSGPACK_ZONE_H
 
 #include "sysdep.h"
 

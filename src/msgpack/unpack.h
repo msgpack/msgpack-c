@@ -15,8 +15,8 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-#ifndef MSGPACK_UNPACKER_H__
-#define MSGPACK_UNPACKER_H__
+#ifndef MSGPACK_UNPACKER_H
+#define MSGPACK_UNPACKER_H
 
 #include "zone.h"
 #include "object.h"

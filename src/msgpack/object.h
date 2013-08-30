@@ -15,8 +15,8 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-#ifndef MSGPACK_OBJECT_H__
-#define MSGPACK_OBJECT_H__
+#ifndef MSGPACK_OBJECT_H
+#define MSGPACK_OBJECT_H
 
 #include "zone.h"
 #include <stdio.h>
