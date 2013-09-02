@@ -30,6 +30,7 @@ TEST(msgpack_tuple, non_member_get)
 	EXPECT_EQ("DEFG", msgpack::type::get<2>(t1));
 }
 
+#if __cplusplus >= 201103
 TEST(msgpack_tuple, std_non_member_get)
 {
 	msgpack::type::tuple<int, bool, std::string> t1(42, true, "ABC");
@@ -56,13 +57,15 @@ TEST(msgpack_tuple, make_tuple)
 	EXPECT_EQ(40, t1.get<0>());
 	EXPECT_EQ(false, t1.get<1>());
 	EXPECT_EQ("DEFG", t1.get<2>());
+}
 
-	msgpack::type::tuple<int, bool, std::string> t2 = 
+TEST(msgpack_tuple, std_make_tuple)
+{
+	msgpack::type::tuple<int, bool, std::string> t1 = 
 		msgpack::type::make_tuple(std::make_tuple(42, true, "ABC"));
-	EXPECT_EQ(42, t2.get<0>());
-	EXPECT_EQ(true, t2.get<1>());
-	EXPECT_EQ("ABC", t2.get<2>());
-
+	EXPECT_EQ(42, t1.get<0>());
+	EXPECT_EQ(true, t1.get<1>());
+	EXPECT_EQ("ABC", t1.get<2>());
 }
 
 TEST(msgpack_tuple, tie)
@@ -104,3 +107,4 @@ TEST(msgpack_tuple, swap)
 	EXPECT_EQ(false, t1.get<1>());
 	EXPECT_EQ("DEFG", t1.get<2>());
 }
+#endif
