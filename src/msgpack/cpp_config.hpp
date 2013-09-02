@@ -63,19 +63,6 @@ namespace msgpack {
 	using std::move;
 	using std::swap;
 
-	namespace type {
-		// tuple
-		using std::tuple;
-		using std::get;
-		using std::make_tuple;
-		using std::tie;
-		using std::forward_as_tuple;
-		using std::tuple_cat;
-		using std::tuple_size;
-		using std::tuple_element;
-		using std::uses_allocator;
-		using std::ignore;
-	}
 } // msgpack
 
 

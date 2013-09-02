@@ -18,10 +18,91 @@
 #ifndef MSGPACK_TYPE_TUPLE_HPP
 #define MSGPACK_TYPE_TUPLE_HPP
 
+#include <tuple>
+
 #include "msgpack/object.hpp"
 #include "msgpack/cpp_config.hpp"
 
 namespace msgpack {
+
+namespace type {
+	// tuple
+	using std::get;
+	using std::tuple_size;
+	using std::tuple_element;
+	using std::uses_allocator;
+	using std::ignore;
+
+	template< class... Types >
+	class tuple : public std::tuple<Types...> {
+	public:
+		using std::tuple<Types...>::tuple;
+
+		template< std::size_t I>
+		typename tuple_element<I, std::tuple<Types...> >::type&
+		get() { return std::get<I>(*this); }
+
+		template< std::size_t I>
+		typename tuple_element<I, std::tuple<Types...> >::type const&
+		get() const { return std::get<I>(*this); }
+
+		template< std::size_t I>
+		typename tuple_element<I, std::tuple<Types...> >::type&&
+		get() && { return std::get<I>(*this); }
+	};
+
+	template< class... Types >
+	tuple<Types...> make_tuple( Types&&... args ) {
+		return tuple<Types...>(std::forward<Types&&>(args)...);
+	}
+
+	template< class... Types >
+	tuple<Types...> make_tuple( std::tuple<Types...>&& arg ) {
+		return tuple<Types...>(std::forward<std::tuple<Types...>&&>(arg));
+	}
+
+	template< class... Types >
+	tuple<Types&...> tie( Types&... args ) {
+		return std::tie(args...);
+	}
+
+	template< class... Types >
+	tuple<Types&&...> forward_as_tuple( Types&&... args ) {
+		return std::forward_as_tuple(std::forward<Types&&>(args)...);
+	}
+
+	namespace detail {
+		template < typename... Types >
+		std::tuple<Types...>&& get_std_tuple(tuple<Types...>&& t) {
+			return std::forward<std::tuple<Types...>&&>(t);
+		}
+		template < typename... Types >
+		std::tuple<Types...>& get_std_tuple(tuple<Types...>& t) {
+			return t;
+		}
+		template < typename... Types >
+		std::tuple<Types...> const& get_std_tuple(tuple<Types...> const& t) {
+			return t;
+		}
+		template < typename T >
+		T&& get_std_tuple(T&& t) {
+			return t;
+		}
+	}
+	template< class... Tuples >
+	auto tuple_cat(Tuples&&... args) ->
+		decltype(
+			msgpack::type::make_tuple(std::tuple_cat(detail::get_std_tuple(std::forward<Tuples&&>(args))...))
+		) {
+		return std::tuple_cat(detail::get_std_tuple(std::forward<Tuples&&>(args))...);
+	}
+
+	template< class... Types >
+	void swap( tuple<Types...>& lhs, tuple<Types...>& rhs ) {
+		lhs.swap(rhs);
+	}
+
+} // namespace type
 
 // --- Pack ( from tuple to packer stream ---
 template <typename Stream, typename Tuple, std::size_t N>
