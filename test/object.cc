@@ -37,7 +37,7 @@ TEST(object, convert)
 	msgpack::object obj;
 
 	msgpack::unpack_return ret =
-		msgpack::unpack(sbuf.data(), sbuf.size(), NULL, &z, &obj);
+		msgpack::unpack(sbuf.data(), sbuf.size(), NULL, &z, obj);
 	EXPECT_EQ(ret, msgpack::UNPACK_SUCCESS);
 
 	myclass m2;
@@ -58,7 +58,7 @@ TEST(object, as)
 	msgpack::object obj;
 
 	msgpack::unpack_return ret =
-		msgpack::unpack(sbuf.data(), sbuf.size(), NULL, &z, &obj);
+		msgpack::unpack(sbuf.data(), sbuf.size(), NULL, &z, obj);
 	EXPECT_EQ(ret, msgpack::UNPACK_SUCCESS);
 
 	EXPECT_EQ(m1, obj.as<myclass>());

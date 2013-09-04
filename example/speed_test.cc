@@ -31,7 +31,7 @@ void test_map_pack_unpack() {
 	std::cout << "Start unpacking..." << std::endl;
 	{
 		boost::timer::cpu_timer timer;
-		msgpack::unpack(str.data(), str.size(), NULL, &mempool, &deserialized);
+		msgpack::unpack(str.data(), str.size(), NULL, &mempool, deserialized);
 		std::string result = timer.format();
 		std::cout << result << std::endl;
 	}
