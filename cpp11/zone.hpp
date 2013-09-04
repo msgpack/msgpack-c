@@ -149,7 +149,7 @@ private:
 	finalizer_array finalizer_array_;
 
 public:
-	zone(size_t chunk_size = MSGPACK_ZONE_CHUNK_SIZE);
+	zone(size_t chunk_size = MSGPACK_ZONE_CHUNK_SIZE) noexcept;
 
 public:
 	static zone* create(size_t chunk_size);
@@ -185,13 +185,7 @@ inline zone* zone::create(size_t chunk_size)
 	if (!z) {
 		return nullptr;
 	}
-	try {
-		new (z) zone(chunk_size);
-	}
-	catch (...) {
-		::free(z);
-		return nullptr;
-	}
+	new (z) zone(chunk_size);
 	return z;
 }
 
@@ -201,7 +195,7 @@ inline void zone::destroy(zone* z)
 	::free(z);
 }
 
-inline zone::zone(size_t chunk_size):chunk_size_(chunk_size), chunk_list_(chunk_size_)
+inline zone::zone(size_t chunk_size) noexcept:chunk_size_(chunk_size), chunk_list_(chunk_size_)
 {
 }
 
