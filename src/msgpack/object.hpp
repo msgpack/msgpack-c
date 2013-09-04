@@ -125,22 +125,22 @@ private:
 };
 
 
-bool operator==(const object x, const object y);
-bool operator!=(const object x, const object y);
+bool operator==(const object& x, const object& y);
+bool operator!=(const object& x, const object& y);
 
 template <typename T>
-bool operator==(const object x, const T& y);
+bool operator==(const object& x, const T& y);
 
 template <typename T>
-bool operator==(const T& y, const object x);
+bool operator==(const T& y, const object& x);
 
 template <typename T>
-bool operator!=(const object x, const T& y);
+bool operator!=(const object& x, const T& y);
 
 template <typename T>
-bool operator!=(const T& y, const object x);
+bool operator!=(const T& y, const object& x);
 
-std::ostream& operator<< (std::ostream& s, const object o);
+std::ostream& operator<< (std::ostream& s, const object& o);
 
 
 // serialize operator
@@ -149,7 +149,7 @@ packer<Stream>& operator<< (packer<Stream>& o, const T& v);
 
 // convert operator
 template <typename T>
-T& operator>> (object o, T& v);
+T& operator>> (object const& o, T& v);
 
 // deconvert operator
 template <typename T>
@@ -157,7 +157,7 @@ void operator<< (object::with_zone& o, const T& v);
 
 
 struct object::implicit_type {
-	implicit_type(object o) : obj(o) { }
+	implicit_type(object const& o) : obj(o) { }
 	~implicit_type() { }
 
 	template <typename T>
@@ -184,7 +184,7 @@ public:
 		o << static_cast<const msgpack_type&>(*this);
 	}
 
-	void msgpack_unpack(object o)
+	void msgpack_unpack(object const& o)
 	{
 		o >> static_cast<msgpack_type&>(*this);
 	}
@@ -199,14 +199,14 @@ inline packer<Stream>& packer<Stream>::pack(const T& v)
 	return *this;
 }
 
-inline object& operator>> (object o, object& v)
+inline object& operator>> (object const& o, object& v)
 {
 	v = o;
 	return v;
 }
 
 template <typename T>
-inline T& operator>> (object o, T& v)
+inline T& operator>> (object const& o, T& v)
 {
 	v.msgpack_unpack(o.convert());
 	return v;
@@ -235,20 +235,82 @@ void operator<< (object::with_zone& o, const T& v)
 }
 
 
-inline bool operator==(const object x, const object y)
+inline bool operator==(const object& x, const object& y)
 {
-	return msgpack_object_equal(x, y);
+	if(x.type != y.type) { return false; }
+
+	switch(x.type) {
+	case type::NIL:
+		return true;
+
+	case type::BOOLEAN:
+		return x.via.boolean == y.via.boolean;
+
+	case type::POSITIVE_INTEGER:
+		return x.via.u64 == y.via.u64;
+
+	case type::NEGATIVE_INTEGER:
+		return x.via.i64 == y.via.i64;
+
+	case type::DOUBLE:
+		return x.via.dec == y.via.dec;
+
+	case type::RAW:
+		return x.via.raw.size == y.via.raw.size &&
+			memcmp(x.via.raw.ptr, y.via.raw.ptr, x.via.raw.size) == 0;
+
+	case type::ARRAY:
+		if(x.via.array.size != y.via.array.size) {
+			return false;
+		} else if(x.via.array.size == 0) {
+			return true;
+		} else {
+			object* px = x.via.array.ptr;
+			object* const pxend = x.via.array.ptr + x.via.array.size;
+			object* py = y.via.array.ptr;
+			do {
+				if(!(*px == *py)) {
+					return false;
+				}
+				++px;
+				++py;
+			} while(px < pxend);
+			return true;
+		}
+
+	case type::MAP:
+		if(x.via.map.size != y.via.map.size) {
+			return false;
+		} else if(x.via.map.size == 0) {
+			return true;
+		} else {
+			object_kv* px = x.via.map.ptr;
+			object_kv* const pxend = x.via.map.ptr + x.via.map.size;
+			object_kv* py = y.via.map.ptr;
+			do {
+				if(!(px->key == py->key) || !(px->val == py->val)) {
+					return false;
+				}
+				++px;
+				++py;
+			} while(px < pxend);
+			return true;
+		}
+
+	default:
+		return false;
+	}
 }
 
 template <typename T>
-inline bool operator==(const object x, const T& y)
+inline bool operator==(const object& x, const T& y)
 try {
 	return x == object(y);
 } catch (msgpack::type_error&) {
 	return false;
 }
 
-inline bool operator!=(const object x, const object y)
+inline bool operator!=(const object& x, const object& y)
 { return !(x == y); }
 
 template <typename T>
@@ -256,11 +318,11 @@ inline bool operator==(const T& y, const object x)
 { return x == y; }
 
 template <typename T>
-inline bool operator!=(const object x, const T& y)
+inline bool operator!=(const object& x, const T& y)
 { return !(x == y); }
 
 template <typename T>
-inline bool operator!=(const T& y, const object x)
+inline bool operator!=(const T& y, const object& x)
 { return x != y; }
 
 
@@ -335,7 +397,7 @@ inline object::operator msgpack_object() const
 
 // obsolete
 template <typename T>
-inline void convert(T& v, object o)
+inline void convert(T& v, object const& o)
 {
 	o.convert(&v);
 }
@@ -412,7 +474,7 @@ packer<Stream>& operator<< (packer<Stream>& o, const object& v)
 	}
 }
 
-std::ostream& operator<< (std::ostream& s, const object o)
+std::ostream& operator<< (std::ostream& s, const object& o)
 {
 	switch(o.type) {
 	case type::NIL:

@@ -24,7 +24,7 @@
 	{ \
 		msgpack::type::make_define(__VA_ARGS__).msgpack_pack(pk); \
 	} \
-	void msgpack_unpack(msgpack::object o) \
+	void msgpack_unpack(msgpack::object const& o) \
 	{ \
 		msgpack::type::make_define(__VA_ARGS__).msgpack_unpack(o); \
 	}\
@@ -38,7 +38,7 @@
 #define MSGPACK_ADD_ENUM(enum) \
   namespace msgpack { \
     template <> \
-    inline enum& operator>> (object o, enum& v) \
+    inline enum& operator>> (object const& o, enum& v) \
     { \
       int tmp; \
       o >> tmp; \
@@ -78,7 +78,7 @@ struct define<> {
 	{
 		pk.pack_array(0);
 	}
-	void msgpack_unpack(msgpack::object o)
+	void msgpack_unpack(msgpack::object const& o)
 	{
 		if(o.type != type::ARRAY) { throw type_error(); }
 	}
@@ -103,7 +103,7 @@ struct define<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> {
 		<%0.upto(i) {|j|%>
 		pk.pack(a<%=j%>);<%}%>
 	}
-	void msgpack_unpack(msgpack::object o)
+	void msgpack_unpack(msgpack::object const& o)
 	{
 		if(o.type != type::ARRAY) { throw type_error(); }
 		const size_t size = o.via.array.size;

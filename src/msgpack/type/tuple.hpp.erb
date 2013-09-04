@@ -92,7 +92,7 @@ private:
 template <>
 struct tuple<> {
 	tuple() {}
-	tuple(object o) { o.convert(this); }
+	tuple(object const& o) { o.convert(this); }
 	typedef tuple<> value_type;
 };
 <%0.upto(GENERATION_LIMIT) {|i|%>
@@ -102,7 +102,7 @@ struct tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> {
 	tuple() {}
 	tuple(typename tuple_type<A0>::transparent_reference _a0<%1.upto(i) {|j|%>, typename tuple_type<A<%=j%>>::transparent_reference _a<%=j%><%}%>) :
 		a0(_a0)<%1.upto(i) {|j|%>, a<%=j%>(_a<%=j%>)<%}%> {}
-	tuple(object o) { o.convert(this); }
+	tuple(object const& o) { o.convert(this); }
 	template <int N> typename tuple_element<value_type, N>::reference get()
 		{ return tuple_element<value_type, N>(*this).get(); }
 	template <int N> typename const_tuple_element<value_type, N>::const_reference get() const
@@ -134,7 +134,7 @@ tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> make_tuple(typename tuple_type<A0>::tr
 }  // namespace type
 
 inline type::tuple<>& operator>> (
-		object o,
+		object const& o,
 		type::tuple<>& v) {
 	if(o.type != type::ARRAY) { throw type_error(); }
 	return v;
@@ -142,7 +142,7 @@ inline type::tuple<>& operator>> (
 <%0.upto(GENERATION_LIMIT) {|i|%>
 template <typename A0<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
 type::tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>>& operator>> (
-		object o,
+		object const& o,
 		type::tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>>& v) {
 	if(o.type != type::ARRAY) { throw type_error(); }
 	if(o.via.array.size < <%=i+1%>) { throw type_error(); }

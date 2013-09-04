@@ -24,7 +24,7 @@
 	{ \
 		msgpack::type::make_define(__VA_ARGS__).msgpack_pack(pk); \
 	} \
-	void msgpack_unpack(msgpack::object o) \
+	void msgpack_unpack(msgpack::object const& o) \
 	{ \
 		msgpack::type::make_define(__VA_ARGS__).msgpack_unpack(o); \
 	}\
@@ -38,7 +38,7 @@
 #define MSGPACK_ADD_ENUM(enum) \
   namespace msgpack { \
 	template <> \
-	inline enum& operator>> (object o, enum& v) \
+	inline enum& operator>> (object const& o, enum& v) \
 	{ \
 	  int tmp; \
 	  o >> tmp; \
@@ -71,7 +71,7 @@ struct define_imp {
 		define_imp<Tuple, N-1>::pack(pk, t);
 		pk.pack(std::get<N-1>(t));
 	}
-	static void unpack(msgpack::object o, Tuple& t) {
+	static void unpack(msgpack::object const& o, Tuple& t) {
 		define_imp<Tuple, N-1>::unpack(o, t);
 		const size_t size = o.via.array.size;
 		if(size <= N-1) { return; }
@@ -89,7 +89,7 @@ struct define_imp<Tuple, 1> {
 	static void pack(Packer& pk, Tuple const& t) {
 		pk.pack(std::get<0>(t));
 	}
-	static void unpack(msgpack::object o, Tuple& t) {
+	static void unpack(msgpack::object const& o, Tuple& t) {
 		const size_t size = o.via.array.size;
 		if(size <= 0) { return; }
 		o.via.array.ptr[0].convert(&std::get<0>(t));
@@ -112,7 +112,7 @@ struct define {
 
 		define_imp<tuple<Args&...>, sizeof...(Args)>::pack(pk, a);
 	}
-	void msgpack_unpack(msgpack::object o)
+	void msgpack_unpack(msgpack::object const& o)
 	{
 		if(o.type != type::ARRAY) { throw type_error(); }
 
@@ -139,7 +139,7 @@ struct define<> {
 	{
 		pk.pack_array(0);
 	}
-	void msgpack_unpack(msgpack::object o)
+	void msgpack_unpack(msgpack::object const& o)
 	{
 		if(o.type != type::ARRAY) { throw type_error(); }
 	}

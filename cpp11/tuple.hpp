@@ -138,7 +138,7 @@ const packer<Stream>& operator<< (
 template <typename Tuple, std::size_t N>
 struct Converter {
 	static void convert(
-		object o,
+		object const& o,
 		Tuple& v) {
 		Converter<Tuple, N-1>::convert(o, v);
 		o.via.array.ptr[N-1].convert<typename std::remove_reference<decltype(type::get<N-1>(v))>::type>(&type::get<N-1>(v));
@@ -148,7 +148,7 @@ struct Converter {
 template <typename Tuple>
 struct Converter<Tuple, 1> {
 	static void convert (
-		object o,
+		object const& o,
 		Tuple& v) {
 		o.via.array.ptr[0].convert<typename std::remove_reference<decltype(type::get<0>(v))>::type>(&type::get<0>(v));
 	}
@@ -156,7 +156,7 @@ struct Converter<Tuple, 1> {
 
 template <typename... Args>
 type::tuple<Args...>& operator>> (
-	object o,
+	object const& o,
 	type::tuple<Args...>& v) {
 	if(o.type != type::ARRAY) { throw type_error(); }
 	if(o.via.array.size < sizeof...(Args)) { throw type_error(); }
