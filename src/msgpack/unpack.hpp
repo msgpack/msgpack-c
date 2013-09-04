@@ -50,8 +50,9 @@ namespace detail {
 
 class unpack_user {
 public:
-	zone* z() const { return z_; }
-	void set_z(zone* z) { z_ = z; }
+	zone const& z() const { return *z_; }
+	zone& z() { return *z_; }
+	void set_z(zone& z) { z_ = &z; }
 	bool referenced() const { return referenced_; }
 	void set_referenced(bool referenced) { referenced_ = referenced; }
 private:
@@ -109,7 +110,7 @@ inline int template_callback_array(unpack_user* u, unsigned int n, object& o)
 {
 	o.type = type::ARRAY;
 	o.via.array.size = 0;
-	o.via.array.ptr = (object*)u->z()->malloc(n*sizeof(object));
+	o.via.array.ptr = (object*)u->z().malloc(n*sizeof(object));
 	if(o.via.array.ptr == NULL) { return -1; }
 	return 0;
 }
@@ -121,7 +122,7 @@ inline int template_callback_map(unpack_user* u, unsigned int n, object& o)
 {
 	o.type = type::MAP;
 	o.via.map.size = 0;
-	o.via.map.ptr = (object_kv*)u->z()->malloc(n*sizeof(object_kv));
+	o.via.map.ptr = (object_kv*)u->z().malloc(n*sizeof(object_kv));
 	if(o.via.map.ptr == NULL) { return -1; }
 	return 0;
 }
@@ -684,7 +685,7 @@ typedef enum {
 
 // obsolete
 static unpack_return unpack(const char* data, size_t len, size_t* off,
-		zone* z, object& result);
+		zone& z, object& result);
 
 
 // obsolete
@@ -719,7 +720,7 @@ inline unpacker::unpacker(size_t initial_buffer_size)
 	detail::init_count(buffer_);
 
 	ctx_.init();
-	ctx_.user().set_z(z_);
+	ctx_.user().set_z(*z_);
 	ctx_.user().set_referenced(false);
 }
 
@@ -876,7 +877,7 @@ inline zone* unpacker::release_zone()
 
 	zone* old = z_;
 	z_ = r;
-	ctx_.user().set_z(z_);
+	ctx_.user().set_z(*z_);
 
 	return old;
 }
@@ -943,7 +944,7 @@ namespace detail {
 
 inline unpack_return
 unpack_imp(const char* data, size_t len, size_t* off,
-		zone* result_zone, object& result)
+		zone& result_zone, object& result)
 {
 	size_t noff = 0;
 	if(off != NULL) { noff = *off; }
@@ -988,7 +989,7 @@ inline void unpack(unpacked* result,
 	msgpack::unique_ptr<zone> z(new zone());
 
 	unpack_return ret = detail::unpack_imp(
-			data, len, offset, z.get(), obj);
+			data, len, offset, *z, obj);
 
 
 	switch(ret) {
@@ -1014,7 +1015,7 @@ inline void unpack(unpacked* result,
 
 // obsolete
 inline unpack_return unpack(const char* data, size_t len, size_t* off,
-		zone* z, object& result)
+		zone& z, object& result)
 {
 	return detail::unpack_imp(data, len, off,
 			z, result);
@@ -1025,7 +1026,7 @@ inline object unpack(const char* data, size_t len, zone& z, size_t* off)
 {
 	object result;
 
-	switch( unpack(data, len, off, &z, result) ) {
+	switch( unpack(data, len, off, z, result) ) {
 	case UNPACK_SUCCESS:
 		return result;
 

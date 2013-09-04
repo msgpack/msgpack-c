@@ -60,7 +60,7 @@ TEST(unpack, myclass)
 	msgpack::object obj;
 
 	msgpack::unpack_return ret =
-		msgpack::unpack(sbuf.data(), sbuf.size(), NULL, &z, obj);
+		msgpack::unpack(sbuf.data(), sbuf.size(), NULL, z, obj);
 
 	EXPECT_EQ(ret, msgpack::UNPACK_SUCCESS);
 
@@ -105,17 +105,17 @@ TEST(unpack, sequence_compat)
 	msgpack::object obj;
 	msgpack::unpack_return ret;
 
-	ret = msgpack::unpack(sbuf.data(), sbuf.size(), &offset, &z, obj);
+	ret = msgpack::unpack(sbuf.data(), sbuf.size(), &offset, z, obj);
 	EXPECT_TRUE(ret >= 0);
 	EXPECT_EQ(ret, msgpack::UNPACK_EXTRA_BYTES);
 	EXPECT_EQ(1, obj.as<int>());
 
-	ret = msgpack::unpack(sbuf.data(), sbuf.size(), &offset, &z, obj);
+	ret = msgpack::unpack(sbuf.data(), sbuf.size(), &offset, z, obj);
 	EXPECT_TRUE(ret >= 0);
 	EXPECT_EQ(ret, msgpack::UNPACK_EXTRA_BYTES);
 	EXPECT_EQ(2, obj.as<int>());
 
-	ret = msgpack::unpack(sbuf.data(), sbuf.size(), &offset, &z, obj);
+	ret = msgpack::unpack(sbuf.data(), sbuf.size(), &offset, z, obj);
 	EXPECT_TRUE(ret >= 0);
 	EXPECT_EQ(ret, msgpack::UNPACK_SUCCESS);
 	EXPECT_EQ(3, obj.as<int>());
