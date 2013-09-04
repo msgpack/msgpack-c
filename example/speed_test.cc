@@ -36,6 +36,16 @@ void test_map_pack_unpack() {
 		std::cout << result << std::endl;
 	}
 	std::cout << "Unpack finished..." << std::endl;
+
+	msgpack::unpacked unpacked;
+	std::cout << "Start unpacking...by void unpack(unpacked* result, const char* data, size_t len, size_t* offset = NULL)" << std::endl;
+	{
+		boost::timer::cpu_timer timer;
+		msgpack::unpack(unpacked, str.data(), str.size());
+		std::string result = timer.format();
+		std::cout << result << std::endl;
+	}
+	std::cout << "Unpack finished..." << std::endl;
 }
 
 

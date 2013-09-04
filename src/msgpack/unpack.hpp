@@ -542,8 +542,8 @@ public:
 	unpacked(object const& obj, msgpack::unique_ptr<msgpack::zone> z) :
 		m_obj(obj), m_zone(msgpack::move(z)) { }
 
-	object& get()
-		{ return m_obj; }
+	void set(object const& obj)
+		{ m_obj = obj; }
 
 	const object& get() const
 		{ return m_obj; }
@@ -670,7 +670,7 @@ private:
 };
 
 
-static void unpack(unpacked* result,
+static void unpack(unpacked& result,
 		const char* data, size_t len, size_t* offset = NULL);
 
 
@@ -824,12 +824,12 @@ inline bool unpacker::next(unpacked* result)
 
 	if(ret == 0) {
 		result->zone().reset();
-		result->get() = object();
+		result->set(object());
 		return false;
 
 	} else {
 		result->zone().reset( release_zone() );
-		result->get() = data();
+		result->set(data());
 		reset();
 		return true;
 	}
@@ -981,7 +981,7 @@ unpack_imp(const char* data, size_t len, size_t* off,
 
 } // detail
 
-inline void unpack(unpacked* result,
+inline void unpack(unpacked& result,
 		const char* data, size_t len, size_t* offset)
 {
 	object obj;
@@ -993,13 +993,13 @@ inline void unpack(unpacked* result,
 
 	switch(ret) {
 	case UNPACK_SUCCESS:
-		result->get() = obj;
-		result->zone() = msgpack::move(z);
+		result.set(obj);
+		result.zone() = msgpack::move(z);
 		return;
 
 	case UNPACK_EXTRA_BYTES:
-		result->get() = obj;
-		result->zone() = msgpack::move(z);
+		result.set(obj);
+		result.zone() = msgpack::move(z);
 		return;
 
 	case UNPACK_CONTINUE:

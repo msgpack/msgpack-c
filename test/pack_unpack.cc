@@ -81,13 +81,13 @@ TEST(unpack, sequence)
 
 	msgpack::unpacked msg;
 
-	msgpack::unpack(&msg, sbuf.data(), sbuf.size(), &offset);
+	msgpack::unpack(msg, sbuf.data(), sbuf.size(), &offset);
 	EXPECT_EQ(1, msg.get().as<int>());
 
-	msgpack::unpack(&msg, sbuf.data(), sbuf.size(), &offset);
+	msgpack::unpack(msg, sbuf.data(), sbuf.size(), &offset);
 	EXPECT_EQ(2, msg.get().as<int>());
 
-	msgpack::unpack(&msg, sbuf.data(), sbuf.size(), &offset);
+	msgpack::unpack(msg, sbuf.data(), sbuf.size(), &offset);
 	EXPECT_EQ(3, msg.get().as<int>());
 }
 

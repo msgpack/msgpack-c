@@ -30,7 +30,7 @@ void check_convert() {
 	msgpack::pack(sbuf, v1);
 
 	msgpack::unpacked msg;
-	msgpack::unpack(&msg, sbuf.data(), sbuf.size());
+	msgpack::unpack(msg, sbuf.data(), sbuf.size());
 
 	T v2;
 	msg.get().convert(&v2);
