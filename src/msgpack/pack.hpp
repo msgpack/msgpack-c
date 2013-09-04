@@ -98,8 +98,8 @@ private:
 	template <typename T>
 	void pack_real_int64(T d);
 
-	void append_buffer(const unsigned char* buf, unsigned int len)
-		{ m_stream.write((const char*)buf, len); }
+	void append_buffer(const char* buf, unsigned int len)
+		{ m_stream.write(buf, len); }
 
 private:
 	Stream& m_stream;
@@ -122,15 +122,42 @@ inline void pack(Stream& s, const T& v)
 }
 
 #if defined(__LITTLE_ENDIAN__)
-#define TAKE8_8(d)  ((uint8_t*)&d)[0]
-#define TAKE8_16(d) ((uint8_t*)&d)[0]
-#define TAKE8_32(d) ((uint8_t*)&d)[0]
-#define TAKE8_64(d) ((uint8_t*)&d)[0]
+template <typename T>
+inline char take8_8(T d) {
+	return static_cast<char>(reinterpret_cast<uint8_t*>(&d)[0]);
+}
+template <typename T>
+inline char take8_16(T d) {
+	return static_cast<char>(reinterpret_cast<uint8_t*>(&d)[0]);
+}
+template <typename T>
+inline char take8_32(T d) {
+	return static_cast<char>(reinterpret_cast<uint8_t*>(&d)[0]);
+}
+template <typename T>
+inline char take8_64(T d) {
+	return static_cast<char>(reinterpret_cast<uint8_t*>(&d)[0]);
+}
+
 #elif defined(__BIG_ENDIAN__)
-#define TAKE8_8(d)  ((uint8_t*)&d)[0]
-#define TAKE8_16(d) ((uint8_t*)&d)[1]
-#define TAKE8_32(d) ((uint8_t*)&d)[3]
-#define TAKE8_64(d) ((uint8_t*)&d)[7]
+
+template <typename T>
+inline char take8_8(T d) {
+	return static_cast<char>(reinterpret_cast<uint8_t*>(&d)[0]);
+}
+template <typename T>
+inline char take8_16(T d) {
+	return static_cast<char>(reinterpret_cast<uint8_t*>(&d)[1]);
+}
+template <typename T>
+inline char take8_32(T d) {
+	return static_cast<char>(reinterpret_cast<uint8_t*>(&d)[3]);
+}
+template <typename T>
+inline char take8_64(T d) {
+	return static_cast<char>(reinterpret_cast<uint8_t*>(&d)[7]);
+}
+
 #endif
 
 template <typename Stream>
@@ -179,7 +206,7 @@ inline packer<Stream>& packer<Stream>::pack_int64(int64_t d)
 template <typename Stream>
 inline packer<Stream>& packer<Stream>::pack_fix_uint8(uint8_t d)
 {
-	unsigned char buf[2] = {0xcc, TAKE8_8(d)};
+	char buf[2] = {static_cast<char>(0xcc), take8_8(d)};
 	append_buffer(buf, 2);
 	return *this;
 }
@@ -187,8 +214,8 @@ inline packer<Stream>& packer<Stream>::pack_fix_uint8(uint8_t d)
 template <typename Stream>
 inline packer<Stream>& packer<Stream>::pack_fix_uint16(uint16_t d)
 {
-	unsigned char buf[3];
-	buf[0] = 0xcd; _msgpack_store16(&buf[1], d);
+	char buf[3];
+	buf[0] = static_cast<char>(0xcd); _msgpack_store16(&buf[1], d);
 	append_buffer(buf, 3);
 	return *this;
 }
@@ -196,8 +223,8 @@ inline packer<Stream>& packer<Stream>::pack_fix_uint16(uint16_t d)
 template <typename Stream>
 inline packer<Stream>& packer<Stream>::pack_fix_uint32(uint32_t d)
 {
-	unsigned char buf[5];
-	buf[0] = 0xce; _msgpack_store32(&buf[1], d);
+	char buf[5];
+	buf[0] = static_cast<char>(0xce); _msgpack_store32(&buf[1], d);
 	append_buffer(buf, 5);
 	return *this;
 }
@@ -205,8 +232,8 @@ inline packer<Stream>& packer<Stream>::pack_fix_uint32(uint32_t d)
 template <typename Stream>
 inline packer<Stream>& packer<Stream>::pack_fix_uint64(uint64_t d)
 {
-	unsigned char buf[9];
-	buf[0] = 0xcf; _msgpack_store64(&buf[1], d);
+	char buf[9];
+	buf[0] = static_cast<char>(0xcf); _msgpack_store64(&buf[1], d);
 	append_buffer(buf, 9);
 	return *this;
 }
@@ -214,7 +241,7 @@ inline packer<Stream>& packer<Stream>::pack_fix_uint64(uint64_t d)
 template <typename Stream>
 inline packer<Stream>& packer<Stream>::pack_fix_int8(int8_t d)
 {
-	unsigned char buf[2] = {0xd0, TAKE8_8(d)};
+	char buf[2] = {static_cast<char>(0xd0), take8_8(d)};
 	append_buffer(buf, 2);
 	return *this;
 }
@@ -222,8 +249,8 @@ inline packer<Stream>& packer<Stream>::pack_fix_int8(int8_t d)
 template <typename Stream>
 inline packer<Stream>& packer<Stream>::pack_fix_int16(int16_t d)
 {
-	unsigned char buf[3];
-	buf[0] = 0xd1; _msgpack_store16(&buf[1], d);
+	char buf[3];
+	buf[0] = static_cast<char>(0xd1); _msgpack_store16(&buf[1], d);
 	append_buffer(buf, 3);
 	return *this;
 }
@@ -231,8 +258,8 @@ inline packer<Stream>& packer<Stream>::pack_fix_int16(int16_t d)
 template <typename Stream>
 inline packer<Stream>& packer<Stream>::pack_fix_int32(int32_t d)
 {
-	unsigned char buf[5];
-	buf[0] = 0xd2; _msgpack_store32(&buf[1], d);
+	char buf[5];
+	buf[0] = static_cast<char>(0xd2); _msgpack_store32(&buf[1], d);
 	append_buffer(buf, 5);
 	return *this;
 }
@@ -240,8 +267,8 @@ inline packer<Stream>& packer<Stream>::pack_fix_int32(int32_t d)
 template <typename Stream>
 inline packer<Stream>& packer<Stream>::pack_fix_int64(int64_t d)
 {
-	unsigned char buf[9];
-	buf[0] = 0xd3; _msgpack_store64(&buf[1], d);
+	char buf[9];
+	buf[0] = static_cast<char>(0xd3); _msgpack_store64(&buf[1], d);
 	append_buffer(buf, 9);
 	return *this;
 }
@@ -530,7 +557,7 @@ inline packer<Stream>& packer<Stream>::pack_float(float d)
 {
 	union { float f; uint32_t i; } mem;
 	mem.f = d;
-	unsigned char buf[5];
+	char buf[5];
 	buf[0] = 0xca; _msgpack_store32(&buf[1], mem.i);
 	append_buffer(buf, 5);
 	return *this;
@@ -541,7 +568,7 @@ inline packer<Stream>& packer<Stream>::pack_double(double d)
 {
 	union { double f; uint64_t i; } mem;
 	mem.f = d;
-	unsigned char buf[9];
+	char buf[9];
 	buf[0] = 0xcb;
 #if defined(__arm__) && !(__ARM_EABI__) // arm-oabi
 	// https://github.com/msgpack/msgpack-perl/pull/1
@@ -556,7 +583,7 @@ inline packer<Stream>& packer<Stream>::pack_double(double d)
 template <typename Stream>
 inline packer<Stream>& packer<Stream>::pack_nil()
 {
-	static const unsigned char d = 0xc0;
+	const char d = static_cast<char>(0xc0);
 	append_buffer(&d, 1);
 	return *this;
 }
@@ -564,7 +591,7 @@ inline packer<Stream>& packer<Stream>::pack_nil()
 template <typename Stream>
 inline packer<Stream>& packer<Stream>::pack_true()
 {
-	static const unsigned char d = 0xc3;
+	const char d = static_cast<char>(0xc3);
 	append_buffer(&d, 1);
 	return *this;
 }
@@ -572,7 +599,7 @@ inline packer<Stream>& packer<Stream>::pack_true()
 template <typename Stream>
 inline packer<Stream>& packer<Stream>::pack_false()
 {
-	static const unsigned char d = 0xc2;
+	const char d = static_cast<char>(0xc2);
 	append_buffer(&d, 1);
 	return *this;
 }
@@ -582,15 +609,15 @@ template <typename Stream>
 inline packer<Stream>& packer<Stream>::pack_array(size_t n)
 {
 	if(n < 16) {
-		unsigned char d = 0x90 | n;
+		char d = static_cast<char>(0x90 | n);
 		append_buffer(&d, 1);
 	} else if(n < 65536) {
-		unsigned char buf[3];
-		buf[0] = 0xdc; _msgpack_store16(&buf[1], (uint16_t)n);
+		char buf[3];
+		buf[0] = static_cast<char>(0xdc); _msgpack_store16(&buf[1], (uint16_t)n);
 		append_buffer(buf, 3);
 	} else {
-		unsigned char buf[5];
-		buf[0] = 0xdd; _msgpack_store32(&buf[1], (uint32_t)n);
+		char buf[5];
+		buf[0] = static_cast<char>(0xdd); _msgpack_store32(&buf[1], (uint32_t)n);
 		append_buffer(buf, 5);
 	}
 	return *this;
@@ -601,13 +628,14 @@ inline packer<Stream>& packer<Stream>::pack_map(size_t n)
 {
 	if(n < 16) {
 		unsigned char d = 0x80 | n;
-		append_buffer(&TAKE8_8(d), 1);
+		char buf = take8_8(d);
+		append_buffer(&buf, 1);
 	} else if(n < 65536) {
-		unsigned char buf[3];
+		char buf[3];
 		buf[0] = 0xde; _msgpack_store16(&buf[1], (uint16_t)n);
 		append_buffer(buf, 3);
 	} else {
-		unsigned char buf[5];
+		char buf[5];
 		buf[0] = 0xdf; _msgpack_store32(&buf[1], (uint32_t)n);
 		append_buffer(buf, 5);
 	}
@@ -619,14 +647,15 @@ inline packer<Stream>& packer<Stream>::pack_raw(size_t l)
 {
 	if(l < 32) {
 		unsigned char d = 0xa0 | (uint8_t)l;
-		append_buffer(&TAKE8_8(d), 1);
+		char buf = take8_8(d);
+		append_buffer(&buf, 1);
 	} else if(l < 65536) {
-		unsigned char buf[3];
-		buf[0] = 0xda; _msgpack_store16(&buf[1], (uint16_t)l);
+		char buf[3];
+		buf[0] = static_cast<char>(0xda); _msgpack_store16(&buf[1], (uint16_t)l);
 		append_buffer(buf, 3);
 	} else {
-		unsigned char buf[5];
-		buf[0] = 0xdb; _msgpack_store32(&buf[1], (uint32_t)l);
+		char buf[5];
+		buf[0] = static_cast<char>(0xdb); _msgpack_store32(&buf[1], (uint32_t)l);
 		append_buffer(buf, 5);
 	}
 	return *this;
@@ -635,7 +664,7 @@ inline packer<Stream>& packer<Stream>::pack_raw(size_t l)
 template <typename Stream>
 inline packer<Stream>& packer<Stream>::pack_raw_body(const char* b, size_t l)
 {
-	append_buffer((const unsigned char*)b, l);
+	append_buffer(b, l);
 	return *this;
 }
 
@@ -645,10 +674,11 @@ inline void packer<Stream>::pack_real_uint8(T d)
 {
 	if(d < (1<<7)) {
 		/* fixnum */
-		append_buffer(&TAKE8_8(d), 1);
+		char buf = take8_8(d);
+		append_buffer(&buf, 1);
 	} else {
 		/* unsigned 8 */
-		unsigned char buf[2] = {0xcc, TAKE8_8(d)};
+		char buf[2] = {static_cast<char>(0xcc), take8_8(d)};
 		append_buffer(buf, 2);
 	}
 }
@@ -659,15 +689,16 @@ inline void packer<Stream>::pack_real_uint16(T d)
 {
 	if(d < (1<<7)) {
 		/* fixnum */
-		append_buffer(&TAKE8_16(d), 1);
+		char buf = take8_16(d);
+		append_buffer(&buf, 1);
 	} else if(d < (1<<8)) {
 		/* unsigned 8 */
-		unsigned char buf[2] = {0xcc, TAKE8_16(d)};
+		char buf[2] = {static_cast<char>(0xcc), take8_16(d)};
 		append_buffer(buf, 2);
 	} else {
 		/* unsigned 16 */
-		unsigned char buf[3];
-		buf[0] = 0xcd; _msgpack_store16(&buf[1], (uint16_t)d);
+		char buf[3];
+		buf[0] = static_cast<char>(0xcd); _msgpack_store16(&buf[1], (uint16_t)d);
 		append_buffer(buf, 3);
 	}
 }
@@ -679,22 +710,23 @@ inline void packer<Stream>::pack_real_uint32(T d)
 	if(d < (1<<8)) {
 		if(d < (1<<7)) {
 			/* fixnum */
-			append_buffer(&TAKE8_32(d), 1);
+			char buf = take8_32(d);
+			append_buffer(&buf, 1);
 		} else {
 			/* unsigned 8 */
-			unsigned char buf[2] = {0xcc, TAKE8_32(d)};
+			char buf[2] = {static_cast<char>(0xcc), take8_32(d)};
 			append_buffer(buf, 2);
 		}
 	} else {
 		if(d < (1<<16)) {
 			/* unsigned 16 */
-			unsigned char buf[3];
-			buf[0] = 0xcd; _msgpack_store16(&buf[1], (uint16_t)d);
+			char buf[3];
+			buf[0] = static_cast<char>(0xcd); _msgpack_store16(&buf[1], (uint16_t)d);
 			append_buffer(buf, 3);
 		} else {
 			/* unsigned 32 */
-			unsigned char buf[5];
-			buf[0] = 0xce; _msgpack_store32(&buf[1], (uint32_t)d);
+			char buf[5];
+			buf[0] = static_cast<char>(0xce); _msgpack_store32(&buf[1], (uint32_t)d);
 			append_buffer(buf, 5);
 		}
 	}
@@ -707,27 +739,28 @@ inline void packer<Stream>::pack_real_uint64(T d)
 	if(d < (1ULL<<8)) {
 		if(d < (1ULL<<7)) {
 			/* fixnum */
-			append_buffer(&TAKE8_64(d), 1);
+			char buf = take8_64(d);
+			append_buffer(&buf, 1);
 		} else {
 			/* unsigned 8 */
-			unsigned char buf[2] = {0xcc, TAKE8_64(d)};
+			char buf[2] = {static_cast<char>(0xcc), take8_64(d)};
 			append_buffer(buf, 2);
 		}
 	} else {
 		if(d < (1ULL<<16)) {
 			/* unsigned 16 */
-			unsigned char buf[3];
-			buf[0] = 0xcd; _msgpack_store16(&buf[1], (uint16_t)d);
+			char buf[3];
+			buf[0] = static_cast<char>(0xcd); _msgpack_store16(&buf[1], (uint16_t)d);
 			append_buffer(buf, 3);
 		} else if(d < (1ULL<<32)) {
 			/* unsigned 32 */
-			unsigned char buf[5];
-			buf[0] = 0xce; _msgpack_store32(&buf[1], (uint32_t)d);
+			char buf[5];
+			buf[0] = static_cast<char>(0xce); _msgpack_store32(&buf[1], (uint32_t)d);
 			append_buffer(buf, 5);
 		} else {
 			/* unsigned 64 */
-			unsigned char buf[9];
-			buf[0] = 0xcf; _msgpack_store64(&buf[1], d);
+			char buf[9];
+			buf[0] = static_cast<char>(0xcf); _msgpack_store64(&buf[1], d);
 			append_buffer(buf, 9);
 		}
 	}
@@ -739,11 +772,12 @@ inline void packer<Stream>::pack_real_int8(T d)
 {
 	if(d < -(1<<5)) {
 		/* signed 8 */
-		unsigned char buf[2] = {0xd0, TAKE8_8(d)};
+		char buf[2] = {static_cast<char>(0xd0), take8_8(d)};
 		append_buffer(buf, 2);
 	} else {
 		/* fixnum */
-		append_buffer(&TAKE8_8(d), 1);
+		char buf = take8_8(d);
+		append_buffer(&buf, 1);
 	}
 }
 
@@ -754,26 +788,27 @@ inline void packer<Stream>::pack_real_int16(T d)
 	if(d < -(1<<5)) {
 		if(d < -(1<<7)) {
 			/* signed 16 */
-			unsigned char buf[3];
-			buf[0] = 0xd1; _msgpack_store16(&buf[1], (int16_t)d);
+			char buf[3];
+			buf[0] = static_cast<char>(0xd1); _msgpack_store16(&buf[1], (int16_t)d);
 			append_buffer(buf, 3);
 		} else {
 			/* signed 8 */
-			unsigned char buf[2] = {0xd0, TAKE8_16(d)};
+			char buf[2] = {static_cast<char>(0xd0), take8_16(d)};
 			append_buffer(buf, 2);
 		}
 	} else if(d < (1<<7)) {
 		/* fixnum */
-		append_buffer(&TAKE8_16(d), 1);
+		char buf = take8_16(d);
+		append_buffer(&buf, 1);
 	} else {
 		if(d < (1<<8)) {
 			/* unsigned 8 */
-			unsigned char buf[2] = {0xcc, TAKE8_16(d)};
+			char buf[2] = {static_cast<char>(0xcc), take8_16(d)};
 			append_buffer(buf, 2);
 		} else {
 			/* unsigned 16 */
-			unsigned char buf[3];
-			buf[0] = 0xcd; _msgpack_store16(&buf[1], (uint16_t)d);
+			char buf[3];
+			buf[0] = static_cast<char>(0xcd); _msgpack_store16(&buf[1], (uint16_t)d);
 			append_buffer(buf, 3);
 		}
 	}
@@ -786,36 +821,37 @@ inline void packer<Stream>::pack_real_int32(T d)
 	if(d < -(1<<5)) {
 		if(d < -(1<<15)) {
 			/* signed 32 */
-			unsigned char buf[5];
-			buf[0] = 0xd2; _msgpack_store32(&buf[1], (int32_t)d);
+			char buf[5];
+			buf[0] = static_cast<char>(0xd2); _msgpack_store32(&buf[1], (int32_t)d);
 			append_buffer(buf, 5);
 		} else if(d < -(1<<7)) {
 			/* signed 16 */
-			unsigned char buf[3];
-			buf[0] = 0xd1; _msgpack_store16(&buf[1], (int16_t)d);
+			char buf[3];
+			buf[0] = static_cast<char>(0xd1); _msgpack_store16(&buf[1], (int16_t)d);
 			append_buffer(buf, 3);
 		} else {
 			/* signed 8 */
-			unsigned char buf[2] = {0xd0, TAKE8_32(d)};
+			char buf[2] = { static_cast<char>(0xd0), take8_32(d)};
 			append_buffer(buf, 2);
 		}
 	} else if(d < (1<<7)) {
 		/* fixnum */
-		append_buffer(&TAKE8_32(d), 1);
+		char buf = take8_32(d);
+		append_buffer(&buf, 1);
 	} else {
 		if(d < (1<<8)) {
 			/* unsigned 8 */
-			unsigned char buf[2] = {0xcc, TAKE8_32(d)};
+			char buf[2] = { static_cast<char>(0xcc), take8_32(d)};
 			append_buffer(buf, 2);
 		} else if(d < (1<<16)) {
 			/* unsigned 16 */
-			unsigned char buf[3];
-			buf[0] = 0xcd; _msgpack_store16(&buf[1], (uint16_t)d);
+			char buf[3];
+			buf[0] = static_cast<char>(0xcd); _msgpack_store16(&buf[1], (uint16_t)d);
 			append_buffer(buf, 3);
 		} else {
 			/* unsigned 32 */
-			unsigned char buf[5];
-			buf[0] = 0xce; _msgpack_store32(&buf[1], (uint32_t)d);
+			char buf[5];
+			buf[0] = static_cast<char>(0xce); _msgpack_store32(&buf[1], (uint32_t)d);
 			append_buffer(buf, 5);
 		}
 	}
@@ -829,52 +865,53 @@ inline void packer<Stream>::pack_real_int64(T d)
 		if(d < -(1LL<<15)) {
 			if(d < -(1LL<<31)) {
 				/* signed 64 */
-				unsigned char buf[9];
-				buf[0] = 0xd3; _msgpack_store64(&buf[1], d);
+				char buf[9];
+				buf[0] = static_cast<char>(0xd3); _msgpack_store64(&buf[1], d);
 				append_buffer(buf, 9);
 			} else {
 				/* signed 32 */
-				unsigned char buf[5];
-				buf[0] = 0xd2; _msgpack_store32(&buf[1], (int32_t)d);
+				char buf[5];
+				buf[0] = static_cast<char>(0xd2); _msgpack_store32(&buf[1], (int32_t)d);
 				append_buffer(buf, 5);
 			}
 		} else {
 			if(d < -(1<<7)) {
 				/* signed 16 */
-				unsigned char buf[3];
-				buf[0] = 0xd1; _msgpack_store16(&buf[1], (int16_t)d);
+				char buf[3];
+				buf[0] = static_cast<char>(0xd1); _msgpack_store16(&buf[1], (int16_t)d);
 				append_buffer(buf, 3);
 			} else {
 				/* signed 8 */
-				unsigned char buf[2] = {0xd0, TAKE8_64(d)};
+				char buf[2] = {static_cast<char>(0xd0), take8_64(d)};
 				append_buffer(buf, 2);
 			}
 		}
 	} else if(d < (1<<7)) {
 		/* fixnum */
-		append_buffer(&TAKE8_64(d), 1);
+		char buf = take8_64(d);
+		append_buffer(&buf, 1);
 	} else {
 		if(d < (1LL<<16)) {
 			if(d < (1<<8)) {
 				/* unsigned 8 */
-				unsigned char buf[2] = {0xcc, TAKE8_64(d)};
+				char buf[2] = {static_cast<char>(0xcc), take8_64(d)};
 				append_buffer(buf, 2);
 			} else {
 				/* unsigned 16 */
-				unsigned char buf[3];
-				buf[0] = 0xcd; _msgpack_store16(&buf[1], (uint16_t)d);
+				char buf[3];
+				buf[0] = static_cast<char>(0xcd); _msgpack_store16(&buf[1], (uint16_t)d);
 				append_buffer(buf, 3);
 			}
 		} else {
 			if(d < (1LL<<32)) {
 				/* unsigned 32 */
-				unsigned char buf[5];
-				buf[0] = 0xce; _msgpack_store32(&buf[1], (uint32_t)d);
+				char buf[5];
+				buf[0] = static_cast<char>(0xce); _msgpack_store32(&buf[1], (uint32_t)d);
 				append_buffer(buf, 5);
 			} else {
 				/* unsigned 64 */
-				unsigned char buf[9];
-				buf[0] = 0xcf; _msgpack_store64(&buf[1], d);
+				char buf[9];
+				buf[0] = static_cast<char>(0xcf); _msgpack_store64(&buf[1], d);
 				append_buffer(buf, 9);
 			}
 		}
