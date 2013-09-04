@@ -35,14 +35,14 @@ class type_error : public std::bad_cast { };
 
 namespace type {
 	enum object_type {
-		NIL					= MSGPACK_OBJECT_NIL,
-		BOOLEAN				= MSGPACK_OBJECT_BOOLEAN,
+		NIL				= MSGPACK_OBJECT_NIL,
+		BOOLEAN			= MSGPACK_OBJECT_BOOLEAN,
 		POSITIVE_INTEGER	= MSGPACK_OBJECT_POSITIVE_INTEGER,
 		NEGATIVE_INTEGER	= MSGPACK_OBJECT_NEGATIVE_INTEGER,
 		DOUBLE				= MSGPACK_OBJECT_DOUBLE,
-		RAW					= MSGPACK_OBJECT_RAW,
+		RAW				= MSGPACK_OBJECT_RAW,
 		ARRAY				= MSGPACK_OBJECT_ARRAY,
-		MAP					= MSGPACK_OBJECT_MAP,
+		MAP				= MSGPACK_OBJECT_MAP,
 	};
 }
 
@@ -124,38 +124,6 @@ private:
 	with_zone();
 };
 
-
-bool operator==(const object& x, const object& y);
-bool operator!=(const object& x, const object& y);
-
-template <typename T>
-bool operator==(const object& x, const T& y);
-
-template <typename T>
-bool operator==(const T& y, const object& x);
-
-template <typename T>
-bool operator!=(const object& x, const T& y);
-
-template <typename T>
-bool operator!=(const T& y, const object& x);
-
-std::ostream& operator<< (std::ostream& s, const object& o);
-
-
-// serialize operator
-template <typename Stream, typename T>
-packer<Stream>& operator<< (packer<Stream>& o, const T& v);
-
-// convert operator
-template <typename T>
-T& operator>> (object const& o, T& v);
-
-// deconvert operator
-template <typename T>
-void operator<< (object::with_zone& o, const T& v);
-
-
 struct object::implicit_type {
 	implicit_type(object const& o) : obj(o) { }
 	~implicit_type() { }
@@ -164,7 +132,7 @@ struct object::implicit_type {
 	operator T() { return obj.as<T>(); }
 
 private:
-	object obj;
+	object const& obj;
 };
 
 
@@ -205,6 +173,7 @@ inline object& operator>> (object const& o, object& v)
 	return v;
 }
 
+// convert operator
 template <typename T>
 inline T& operator>> (object const& o, T& v)
 {
@@ -222,12 +191,14 @@ struct packer_serializer {
 };
 }
 
+// serialize operator
 template <typename Stream, typename T>
 inline packer<Stream>& operator<< (packer<Stream>& o, const T& v)
 {
 	return detail::packer_serializer<Stream, T>::pack(o, v);
 }
 
+// deconvert operator
 template <typename T>
 void operator<< (object::with_zone& o, const T& v)
 {
