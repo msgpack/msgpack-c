@@ -670,25 +670,29 @@ private:
 };
 
 
-static void unpack(unpacked& result,
+inline void unpack(unpacked& result,
 		const char* data, size_t len, size_t* offset = NULL);
-
+inline void unpack(unpacked* result,
+		const char* data, size_t len, size_t* offset = NULL);
 
 // obsolete
 typedef enum {
 	UNPACK_SUCCESS				=  2,
 	UNPACK_EXTRA_BYTES			=  1,
-	UNPACK_CONTINUE				=  0,
+	UNPACK_CONTINUE			=  0,
 	UNPACK_PARSE_ERROR			= -1,
 } unpack_return;
 
 // obsolete
 static unpack_return unpack(const char* data, size_t len, size_t* off,
 		zone& z, object& result);
+static unpack_return unpack(const char* data, size_t len, size_t* off,
+		zone* z, object* result);
 
 
 // obsolete
 static object unpack(const char* data, size_t len, zone& z, size_t* off = NULL);
+static object unpack(const char* data, size_t len, zone* z, size_t* off = NULL);
 
 
 inline unpacker::unpacker(size_t initial_buffer_size)
@@ -943,7 +947,7 @@ namespace detail {
 
 inline unpack_return
 unpack_imp(const char* data, size_t len, size_t* off,
-		zone& result_zone, object& result)
+	zone& result_zone, object& result)
 {
 	size_t noff = 0;
 	if(off != NULL) { noff = *off; }
@@ -981,8 +985,9 @@ unpack_imp(const char* data, size_t len, size_t* off,
 
 } // detail
 
+// reference version
 inline void unpack(unpacked& result,
-		const char* data, size_t len, size_t* offset)
+	const char* data, size_t len, size_t* offset)
 {
 	object obj;
 	msgpack::unique_ptr<zone> z(new zone());
@@ -1010,17 +1015,30 @@ inline void unpack(unpacked& result,
 		throw unpack_error("parse error");
 	}
 }
+// pointer version
+inline void unpack(unpacked* result,
+	const char* data, size_t len, size_t* offset) {
+	unpack(*result, data, len, offset);
+}
 
 
 // obsolete
+// reference version
 inline unpack_return unpack(const char* data, size_t len, size_t* off,
 		zone& z, object& result)
 {
 	return detail::unpack_imp(data, len, off,
 			z, result);
 }
+// pointer version
+inline unpack_return unpack(const char* data, size_t len, size_t* off,
+		zone* z, object* result)
+{
+	return unpack(data, len, off, *z, *result);
+}
 
 // obsolete
+// reference version
 inline object unpack(const char* data, size_t len, zone& z, size_t* off)
 {
 	object result;
@@ -1043,6 +1061,11 @@ inline object unpack(const char* data, size_t len, zone& z, size_t* off)
 	default:
 		throw unpack_error("parse error");
 	}
+}
+// pointer version
+inline object unpack(const char* data, size_t len, zone* z, size_t* off)
+{
+	return unpack(data, len, *z, off);
 }
 
 }  // namespace msgpack

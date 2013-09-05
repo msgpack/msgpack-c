@@ -90,7 +90,6 @@ struct object {
 	template <typename T>
 	void convert(T* v) const;
 
-
 	object();
 
 	object(msgpack_object o);
