@@ -161,13 +161,13 @@ inline char take8_64(T d) {
 #endif
 
 template <typename Stream>
-packer<Stream>::packer(Stream* s) : m_stream(*s) { }
+inline packer<Stream>::packer(Stream* s) : m_stream(*s) { }
 
 template <typename Stream>
-packer<Stream>::packer(Stream& s) : m_stream(s) { }
+inline packer<Stream>::packer(Stream& s) : m_stream(s) { }
 
 template <typename Stream>
-packer<Stream>::~packer() { }
+inline packer<Stream>::~packer() { }
 
 
 template <typename Stream>
