@@ -31,7 +31,7 @@ namespace detail {
 
 	template <typename T>
 	struct convert_integer_sign<T, true> {
-		static inline T convert(object o) {
+		static inline T convert(object const& o) {
 			if(o.type == type::POSITIVE_INTEGER) {
 				if(o.via.u64 > (uint64_t)std::numeric_limits<T>::max())
 					{ throw type_error(); }
@@ -47,7 +47,7 @@ namespace detail {
 
 	template <typename T>
 	struct convert_integer_sign<T, false> {
-		static inline T convert(object o) {
+		static inline T convert(object const& o) {
 			if(o.type == type::POSITIVE_INTEGER) {
 				if(o.via.u64 > (uint64_t)std::numeric_limits<T>::max())
 					{ throw type_error(); }
@@ -121,35 +121,35 @@ inline char& operator>> (object const& o, char& v)
 	{ v = type::detail::convert_integer<char>(o); return v; }
 
 
-inline signed char& operator>> (object o, signed char& v)
+inline signed char& operator>> (object const& o, signed char& v)
 	{ v = type::detail::convert_integer<signed char>(o); return v; }
 
-inline signed short& operator>> (object o, signed short& v)
+inline signed short& operator>> (object const& o, signed short& v)
 	{ v = type::detail::convert_integer<signed short>(o); return v; }
 
-inline signed int& operator>> (object o, signed int& v)
+inline signed int& operator>> (object const& o, signed int& v)
 	{ v = type::detail::convert_integer<signed int>(o); return v; }
 
-inline signed long& operator>> (object o, signed long& v)
+inline signed long& operator>> (object const& o, signed long& v)
 	{ v = type::detail::convert_integer<signed long>(o); return v; }
 
-inline signed long long& operator>> (object o, signed long long& v)
+inline signed long long& operator>> (object const& o, signed long long& v)
 	{ v = type::detail::convert_integer<signed long long>(o); return v; }
 
 
-inline unsigned char& operator>> (object o, unsigned char& v)
+inline unsigned char& operator>> (object const& o, unsigned char& v)
 	{ v = type::detail::convert_integer<unsigned char>(o); return v; }
 
-inline unsigned short& operator>> (object o, unsigned short& v)
+inline unsigned short& operator>> (object const& o, unsigned short& v)
 	{ v = type::detail::convert_integer<unsigned short>(o); return v; }
 
-inline unsigned int& operator>> (object o, unsigned int& v)
+inline unsigned int& operator>> (object const& o, unsigned int& v)
 	{ v = type::detail::convert_integer<unsigned int>(o); return v; }
 
-inline unsigned long& operator>> (object o, unsigned long& v)
+inline unsigned long& operator>> (object const& o, unsigned long& v)
 	{ v = type::detail::convert_integer<unsigned long>(o); return v; }
 
-inline unsigned long long& operator>> (object o, unsigned long long& v)
+inline unsigned long long& operator>> (object const& o, unsigned long long& v)
 	{ v = type::detail::convert_integer<unsigned long long>(o); return v; }
 
 template <typename Stream>

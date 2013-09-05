@@ -25,7 +25,7 @@ namespace msgpack {
 
 
 template <typename T>
-inline std::list<T>& operator>> (object o, std::list<T>& v)
+inline std::list<T>& operator>> (object const& o, std::list<T>& v)
 {
 	if(o.type != type::ARRAY) { throw type_error(); }
 	v.resize(o.via.array.size);

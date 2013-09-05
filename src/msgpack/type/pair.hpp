@@ -25,7 +25,7 @@ namespace msgpack {
 
 
 template <typename T1, typename T2>
-inline std::pair<T1, T2>& operator>> (object o, std::pair<T1, T2>& v)
+inline std::pair<T1, T2>& operator>> (object const& o, std::pair<T1, T2>& v)
 {
 	if(o.type != type::ARRAY) { throw type_error(); }
 	if(o.via.array.size != 2) { throw type_error(); }

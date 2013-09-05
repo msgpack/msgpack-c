@@ -61,7 +61,7 @@ struct raw_ref {
 }  // namespace type
 
 
-inline type::raw_ref& operator>> (object o, type::raw_ref& v)
+inline type::raw_ref& operator>> (object const& o, type::raw_ref& v)
 {
 	if(o.type != type::RAW) { throw type_error(); }
 	v.ptr  = o.via.raw.ptr;

@@ -25,7 +25,7 @@ namespace msgpack {
 
 
 template <typename T>
-inline std::set<T>& operator>> (object o, std::set<T>& v)
+inline std::set<T>& operator>> (object const& o, std::set<T>& v)
 {
 	if(o.type != type::ARRAY) { throw type_error(); }
 	object* p = o.via.array.ptr + o.via.array.size;
@@ -71,7 +71,7 @@ inline void operator<< (object::with_zone& o, const std::set<T>& v)
 
 
 template <typename T>
-inline std::multiset<T>& operator>> (object o, std::multiset<T>& v)
+inline std::multiset<T>& operator>> (object const& o, std::multiset<T>& v)
 {
 	if(o.type != type::ARRAY) { throw type_error(); }
 	object* p = o.via.array.ptr + o.via.array.size;

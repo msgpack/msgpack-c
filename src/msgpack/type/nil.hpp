@@ -29,7 +29,7 @@ struct nil { };
 }  // namespace type
 
 
-inline type::nil& operator>> (object o, type::nil& v)
+inline type::nil& operator>> (object const& o, type::nil& v)
 {
 	if(o.type != type::NIL) { throw type_error(); }
 	return v;

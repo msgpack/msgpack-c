@@ -25,7 +25,7 @@ namespace msgpack {
 
 
 template <typename T>
-inline std::deque<T>& operator>> (object o, std::deque<T>& v)
+inline std::deque<T>& operator>> (object const& o, std::deque<T>& v)
 {
 	if(o.type != type::ARRAY) { throw type_error(); }
 	v.resize(o.via.array.size);
