@@ -378,7 +378,7 @@ inline object::operator msgpack_object() const
 template <typename T>
 inline void convert(T& v, object const& o)
 {
-	o.convert(&v);
+	o.convert(v);
 }
 
 // obsolete
