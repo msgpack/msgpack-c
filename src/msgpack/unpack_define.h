@@ -76,14 +76,14 @@ typedef enum {
 
 	//ACS_BIG_INT_VALUE,
 	//ACS_BIG_FLOAT_VALUE,
-	ACS_RAW_VALUE,
+	ACS_RAW_VALUE
 } msgpack_unpack_state;
 
 
 typedef enum {
 	CT_ARRAY_ITEM,
 	CT_MAP_KEY,
-	CT_MAP_VALUE,
+	CT_MAP_VALUE
 } msgpack_container_type;
 
 

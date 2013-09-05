@@ -50,7 +50,7 @@ public:
 
 	enum flags_t {
 		A = 0,
-		B = 1,
+		B = 1
 	};
 
 	flags_t flag;

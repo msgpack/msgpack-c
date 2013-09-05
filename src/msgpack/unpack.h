@@ -178,8 +178,8 @@ static inline size_t msgpack_unpacker_message_size(const msgpack_unpacker* mpac)
 typedef enum {
 	MSGPACK_UNPACK_SUCCESS				=  2,
 	MSGPACK_UNPACK_EXTRA_BYTES			=  1,
-	MSGPACK_UNPACK_CONTINUE				=  0,
-	MSGPACK_UNPACK_PARSE_ERROR			= -1,
+	MSGPACK_UNPACK_CONTINUE			=  0,
+	MSGPACK_UNPACK_PARSE_ERROR			= -1
 } msgpack_unpack_return;
 
 // obsolete

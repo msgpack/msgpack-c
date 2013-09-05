@@ -680,7 +680,7 @@ typedef enum {
 	UNPACK_SUCCESS				=  2,
 	UNPACK_EXTRA_BYTES			=  1,
 	UNPACK_CONTINUE			=  0,
-	UNPACK_PARSE_ERROR			= -1,
+	UNPACK_PARSE_ERROR			= -1
 } unpack_return;
 
 // obsolete
