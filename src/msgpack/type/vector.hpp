@@ -34,7 +34,7 @@ inline std::vector<T>& operator>> (object o, std::vector<T>& v)
 		object* const pend = o.via.array.ptr + o.via.array.size;
 		T* it = &v[0];
 		do {
-			p->convert(it);
+			p->convert(*it);
 			++p;
 			++it;
 		} while(p < pend);

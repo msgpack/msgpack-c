@@ -33,7 +33,7 @@ void check_convert() {
 	msgpack::unpack(msg, sbuf.data(), sbuf.size());
 
 	T v2;
-	msg.get().convert(&v2);
+	msg.get().convert(v2);
 
 	EXPECT_EQ(v1.get(), v2.get());
 

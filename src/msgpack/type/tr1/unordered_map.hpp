@@ -51,8 +51,8 @@ inline MSGPACK_STD_TR1::unordered_map<K, V> operator>> (object o, MSGPACK_STD_TR
 	object_kv* const pend(o.via.map.ptr + o.via.map.size);
 	for(; p != pend; ++p) {
 		K key;
-		p->key.convert(&key);
-		p->val.convert(&v[key]);
+		p->key.convert(key);
+		p->val.convert(v[key]);
 	}
 	return v;
 }
@@ -100,8 +100,8 @@ inline MSGPACK_STD_TR1::unordered_multimap<K, V> operator>> (object o, MSGPACK_S
 	object_kv* const pend(o.via.map.ptr + o.via.map.size);
 	for(; p != pend; ++p) {
 		std::pair<K, V> value;
-		p->key.convert(&value.first);
-		p->val.convert(&value.second);
+		p->key.convert(value.first);
+		p->val.convert(value.second);
 		v.insert(value);
 	}
 	return v;

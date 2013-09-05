@@ -33,7 +33,7 @@ inline std::deque<T>& operator>> (object o, std::deque<T>& v)
 	object* const pend = o.via.array.ptr + o.via.array.size;
 	typename std::deque<T>::iterator it = v.begin();
 	for(; p < pend; ++p, ++it) {
-		p->convert(&*it);
+		p->convert(*it);
 	}
 	return v;
 }

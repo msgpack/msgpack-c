@@ -33,7 +33,7 @@ inline std::list<T>& operator>> (object o, std::list<T>& v)
 	object* const pend = o.via.array.ptr + o.via.array.size;
 	typename std::list<T>::iterator it = v.begin();
 	for(; p < pend; ++p, ++it) {
-		p->convert(&*it);
+		p->convert(*it);
 	}
 	return v;
 }

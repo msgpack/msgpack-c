@@ -51,8 +51,8 @@ inline type::assoc_vector<K,V>& operator>> (object o, type::assoc_vector<K,V>& v
 	object_kv* const pend = o.via.map.ptr + o.via.map.size;
 	std::pair<K, V>* it(&v.front());
 	for(; p < pend; ++p, ++it) {
-		p->key.convert(&it->first);
-		p->val.convert(&it->second);
+		p->key.convert(it->first);
+		p->val.convert(it->second);
 	}
 	std::sort(v.begin(), v.end(), type::detail::pair_first_less<K,V>());
 	return v;
@@ -101,13 +101,13 @@ inline std::map<K, V> operator>> (object o, std::map<K, V>& v)
 	object_kv* const pend(o.via.map.ptr + o.via.map.size);
 	for(; p != pend; ++p) {
 		K key;
-		p->key.convert(&key);
+		p->key.convert(key);
 		typename std::map<K,V>::iterator it(v.lower_bound(key));
 		if(it != v.end() && !(key < it->first)) {
-			p->val.convert(&it->second);
+			p->val.convert(it->second);
 		} else {
 			V val;
-			p->val.convert(&val);
+			p->val.convert(val);
 			v.insert(it, std::pair<K,V>(key, val));
 		}
 	}
@@ -157,8 +157,8 @@ inline std::multimap<K, V> operator>> (object o, std::multimap<K, V>& v)
 	object_kv* const pend(o.via.map.ptr + o.via.map.size);
 	for(; p != pend; ++p) {
 		std::pair<K, V> value;
-		p->key.convert(&value.first);
-		p->val.convert(&value.second);
+		p->key.convert(value.first);
+		p->val.convert(value.second);
 		v.insert(value);
 	}
 	return v;

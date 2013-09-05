@@ -20,7 +20,7 @@ TEST(convert, compatibility_less)
 	msgpack::object obj(src, &z);
 
 	compatibility c;
-	EXPECT_NO_THROW( obj.convert(&c) );
+	EXPECT_NO_THROW( obj.convert(c) );
 
 	EXPECT_EQ("kumofs",  c.str1);
 	EXPECT_EQ("default", c.str2);
@@ -37,7 +37,7 @@ TEST(convert, compatibility_more)
 	msgpack::object obj(src, &z);
 
 	compatibility to;
-	EXPECT_NO_THROW( obj.convert(&to) );
+	EXPECT_NO_THROW( obj.convert(to) );
 
 	EXPECT_EQ("kumofs", to.str1);
 	EXPECT_EQ("mpio",   to.str2);
@@ -69,7 +69,7 @@ TEST(convert, enum_member)
 	msgpack::object obj(src, &z);
 
 	enum_member to;
-	EXPECT_NO_THROW( obj.convert(&to) );
+	EXPECT_NO_THROW( obj.convert(to) );
 
 	EXPECT_EQ(enum_member::B, to.flag);
 }

@@ -41,7 +41,7 @@ TEST(object, convert)
 	EXPECT_EQ(ret, msgpack::UNPACK_SUCCESS);
 
 	myclass m2;
-	obj.convert(&m2);
+	obj.convert(m2);
 
 	EXPECT_EQ(m1, m2);
 }

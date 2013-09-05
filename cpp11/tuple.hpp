@@ -141,7 +141,7 @@ struct Converter {
 		object const& o,
 		Tuple& v) {
 		Converter<Tuple, N-1>::convert(o, v);
-		o.via.array.ptr[N-1].convert<typename std::remove_reference<decltype(type::get<N-1>(v))>::type>(&type::get<N-1>(v));
+		o.via.array.ptr[N-1].convert<typename std::remove_reference<decltype(type::get<N-1>(v))>::type>(type::get<N-1>(v));
 	}
 };
 
@@ -150,7 +150,7 @@ struct Converter<Tuple, 1> {
 	static void convert (
 		object const& o,
 		Tuple& v) {
-		o.via.array.ptr[0].convert<typename std::remove_reference<decltype(type::get<0>(v))>::type>(&type::get<0>(v));
+		o.via.array.ptr[0].convert<typename std::remove_reference<decltype(type::get<0>(v))>::type>(type::get<0>(v));
 	}
 };
 

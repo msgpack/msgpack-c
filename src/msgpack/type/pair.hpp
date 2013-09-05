@@ -29,8 +29,8 @@ inline std::pair<T1, T2>& operator>> (object o, std::pair<T1, T2>& v)
 {
 	if(o.type != type::ARRAY) { throw type_error(); }
 	if(o.via.array.size != 2) { throw type_error(); }
-	o.via.array.ptr[0].convert(&v.first);
-	o.via.array.ptr[1].convert(&v.second);
+	o.via.array.ptr[0].convert(v.first);
+	o.via.array.ptr[1].convert(v.second);
 	return v;
 }
 

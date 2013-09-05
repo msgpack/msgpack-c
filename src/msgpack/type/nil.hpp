@@ -55,7 +55,7 @@ template <>
 inline void object::as<void>() const
 {
 	msgpack::type::nil v;
-	convert(&v);
+	convert(v);
 }
 
 

@@ -1,7 +1,7 @@
 //
 // MessagePack for C++ static resolution routine
 //
-// Copyright (C) 2008-2009 FURUHASHI Sadayuki
+// Copyright (C) 2008-2013 FURUHASHI Sadayuki and KONDO Takatoshi
 //
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -92,7 +92,7 @@ private:
 template <>
 struct tuple<> {
 	tuple() {}
-	tuple(object const& o) { o.convert(this); }
+	tuple(object const& o) { o.convert(*this); }
 	typedef tuple<> value_type;
 };
 <%0.upto(GENERATION_LIMIT) {|i|%>
@@ -102,7 +102,7 @@ struct tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> {
 	tuple() {}
 	tuple(typename tuple_type<A0>::transparent_reference _a0<%1.upto(i) {|j|%>, typename tuple_type<A<%=j%>>::transparent_reference _a<%=j%><%}%>) :
 		a0(_a0)<%1.upto(i) {|j|%>, a<%=j%>(_a<%=j%>)<%}%> {}
-	tuple(object const& o) { o.convert(this); }
+	tuple(object const& o) { o.convert(*this); }
 	template <int N> typename tuple_element<value_type, N>::reference get()
 		{ return tuple_element<value_type, N>(*this).get(); }
 	template <int N> typename const_tuple_element<value_type, N>::const_reference get() const
@@ -111,10 +111,10 @@ struct tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> {
 	A<%=j%> a<%=j%>;<%}%>
 };
 
-template <int N, typename A0<%1.upto(i) {|j|%>, typename A<%=j%><%}%>> 
+template <int N, typename A0<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
 inline typename type::tuple_element<type::tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>>, N>::reference get(type::tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>>& t)
 { return t.get<N>(); }
-template <int N, typename A0<%1.upto(i) {|j|%>, typename A<%=j%><%}%>> 
+template <int N, typename A0<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
 inline typename type::const_tuple_element<type::tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>>, N>::const_reference get(type::tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> const& t)
 { return t.get<N>(); }
 <%}%>
@@ -147,7 +147,7 @@ type::tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>>& operator>> (
 	if(o.type != type::ARRAY) { throw type_error(); }
 	if(o.via.array.size < <%=i+1%>) { throw type_error(); }
 	<%0.upto(i) {|j|%>
-	o.via.array.ptr[<%=j%>].convert<typename type::tuple_type<A<%=j%>>::type>(&v.template get<<%=j%>>());<%}%>
+	o.via.array.ptr[<%=j%>].convert<typename type::tuple_type<A<%=j%>>::type>(v.template get<<%=j%>>());<%}%>
 	return v;
 }
 <%}%>

@@ -75,7 +75,7 @@ struct define_imp {
 		define_imp<Tuple, N-1>::unpack(o, t);
 		const size_t size = o.via.array.size;
 		if(size <= N-1) { return; }
-		o.via.array.ptr[N-1].convert(&std::get<N-1>(t));
+		o.via.array.ptr[N-1].convert(std::get<N-1>(t));
 	}
 	static void object(msgpack::object* o, msgpack::zone* z, Tuple const& t) {
 		define_imp<Tuple, N-1>::object(o, z, t);
@@ -92,7 +92,7 @@ struct define_imp<Tuple, 1> {
 	static void unpack(msgpack::object const& o, Tuple& t) {
 		const size_t size = o.via.array.size;
 		if(size <= 0) { return; }
-		o.via.array.ptr[0].convert(&std::get<0>(t));
+		o.via.array.ptr[0].convert(std::get<0>(t));
 	}
 	static void object(msgpack::object* o, msgpack::zone* z, Tuple const& t) {
 		o->via.array.ptr[0] = msgpack::object(std::get<0>(t), z);
