@@ -60,85 +60,85 @@ private:
 	bool referenced_;
 };
 
-inline int template_callback_uint8(unpack_user&, uint8_t d, object& o)
-{ o.type = type::POSITIVE_INTEGER; o.via.u64 = d; return 0; }
+inline bool template_callback_uint8(unpack_user&, uint8_t d, object& o)
+{ o.type = type::POSITIVE_INTEGER; o.via.u64 = d; return true; }
 
-inline int template_callback_uint16(unpack_user&, uint16_t d, object& o)
-{ o.type = type::POSITIVE_INTEGER; o.via.u64 = d; return 0; }
+inline bool template_callback_uint16(unpack_user&, uint16_t d, object& o)
+{ o.type = type::POSITIVE_INTEGER; o.via.u64 = d; return true; }
 
-inline int template_callback_uint32(unpack_user&, uint32_t d, object& o)
-{ o.type = type::POSITIVE_INTEGER; o.via.u64 = d; return 0; }
+inline bool template_callback_uint32(unpack_user&, uint32_t d, object& o)
+{ o.type = type::POSITIVE_INTEGER; o.via.u64 = d; return true; }
 
-inline int template_callback_uint64(unpack_user&, uint64_t d, object& o)
-{ o.type = type::POSITIVE_INTEGER; o.via.u64 = d; return 0; }
+inline bool template_callback_uint64(unpack_user&, uint64_t d, object& o)
+{ o.type = type::POSITIVE_INTEGER; o.via.u64 = d; return true; }
 
-inline int template_callback_int8(unpack_user&, int8_t d, object& o)
-{ if(d >= 0) { o.type = type::POSITIVE_INTEGER; o.via.u64 = d; return 0; }
-		else { o.type = type::NEGATIVE_INTEGER; o.via.i64 = d; return 0; } }
+inline bool template_callback_int8(unpack_user&, int8_t d, object& o)
+{ if(d >= 0) { o.type = type::POSITIVE_INTEGER; o.via.u64 = d; return true; }
+		else { o.type = type::NEGATIVE_INTEGER; o.via.i64 = d; return true; } }
 
-inline int template_callback_int16(unpack_user&, int16_t d, object& o)
-{ if(d >= 0) { o.type = type::POSITIVE_INTEGER; o.via.u64 = d; return 0; }
-		else { o.type = type::NEGATIVE_INTEGER; o.via.i64 = d; return 0; } }
+inline bool template_callback_int16(unpack_user&, int16_t d, object& o)
+{ if(d >= 0) { o.type = type::POSITIVE_INTEGER; o.via.u64 = d; return true; }
+		else { o.type = type::NEGATIVE_INTEGER; o.via.i64 = d; return true; } }
 
-inline int template_callback_int32(unpack_user&, int32_t d, object& o)
-{ if(d >= 0) { o.type = type::POSITIVE_INTEGER; o.via.u64 = d; return 0; }
-		else { o.type = type::NEGATIVE_INTEGER; o.via.i64 = d; return 0; } }
+inline bool template_callback_int32(unpack_user&, int32_t d, object& o)
+{ if(d >= 0) { o.type = type::POSITIVE_INTEGER; o.via.u64 = d; return true; }
+		else { o.type = type::NEGATIVE_INTEGER; o.via.i64 = d; return true; } }
 
-inline int template_callback_int64(unpack_user&, int64_t d, object& o)
-{ if(d >= 0) { o.type = type::POSITIVE_INTEGER; o.via.u64 = d; return 0; }
-		else { o.type = type::NEGATIVE_INTEGER; o.via.i64 = d; return 0; } }
+inline bool template_callback_int64(unpack_user&, int64_t d, object& o)
+{ if(d >= 0) { o.type = type::POSITIVE_INTEGER; o.via.u64 = d; return true; }
+		else { o.type = type::NEGATIVE_INTEGER; o.via.i64 = d; return true; } }
 
-inline int template_callback_float(unpack_user&, float d, object& o)
-{ o.type = type::DOUBLE; o.via.dec = d; return 0; }
+inline bool template_callback_float(unpack_user&, float d, object& o)
+{ o.type = type::DOUBLE; o.via.dec = d; return true; }
 
-inline int template_callback_double(unpack_user&, double d, object& o)
-{ o.type = type::DOUBLE; o.via.dec = d; return 0; }
+inline bool template_callback_double(unpack_user&, double d, object& o)
+{ o.type = type::DOUBLE; o.via.dec = d; return true; }
 
-inline int template_callback_nil(unpack_user&, object& o)
-{ o.type = type::NIL; return 0; }
+inline bool template_callback_nil(unpack_user&, object& o)
+{ o.type = type::NIL; return true; }
 
-inline int template_callback_true(unpack_user&, object& o)
-{ o.type = type::BOOLEAN; o.via.boolean = true; return 0; }
+inline bool template_callback_true(unpack_user&, object& o)
+{ o.type = type::BOOLEAN; o.via.boolean = true; return true; }
 
-inline int template_callback_false(unpack_user&, object& o)
-{ o.type = type::BOOLEAN; o.via.boolean = false; return 0; }
+inline bool template_callback_false(unpack_user&, object& o)
+{ o.type = type::BOOLEAN; o.via.boolean = false; return true; }
 
-inline int template_callback_array(unpack_user&u, unsigned int n, object& o)
+inline bool template_callback_array(unpack_user&u, unsigned int n, object& o)
 {
 	o.type = type::ARRAY;
 	o.via.array.size = 0;
 	o.via.array.ptr = (object*)u.z().malloc(n*sizeof(object));
-	if(o.via.array.ptr == NULL) { return -1; }
-	return 0;
+	if(o.via.array.ptr == NULL) { return false; }
+	return true;
 }
 
-inline int template_callback_array_item(unpack_user&, object& c, object const& o)
-{ c.via.array.ptr[c.via.array.size++] = o; return 0; }
+inline bool template_callback_array_item(unpack_user&, object& c, object const& o)
+{ c.via.array.ptr[c.via.array.size++] = o; return true; }
 
-inline int template_callback_map(unpack_user& u, unsigned int n, object& o)
+inline bool template_callback_map(unpack_user& u, unsigned int n, object& o)
 {
 	o.type = type::MAP;
 	o.via.map.size = 0;
 	o.via.map.ptr = (object_kv*)u.z().malloc(n*sizeof(object_kv));
-	if(o.via.map.ptr == NULL) { return -1; }
-	return 0;
+	if(o.via.map.ptr == NULL) { return false; }
+	return true;
 }
 
-inline int template_callback_map_item(unpack_user&, object& c, object const& k, object const& v)
+inline bool template_callback_map_item(unpack_user&, object& c, object const& k, object const& v)
 {
 	c.via.map.ptr[c.via.map.size].key = k;
 	c.via.map.ptr[c.via.map.size].val = v;
 	++c.via.map.size;
-	return 0;
+	return true;
 }
 
-inline int template_callback_raw(unpack_user& u, const char* b, const char* p, unsigned int l, object& o)
+inline bool template_callback_raw(unpack_user& u, const char* b, const char* p, unsigned int l, object& o)
 {
 	o.type = type::RAW;
 	o.via.raw.ptr = p;
 	o.via.raw.size = l;
 	u.set_referenced(true);
-	return 0;
+	return true;
 }
 
 
@@ -240,23 +240,23 @@ public:
 			case CS_HEADER:
 				if (0) {
 				} else if(0x00 <= *p && *p <= 0x7f) { // Positive Fixnum
-					if(template_callback_uint8(user_, *(uint8_t*)p, obj) < 0) { goto _failed; }
+					if(!template_callback_uint8(user_, *(uint8_t*)p, obj)) { goto _failed; }
 					goto _push;
 				} else if(0xe0 <= *p && *p <= 0xff) { // Negative Fixnum
-					if(template_callback_int8(user_, *(int8_t*)p, obj) < 0) { goto _failed; }
+					if(!template_callback_int8(user_, *(int8_t*)p, obj)) { goto _failed; }
 					goto _push;
 				} else if(0xc0 <= *p && *p <= 0xdf) { // Variable
 					switch(*p) {
 					case 0xc0:	// nil
-						if(template_callback_nil(user_, obj) < 0) { goto _failed; }
+						if(!template_callback_nil(user_, obj)) { goto _failed; }
 						goto _push;
 					//case 0xc1:  // string
 					//	again_terminal_trail(next_cs(p), p+1);
 					case 0xc2:	// false
-						if(template_callback_false(user_, obj) < 0) { goto _failed; }
+						if(!template_callback_false(user_, obj)) { goto _failed; }
 						goto _push;
 					case 0xc3:	// true
-						if(template_callback_true(user_, obj) < 0) { goto _failed; }
+						if(!template_callback_true(user_, obj)) { goto _failed; }
 						goto _push;
 					case 0xc4: // bin 8
 					case 0xc5: // bin 16
@@ -310,7 +310,7 @@ public:
 
 				} else if(0x90 <= *p && *p <= 0x9f) { // FixArray
 					if(top >= MSGPACK_EMBED_STACK_SIZE) { goto _failed; } /* FIXME */
-					if(template_callback_array(user_, ((unsigned int)*p) & 0x0f, stack[top].obj()) < 0) { goto _failed; }
+					if(!template_callback_array(user_, ((unsigned int)*p) & 0x0f, stack[top].obj())) { goto _failed; }
 					if((((unsigned int)*p) & 0x0f) == 0) { obj = stack[top].obj(); goto _push; }
 					stack[top].set_ct(CT_ARRAY_ITEM);
 					stack[top].set_count(((unsigned int)*p) & 0x0f);
@@ -319,7 +319,7 @@ public:
 
 				} else if(0x80 <= *p && *p <= 0x8f) { // FixMap
 					if(top >= MSGPACK_EMBED_STACK_SIZE) { goto _failed; } /* FIXME */
-					if(template_callback_map(user_, ((unsigned int)*p) & 0x0f, stack[top].obj()) < 0) { goto _failed; }
+					if(!template_callback_map(user_, ((unsigned int)*p) & 0x0f, stack[top].obj())) { goto _failed; }
 					if((((unsigned int)*p) & 0x0f) == 0) { obj = stack[top].obj(); goto _push; }
 					stack[top].set_ct(CT_MAP_KEY);
 					stack[top].set_count(((unsigned int)*p) & 0x0f);
@@ -344,7 +344,7 @@ _fixed_trail_again:
 				case CS_FLOAT: {
 					union { uint32_t i; float f; } mem;
 					mem.i = _msgpack_load32(uint32_t,n);
-					if(template_callback_float(user_, mem.f, obj) < 0) { goto _failed; }
+					if(!template_callback_float(user_, mem.f, obj)) { goto _failed; }
 					goto _push; }
 				case CS_DOUBLE: {
 					union { uint64_t i; double f; } mem;
@@ -353,32 +353,32 @@ _fixed_trail_again:
 					// https://github.com/msgpack/msgpack-perl/pull/1
 					mem.i = (mem.i & 0xFFFFFFFFUL) << 32UL | (mem.i >> 32UL);
 #endif
-					if(template_callback_double(user_, mem.f, obj) < 0) { goto _failed; }
+					if(!template_callback_double(user_, mem.f, obj)) { goto _failed; }
 					goto _push; }
 				case CS_UINT_8:
-					if(template_callback_uint8(user_, *(uint8_t*)n, obj) < 0) { goto _failed; }
+					if(!template_callback_uint8(user_, *(uint8_t*)n, obj)) { goto _failed; }
 					goto _push;
 				case CS_UINT_16:
-					if(template_callback_uint16(user_, _msgpack_load16(uint16_t,n), obj) < 0) { goto _failed; }
+					if(!template_callback_uint16(user_, _msgpack_load16(uint16_t,n), obj)) { goto _failed; }
 					goto _push;
 				case CS_UINT_32:
-					if(template_callback_uint32(user_, _msgpack_load32(uint32_t,n), obj) < 0) { goto _failed; }
+					if(!template_callback_uint32(user_, _msgpack_load32(uint32_t,n), obj)) { goto _failed; }
 					goto _push;
 				case CS_UINT_64:
-					if(template_callback_uint64(user_, _msgpack_load64(uint64_t,n), obj) < 0) { goto _failed; }
+					if(!template_callback_uint64(user_, _msgpack_load64(uint64_t,n), obj)) { goto _failed; }
 					goto _push;
 
 				case CS_INT_8:
-					if(template_callback_int8(user_, *(int8_t*)n, obj) < 0) { goto _failed; }
+					if(!template_callback_int8(user_, *(int8_t*)n, obj)) { goto _failed; }
 					goto _push;
 				case CS_INT_16:
-					if(template_callback_int16(user_, _msgpack_load16(int16_t,n), obj) < 0) { goto _failed; }
+					if(!template_callback_int16(user_, _msgpack_load16(int16_t,n), obj)) { goto _failed; }
 					goto _push;
 				case CS_INT_32:
-					if(template_callback_int32(user_, _msgpack_load32(int32_t,n), obj) < 0) { goto _failed; }
+					if(!template_callback_int32(user_, _msgpack_load32(int32_t,n), obj)) { goto _failed; }
 					goto _push;
 				case CS_INT_64:
-					if(template_callback_int64(user_, _msgpack_load64(int64_t,n), obj) < 0) { goto _failed; }
+					if(!template_callback_int64(user_, _msgpack_load64(int64_t,n), obj)) { goto _failed; }
 					goto _push;
 
 				case CS_BIN_8:
@@ -401,11 +401,11 @@ _fixed_trail_again:
 					goto _fixed_trail_again;
 				case ACS_RAW_VALUE:
 _raw_zero:
-					if(template_callback_raw(user_, (const char*)data, (const char*)n, trail, obj) < 0) { goto _failed; }
+					if(!template_callback_raw(user_, (const char*)data, (const char*)n, trail, obj)) { goto _failed; }
 					goto _push;
 				case CS_ARRAY_16:
 					if(top >= MSGPACK_EMBED_STACK_SIZE) { goto _failed; } /* FIXME */
-					if(template_callback_array(user_, _msgpack_load16(uint16_t, n), stack[top].obj()) < 0) { goto _failed; }
+					if(!template_callback_array(user_, _msgpack_load16(uint16_t, n), stack[top].obj())) { goto _failed; }
 					if(_msgpack_load16(uint16_t, n) == 0) { obj = stack[top].obj(); goto _push; }
 					stack[top].set_ct(CT_ARRAY_ITEM);
 					stack[top].set_count(_msgpack_load16(uint16_t, n));
@@ -414,7 +414,7 @@ _raw_zero:
 				case CS_ARRAY_32:
 					/* FIXME security guard */
 					if(top >= MSGPACK_EMBED_STACK_SIZE) { goto _failed; } /* FIXME */
-					if(template_callback_array(user_, _msgpack_load32(uint32_t, n), stack[top].obj()) < 0) { goto _failed; }
+					if(!template_callback_array(user_, _msgpack_load32(uint32_t, n), stack[top].obj())) { goto _failed; }
 					if(_msgpack_load32(uint32_t, n) == 0) { obj = stack[top].obj(); goto _push; }
 					stack[top].set_ct(CT_ARRAY_ITEM);
 					stack[top].set_count(_msgpack_load32(uint32_t, n));
@@ -423,7 +423,7 @@ _raw_zero:
 
 				case CS_MAP_16:
 					if(top >= MSGPACK_EMBED_STACK_SIZE) { goto _failed; } /* FIXME */
-					if(template_callback_map(user_, _msgpack_load16(uint16_t, n), stack[top].obj()) < 0) { goto _failed; }
+					if(!template_callback_map(user_, _msgpack_load16(uint16_t, n), stack[top].obj())) { goto _failed; }
 					if(_msgpack_load16(uint16_t, n) == 0) { obj = stack[top].obj(); goto _push; }
 					stack[top].set_ct(CT_MAP_KEY);
 					stack[top].set_count(_msgpack_load16(uint16_t, n));
@@ -432,7 +432,7 @@ _raw_zero:
 				case CS_MAP_32:
 					/* FIXME security guard */
 					if(top >= MSGPACK_EMBED_STACK_SIZE) { goto _failed; } /* FIXME */
-					if(template_callback_map(user_, _msgpack_load32(uint32_t, n), stack[top].obj()) < 0) { goto _failed; }
+					if(!template_callback_map(user_, _msgpack_load32(uint32_t, n), stack[top].obj())) { goto _failed; }
 					if(_msgpack_load32(uint32_t, n) == 0) { obj = stack[top].obj(); goto _push; }
 					stack[top].set_ct(CT_MAP_KEY);
 					stack[top].set_count(_msgpack_load32(uint32_t, n));
@@ -449,7 +449,7 @@ _push:
 			c = &stack[top-1];
 			switch(c->ct()) {
 			case CT_ARRAY_ITEM:
-				if(template_callback_array_item(user_, c->obj(), obj) < 0) { goto _failed; }
+				if(!template_callback_array_item(user_, c->obj(), obj)) { goto _failed; }
 				if(c->decl_count() == 0) {
 					obj = c->obj();
 					--top;
@@ -462,7 +462,7 @@ _push:
 				c->set_ct(CT_MAP_VALUE);
 				goto _header_again;
 			case CT_MAP_VALUE:
-				if(template_callback_map_item(user_, c->obj(), c->map_key(), obj) < 0) { goto _failed; }
+				if(!template_callback_map_item(user_, c->obj(), c->map_key(), obj)) { goto _failed; }
 				if(c->decl_count() == 0) {
 					obj = c->obj();
 					--top;
