@@ -213,11 +213,11 @@ public:
 		return user_;
 	}
 
-	int execute(const char* data, size_t len, size_t* off)
+	int execute(const char* data, size_t len, size_t& off)
 	{
-		assert(len >= *off);
+		assert(len >= off);
 
-		const unsigned char* p = (unsigned char*)data + *off;
+		const unsigned char* p = (unsigned char*)data + off;
 		const unsigned char* const pe = (unsigned char*)data + len;
 		const void* n = nullptr;
 
@@ -501,7 +501,7 @@ _end:
 		cs_ = cs;
 		trail_ = trail;
 		top_ = top;
-		*off = p - (const unsigned char*)data;
+		off = p - (const unsigned char*)data;
 
 		return ret;
 	}
@@ -850,7 +850,7 @@ inline bool unpacker::execute()
 inline int unpacker::execute_imp()
 {
 	size_t off = off_;
-	int ret = ctx_.execute(buffer_, used_, &off_);
+	int ret = ctx_.execute(buffer_, used_, off_);
 	if(off_ > off) {
 		parsed_ += off_ - off;
 	}
@@ -958,7 +958,7 @@ unpack_imp(const char* data, size_t len, size_t* off,
 	ctx.user().set_z(result_zone);
 	ctx.user().set_referenced(false);
 
-	int e = ctx.execute(data, len, &noff);
+	int e = ctx.execute(data, len, noff);
 	if(e < 0) {
 		return UNPACK_PARSE_ERROR;
 	}
