@@ -202,7 +202,7 @@ inline packer<Stream>& operator<< (packer<Stream>& o, const T& v)
 
 // deconvert operator
 template <typename T>
-void operator<< (object::with_zone& o, const T& v)
+inline void operator<< (object::with_zone& o, const T& v)
 {
 	v.msgpack_object(static_cast<object*>(&o), o.zone);
 }
