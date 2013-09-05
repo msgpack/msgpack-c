@@ -82,21 +82,21 @@ public:
 
 private:
 	template <typename T>
-	void pack_real_uint8(T d);
+	void pack_imp_uint8(T d);
 	template <typename T>
-	void pack_real_uint16(T d);
+	void pack_imp_uint16(T d);
 	template <typename T>
-	void pack_real_uint32(T d);
+	void pack_imp_uint32(T d);
 	template <typename T>
-	void pack_real_uint64(T d);
+	void pack_imp_uint64(T d);
 	template <typename T>
-	void pack_real_int8(T d);
+	void pack_imp_int8(T d);
 	template <typename T>
-	void pack_real_int16(T d);
+	void pack_imp_int16(T d);
 	template <typename T>
-	void pack_real_int32(T d);
+	void pack_imp_int32(T d);
 	template <typename T>
-	void pack_real_int64(T d);
+	void pack_imp_int64(T d);
 
 	void append_buffer(const char* buf, unsigned int len)
 		{ m_stream.write(buf, len); }
@@ -172,35 +172,35 @@ packer<Stream>::~packer() { }
 
 template <typename Stream>
 inline packer<Stream>& packer<Stream>::pack_uint8(uint8_t d)
-{ pack_real_uint8(d); return *this; }
+{ pack_imp_uint8(d); return *this; }
 
 template <typename Stream>
 inline packer<Stream>& packer<Stream>::pack_uint16(uint16_t d)
-{ pack_real_uint16(d); return *this; }
+{ pack_imp_uint16(d); return *this; }
 
 template <typename Stream>
 inline packer<Stream>& packer<Stream>::pack_uint32(uint32_t d)
-{ pack_real_uint32(d); return *this; }
+{ pack_imp_uint32(d); return *this; }
 
 template <typename Stream>
 inline packer<Stream>& packer<Stream>::pack_uint64(uint64_t d)
-{ pack_real_uint64(d); return *this; }
+{ pack_imp_uint64(d); return *this; }
 
 template <typename Stream>
 inline packer<Stream>& packer<Stream>::pack_int8(int8_t d)
-{ pack_real_int8(d); return *this; }
+{ pack_imp_int8(d); return *this; }
 
 template <typename Stream>
 inline packer<Stream>& packer<Stream>::pack_int16(int16_t d)
-{ pack_real_int16(d); return *this; }
+{ pack_imp_int16(d); return *this; }
 
 template <typename Stream>
 inline packer<Stream>& packer<Stream>::pack_int32(int32_t d)
-{ pack_real_int32(d); return *this; }
+{ pack_imp_int32(d); return *this; }
 
 template <typename Stream>
 inline packer<Stream>& packer<Stream>::pack_int64(int64_t d)
-{ pack_real_int64(d); return *this;}
+{ pack_imp_int64(d); return *this;}
 
 
 template <typename Stream>
@@ -287,29 +287,29 @@ inline packer<Stream>& packer<Stream>::pack_short(short d)
 {
 #if defined(SIZEOF_SHORT)
 #if SIZEOF_SHORT == 2
-	pack_real_int16(d);
+	pack_imp_int16(d);
 #elif SIZEOF_SHORT == 4
-	pack_real_int32(d);
+	pack_imp_int32(d);
 #else
-	pack_real_int64(d);
+	pack_imp_int64(d);
 #endif
 
 #elif defined(SHRT_MAX)
 #if SHRT_MAX == 0x7fff
-	pack_real_int16(d);
+	pack_imp_int16(d);
 #elif SHRT_MAX == 0x7fffffff
-	pack_real_int32(d);
+	pack_imp_int32(d);
 #else
-	pack_real_int64(d);
+	pack_imp_int64(d);
 #endif
 
 #else
 	if(sizeof(short) == 2) {
-		pack_real_int16(d);
+		pack_imp_int16(d);
 	} else if(sizeof(short) == 4) {
-		pack_real_int32(d);
+		pack_imp_int32(d);
 	} else {
-		pack_real_int64(d);
+		pack_imp_int64(d);
 	}
 #endif
 	return *this;
@@ -320,29 +320,29 @@ inline packer<Stream>& packer<Stream>::pack_int(int d)
 {
 #if defined(SIZEOF_INT)
 #if SIZEOF_INT == 2
-	pack_real_int16(d);
+	pack_imp_int16(d);
 #elif SIZEOF_INT == 4
-	pack_real_int32(d);
+	pack_imp_int32(d);
 #else
-	pack_real_int64(d);
+	pack_imp_int64(d);
 #endif
 
 #elif defined(INT_MAX)
 #if INT_MAX == 0x7fff
-	pack_real_int16(d);
+	pack_imp_int16(d);
 #elif INT_MAX == 0x7fffffff
-	pack_real_int32(d);
+	pack_imp_int32(d);
 #else
-	pack_real_int64(d);
+	pack_imp_int64(d);
 #endif
 
 #else
 	if(sizeof(int) == 2) {
-		pack_real_int16(d);
+		pack_imp_int16(d);
 	} else if(sizeof(int) == 4) {
-		pack_real_int32(d);
+		pack_imp_int32(d);
 	} else {
-		pack_real_int64(d);
+		pack_imp_int64(d);
 	}
 #endif
 	return *this;
@@ -353,29 +353,29 @@ inline packer<Stream>& packer<Stream>::pack_long(long d)
 {
 #if defined(SIZEOF_LONG)
 #if SIZEOF_LONG == 2
-	pack_real_int16(d);
+	pack_imp_int16(d);
 #elif SIZEOF_LONG == 4
-	pack_real_int32(d);
+	pack_imp_int32(d);
 #else
-	pack_real_int64(d);
+	pack_imp_int64(d);
 #endif
 
 #elif defined(LONG_MAX)
 #if LONG_MAX == 0x7fffL
-	pack_real_int16(d);
+	pack_imp_int16(d);
 #elif LONG_MAX == 0x7fffffffL
-	pack_real_int32(d);
+	pack_imp_int32(d);
 #else
-	pack_real_int64(d);
+	pack_imp_int64(d);
 #endif
 
 #else
 	if(sizeof(long) == 2) {
-		pack_real_int16(d);
+		pack_imp_int16(d);
 	} else if(sizeof(long) == 4) {
-		pack_real_int32(d);
+		pack_imp_int32(d);
 	} else {
-		pack_real_int64(d);
+		pack_imp_int64(d);
 	}
 #endif
 	return *this;
@@ -386,29 +386,29 @@ inline packer<Stream>& packer<Stream>::pack_long_long(long long d)
 {
 #if defined(SIZEOF_LONG_LONG)
 #if SIZEOF_LONG_LONG == 2
-	pack_real_int16(d);
+	pack_imp_int16(d);
 #elif SIZEOF_LONG_LONG == 4
-	pack_real_int32(d);
+	pack_imp_int32(d);
 #else
-	pack_real_int64(d);
+	pack_imp_int64(d);
 #endif
 
 #elif defined(LLONG_MAX)
 #if LLONG_MAX == 0x7fffL
-	pack_real_int16(d);
+	pack_imp_int16(d);
 #elif LLONG_MAX == 0x7fffffffL
-	pack_real_int32(d);
+	pack_imp_int32(d);
 #else
-	pack_real_int64(d);
+	pack_imp_int64(d);
 #endif
 
 #else
 	if(sizeof(long long) == 2) {
-		pack_real_int16(d);
+		pack_imp_int16(d);
 	} else if(sizeof(long long) == 4) {
-		pack_real_int32(d);
+		pack_imp_int32(d);
 	} else {
-		pack_real_int64(d);
+		pack_imp_int64(d);
 	}
 #endif
 	return *this;
@@ -424,29 +424,29 @@ inline packer<Stream>& packer<Stream>::pack_unsigned_short(unsigned short d)
 {
 #if defined(SIZEOF_SHORT)
 #if SIZEOF_SHORT == 2
-	pack_real_uint16(d);
+	pack_imp_uint16(d);
 #elif SIZEOF_SHORT == 4
-	pack_real_uint32(d);
+	pack_imp_uint32(d);
 #else
-	pack_real_uint64(d);
+	pack_imp_uint64(d);
 #endif
 
 #elif defined(USHRT_MAX)
 #if USHRT_MAX == 0xffffU
-	pack_real_uint16(d);
+	pack_imp_uint16(d);
 #elif USHRT_MAX == 0xffffffffU
-	pack_real_uint32(d);
+	pack_imp_uint32(d);
 #else
-	pack_real_uint64(d);
+	pack_imp_uint64(d);
 #endif
 
 #else
 	if(sizeof(unsigned short) == 2) {
-		pack_real_uint16(d);
+		pack_imp_uint16(d);
 	} else if(sizeof(unsigned short) == 4) {
-		pack_real_uint32(d);
+		pack_imp_uint32(d);
 	} else {
-		pack_real_uint64(d);
+		pack_imp_uint64(d);
 	}
 #endif
 	return *this;
@@ -457,29 +457,29 @@ inline packer<Stream>& packer<Stream>::pack_unsigned_int(unsigned int d)
 {
 #if defined(SIZEOF_INT)
 #if SIZEOF_INT == 2
-	pack_real_uint16(d);
+	pack_imp_uint16(d);
 #elif SIZEOF_INT == 4
-	pack_real_uint32(d);
+	pack_imp_uint32(d);
 #else
-	pack_real_uint64(d);
+	pack_imp_uint64(d);
 #endif
 
 #elif defined(UINT_MAX)
 #if UINT_MAX == 0xffffU
-	pack_real_uint16(d);
+	pack_imp_uint16(d);
 #elif UINT_MAX == 0xffffffffU
-	pack_real_uint32(d);
+	pack_imp_uint32(d);
 #else
-	pack_real_uint64(d);
+	pack_imp_uint64(d);
 #endif
 
 #else
 	if(sizeof(unsigned int) == 2) {
-		pack_real_uint16(d);
+		pack_imp_uint16(d);
 	} else if(sizeof(unsigned int) == 4) {
-		pack_real_uint32(d);
+		pack_imp_uint32(d);
 	} else {
-		pack_real_uint64(d);
+		pack_imp_uint64(d);
 	}
 #endif
 	return *this;
@@ -490,29 +490,29 @@ inline packer<Stream>& packer<Stream>::pack_unsigned_long(unsigned long d)
 {
 #if defined(SIZEOF_LONG)
 #if SIZEOF_LONG == 2
-	pack_real_uint16(d);
+	pack_imp_uint16(d);
 #elif SIZEOF_LONG == 4
-	pack_real_uint32(d);
+	pack_imp_uint32(d);
 #else
-	pack_real_uint64(d);
+	pack_imp_uint64(d);
 #endif
 
 #elif defined(ULONG_MAX)
 #if ULONG_MAX == 0xffffUL
-	pack_real_uint16(d);
+	pack_imp_uint16(d);
 #elif ULONG_MAX == 0xffffffffUL
-	pack_real_uint32(d);
+	pack_imp_uint32(d);
 #else
-	pack_real_uint64(d);
+	pack_imp_uint64(d);
 #endif
 
 #else
 	if(sizeof(unsigned long) == 2) {
-		pack_real_uint16(d);
+		pack_imp_uint16(d);
 	} else if(sizeof(unsigned long) == 4) {
-		pack_real_uint32(d);
+		pack_imp_uint32(d);
 	} else {
-		pack_real_uint64(d);
+		pack_imp_uint64(d);
 	}
 #endif
 	return *this;
@@ -523,29 +523,29 @@ inline packer<Stream>& packer<Stream>::pack_unsigned_long_long(unsigned long lon
 {
 #if defined(SIZEOF_LONG_LONG)
 #if SIZEOF_LONG_LONG == 2
-	pack_real_uint16(d);
+	pack_imp_uint16(d);
 #elif SIZEOF_LONG_LONG == 4
-	pack_real_uint32(d);
+	pack_imp_uint32(d);
 #else
-	pack_real_uint64(d);
+	pack_imp_uint64(d);
 #endif
 
 #elif defined(ULLONG_MAX)
 #if ULLONG_MAX == 0xffffUL
-	pack_real_uint16(d);
+	pack_imp_uint16(d);
 #elif ULLONG_MAX == 0xffffffffUL
-	pack_real_uint32(d);
+	pack_imp_uint32(d);
 #else
-	pack_real_uint64(d);
+	pack_imp_uint64(d);
 #endif
 
 #else
 	if(sizeof(unsigned long long) == 2) {
-		pack_real_uint16(d);
+		pack_imp_uint16(d);
 	} else if(sizeof(unsigned long long) == 4) {
-		pack_real_uint32(d);
+		pack_imp_uint32(d);
 	} else {
-		pack_real_uint64(d);
+		pack_imp_uint64(d);
 	}
 #endif
 	return *this;
@@ -670,7 +670,7 @@ inline packer<Stream>& packer<Stream>::pack_raw_body(const char* b, size_t l)
 
 template <typename Stream>
 template <typename T>
-inline void packer<Stream>::pack_real_uint8(T d)
+inline void packer<Stream>::pack_imp_uint8(T d)
 {
 	if(d < (1<<7)) {
 		/* fixnum */
@@ -685,7 +685,7 @@ inline void packer<Stream>::pack_real_uint8(T d)
 
 template <typename Stream>
 template <typename T>
-inline void packer<Stream>::pack_real_uint16(T d)
+inline void packer<Stream>::pack_imp_uint16(T d)
 {
 	if(d < (1<<7)) {
 		/* fixnum */
@@ -705,7 +705,7 @@ inline void packer<Stream>::pack_real_uint16(T d)
 
 template <typename Stream>
 template <typename T>
-inline void packer<Stream>::pack_real_uint32(T d)
+inline void packer<Stream>::pack_imp_uint32(T d)
 {
 	if(d < (1<<8)) {
 		if(d < (1<<7)) {
@@ -734,7 +734,7 @@ inline void packer<Stream>::pack_real_uint32(T d)
 
 template <typename Stream>
 template <typename T>
-inline void packer<Stream>::pack_real_uint64(T d)
+inline void packer<Stream>::pack_imp_uint64(T d)
 {
 	if(d < (1ULL<<8)) {
 		if(d < (1ULL<<7)) {
@@ -768,7 +768,7 @@ inline void packer<Stream>::pack_real_uint64(T d)
 
 template <typename Stream>
 template <typename T>
-inline void packer<Stream>::pack_real_int8(T d)
+inline void packer<Stream>::pack_imp_int8(T d)
 {
 	if(d < -(1<<5)) {
 		/* signed 8 */
@@ -783,7 +783,7 @@ inline void packer<Stream>::pack_real_int8(T d)
 
 template <typename Stream>
 template <typename T>
-inline void packer<Stream>::pack_real_int16(T d)
+inline void packer<Stream>::pack_imp_int16(T d)
 {
 	if(d < -(1<<5)) {
 		if(d < -(1<<7)) {
@@ -816,7 +816,7 @@ inline void packer<Stream>::pack_real_int16(T d)
 
 template <typename Stream>
 template <typename T>
-inline void packer<Stream>::pack_real_int32(T d)
+inline void packer<Stream>::pack_imp_int32(T d)
 {
 	if(d < -(1<<5)) {
 		if(d < -(1<<15)) {
@@ -859,7 +859,7 @@ inline void packer<Stream>::pack_real_int32(T d)
 
 template <typename Stream>
 template <typename T>
-inline void packer<Stream>::pack_real_int64(T d)
+inline void packer<Stream>::pack_imp_int64(T d)
 {
 	if(d < -(1LL<<5)) {
 		if(d < -(1LL<<15)) {
