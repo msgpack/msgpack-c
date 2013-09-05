@@ -60,9 +60,6 @@ private:
 	bool referenced_;
 };
 
-inline object template_callback_root(unpack_user&)
-{ object o; return o; }
-
 inline int template_callback_uint8(unpack_user&, uint8_t d, object& o)
 { o.type = type::POSITIVE_INTEGER; o.via.u64 = d; return 0; }
 
@@ -192,7 +189,7 @@ class template_context {
 public:
 	template_context():cs_(CS_HEADER), trail_(0), top_(0)
 	{
-		stack_[0].setObj(template_callback_root(user_));
+		stack_[0].setObj(object());
 	}
 
 	void init()
@@ -200,7 +197,7 @@ public:
 		cs_ = CS_HEADER;
 		trail_ = 0;
 		top_ = 0;
-		stack_[0].setObj(template_callback_root(user_));
+		stack_[0].setObj(object());
 	}
 
 	object const& data() const
