@@ -27,6 +27,8 @@
 #include <stdexcept>
 
 
+
+
 #define COUNTER_SIZE (sizeof(_msgpack_atomic_counter_t))
 
 #ifndef MSGPACK_UNPACKER_INIT_BUFFER_SIZE
@@ -183,6 +185,40 @@ inline _msgpack_atomic_counter_t get_count(void* buffer)
 	return *(volatile _msgpack_atomic_counter_t*)buffer;
 }
 
+template <typename T>
+inline T load(const char* n, typename msgpack::enable_if<sizeof(T) == 1>::type* = nullptr) {
+	return static_cast<T>(*reinterpret_cast<const uint8_t*>(n));
+}
+
+template <typename T>
+inline T load(const char* n, typename msgpack::enable_if<sizeof(T) == 2>::type* = nullptr) {
+	return static_cast<T>(
+		(static_cast<uint16_t>(reinterpret_cast<const uint8_t*>(n)[0]) <<  8) |
+		(static_cast<uint16_t>(reinterpret_cast<const uint8_t*>(n)[1])      ));
+}
+
+template <typename T>
+inline T load(const char* n, typename msgpack::enable_if<sizeof(T) == 4>::type* = nullptr) {
+	return static_cast<T>(
+		(static_cast<uint32_t>(reinterpret_cast<const uint8_t*>(n)[0]) << 24) |
+		(static_cast<uint32_t>(reinterpret_cast<const uint8_t*>(n)[1]) << 16) |
+		(static_cast<uint32_t>(reinterpret_cast<const uint8_t*>(n)[2]) <<  8) |
+		(static_cast<uint32_t>(reinterpret_cast<const uint8_t*>(n)[3])      ));
+}
+
+template <typename T>
+inline T load(const char* n, typename msgpack::enable_if<sizeof(T) == 8>::type* = nullptr) {
+	return static_cast<T>(
+		(static_cast<uint64_t>(reinterpret_cast<const uint8_t*>(n)[0]) << 56) |
+		(static_cast<uint64_t>(reinterpret_cast<const uint8_t*>(n)[1]) << 48) |
+		(static_cast<uint64_t>(reinterpret_cast<const uint8_t*>(n)[2]) << 40) |
+		(static_cast<uint64_t>(reinterpret_cast<const uint8_t*>(n)[3]) << 32) |
+		(static_cast<uint64_t>(reinterpret_cast<const uint8_t*>(n)[4]) << 24) |
+		(static_cast<uint64_t>(reinterpret_cast<const uint8_t*>(n)[5]) << 16) |
+		(static_cast<uint64_t>(reinterpret_cast<const uint8_t*>(n)[6]) <<  8) |
+		(static_cast<uint64_t>(reinterpret_cast<const uint8_t*>(n)[7])      ));
+}
+
 class template_context {
 public:
 	template_context():cs_(CS_HEADER), trail_(0), top_(0)
@@ -219,49 +255,60 @@ public:
 
 		const unsigned char* p = (unsigned char*)data + off;
 		const unsigned char* const pe = (unsigned char*)data + len;
-		const void* n = nullptr;
+		const char* n = nullptr;
 
-		unsigned int trail = trail_;
+		// to support register optimization
 		unsigned int cs = cs_;
+		unsigned int trail = trail_;
+		unpack_user user = user_;
 		unsigned int top = top_;
 		template_unpack_stack* stack = stack_;
 
 		object obj;
 		template_unpack_stack* c = nullptr;
 
-		int ret;
-
-
-		if(p == pe) { goto _out; }
+		if(p == pe) {
+			off = update_attributes(p, data, top, cs, trail, user);
+			return 0;
+		}
+		bool fixed_trail_again = false;
 		do {
-			switch(cs) {
-			case CS_HEADER:
+			if (cs == CS_HEADER) {
+				fixed_trail_again = false;
 				if (0) {
 				} else if(0x00 <= *p && *p <= 0x7f) { // Positive Fixnum
-					template_callback_uint8(user_, *(uint8_t*)p, obj);
-					goto _push;
+					template_callback_uint8(user, *(uint8_t*)p, obj);
+					int ret = push_proc(stack, c, obj, p, data, off, top, cs, trail, user);
+					if (ret != 0) return ret;
 				} else if(0xe0 <= *p && *p <= 0xff) { // Negative Fixnum
-					template_callback_int8(user_, *(int8_t*)p, obj);
-					goto _push;
+					template_callback_int8(user, *(int8_t*)p, obj);
+					int ret = push_proc(stack, c, obj, p, data, off, top, cs, trail, user);
+					if (ret != 0) return ret;
 				} else if(0xc0 <= *p && *p <= 0xdf) { // Variable
 					switch(*p) {
-					case 0xc0:	// nil
-						template_callback_nil(user_, obj);
-						goto _push;
+					case 0xc0: {	// nil
+						template_callback_nil(user, obj);
+						int ret = push_proc(stack, c, obj, p, data, off, top, cs, trail, user);
+						if (ret != 0) return ret;
+					} break;
 					//case 0xc1:  // string
-					//	again_terminal_trail(next_cs(p), p+1);
-					case 0xc2:	// false
-						template_callback_false(user_, obj);
-						goto _push;
-					case 0xc3:	// true
-						template_callback_true(user_, obj);
-						goto _push;
+					case 0xc2: {	// false
+						template_callback_false(user, obj);
+						int ret = push_proc(stack, c, obj, p, data, off, top, cs, trail, user);
+						if (ret != 0) return ret;
+					} break;
+					case 0xc3: {	// true
+						template_callback_true(user, obj);
+						int ret = push_proc(stack, c, obj, p, data, off, top, cs, trail, user);
+						if (ret != 0) return ret;
+					} break;
 					case 0xc4: // bin 8
 					case 0xc5: // bin 16
 					case 0xc6: // bin 32
 						trail = 1 << (((unsigned int)*p) & 0x03);
 						cs = next_cs(p);
-						goto _fixed_trail_again;
+						fixed_trail_again = true;
+						break;
 
 					//case 0xc7:
 					//case 0xc8:
@@ -278,7 +325,8 @@ public:
 					case 0xd3:	// signed int 64
 						trail = 1 << (((unsigned int)*p) & 0x03);
 						cs = next_cs(p);
-						goto _fixed_trail_again;
+						fixed_trail_again = true;
+						break;
 					//case 0xd4:
 					//case 0xd5:
 					//case 0xd6:  // big integer 16
@@ -289,234 +337,365 @@ public:
 					case 0xdb:	// raw 32 (str 32)
 						trail = 1 << ((((unsigned int)*p) & 0x03) - 1);
 						cs = next_cs(p);
-						goto _fixed_trail_again;
+						fixed_trail_again = true;
+						break;
 					case 0xdc:	// array 16
 					case 0xdd:	// array 32
 					case 0xde:	// map 16
 					case 0xdf:	// map 32
 						trail = 2 << (((unsigned int)*p) & 0x01);
 						cs = next_cs(p);
-						goto _fixed_trail_again;
+						fixed_trail_again = true;
+						break;
 					default:
-						goto _failed;
+						off = update_attributes(p, data, top, cs, trail, user);
+						return -1;
 					}
 				} else if(0xa0 <= *p && *p <= 0xbf) { // FixRaw
 					trail = (unsigned int)*p & 0x1f;
-					if(trail == 0) { goto _raw_zero; }
+					if(trail == 0) {
+						template_callback_raw(user, data, n, trail, obj);
+						int ret = push_proc(stack, c, obj, p, data, off, top, cs, trail, user);
+						if (ret != 0) return ret;
+					}
 					cs = ACS_RAW_VALUE;
-					goto _fixed_trail_again;
+					fixed_trail_again = true;
 
 				} else if(0x90 <= *p && *p <= 0x9f) { // FixArray
-					if(top >= MSGPACK_EMBED_STACK_SIZE) { goto _failed; } /* FIXME */
-					if(!template_callback_array(user_, ((unsigned int)*p) & 0x0f, stack[top].obj())) { goto _failed; }
-					if((((unsigned int)*p) & 0x0f) == 0) { obj = stack[top].obj(); goto _push; }
-					stack[top].set_ct(CT_ARRAY_ITEM);
-					stack[top].set_count(((unsigned int)*p) & 0x0f);
-					++top;
-					goto _header_again;
-
+					if(top < MSGPACK_EMBED_STACK_SIZE /* FIXME */
+					   && template_callback_array(user, ((unsigned int)*p) & 0x0f, stack[top].obj())) {
+						if((((unsigned int)*p) & 0x0f) == 0) {
+							obj = stack[top].obj();
+							int ret = push_proc(stack, c, obj, p, data, off, top, cs, trail, user);
+							if (ret != 0) return ret;
+						}
+						else {
+							stack[top].set_ct(CT_ARRAY_ITEM);
+							stack[top].set_count(((unsigned int)*p) & 0x0f);
+							++top;
+							header_again(cs, p);
+						}
+					}
+					else {
+						off = update_attributes(p, data, top, cs, trail, user);
+						return -1;
+					}
 				} else if(0x80 <= *p && *p <= 0x8f) { // FixMap
-					if(top >= MSGPACK_EMBED_STACK_SIZE) { goto _failed; } /* FIXME */
-					if(!template_callback_map(user_, ((unsigned int)*p) & 0x0f, stack[top].obj())) { goto _failed; }
-					if((((unsigned int)*p) & 0x0f) == 0) { obj = stack[top].obj(); goto _push; }
-					stack[top].set_ct(CT_MAP_KEY);
-					stack[top].set_count(((unsigned int)*p) & 0x0f);
-					++top;
-					goto _header_again;
-
+					if(top < MSGPACK_EMBED_STACK_SIZE /* FIXME */
+					   && template_callback_map(user, ((unsigned int)*p) & 0x0f, stack[top].obj())) {
+						if((((unsigned int)*p) & 0x0f) == 0) {
+							obj = stack[top].obj();
+							int ret = push_proc(stack, c, obj, p, data, off, top, cs, trail, user);
+							if (ret != 0) return ret;
+						}
+						else {
+							stack[top].set_ct(CT_MAP_KEY);
+							stack[top].set_count(((unsigned int)*p) & 0x0f);
+							++top;
+							header_again(cs, p);
+						}
+					}
+					else {
+						off = update_attributes(p, data, top, cs, trail, user);
+						return -1;
+					}
 				} else {
-					goto _failed;
+					off = update_attributes(p, data, top, cs, trail, user);
+					return -1;
 				}
 				// end CS_HEADER
-
-
-_fixed_trail_again:
-				++p;
-
-			default:
-				if((size_t)(pe - p) < trail) { goto _out; }
-				n = p;	p += trail - 1;
+			}
+			if (cs != CS_HEADER || fixed_trail_again) {
+				if (fixed_trail_again) {
+					++p;
+					fixed_trail_again = false;
+				}
+				if((size_t)(pe - p) < trail) {
+					off = update_attributes(p, data, top, cs, trail, user);
+					return 0;
+				}
+				n = reinterpret_cast<const char *>(p);	p += trail - 1;
 				switch(cs) {
 				//case CS_
 				//case CS_
 				case CS_FLOAT: {
 					union { uint32_t i; float f; } mem;
-					mem.i = _msgpack_load32(uint32_t,n);
-					template_callback_float(user_, mem.f, obj);
-					goto _push; }
+					mem.i = load<uint32_t>(n);
+					template_callback_float(user, mem.f, obj);
+					int ret = push_proc(stack, c, obj, p, data, off, top, cs, trail, user);
+					if (ret != 0) return ret;
+				} break;
 				case CS_DOUBLE: {
 					union { uint64_t i; double f; } mem;
-					mem.i = _msgpack_load64(uint64_t,n);
+					mem.i = load<uint64_t>(n);
 #if defined(__arm__) && !(__ARM_EABI__) // arm-oabi
 					// https://github.com/msgpack/msgpack-perl/pull/1
 					mem.i = (mem.i & 0xFFFFFFFFUL) << 32UL | (mem.i >> 32UL);
 #endif
-					template_callback_double(user_, mem.f, obj);
-					goto _push; }
-				case CS_UINT_8:
-					template_callback_uint8(user_, *(uint8_t*)n, obj);
-					goto _push;
-				case CS_UINT_16:
-					template_callback_uint16(user_, _msgpack_load16(uint16_t,n), obj);
-					goto _push;
-				case CS_UINT_32:
-					template_callback_uint32(user_, _msgpack_load32(uint32_t,n), obj);
-					goto _push;
-				case CS_UINT_64:
-					template_callback_uint64(user_, _msgpack_load64(uint64_t,n), obj);
-					goto _push;
-
-				case CS_INT_8:
-					template_callback_int8(user_, *(int8_t*)n, obj);
-					goto _push;
-				case CS_INT_16:
-					template_callback_int16(user_, _msgpack_load16(int16_t,n), obj);
-					goto _push;
-				case CS_INT_32:
-					template_callback_int32(user_, _msgpack_load32(int32_t,n), obj);
-					goto _push;
-				case CS_INT_64:
-					template_callback_int64(user_, _msgpack_load64(int64_t,n), obj);
-					goto _push;
-
+					template_callback_double(user, mem.f, obj);
+					int ret = push_proc(stack, c, obj, p, data, off, top, cs, trail, user);
+					if (ret != 0) return ret;
+				} break;
+				case CS_UINT_8: {
+					template_callback_uint8(user, load<uint8_t>(n), obj);
+					int ret = push_proc(stack, c, obj, p, data, off, top, cs, trail, user);
+					if (ret != 0) return ret;
+				} break;
+				case CS_UINT_16: {
+					template_callback_uint16(user, load<uint16_t>(n), obj);
+					int ret = push_proc(stack, c, obj, p, data, off, top, cs, trail, user);
+					if (ret != 0) return ret;
+				} break;
+				case CS_UINT_32: {
+					template_callback_uint32(user, load<uint32_t>(n), obj);
+					int ret = push_proc(stack, c, obj, p, data, off, top, cs, trail, user);
+					if (ret != 0) return ret;
+				} break;
+				case CS_UINT_64: {
+					template_callback_uint64(user, load<uint64_t>(n), obj);
+					int ret = push_proc(stack, c, obj, p, data, off, top, cs, trail, user);
+					if (ret != 0) return ret;
+				} break;
+				case CS_INT_8: {
+					template_callback_int8(user, load<uint8_t>(n), obj);
+					int ret = push_proc(stack, c, obj, p, data, off, top, cs, trail, user);
+					if (ret != 0) return ret;
+				} break;
+				case CS_INT_16: {
+					template_callback_int16(user, load<int16_t>(n), obj);
+					int ret = push_proc(stack, c, obj, p, data, off, top, cs, trail, user);
+					if (ret != 0) return ret;
+				} break;
+				case CS_INT_32: {
+					template_callback_int32(user, load<int32_t>(n), obj);
+					int ret = push_proc(stack, c, obj, p, data, off, top, cs, trail, user);
+					if (ret != 0) return ret;
+				} break;
+				case CS_INT_64: {
+					template_callback_int64(user, load<int64_t>(n), obj);
+					int ret = push_proc(stack, c, obj, p, data, off, top, cs, trail, user);
+					if (ret != 0) return ret;
+				} break;
 				case CS_BIN_8:
 				case CS_RAW_8:
-					trail = *(uint8_t*)n;
-					if(trail == 0) { goto _raw_zero; }
-					cs = ACS_RAW_VALUE;
-					goto _fixed_trail_again;
+					trail = load<uint8_t>(n);
+					if(trail == 0) {
+						template_callback_raw(user, data, n, trail, obj);
+						int ret = push_proc(stack, c, obj, p, data, off, top, cs, trail, user);
+						if (ret != 0) return ret;
+					}
+					else {
+						cs = ACS_RAW_VALUE;
+						fixed_trail_again = true;
+					}
+					break;
 				case CS_BIN_16:
 				case CS_RAW_16:
-					trail = _msgpack_load16(uint16_t, n);
-					if(trail == 0) { goto _raw_zero; }
-					cs = ACS_RAW_VALUE;
-					goto _fixed_trail_again;
+					trail = load<uint16_t>( n);
+					if(trail == 0) {
+						template_callback_raw(user, data, n, trail, obj);
+						int ret = push_proc(stack, c, obj, p, data, off, top, cs, trail, user);
+						if (ret != 0) return ret;
+					}
+					else {
+						cs = ACS_RAW_VALUE;
+						fixed_trail_again = true;
+					}
+					break;
 				case CS_BIN_32:
 				case CS_RAW_32:
-					trail = _msgpack_load32(uint32_t, n);
-					if(trail == 0) { goto _raw_zero; }
-					cs = ACS_RAW_VALUE;
-					goto _fixed_trail_again;
-				case ACS_RAW_VALUE:
-_raw_zero:
-					template_callback_raw(user_, (const char*)data, (const char*)n, trail, obj);
-					goto _push;
+					trail = load<uint32_t>( n);
+					if(trail == 0) {
+						template_callback_raw(user, data, n, trail, obj);
+						int ret = push_proc(stack, c, obj, p, data, off, top, cs, trail, user);
+						if (ret != 0) return ret;
+					}
+					else {
+						cs = ACS_RAW_VALUE;
+						fixed_trail_again = true;
+					}
+					break;
+				case ACS_RAW_VALUE: {
+					template_callback_raw(user, data, n, trail, obj);
+					int ret = push_proc(stack, c, obj, p, data, off, top, cs, trail, user);
+					if (ret != 0) return ret;
+				} break;
 				case CS_ARRAY_16:
-					if(top >= MSGPACK_EMBED_STACK_SIZE) { goto _failed; } /* FIXME */
-					if(!template_callback_array(user_, _msgpack_load16(uint16_t, n), stack[top].obj())) { goto _failed; }
-					if(_msgpack_load16(uint16_t, n) == 0) { obj = stack[top].obj(); goto _push; }
-					stack[top].set_ct(CT_ARRAY_ITEM);
-					stack[top].set_count(_msgpack_load16(uint16_t, n));
-					++top;
-					goto _header_again;
+					if(top < MSGPACK_EMBED_STACK_SIZE /* FIXME */
+					   && template_callback_array(user, load<uint16_t>(n), stack[top].obj())) {
+						if(load<uint16_t>(n) == 0) {
+							obj = stack[top].obj();
+							int ret = push_proc(stack, c, obj, p, data, off, top, cs, trail, user);
+							if (ret != 0) return ret;
+						}
+						else {
+							stack[top].set_ct(CT_ARRAY_ITEM);
+							stack[top].set_count(load<uint16_t>(n));
+							++top;
+							header_again(cs, p);
+						}
+					}
+					else {
+						off = update_attributes(p, data, top, cs, trail, user);
+						return -1;
+					}
+					break;
 				case CS_ARRAY_32:
 					/* FIXME security guard */
-					if(top >= MSGPACK_EMBED_STACK_SIZE) { goto _failed; } /* FIXME */
-					if(!template_callback_array(user_, _msgpack_load32(uint32_t, n), stack[top].obj())) { goto _failed; }
-					if(_msgpack_load32(uint32_t, n) == 0) { obj = stack[top].obj(); goto _push; }
-					stack[top].set_ct(CT_ARRAY_ITEM);
-					stack[top].set_count(_msgpack_load32(uint32_t, n));
-					++top;
-					goto _header_again;
-
+					if(top < MSGPACK_EMBED_STACK_SIZE /* FIXME */
+					   && template_callback_array(user, load<uint32_t>(n), stack[top].obj())) {
+						if(load<uint32_t>(n) == 0) {
+							obj = stack[top].obj();
+							int ret = push_proc(stack, c, obj, p, data, off, top, cs, trail, user);
+							if (ret != 0) return ret;
+						}
+						else {
+							stack[top].set_ct(CT_ARRAY_ITEM);
+							stack[top].set_count(load<uint32_t>(n));
+							++top;
+							header_again(cs, p);
+						}
+					}
+					else {
+						off = update_attributes(p, data, top, cs, trail, user);
+						return -1;
+					}
+					break;
 				case CS_MAP_16:
-					if(top >= MSGPACK_EMBED_STACK_SIZE) { goto _failed; } /* FIXME */
-					if(!template_callback_map(user_, _msgpack_load16(uint16_t, n), stack[top].obj())) { goto _failed; }
-					if(_msgpack_load16(uint16_t, n) == 0) { obj = stack[top].obj(); goto _push; }
-					stack[top].set_ct(CT_MAP_KEY);
-					stack[top].set_count(_msgpack_load16(uint16_t, n));
-					++top;
-					goto _header_again;
+					if(top < MSGPACK_EMBED_STACK_SIZE /* FIXME */
+					   && template_callback_map(user, load<uint16_t>(n), stack[top].obj())) {
+						if(load<uint16_t>(n) == 0) {
+							obj = stack[top].obj();
+							int ret = push_proc(stack, c, obj, p, data, off, top, cs, trail, user);
+							if (ret != 0) return ret;
+						}
+						else {
+							stack[top].set_ct(CT_MAP_KEY);
+							stack[top].set_count(load<uint16_t>(n));
+							++top;
+							header_again(cs, p);
+						}
+					}
+					else {
+						off = update_attributes(p, data, top, cs, trail, user);
+						return -1;
+					}
+					break;
 				case CS_MAP_32:
 					/* FIXME security guard */
-					if(top >= MSGPACK_EMBED_STACK_SIZE) { goto _failed; } /* FIXME */
-					if(!template_callback_map(user_, _msgpack_load32(uint32_t, n), stack[top].obj())) { goto _failed; }
-					if(_msgpack_load32(uint32_t, n) == 0) { obj = stack[top].obj(); goto _push; }
-					stack[top].set_ct(CT_MAP_KEY);
-					stack[top].set_count(_msgpack_load32(uint32_t, n));
-					++top;
-					goto _header_again;
-
+					if(top < MSGPACK_EMBED_STACK_SIZE /* FIXME */
+					   && template_callback_map(user, load<uint32_t>(n), stack[top].obj())) {
+						if(load<uint32_t>(n) == 0) {
+							obj = stack[top].obj();
+							int ret = push_proc(stack, c, obj, p, data, off, top, cs, trail, user);
+							if (ret != 0) return ret;
+						}
+						else {
+							stack[top].set_ct(CT_MAP_KEY);
+							stack[top].set_count(load<uint32_t>(n));
+							++top;
+							header_again(cs, p);
+						}
+					}
+					else {
+						off = update_attributes(p, data, top, cs, trail, user);
+						return -1;
+					}
+					break;
 				default:
-					goto _failed;
+					off = update_attributes(p, data, top, cs, trail, user);
+					return -1;
 				}
 			}
-
-_push:
-			if(top == 0) { goto _finish; }
-			c = &stack[top-1];
-			switch(c->ct()) {
-			case CT_ARRAY_ITEM:
-				template_callback_array_item(user_, c->obj(), obj);
-				if(c->decl_count() == 0) {
-					obj = c->obj();
-					--top;
-					/*printf("stack pop %d\n", top);*/
-					goto _push;
-				}
-				goto _header_again;
-			case CT_MAP_KEY:
-				c->set_map_key(obj);
-				c->set_ct(CT_MAP_VALUE);
-				goto _header_again;
-			case CT_MAP_VALUE:
-				template_callback_map_item(user_, c->obj(), c->map_key(), obj);
-				if(c->decl_count() == 0) {
-					obj = c->obj();
-					--top;
-					/*printf("stack pop %d\n", top);*/
-					goto _push;
-				}
-				c->set_ct(CT_MAP_KEY);
-				goto _header_again;
-
-			default:
-				goto _failed;
-			}
-
-_header_again:
-			cs = CS_HEADER;
-			++p;
 		} while(p != pe);
-		goto _out;
 
-
-_finish:
-		stack[0].setObj(obj);
-		++p;
-		ret = 1;
-		/*printf("-- finish --\n"); */
-		goto _end;
-
-_failed:
-		/*printf("** FAILED **\n"); */
-		ret = -1;
-		goto _end;
-
-_out:
-		ret = 0;
-		goto _end;
-
-_end:
-		cs_ = cs;
-		trail_ = trail;
-		top_ = top;
-		off = p - (const unsigned char*)data;
-
-		return ret;
+		off = update_attributes(p, data, top, cs, trail, user);
+		return 0;
 	}
 
 private:
 	template <typename T>
-	static unsigned int next_cs(T p)
+	static inline unsigned int next_cs(T p)
 	{
 		return (unsigned int)*p & 0x1f;
 	}
 
+	size_t update_attributes(const unsigned char* current, const char* origin, unsigned int top, unsigned int cs, unsigned int trail, unpack_user const& user) {
+		trail_ = trail;
+		top_ = top;
+		cs_ = cs;
+		user_ = user;
+		return reinterpret_cast<const char*>(current) - origin;
+	}
+
+	static void header_again(unsigned int& cs, const unsigned char*& current) {
+		cs = CS_HEADER;
+		++current;
+	}
+	static int push_item(template_unpack_stack* stack, template_unpack_stack*& c, object& obj, unsigned int top, unpack_user& user) {
+		bool finish = false;
+		while (!finish) {
+			if(top == 0) {
+				return 1;
+			}
+			c = &stack[top-1];
+			switch(c->ct()) {
+			case CT_ARRAY_ITEM:
+				template_callback_array_item(user, c->obj(), obj);
+				if(c->decl_count() == 0) {
+					obj = c->obj();
+					--top;
+					/*printf("stack pop %d\n", top);*/
+				}
+				else {
+					finish = true;
+				}
+				break;
+			case CT_MAP_KEY:
+				c->set_map_key(obj);
+				c->set_ct(CT_MAP_VALUE);
+				finish = true;
+				break;
+			case CT_MAP_VALUE:
+				template_callback_map_item(user, c->obj(), c->map_key(), obj);
+				if(c->decl_count() == 0) {
+					obj = c->obj();
+					--top;
+					/*printf("stack pop %d\n", top);*/
+				}
+				else {
+					c->set_ct(CT_MAP_KEY);
+					finish = true;
+				}
+				break;
+			default:
+				return -1;
+			}
+		}
+		return 0;
+	}
+
+	int push_proc(template_unpack_stack* stack, template_unpack_stack*& c, object& obj, const unsigned char*& current, const char* origin, size_t& off, unsigned int top, unsigned int& cs, unsigned int trail, unpack_user& user) {
+		int ret = push_item(stack, c, obj, top, user);
+		if (ret > 0) {
+			stack[0].setObj(obj);
+			++current;
+			/*printf("-- finish --\n"); */
+			off = update_attributes(current, origin, top, cs, trail, user);
+		}
+		else if (ret < 0) {
+			off = update_attributes(current, origin, top, cs, trail, user);
+		}
+		else {
+			header_again(cs, current);
+		}
+		return ret;
+	}
+
 private:
+	unsigned int trail_;
 	unpack_user user_;
 	unsigned int cs_;
-	unsigned int trail_;
 	unsigned int top_;
 	template_unpack_stack stack_[MSGPACK_EMBED_STACK_SIZE];
 };
@@ -647,7 +826,7 @@ public:
 
 private:
 	void expand_buffer(size_t size);
-	int	 execute_imp();
+	int execute_imp();
 	bool flush_zone();
 
 private:
