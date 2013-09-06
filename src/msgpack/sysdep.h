@@ -152,7 +152,7 @@ typedef unsigned int _msgpack_atomic_counter_t;
         (((uint64_t)((uint8_t*)(from))[6]) << 8)  | \
         (((uint64_t)((uint8_t*)(from))[7])     )  ))
 
-#else
+#else  /* __LITTLE_ENDIAN__ */
 
 #define _msgpack_be16(x) (x)
 #define _msgpack_be32(x) (x)
