@@ -221,7 +221,7 @@ inline T load(const char* n, typename msgpack::enable_if<sizeof(T) == 8>::type* 
 
 class template_context {
 public:
-	template_context():cs_(CS_HEADER), trail_(0), top_(0)
+	template_context():trail_(0), cs_(CS_HEADER), top_(0)
 	{
 		stack_[0].setObj(object());
 	}
