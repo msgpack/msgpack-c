@@ -285,11 +285,11 @@ public:
 				int selector = *reinterpret_cast<const unsigned char*>(p);
 				if (0) {
 				} else if(0x00 <= selector && selector <= 0x7f) { // Positive Fixnum
-					unpack_uint8(user_, *(uint8_t*)p, obj);
+					unpack_uint8(user_, *reinterpret_cast<const uint8_t*>(p), obj);
 					int ret = push_proc(c, obj, p, data, off, trail);
 					if (ret != 0) return ret;
 				} else if(0xe0 <= selector && selector <= 0xff) { // Negative Fixnum
-					unpack_int8(user_, *(int8_t*)p, obj);
+					unpack_int8(user_, *reinterpret_cast<const int8_t*>(p), obj);
 					int ret = push_proc(c, obj, p, data, off, trail);
 					if (ret != 0) return ret;
 				} else if(0xc0 <= selector && selector <= 0xdf) { // Variable
@@ -313,7 +313,7 @@ public:
 					case 0xc4: // bin 8
 					case 0xc5: // bin 16
 					case 0xc6: // bin 32
-						trail = 1 << (((unsigned int)*p) & 0x03);
+						trail = 1 << (static_cast<unsigned int>(*p) & 0x03);
 						cs_ = next_cs(p);
 						fixed_trail_again = true;
 						break;
@@ -331,7 +331,7 @@ public:
 					case 0xd1:	// signed int 16
 					case 0xd2:	// signed int 32
 					case 0xd3:	// signed int 64
-						trail = 1 << (((unsigned int)*p) & 0x03);
+						trail = 1 << (static_cast<unsigned int>(*p) & 0x03);
 						cs_ = next_cs(p);
 						fixed_trail_again = true;
 						break;
@@ -343,7 +343,7 @@ public:
 					case 0xd9:	// raw 8 (str 8)
 					case 0xda:	// raw 16 (str 16)
 					case 0xdb:	// raw 32 (str 32)
-						trail = 1 << ((((unsigned int)*p) & 0x03) - 1);
+						trail = 1 << ((static_cast<unsigned int>(*p) & 0x03) - 1);
 						cs_ = next_cs(p);
 						fixed_trail_again = true;
 						break;
@@ -351,7 +351,7 @@ public:
 					case 0xdd:	// array 32
 					case 0xde:	// map 16
 					case 0xdf:	// map 32
-						trail = 2 << (((unsigned int)*p) & 0x01);
+						trail = 2 << (static_cast<unsigned int>(*p) & 0x01);
 						cs_ = next_cs(p);
 						fixed_trail_again = true;
 						break;
@@ -360,7 +360,7 @@ public:
 						return -1;
 					}
 				} else if(0xa0 <= selector && selector <= 0xbf) { // FixRaw
-					trail = (unsigned int)*p & 0x1f;
+					trail = static_cast<unsigned int>(*p) & 0x1f;
 					if(trail == 0) {
 						unpack_raw(user_, data, n, trail, obj);
 						int ret = push_proc(c, obj, p, data, off, trail);
@@ -536,7 +536,7 @@ private:
 	template <typename T>
 	static unsigned int next_cs(T p)
 	{
-		return (unsigned int)*p & 0x1f;
+		return static_cast<unsigned int>(*p) & 0x1f;
 	}
 
 	template <typename T, typename Func>
@@ -832,7 +832,7 @@ inline unpacker::unpacker(size_t initial_buffer_size)
 		initial_buffer_size = COUNTER_SIZE;
 	}
 
-	char* buffer = (char*)::malloc(initial_buffer_size);
+	char* buffer = reinterpret_cast<char*>(::malloc(initial_buffer_size));
 	if(!buffer) {
 		throw std::bad_alloc();
 	}
@@ -889,7 +889,7 @@ inline void unpacker::expand_buffer(size_t size)
 			next_size *= 2;
 		}
 
-		char* tmp = (char*)::realloc(buffer_, next_size);
+		char* tmp = reinterpret_cast<char*>(::realloc(buffer_, next_size));
 		if(!tmp) {
 			throw std::bad_alloc();
 		}
@@ -904,7 +904,7 @@ inline void unpacker::expand_buffer(size_t size)
 			next_size *= 2;
 		}
 
-		char* tmp = (char*)::malloc(next_size);
+		char* tmp = reinterpret_cast<char*>(::malloc(next_size));
 		if(!tmp) {
 			throw std::bad_alloc();
 		}
