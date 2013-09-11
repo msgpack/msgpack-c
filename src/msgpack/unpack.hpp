@@ -269,56 +269,52 @@ public:
 		const char* n = nullptr;
 
 		// to support register optimization
-		unsigned int cs = cs_;
 		unsigned int trail = trail_;
-		unpack_user user = user_;
-		unsigned int top = top_;
-		template_unpack_stack* stack = stack_;
 
 		object obj;
 		template_unpack_stack* c = nullptr;
 
 		if(p == pe) {
-			off = update_attributes(p, data, top, cs, trail, user);
+			off = update_attributes(p, data, trail);
 			return 0;
 		}
 		bool fixed_trail_again = false;
 		do {
-			if (cs == CS_HEADER) {
+			if (cs_ == CS_HEADER) {
 				fixed_trail_again = false;
 				int selector = *reinterpret_cast<const unsigned char*>(p);
 				if (0) {
 				} else if(0x00 <= selector && selector <= 0x7f) { // Positive Fixnum
-					unpack_uint8(user, *(uint8_t*)p, obj);
-					int ret = push_proc(stack, c, obj, p, data, off, top, cs, trail, user);
+					unpack_uint8(user_, *(uint8_t*)p, obj);
+					int ret = push_proc(c, obj, p, data, off, trail);
 					if (ret != 0) return ret;
 				} else if(0xe0 <= selector && selector <= 0xff) { // Negative Fixnum
-					unpack_int8(user, *(int8_t*)p, obj);
-					int ret = push_proc(stack, c, obj, p, data, off, top, cs, trail, user);
+					unpack_int8(user_, *(int8_t*)p, obj);
+					int ret = push_proc(c, obj, p, data, off, trail);
 					if (ret != 0) return ret;
 				} else if(0xc0 <= selector && selector <= 0xdf) { // Variable
 					switch(selector) {
 					case 0xc0: {	// nil
-						unpack_nil(user, obj);
-						int ret = push_proc(stack, c, obj, p, data, off, top, cs, trail, user);
+						unpack_nil(user_, obj);
+						int ret = push_proc(c, obj, p, data, off, trail);
 						if (ret != 0) return ret;
 					} break;
 					//case 0xc1:  // string
 					case 0xc2: {	// false
-						unpack_false(user, obj);
-						int ret = push_proc(stack, c, obj, p, data, off, top, cs, trail, user);
+						unpack_false(user_, obj);
+						int ret = push_proc(c, obj, p, data, off, trail);
 						if (ret != 0) return ret;
 					} break;
 					case 0xc3: {	// true
-						unpack_true(user, obj);
-						int ret = push_proc(stack, c, obj, p, data, off, top, cs, trail, user);
+						unpack_true(user_, obj);
+						int ret = push_proc(c, obj, p, data, off, trail);
 						if (ret != 0) return ret;
 					} break;
 					case 0xc4: // bin 8
 					case 0xc5: // bin 16
 					case 0xc6: // bin 32
 						trail = 1 << (((unsigned int)*p) & 0x03);
-						cs = next_cs(p);
+						cs_ = next_cs(p);
 						fixed_trail_again = true;
 						break;
 
@@ -336,7 +332,7 @@ public:
 					case 0xd2:	// signed int 32
 					case 0xd3:	// signed int 64
 						trail = 1 << (((unsigned int)*p) & 0x03);
-						cs = next_cs(p);
+						cs_ = next_cs(p);
 						fixed_trail_again = true;
 						break;
 					//case 0xd4:
@@ -348,7 +344,7 @@ public:
 					case 0xda:	// raw 16 (str 16)
 					case 0xdb:	// raw 32 (str 32)
 						trail = 1 << ((((unsigned int)*p) & 0x03) - 1);
-						cs = next_cs(p);
+						cs_ = next_cs(p);
 						fixed_trail_again = true;
 						break;
 					case 0xdc:	// array 16
@@ -356,56 +352,56 @@ public:
 					case 0xde:	// map 16
 					case 0xdf:	// map 32
 						trail = 2 << (((unsigned int)*p) & 0x01);
-						cs = next_cs(p);
+						cs_ = next_cs(p);
 						fixed_trail_again = true;
 						break;
 					default:
-						off = update_attributes(p, data, top, cs, trail, user);
+						off = update_attributes(p, data, trail);
 						return -1;
 					}
 				} else if(0xa0 <= selector && selector <= 0xbf) { // FixRaw
 					trail = (unsigned int)*p & 0x1f;
 					if(trail == 0) {
-						unpack_raw(user, data, n, trail, obj);
-						int ret = push_proc(stack, c, obj, p, data, off, top, cs, trail, user);
+						unpack_raw(user_, data, n, trail, obj);
+						int ret = push_proc(c, obj, p, data, off, trail);
 						if (ret != 0) return ret;
 					}
-					cs = ACS_RAW_VALUE;
+					cs_ = ACS_RAW_VALUE;
 					fixed_trail_again = true;
 
 				} else if(0x90 <= selector && selector <= 0x9f) { // FixArray
 					int ret = push_aggregate<fix_tag>(
-						unpack_array(), CT_ARRAY_ITEM, stack, c, obj, p, p, data, off, top, cs, trail, user);
+						unpack_array(), CT_ARRAY_ITEM, c, obj, p, p, data, off, trail);
 					if (ret != 0) return ret;
 				} else if(0x80 <= selector && selector <= 0x8f) { // FixMap
 					int ret = push_aggregate<fix_tag>(
-						unpack_map(), CT_MAP_KEY, stack, c, obj, p, p, data, off, top, cs, trail, user);
+						unpack_map(), CT_MAP_KEY, c, obj, p, p, data, off, trail);
 					if (ret != 0) return ret;
 				} else {
-					off = update_attributes(p, data, top, cs, trail, user);
+					off = update_attributes(p, data, trail);
 					return -1;
 				}
 				// end CS_HEADER
 			}
-			if (cs != CS_HEADER || fixed_trail_again) {
+			if (cs_ != CS_HEADER || fixed_trail_again) {
 				if (fixed_trail_again) {
 					++p;
 					fixed_trail_again = false;
 				}
 				if((size_t)(pe - p) < trail) {
-					off = update_attributes(p, data, top, cs, trail, user);
+					off = update_attributes(p, data, trail);
 					return 0;
 				}
 				n = p;
 				p += trail - 1;
-				switch(cs) {
+				switch(cs_) {
 				//case CS_
 				//case CS_
 				case CS_FLOAT: {
 					union { uint32_t i; float f; } mem;
 					mem.i = load<uint32_t>(n);
-					unpack_float(user, mem.f, obj);
-					int ret = push_proc(stack, c, obj, p, data, off, top, cs, trail, user);
+					unpack_float(user_, mem.f, obj);
+					int ret = push_proc(c, obj, p, data, off, trail);
 					if (ret != 0) return ret;
 				} break;
 				case CS_DOUBLE: {
@@ -415,60 +411,60 @@ public:
 					// https://github.com/msgpack/msgpack-perl/pull/1
 					mem.i = (mem.i & 0xFFFFFFFFUL) << 32UL | (mem.i >> 32UL);
 #endif
-					unpack_double(user, mem.f, obj);
-					int ret = push_proc(stack, c, obj, p, data, off, top, cs, trail, user);
+					unpack_double(user_, mem.f, obj);
+					int ret = push_proc(c, obj, p, data, off, trail);
 					if (ret != 0) return ret;
 				} break;
 				case CS_UINT_8: {
-					unpack_uint8(user, load<uint8_t>(n), obj);
-					int ret = push_proc(stack, c, obj, p, data, off, top, cs, trail, user);
+					unpack_uint8(user_, load<uint8_t>(n), obj);
+					int ret = push_proc(c, obj, p, data, off, trail);
 					if (ret != 0) return ret;
 				} break;
 				case CS_UINT_16: {
-					unpack_uint16(user, load<uint16_t>(n), obj);
-					int ret = push_proc(stack, c, obj, p, data, off, top, cs, trail, user);
+					unpack_uint16(user_, load<uint16_t>(n), obj);
+					int ret = push_proc(c, obj, p, data, off, trail);
 					if (ret != 0) return ret;
 				} break;
 				case CS_UINT_32: {
-					unpack_uint32(user, load<uint32_t>(n), obj);
-					int ret = push_proc(stack, c, obj, p, data, off, top, cs, trail, user);
+					unpack_uint32(user_, load<uint32_t>(n), obj);
+					int ret = push_proc(c, obj, p, data, off, trail);
 					if (ret != 0) return ret;
 				} break;
 				case CS_UINT_64: {
-					unpack_uint64(user, load<uint64_t>(n), obj);
-					int ret = push_proc(stack, c, obj, p, data, off, top, cs, trail, user);
+					unpack_uint64(user_, load<uint64_t>(n), obj);
+					int ret = push_proc(c, obj, p, data, off, trail);
 					if (ret != 0) return ret;
 				} break;
 				case CS_INT_8: {
-					unpack_int8(user, load<uint8_t>(n), obj);
-					int ret = push_proc(stack, c, obj, p, data, off, top, cs, trail, user);
+					unpack_int8(user_, load<uint8_t>(n), obj);
+					int ret = push_proc(c, obj, p, data, off, trail);
 					if (ret != 0) return ret;
 				} break;
 				case CS_INT_16: {
-					unpack_int16(user, load<int16_t>(n), obj);
-					int ret = push_proc(stack, c, obj, p, data, off, top, cs, trail, user);
+					unpack_int16(user_, load<int16_t>(n), obj);
+					int ret = push_proc(c, obj, p, data, off, trail);
 					if (ret != 0) return ret;
 				} break;
 				case CS_INT_32: {
-					unpack_int32(user, load<int32_t>(n), obj);
-					int ret = push_proc(stack, c, obj, p, data, off, top, cs, trail, user);
+					unpack_int32(user_, load<int32_t>(n), obj);
+					int ret = push_proc(c, obj, p, data, off, trail);
 					if (ret != 0) return ret;
 				} break;
 				case CS_INT_64: {
-					unpack_int64(user, load<int64_t>(n), obj);
-					int ret = push_proc(stack, c, obj, p, data, off, top, cs, trail, user);
+					unpack_int64(user_, load<int64_t>(n), obj);
+					int ret = push_proc(c, obj, p, data, off, trail);
 					if (ret != 0) return ret;
 				} break;
 				case CS_BIN_8:
 				case CS_RAW_8:
 					trail = load<uint8_t>(n);
 					if(trail == 0) {
-						unpack_raw(user, data, n, trail, obj);
-						int ret = push_proc(stack, c, obj, p, data, off, top, cs, trail, user);
+						unpack_raw(user_, data, n, trail, obj);
+						int ret = push_proc(c, obj, p, data, off, trail);
 						if (ret != 0) return ret;
 					}
 					else {
-						cs = ACS_RAW_VALUE;
+						cs_ = ACS_RAW_VALUE;
 						fixed_trail_again = true;
 					}
 					break;
@@ -476,12 +472,12 @@ public:
 				case CS_RAW_16:
 					trail = load<uint16_t>(n);
 					if(trail == 0) {
-						unpack_raw(user, data, n, trail, obj);
-						int ret = push_proc(stack, c, obj, p, data, off, top, cs, trail, user);
+						unpack_raw(user_, data, n, trail, obj);
+						int ret = push_proc(c, obj, p, data, off, trail);
 						if (ret != 0) return ret;
 					}
 					else {
-						cs = ACS_RAW_VALUE;
+						cs_ = ACS_RAW_VALUE;
 						fixed_trail_again = true;
 					}
 					break;
@@ -489,50 +485,50 @@ public:
 				case CS_RAW_32:
 					trail = load<uint32_t>(n);
 					if(trail == 0) {
-						unpack_raw(user, data, n, trail, obj);
-						int ret = push_proc(stack, c, obj, p, data, off, top, cs, trail, user);
+						unpack_raw(user_, data, n, trail, obj);
+						int ret = push_proc(c, obj, p, data, off, trail);
 						if (ret != 0) return ret;
 					}
 					else {
-						cs = ACS_RAW_VALUE;
+						cs_ = ACS_RAW_VALUE;
 						fixed_trail_again = true;
 					}
 					break;
 				case ACS_RAW_VALUE: {
-					unpack_raw(user, data, n, trail, obj);
-					int ret = push_proc(stack, c, obj, p, data, off, top, cs, trail, user);
+					unpack_raw(user_, data, n, trail, obj);
+					int ret = push_proc(c, obj, p, data, off, trail);
 					if (ret != 0) return ret;
 				} break;
 				case CS_ARRAY_16: {
 					int ret = push_aggregate<uint16_t>(
-						unpack_array(), CT_ARRAY_ITEM, stack, c, obj, p, n, data, off, top, cs, trail, user);
+						unpack_array(), CT_ARRAY_ITEM, c, obj, p, n, data, off, trail);
 					if (ret != 0) return ret;
 				} break;
 				case CS_ARRAY_32: {
 					/* FIXME security guard */
 					int ret = push_aggregate<uint32_t>(
-						unpack_array(), CT_ARRAY_ITEM, stack, c, obj, p, n, data, off, top, cs, trail, user);
+						unpack_array(), CT_ARRAY_ITEM, c, obj, p, n, data, off, trail);
 					if (ret != 0) return ret;
 				} break;
 				case CS_MAP_16: {
 					int ret = push_aggregate<uint16_t>(
-						unpack_map(), CT_MAP_KEY, stack, c, obj, p, n, data, off, top, cs, trail, user);
+						unpack_map(), CT_MAP_KEY, c, obj, p, n, data, off, trail);
 					if (ret != 0) return ret;
 				} break;
 				case CS_MAP_32: {
 					/* FIXME security guard */
 					int ret = push_aggregate<uint32_t>(
-						unpack_map(), CT_MAP_KEY, stack, c, obj, p, n, data, off, top, cs, trail, user);
+						unpack_map(), CT_MAP_KEY, c, obj, p, n, data, off, trail);
 					if (ret != 0) return ret;
 				} break;
 				default:
-					off = update_attributes(p, data, top, cs, trail, user);
+					off = update_attributes(p, data, trail);
 					return -1;
 				}
 			}
 		} while(p != pe);
 
-		off = update_attributes(p, data, top, cs, trail, user);
+		off = update_attributes(p, data, trail);
 		return 0;
 	}
 
@@ -547,33 +543,29 @@ private:
 	int push_aggregate(
 		Func const& f,
 		unsigned int ct,
-		template_unpack_stack* stack,
 		template_unpack_stack*& c,
 		object& obj,
 		const char*& current,
 		const char* load_pos,
 		const char* origin,
 		size_t& off,
-		unsigned int& top,
-		unsigned int& cs,
-		unsigned int trail,
-		unpack_user& user) {
-		if(top < MSGPACK_EMBED_STACK_SIZE /* FIXME */
-		   && f(user, load<T>(load_pos), stack[top].obj())) {
+		unsigned int trail) {
+		if(top_ < MSGPACK_EMBED_STACK_SIZE /* FIXME */
+		   && f(user_, load<T>(load_pos), stack_[top_].obj())) {
 			if(load<T>(load_pos) == 0) {
-				obj = stack[top].obj();
-				int ret = push_proc(stack, c, obj, current, origin, off, top, cs, trail, user);
+				obj = stack_[top_].obj();
+				int ret = push_proc(c, obj, current, origin, off, trail);
 				if (ret != 0) return ret;
 			}
 			else {
-				stack[top].set_ct(ct);
-				stack[top].set_count(load<T>(load_pos));
-				++top;
-				header_again(cs, current);
+				stack_[top_].set_ct(ct);
+				stack_[top_].set_count(load<T>(load_pos));
+				++top_;
+				header_again(current);
 			}
 		}
 		else {
-			off = update_attributes(current, origin, top, cs, trail, user);
+			off = update_attributes(current, origin, trail);
 			return -1;
 		}
 		return 0;
@@ -582,40 +574,29 @@ private:
 	size_t update_attributes(
 		const char* current,
 		const char* origin,
-		unsigned int top,
-		unsigned int cs,
-		unsigned int trail,
-		unpack_user const& user) {
+		unsigned int trail) {
 		trail_ = trail;
-		top_ = top;
-		cs_ = cs;
-		user_ = user;
 		return current - origin;
 	}
 
-	static void header_again(unsigned int& cs, const char*& current) {
-		cs = CS_HEADER;
+	void header_again(const char*& current) {
+		cs_ = CS_HEADER;
 		++current;
 	}
-	static int push_item(
-		template_unpack_stack* stack,
-		template_unpack_stack*& c,
-		object& obj,
-		unsigned int top,
-		unpack_user& user) {
+	int push_item(template_unpack_stack*& c, object& obj) {
 		bool finish = false;
 		while (!finish) {
-			if(top == 0) {
+			if(top_ == 0) {
 				return 1;
 			}
-			c = &stack[top-1];
+			c = &stack_[top_ - 1];
 			switch(c->ct()) {
 			case CT_ARRAY_ITEM:
-				unpack_array_item(user, c->obj(), obj);
+				unpack_array_item(user_, c->obj(), obj);
 				if(c->decl_count() == 0) {
 					obj = c->obj();
-					--top;
-					/*printf("stack pop %d\n", top);*/
+					--top_;
+					/*printf("stack pop %d\n", top_);*/
 				}
 				else {
 					finish = true;
@@ -627,11 +608,11 @@ private:
 				finish = true;
 				break;
 			case CT_MAP_VALUE:
-				unpack_map_item(user, c->obj(), c->map_key(), obj);
+				unpack_map_item(user_, c->obj(), c->map_key(), obj);
 				if(c->decl_count() == 0) {
 					obj = c->obj();
-					--top;
-					/*printf("stack pop %d\n", top);*/
+					--top_;
+					/*printf("stack pop %d\n", top_);*/
 				}
 				else {
 					c->set_ct(CT_MAP_KEY);
@@ -646,28 +627,24 @@ private:
 	}
 
 	int push_proc(
-		template_unpack_stack* stack,
 		template_unpack_stack*& c,
 		object& obj,
 		const char*& current,
 		const char* origin,
 		size_t& off,
-		unsigned int top,
-		unsigned int& cs,
-		unsigned int trail,
-		unpack_user& user) {
-		int ret = push_item(stack, c, obj, top, user);
+		unsigned int trail) {
+		int ret = push_item(c, obj);
 		if (ret > 0) {
-			stack[0].setObj(obj);
+			stack_[0].setObj(obj);
 			++current;
 			/*printf("-- finish --\n"); */
-			off = update_attributes(current, origin, top, cs, trail, user);
+			off = update_attributes(current, origin, trail);
 		}
 		else if (ret < 0) {
-			off = update_attributes(current, origin, top, cs, trail, user);
+			off = update_attributes(current, origin, trail);
 		}
 		else {
-			header_again(cs, current);
+			header_again(current);
 		}
 		return ret;
 	}
