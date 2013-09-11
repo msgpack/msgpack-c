@@ -75,7 +75,7 @@ inline void operator<< (object::with_zone& o, const type::assoc_vector<K,V>& v)
 {
 	o.type = type::MAP;
 	if(v.empty()) {
-		o.via.map.ptr  = NULL;
+		o.via.map.ptr  = nullptr;
 		o.via.map.size = 0;
 	} else {
 		object_kv* p = static_cast<object_kv*>(o.zone->malloc(sizeof(object_kv)*v.size()));
@@ -131,7 +131,7 @@ inline void operator<< (object::with_zone& o, const std::map<K,V>& v)
 {
 	o.type = type::MAP;
 	if(v.empty()) {
-		o.via.map.ptr  = NULL;
+		o.via.map.ptr  = nullptr;
 		o.via.map.size = 0;
 	} else {
 		object_kv* p = static_cast<object_kv*>(o.zone->malloc(sizeof(object_kv)*v.size()));
@@ -181,7 +181,7 @@ inline void operator<< (object::with_zone& o, const std::multimap<K,V>& v)
 {
 	o.type = type::MAP;
 	if(v.empty()) {
-		o.via.map.ptr  = NULL;
+		o.via.map.ptr  = nullptr;
 		o.via.map.size = 0;
 	} else {
 		object_kv* p = static_cast<object_kv*>(o.zone->malloc(sizeof(object_kv)*v.size()));

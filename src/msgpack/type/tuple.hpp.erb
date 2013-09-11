@@ -175,7 +175,7 @@ inline void operator<< (
 		object::with_zone& o,
 		const type::tuple<>& v) {
 	o.type = type::ARRAY;
-	o.via.array.ptr = NULL;
+	o.via.array.ptr = nullptr;
 	o.via.array.size = 0;
 }
 <%0.upto(GENERATION_LIMIT) {|i|%>

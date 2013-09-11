@@ -122,8 +122,8 @@ public:
 	char* release_buffer()
 	{
 		char* tmp = data_;
-		data_ = NULL;
-		stream_.next_out = NULL;
+		data_ = nullptr;
+		stream_.next_out = nullptr;
 		stream_.avail_out = 0;
 		return tmp;
 	}
@@ -136,7 +136,7 @@ private:
 		size_t nsize = (csize == 0) ? init_size_ : csize * 2;
 
 		char* tmp = static_cast<char*>(::realloc(data_, nsize));
-		if(tmp == NULL) {
+		if(tmp == nullptr) {
 			return false;
 		}
 

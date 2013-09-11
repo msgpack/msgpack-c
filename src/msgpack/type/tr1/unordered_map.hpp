@@ -74,7 +74,7 @@ inline void operator<< (object::with_zone& o, const MSGPACK_STD_TR1::unordered_m
 {
 	o.type = type::MAP;
 	if(v.empty()) {
-		o.via.map.ptr  = NULL;
+		o.via.map.ptr  = nullptr;
 		o.via.map.size = 0;
 	} else {
 		object_kv* p = static_cast<object_kv*>(o.zone->malloc(sizeof(object_kv)*v.size()));
@@ -124,7 +124,7 @@ inline void operator<< (object::with_zone& o, const MSGPACK_STD_TR1::unordered_m
 {
 	o.type = type::MAP;
 	if(v.empty()) {
-		o.via.map.ptr  = NULL;
+		o.via.map.ptr  = nullptr;
 		o.via.map.size = 0;
 	} else {
 		object_kv* p = static_cast<object_kv*>(o.zone->malloc(sizeof(object_kv)*v.size()));

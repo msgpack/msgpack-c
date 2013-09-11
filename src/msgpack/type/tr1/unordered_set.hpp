@@ -71,7 +71,7 @@ inline void operator<< (object::with_zone& o, const MSGPACK_STD_TR1::unordered_s
 {
 	o.type = type::ARRAY;
 	if(v.empty()) {
-		o.via.array.ptr = NULL;
+		o.via.array.ptr = nullptr;
 		o.via.array.size = 0;
 	} else {
 		object* p = static_cast<object*>(o.zone->malloc(sizeof(object)*v.size()));
@@ -117,7 +117,7 @@ inline void operator<< (object::with_zone& o, const MSGPACK_STD_TR1::unordered_m
 {
 	o.type = type::ARRAY;
 	if(v.empty()) {
-		o.via.array.ptr = NULL;
+		o.via.array.ptr = nullptr;
 		o.via.array.size = 0;
 	} else {
 		object* p = static_cast<object*>(o.zone->malloc(sizeof(object)*v.size()));

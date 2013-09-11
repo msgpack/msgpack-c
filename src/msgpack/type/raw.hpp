@@ -27,7 +27,7 @@ namespace msgpack {
 namespace type {
 
 struct raw_ref {
-	raw_ref() : size(0), ptr(NULL) {}
+	raw_ref() : size(0), ptr(nullptr) {}
 	raw_ref(const char* p, uint32_t s) : size(s), ptr(p) {}
 
 	uint32_t size;

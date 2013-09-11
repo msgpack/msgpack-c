@@ -110,7 +110,7 @@ struct unpack_array {
 		o.type = type::ARRAY;
 		o.via.array.size = 0;
 		o.via.array.ptr = (object*)u.z().malloc(n*sizeof(object));
-		if(o.via.array.ptr == NULL) { return false; }
+		if(o.via.array.ptr == nullptr) { return false; }
 		return true;
 	}
 };
@@ -123,7 +123,7 @@ struct unpack_map {
 		o.type = type::MAP;
 		o.via.map.size = 0;
 		o.via.map.ptr = (object_kv*)u.z().malloc(n*sizeof(object_kv));
-		if(o.via.map.ptr == NULL) { return false; }
+		if(o.via.map.ptr == nullptr) { return false; }
 		return true;
 	}
 };
@@ -802,9 +802,9 @@ private:
 
 
 inline void unpack(unpacked& result,
-		const char* data, size_t len, size_t* offset = NULL);
+		const char* data, size_t len, size_t* offset = nullptr);
 inline void unpack(unpacked* result,
-		const char* data, size_t len, size_t* offset = NULL);
+		const char* data, size_t len, size_t* offset = nullptr);
 
 // obsolete
 typedef enum {
@@ -822,8 +822,8 @@ static unpack_return unpack(const char* data, size_t len, size_t* off,
 
 
 // obsolete
-static object unpack(const char* data, size_t len, zone& z, size_t* off = NULL);
-static object unpack(const char* data, size_t len, zone* z, size_t* off = NULL);
+static object unpack(const char* data, size_t len, zone& z, size_t* off = nullptr);
+static object unpack(const char* data, size_t len, zone* z, size_t* off = nullptr);
 
 
 inline unpacker::unpacker(size_t initial_buffer_size)
@@ -1081,7 +1081,7 @@ unpack_imp(const char* data, size_t len, size_t* off,
 	zone& result_zone, object& result)
 {
 	size_t noff = 0;
-	if(off != NULL) { noff = *off; }
+	if(off != nullptr) { noff = *off; }
 
 	if(len <= noff) {
 		// FIXME
@@ -1099,7 +1099,7 @@ unpack_imp(const char* data, size_t len, size_t* off,
 		return UNPACK_PARSE_ERROR;
 	}
 
-	if(off != NULL) { *off = noff; }
+	if(off != nullptr) { *off = noff; }
 
 	if(e == 0) {
 		return UNPACK_CONTINUE;
