@@ -1,3 +1,6 @@
+// g++ -std=c++11 -O3 -g -Ipath_to_msgpack_src -Ipath_to_boost speed_test.cc -Lpath_to_boost_lib -lboost_timer -lboost_system
+// export LD_LIBRARY_PATH=path_to_boost_lib
+
 #include <msgpack.hpp>
 #include <string>
 #include <iostream>
