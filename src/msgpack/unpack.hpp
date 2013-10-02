@@ -144,7 +144,7 @@ inline void unpack_raw(unpack_user& u, const char* b, const char* p, unsigned in
 }
 
 
-class template_unpack_stack {
+class unpack_stack {
 public:
 	object const& obj() const { return obj_; }
 	object& obj() { return obj_; }
@@ -230,9 +230,9 @@ inline T load(const char* n, typename msgpack::enable_if<sizeof(T) == 8>::type* 
 		(static_cast<uint64_t>(reinterpret_cast<const uint8_t*>(n)[7])      ));
 }
 
-class template_context {
+class context {
 public:
-	template_context():trail_(0), cs_(CS_HEADER), top_(0)
+	context():trail_(0), cs_(CS_HEADER), top_(0)
 	{
 		stack_[0].set_obj(object());
 	}
@@ -272,7 +272,7 @@ public:
 		unsigned int trail = trail_;
 
 		object obj;
-		template_unpack_stack* c = nullptr;
+		unpack_stack* c = nullptr;
 
 		if(p == pe) {
 			off = update_attributes(p, data, trail);
@@ -543,7 +543,7 @@ private:
 	int push_aggregate(
 		Func const& f,
 		unsigned int ct,
-		template_unpack_stack*& c,
+		unpack_stack*& c,
 		object& obj,
 		const char*& current,
 		const char* load_pos,
@@ -583,7 +583,7 @@ private:
 		cs_ = CS_HEADER;
 		++current;
 	}
-	int push_item(template_unpack_stack*& c, object& obj) {
+	int push_item(unpack_stack*& c, object& obj) {
 		bool finish = false;
 		while (!finish) {
 			if(top_ == 0) {
@@ -627,7 +627,7 @@ private:
 	}
 
 	int push_proc(
-		template_unpack_stack*& c,
+		unpack_stack*& c,
 		object& obj,
 		const char*& current,
 		const char* origin,
@@ -654,7 +654,7 @@ private:
 	unpack_user user_;
 	unsigned int cs_;
 	unsigned int top_;
-	template_unpack_stack stack_[MSGPACK_EMBED_STACK_SIZE];
+	unpack_stack stack_[MSGPACK_EMBED_STACK_SIZE];
 };
 
 } // detail
@@ -794,7 +794,7 @@ private:
 	size_t parsed_;
 	zone* z_;
 	size_t initial_buffer_size_;
-	detail::template_context ctx_;
+	detail::context ctx_;
 
 private:
 	unpacker(const unpacker&);
@@ -1088,7 +1088,7 @@ unpack_imp(const char* data, size_t len, size_t* off,
 		return UNPACK_CONTINUE;
 	}
 
-	detail::template_context ctx;
+	detail::context ctx;
 	ctx.init();
 
 	ctx.user().set_z(result_zone);
