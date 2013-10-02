@@ -148,7 +148,7 @@ class template_unpack_stack {
 public:
 	object const& obj() const { return obj_; }
 	object& obj() { return obj_; }
-	void setObj(object const& obj) { obj_ = obj; }
+	void set_obj(object const& obj) { obj_ = obj; }
 	size_t count() const { return count_; }
 	void set_count(size_t count) { count_ = count; }
 	size_t decl_count() { return --count_; }
@@ -234,7 +234,7 @@ class template_context {
 public:
 	template_context():trail_(0), cs_(CS_HEADER), top_(0)
 	{
-		stack_[0].setObj(object());
+		stack_[0].set_obj(object());
 	}
 
 	void init()
@@ -242,7 +242,7 @@ public:
 		cs_ = CS_HEADER;
 		trail_ = 0;
 		top_ = 0;
-		stack_[0].setObj(object());
+		stack_[0].set_obj(object());
 	}
 
 	object const& data() const
@@ -635,7 +635,7 @@ private:
 		unsigned int trail) {
 		int ret = push_item(c, obj);
 		if (ret > 0) {
-			stack_[0].setObj(obj);
+			stack_[0].set_obj(obj);
 			++current;
 			/*printf("-- finish --\n"); */
 			off = update_attributes(current, origin, trail);
