@@ -5,21 +5,44 @@
 #include <string>
 #include <iostream>
 #include <sstream>
-#include <map>
+#include <vector>
 #include <boost/timer/timer.hpp>
 
-void test_map_pack_unpack() {
-	std::cout << "[TEST][map_pack_unpack]" << std::endl;
+template <typename T, std::size_t level>
+struct vecvec {
+	typedef std::vector<typename vecvec<T, level - 1>::type> type;
+	static void fill(type& v, std::size_t num_of_elems, T const& val) {
+		for (int elem = 0; elem < num_of_elems; ++elem) {
+			typename vecvec<T, level - 1>::type child;
+			vecvec<T, level - 1>::fill(child, num_of_elems, val);
+			v.push_back(child);
+		}
+	}
+};
+
+template <typename T>
+struct vecvec<T, 0> {
+	typedef std::vector<T> type;
+	static void fill(type& v, std::size_t num_of_elems, T const& val) {
+		for (int elem = 0; elem < num_of_elems; ++elem) {
+			v.push_back(val);
+		}
+	}
+};
+
+void test_array_of_array() {
+	std::cout << "[TEST][array_of_array]" << std::endl;
 	// setup
-	std::cout << "Setting up map data..." << std::endl;
-	std::map<int, int> m1;
-	int const num = 30000000L;
-	for (int i = 0; i < num; ++i) m1[i] = i;
+	int const depth = 16;
+	std::cout << "Setting up array data..." << std::endl;
+	typename vecvec<int, depth>::type v1;
+	vecvec<int, depth>::fill(v1, 3, 42);
+
 	std::cout << "Start packing..." << std::endl;
 	std::stringstream buffer;
 	{
 		boost::timer::cpu_timer timer;
-		msgpack::pack(buffer, m1);
+		msgpack::pack(buffer, v1);
 		std::string result = timer.format();
 		std::cout << result << std::endl;
 	}
@@ -49,11 +72,11 @@ void test_map_pack_unpack() {
 		std::cout << result << std::endl;
 	}
 	std::cout << "Unpack finished..." << std::endl;
-	std::map<int, int> m2;
+	typename vecvec<int, depth>::type v2;
 	std::cout << "Start converting..." << std::endl;
 	{
 		boost::timer::cpu_timer timer;
-		deserialized.convert(&m2);
+		deserialized.convert(&v2);
 		std::string result = timer.format();
 		std::cout << result << std::endl;
 	}
@@ -62,6 +85,6 @@ void test_map_pack_unpack() {
 
 int main(void)
 {
-	test_map_pack_unpack();
+	test_array_of_array();
 }
 
