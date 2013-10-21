@@ -194,45 +194,45 @@ bool msgpack_unpacker_flush_zone(msgpack_unpacker* mpac);
 
 bool msgpack_unpacker_expand_buffer(msgpack_unpacker* mpac, size_t size);
 
-bool msgpack_unpacker_reserve_buffer(msgpack_unpacker* mpac, size_t size)
+static inline bool msgpack_unpacker_reserve_buffer(msgpack_unpacker* mpac, size_t size)
 {
 	if(mpac->free >= size) { return true; }
 	return msgpack_unpacker_expand_buffer(mpac, size);
 }
 
-char* msgpack_unpacker_buffer(msgpack_unpacker* mpac)
+static inline char* msgpack_unpacker_buffer(msgpack_unpacker* mpac)
 {
 	return mpac->buffer + mpac->used;
 }
 
-size_t msgpack_unpacker_buffer_capacity(const msgpack_unpacker* mpac)
+static inline size_t msgpack_unpacker_buffer_capacity(const msgpack_unpacker* mpac)
 {
 	return mpac->free;
 }
 
-void msgpack_unpacker_buffer_consumed(msgpack_unpacker* mpac, size_t size)
+static inline void msgpack_unpacker_buffer_consumed(msgpack_unpacker* mpac, size_t size)
 {
 	mpac->used += size;
 	mpac->free -= size;
 }
 
-size_t msgpack_unpacker_message_size(const msgpack_unpacker* mpac)
+static inline size_t msgpack_unpacker_message_size(const msgpack_unpacker* mpac)
 {
 	return mpac->parsed - mpac->off + mpac->used;
 }
 
-size_t msgpack_unpacker_parsed_size(const msgpack_unpacker* mpac)
+static inline size_t msgpack_unpacker_parsed_size(const msgpack_unpacker* mpac)
 {
 	return mpac->parsed;
 }
 
 
-void msgpack_unpacked_init(msgpack_unpacked* result)
+static inline void msgpack_unpacked_init(msgpack_unpacked* result)
 {
 	memset(result, 0, sizeof(msgpack_unpacked));
 }
 
-void msgpack_unpacked_destroy(msgpack_unpacked* result)
+static inline void msgpack_unpacked_destroy(msgpack_unpacked* result)
 {
 	if(result->zone != NULL) {
 		msgpack_zone_free(result->zone);
@@ -241,7 +241,7 @@ void msgpack_unpacked_destroy(msgpack_unpacked* result)
 	}
 }
 
-msgpack_zone* msgpack_unpacked_release_zone(msgpack_unpacked* result)
+static inline msgpack_zone* msgpack_unpacked_release_zone(msgpack_unpacked* result)
 {
 	if(result->zone != NULL) {
 		msgpack_zone* z = result->zone;

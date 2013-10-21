@@ -103,7 +103,7 @@ void* msgpack_zone_malloc_no_align(msgpack_zone* zone, size_t size)
 	return ptr;
 }
 
-void* msgpack_zone_malloc(msgpack_zone* zone, size_t size)
+static inline void* msgpack_zone_malloc(msgpack_zone* zone, size_t size)
 {
 	return msgpack_zone_malloc_no_align(zone,
 			((size)+((MSGPACK_ZONE_ALIGN)-1)) & ~((MSGPACK_ZONE_ALIGN)-1));
@@ -113,7 +113,7 @@ void* msgpack_zone_malloc(msgpack_zone* zone, size_t size)
 bool msgpack_zone_push_finalizer_expand(msgpack_zone* zone,
 		void (*func)(void* data), void* data);
 
-bool msgpack_zone_push_finalizer(msgpack_zone* zone,
+static inline bool msgpack_zone_push_finalizer(msgpack_zone* zone,
 		void (*func)(void* data), void* data)
 {
 	msgpack_zone_finalizer_array* const fa = &zone->finalizer_array;
@@ -131,7 +131,7 @@ bool msgpack_zone_push_finalizer(msgpack_zone* zone,
 	return true;
 }
 
-void msgpack_zone_swap(msgpack_zone* a, msgpack_zone* b)
+static inline void msgpack_zone_swap(msgpack_zone* a, msgpack_zone* b)
 {
 	msgpack_zone tmp = *a;
 	*a = *b;
