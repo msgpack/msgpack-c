@@ -462,7 +462,9 @@ bool msgpack_unpack_next(msgpack_unpacked* result,
 	return true;
 }
 
+#ifndef __clang__
 // FIXME: Dirty hack to avoid a bus error caused by OS X's old gcc.
 static void dummy_function_to_avoid_bus_error()
 {
 }
+#endif
