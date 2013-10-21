@@ -45,7 +45,7 @@ inline std::vector<T>& operator>> (object o, std::vector<T>& v)
 template <typename Stream, typename T>
 inline packer<Stream>& operator<< (packer<Stream>& o, const std::vector<T>& v)
 {
-	o.pack_array(v.size());
+	o.pack_array((unsigned int)v.size());
 	for(typename std::vector<T>::const_iterator it(v.begin()), it_end(v.end());
 			it != it_end; ++it) {
 		o.pack(*it);

@@ -51,14 +51,14 @@ public:
 
 	void append_ref(const char* buf, size_t len)
 	{
-		if(msgpack_vrefbuffer_append_ref(this, buf, len) < 0) {
+		if(msgpack_vrefbuffer_append_ref(this, buf, (unsigned int)len) < 0) {
 			throw std::bad_alloc();
 		}
 	}
 
 	void append_copy(const char* buf, size_t len)
 	{
-		if(msgpack_vrefbuffer_append_copy(this, buf, len) < 0) {
+		if(msgpack_vrefbuffer_append_copy(this, buf, (unsigned int)len) < 0) {
 			throw std::bad_alloc();
 		}
 	}
