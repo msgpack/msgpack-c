@@ -95,7 +95,7 @@ void msgpack_vrefbuffer_clear(msgpack_vrefbuffer* vref);
 /** @} */
 
 
-msgpack_vrefbuffer* msgpack_vrefbuffer_new(size_t ref_size, size_t chunk_size)
+static inline msgpack_vrefbuffer* msgpack_vrefbuffer_new(size_t ref_size, size_t chunk_size)
 {
 	msgpack_vrefbuffer* vbuf = (msgpack_vrefbuffer*)malloc(sizeof(msgpack_vrefbuffer));
 	if(!msgpack_vrefbuffer_init(vbuf, ref_size, chunk_size)) {
@@ -105,14 +105,14 @@ msgpack_vrefbuffer* msgpack_vrefbuffer_new(size_t ref_size, size_t chunk_size)
 	return vbuf;
 }
 
-void msgpack_vrefbuffer_free(msgpack_vrefbuffer* vbuf)
+static inline void msgpack_vrefbuffer_free(msgpack_vrefbuffer* vbuf)
 {
 	if(vbuf == NULL) { return; }
 	msgpack_vrefbuffer_destroy(vbuf);
 	free(vbuf);
 }
 
-int msgpack_vrefbuffer_write(void* data, const char* buf, unsigned int len)
+static inline int msgpack_vrefbuffer_write(void* data, const char* buf, unsigned int len)
 {
 	msgpack_vrefbuffer* vbuf = (msgpack_vrefbuffer*)data;
 
@@ -123,12 +123,12 @@ int msgpack_vrefbuffer_write(void* data, const char* buf, unsigned int len)
 	}
 }
 
-const struct iovec* msgpack_vrefbuffer_vec(const msgpack_vrefbuffer* vref)
+static inline const struct iovec* msgpack_vrefbuffer_vec(const msgpack_vrefbuffer* vref)
 {
 	return vref->array;
 }
 
-size_t msgpack_vrefbuffer_veclen(const msgpack_vrefbuffer* vref)
+static inline size_t msgpack_vrefbuffer_veclen(const msgpack_vrefbuffer* vref)
 {
 	return vref->tail - vref->array;
 }
