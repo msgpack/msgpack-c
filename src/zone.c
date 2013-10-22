@@ -63,6 +63,7 @@ static inline void clear_chunk_list(msgpack_zone_chunk_list* cl, size_t chunk_si
 			free(c);
 			c = n;
 		} else {
+			cl->head = c;
 			break;
 		}
 	}
