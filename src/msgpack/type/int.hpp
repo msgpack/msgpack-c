@@ -63,7 +63,7 @@ namespace detail {
 	};
 
 	template <typename T>
-	static inline T convert_integer(object o)
+	static inline T convert_integer(object const& o)
 	{
 		return detail::convert_integer_sign<T, is_signed<T>::value>::convert(o);
 	}
@@ -99,7 +99,7 @@ namespace detail {
 	struct object_char_sign<true> {
 		static inline void make(object& o, char v) {
 			v < 0 ? o.type = type::NEGATIVE_INTEGER, o.via.i64 = v
-				: o.type = type::POSITIVE_INTEGER, o.via.u64 = v;
+				  : o.type = type::POSITIVE_INTEGER, o.via.u64 = v;
 		}
 	};
 
@@ -152,9 +152,11 @@ inline unsigned long& operator>> (object const& o, unsigned long& v)
 inline unsigned long long& operator>> (object const& o, unsigned long long& v)
 	{ v = type::detail::convert_integer<unsigned long long>(o); return v; }
 
+
 template <typename Stream>
 inline packer<Stream>& operator<< (packer<Stream>& o, char v)
 	{ return type::detail::pack_char(o, v); }
+
 
 template <typename Stream>
 inline packer<Stream>& operator<< (packer<Stream>& o, signed char v)
@@ -232,6 +234,7 @@ inline void operator<< (object& o, unsigned long v)
 
 inline void operator<< (object& o, unsigned long long v)
 	{ o.type = type::POSITIVE_INTEGER, o.via.u64 = v; }
+
 
 
 inline void operator<< (object::with_zone& o, char v)
