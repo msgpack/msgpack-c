@@ -76,6 +76,24 @@ const double kEPS = 1e-10;
     }                                                           \
   } while(0)
 
+TEST(MSGPACKC, simple_buffer_char)
+{
+#if defined(CHAR_MIN)
+#if CHAR_MIN < 0
+	GEN_TEST_SIGNED(char, char);
+#else
+	GEN_TEST_UNSIGNED(char, char);
+#endif
+#else
+#error CHAR_MIN is not defined
+#endif
+}
+
+TEST(MSGPACKC, simple_buffer_singed_char)
+{
+  GEN_TEST_SIGNED(signed char, signed_char);
+}
+
 TEST(MSGPACKC, simple_buffer_short)
 {
   GEN_TEST_SIGNED(short, short);
@@ -94,6 +112,11 @@ TEST(MSGPACKC, simple_buffer_long)
 TEST(MSGPACKC, simple_buffer_long_long)
 {
   GEN_TEST_SIGNED(long long, long_long);
+}
+
+TEST(MSGPACKC, simple_buffer_unsigned_char)
+{
+  GEN_TEST_UNSIGNED(unsigned char, unsigned_char);
 }
 
 TEST(MSGPACKC, simple_buffer_unsigned_short)

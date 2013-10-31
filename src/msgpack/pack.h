@@ -52,10 +52,14 @@ static void msgpack_packer_init(msgpack_packer* pk, void* data, msgpack_packer_w
 static msgpack_packer* msgpack_packer_new(void* data, msgpack_packer_write callback);
 static void msgpack_packer_free(msgpack_packer* pk);
 
+static int msgpack_pack_char(msgpack_packer* pk, char d);
+
+static int msgpack_pack_signed_char(msgpack_packer* pk, signed char d);
 static int msgpack_pack_short(msgpack_packer* pk, short d);
 static int msgpack_pack_int(msgpack_packer* pk, int d);
 static int msgpack_pack_long(msgpack_packer* pk, long d);
 static int msgpack_pack_long_long(msgpack_packer* pk, long long d);
+static int msgpack_pack_unsigned_char(msgpack_packer* pk, unsigned char d);
 static int msgpack_pack_unsigned_short(msgpack_packer* pk, unsigned short d);
 static int msgpack_pack_unsigned_int(msgpack_packer* pk, unsigned int d);
 static int msgpack_pack_unsigned_long(msgpack_packer* pk, unsigned long d);

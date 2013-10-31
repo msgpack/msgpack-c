@@ -54,10 +54,13 @@ public:
 	packer<Stream>& pack_fix_int32(int32_t d);
 	packer<Stream>& pack_fix_int64(int64_t d);
 
+	packer<Stream>& pack_char(char d);
+	packer<Stream>& pack_signed_char(signed char d);
 	packer<Stream>& pack_short(short d);
 	packer<Stream>& pack_int(int d);
 	packer<Stream>& pack_long(long d);
 	packer<Stream>& pack_long_long(long long d);
+	packer<Stream>& pack_unsigned_char(unsigned char d);
 	packer<Stream>& pack_unsigned_short(unsigned short d);
 	packer<Stream>& pack_unsigned_int(unsigned int d);
 	packer<Stream>& pack_unsigned_long(unsigned long d);
@@ -96,10 +99,14 @@ private:
 	static void _pack_fix_int32(Stream& x, int32_t d);
 	static void _pack_fix_int64(Stream& x, int64_t d);
 
+	static void _pack_char(Stream& x, char d);
+
+	static void _pack_signed_char(Stream& x, signed char d);
 	static void _pack_short(Stream& x, short d);
 	static void _pack_int(Stream& x, int d);
 	static void _pack_long(Stream& x, long d);
 	static void _pack_long_long(Stream& x, long long d);
+	static void _pack_unsigned_char(Stream& x, unsigned char d);
 	static void _pack_unsigned_short(Stream& x, unsigned short d);
 	static void _pack_unsigned_int(Stream& x, unsigned int d);
 	static void _pack_unsigned_long(Stream& x, unsigned long d);
@@ -239,6 +246,14 @@ inline packer<Stream>& packer<Stream>::pack_fix_int64(int64_t d)
 
 
 template <typename Stream>
+inline packer<Stream>& packer<Stream>::pack_char(char d)
+{ _pack_char(m_stream, d); return *this; }
+
+template <typename Stream>
+inline packer<Stream>& packer<Stream>::pack_signed_char(signed char d)
+{ _pack_signed_char(m_stream, d); return *this; }
+
+template <typename Stream>
 inline packer<Stream>& packer<Stream>::pack_short(short d)
 { _pack_short(m_stream, d); return *this; }
 
@@ -253,6 +268,10 @@ inline packer<Stream>& packer<Stream>::pack_long(long d)
 template <typename Stream>
 inline packer<Stream>& packer<Stream>::pack_long_long(long long d)
 { _pack_long_long(m_stream, d); return *this; }
+
+template <typename Stream>
+inline packer<Stream>& packer<Stream>::pack_unsigned_char(unsigned char d)
+{ _pack_unsigned_char(m_stream, d); return *this; }
 
 template <typename Stream>
 inline packer<Stream>& packer<Stream>::pack_unsigned_short(unsigned short d)
