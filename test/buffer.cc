@@ -1,4 +1,6 @@
 #include <msgpack.hpp>
+#include <msgpack/fbuffer.hpp>
+#include <msgpack/fbuffer.h>
 #include <msgpack/zbuffer.hpp>
 #include <gtest/gtest.h>
 #include <string.h>
@@ -68,5 +70,49 @@ TEST(buffer, zbuffer)
 	zbuf.write("a", 1);
 
 	zbuf.flush();
+}
+
+
+TEST(buffer, fbuffer)
+{
+	FILE* file = tmpfile();
+	EXPECT_TRUE( file != NULL );
+
+	msgpack::fbuffer fbuf(file);
+	EXPECT_EQ(file, fbuf.file());
+
+	fbuf.write("a", 1);
+	fbuf.write("a", 1);
+	fbuf.write("a", 1);
+
+	fflush(file);
+	rewind(file);
+	for (size_t i=0; i < 3; ++i) {
+		int ch = fgetc(file);
+		EXPECT_TRUE(ch != EOF);
+		EXPECT_EQ('a', static_cast<char>(ch));
+	}
+	EXPECT_EQ(EOF, fgetc(file));
+}
+
+
+TEST(buffer, fbuffer_c)
+{
+	FILE* file = tmpfile();
+	void* fbuf = (void*)file;
+
+	EXPECT_TRUE( file != NULL );
+	EXPECT_EQ(0, msgpack_fbuffer_write(fbuf, "a", 1));
+	EXPECT_EQ(0, msgpack_fbuffer_write(fbuf, "a", 1));
+	EXPECT_EQ(0, msgpack_fbuffer_write(fbuf, "a", 1));
+
+	fflush(file);
+	rewind(file);
+	for (size_t i=0; i < 3; ++i) {
+		int ch = fgetc(file);
+		EXPECT_TRUE(ch != EOF);
+		EXPECT_EQ('a', (char) ch);
+	}
+	EXPECT_EQ(EOF, fgetc(file));
 }
 
