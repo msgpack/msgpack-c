@@ -502,3 +502,21 @@ TEST(MSGPACKC, unpack_bin32)
 
   msgpack_zone_destroy(&z);
 }
+
+TEST(MSGPACKC, unpack_array_uint64)
+{
+  const char buf[] = {
+    (char)0x91, (char)0xcf, (char)0xff, (char)0xf0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01
+  };
+  msgpack_zone z;
+  msgpack_zone_init(&z, 2048);
+  msgpack_object obj;
+  msgpack_unpack_return ret;
+  ret = msgpack_unpack(buf, sizeof(buf), NULL, &z, &obj);
+  EXPECT_EQ(MSGPACK_UNPACK_SUCCESS, ret);
+  EXPECT_EQ(MSGPACK_OBJECT_ARRAY, obj.type);
+  EXPECT_EQ(1, obj.via.array.size);
+  EXPECT_EQ(MSGPACK_OBJECT_POSITIVE_INTEGER, obj.via.array.ptr[0].type);
+  EXPECT_EQ(0xFFF0000000000001LL, obj.via.array.ptr[0].via.u64);
+  msgpack_zone_destroy(&z);
+}
