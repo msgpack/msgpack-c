@@ -133,6 +133,7 @@ private:
 					::free(c);
 					c = n;
 				} else {
+					head_ = c;
 					break;
 				}
 			}
