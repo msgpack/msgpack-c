@@ -111,7 +111,15 @@ static inline int template_callback_array(unpack_user* u, unsigned int n, msgpac
 }
 
 static inline int template_callback_array_item(unpack_user* u, msgpack_object* c, msgpack_object o)
-{ c->via.array.ptr[c->via.array.size++] = o; return 0; }
+{
+#if defined(__GNUC__) && !defined(__clang__)
+	memcpy(&c->via.array.ptr[c->via.array.size], &o, sizeof(msgpack_object));
+#else  /* __GNUC__ && !__clang__ */
+	c->via.array.ptr[c->via.array.size] = o;
+#endif /* __GNUC__ && !__clang__ */
+	++c->via.array.size;
+	return 0;
+}
 
 static inline int template_callback_map(unpack_user* u, unsigned int n, msgpack_object* o)
 {
@@ -124,8 +132,13 @@ static inline int template_callback_map(unpack_user* u, unsigned int n, msgpack_
 
 static inline int template_callback_map_item(unpack_user* u, msgpack_object* c, msgpack_object k, msgpack_object v)
 {
+#if defined(__GNUC__) && !defined(__clang__)
+	memcpy(&c->via.map.ptr[c->via.map.size].key, &k, sizeof(msgpack_object));
+	memcpy(&c->via.map.ptr[c->via.map.size].val, &v, sizeof(msgpack_object));
+#else  /* __GNUC__ && !__clang__ */
 	c->via.map.ptr[c->via.map.size].key = k;
 	c->via.map.ptr[c->via.map.size].val = v;
+#endif /* __GNUC__ && !__clang__ */
 	++c->via.map.size;
 	return 0;
 }
