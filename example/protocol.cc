@@ -17,7 +17,7 @@ namespace myprotocol {
 
 	struct Put : define< tuple<uint32_t, std::string, raw_ref> > {
 		Put() { }
-		Put(uint32_t f, const std::string& k, const char* valref, size_t vallen) :
+		Put(uint32_t f, const std::string& k, const char* valref, uint32_t vallen) :
 			define_type(msgpack_type( f, k, raw_ref(valref,vallen) )) { }
 		uint32_t&    flags() { return get<0>(); }
 		std::string& key()   { return get<1>(); }

@@ -70,9 +70,9 @@ public:
 	packer<Stream>& pack_true();
 	packer<Stream>& pack_false();
 
-	packer<Stream>& pack_array(unsigned int n);
+	packer<Stream>& pack_array(size_t n);
 
-	packer<Stream>& pack_map(unsigned int n);
+	packer<Stream>& pack_map(size_t n);
 
 	packer<Stream>& pack_raw(size_t l);
 	packer<Stream>& pack_raw_body(const char* b, size_t l);
@@ -112,14 +112,14 @@ private:
 	static void _pack_true(Stream& x);
 	static void _pack_false(Stream& x);
 
-	static void _pack_array(Stream& x, unsigned int n);
+	static void _pack_array(Stream& x, size_t n);
 
-	static void _pack_map(Stream& x, unsigned int n);
+	static void _pack_map(Stream& x, size_t n);
 
 	static void _pack_raw(Stream& x, size_t l);
 	static void _pack_raw_body(Stream& x, const void* b, size_t l);
 
-	static void append_buffer(Stream& x, const unsigned char* buf, unsigned int len)
+	static void append_buffer(Stream& x, const unsigned char* buf, size_t len)
 		{ x.write((const char*)buf, len); }
 
 private:
@@ -294,12 +294,12 @@ inline packer<Stream>& packer<Stream>::pack_false()
 
 
 template <typename Stream>
-inline packer<Stream>& packer<Stream>::pack_array(unsigned int n)
+inline packer<Stream>& packer<Stream>::pack_array(size_t n)
 { _pack_array(m_stream, n); return *this; }
 
 
 template <typename Stream>
-inline packer<Stream>& packer<Stream>::pack_map(unsigned int n)
+inline packer<Stream>& packer<Stream>::pack_map(size_t n)
 { _pack_map(m_stream, n); return *this; }
 
 

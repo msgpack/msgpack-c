@@ -688,7 +688,7 @@ msgpack_pack_inline_func(_false)(msgpack_pack_user x)
  * Array
  */
 
-msgpack_pack_inline_func(_array)(msgpack_pack_user x, unsigned int n)
+msgpack_pack_inline_func(_array)(msgpack_pack_user x, size_t n)
 {
 	if(n < 16) {
 		unsigned char d = 0x90 | n;
@@ -709,7 +709,7 @@ msgpack_pack_inline_func(_array)(msgpack_pack_user x, unsigned int n)
  * Map
  */
 
-msgpack_pack_inline_func(_map)(msgpack_pack_user x, unsigned int n)
+msgpack_pack_inline_func(_map)(msgpack_pack_user x, size_t n)
 {
 	if(n < 16) {
 		unsigned char d = 0x80 | n;

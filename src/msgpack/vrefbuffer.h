@@ -77,16 +77,16 @@ void msgpack_vrefbuffer_destroy(msgpack_vrefbuffer* vbuf);
 static inline msgpack_vrefbuffer* msgpack_vrefbuffer_new(size_t ref_size, size_t chunk_size);
 static inline void msgpack_vrefbuffer_free(msgpack_vrefbuffer* vbuf);
 
-static inline int msgpack_vrefbuffer_write(void* data, const char* buf, unsigned int len);
+static inline int msgpack_vrefbuffer_write(void* data, const char* buf, size_t len);
 
 static inline const struct iovec* msgpack_vrefbuffer_vec(const msgpack_vrefbuffer* vref);
 static inline size_t msgpack_vrefbuffer_veclen(const msgpack_vrefbuffer* vref);
 
 int msgpack_vrefbuffer_append_copy(msgpack_vrefbuffer* vbuf,
-		const char* buf, unsigned int len);
+		const char* buf, size_t len);
 
 int msgpack_vrefbuffer_append_ref(msgpack_vrefbuffer* vbuf,
-		const char* buf, unsigned int len);
+		const char* buf, size_t len);
 
 int msgpack_vrefbuffer_migrate(msgpack_vrefbuffer* vbuf, msgpack_vrefbuffer* to);
 
@@ -112,7 +112,7 @@ static inline void msgpack_vrefbuffer_free(msgpack_vrefbuffer* vbuf)
 	free(vbuf);
 }
 
-static inline int msgpack_vrefbuffer_write(void* data, const char* buf, unsigned int len)
+static inline int msgpack_vrefbuffer_write(void* data, const char* buf, size_t len)
 {
 	msgpack_vrefbuffer* vbuf = (msgpack_vrefbuffer*)data;
 
