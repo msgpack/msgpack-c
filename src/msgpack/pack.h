@@ -90,9 +90,9 @@ static int msgpack_pack_nil(msgpack_packer* pk);
 static int msgpack_pack_true(msgpack_packer* pk);
 static int msgpack_pack_false(msgpack_packer* pk);
 
-static int msgpack_pack_array(msgpack_packer* pk, unsigned int n);
+static int msgpack_pack_array(msgpack_packer* pk, size_t n);
 
-static int msgpack_pack_map(msgpack_packer* pk, unsigned int n);
+static int msgpack_pack_map(msgpack_packer* pk, size_t n);
 
 static int msgpack_pack_raw(msgpack_packer* pk, size_t l);
 static int msgpack_pack_raw_body(msgpack_packer* pk, const void* b, size_t l);

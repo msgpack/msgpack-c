@@ -95,7 +95,7 @@ void msgpack_vrefbuffer_clear(msgpack_vrefbuffer* vbuf)
 }
 
 int msgpack_vrefbuffer_append_ref(msgpack_vrefbuffer* vbuf,
-		const char* buf, unsigned int len)
+		const char* buf, size_t len)
 {
 	if(vbuf->tail == vbuf->end) {
 		const size_t nused = vbuf->tail - vbuf->array;
@@ -120,7 +120,7 @@ int msgpack_vrefbuffer_append_ref(msgpack_vrefbuffer* vbuf,
 }
 
 int msgpack_vrefbuffer_append_copy(msgpack_vrefbuffer* vbuf,
-		const char* buf, unsigned int len)
+		const char* buf, size_t len)
 {
 	msgpack_vrefbuffer_inner_buffer* const ib = &vbuf->inner_buffer;
 
