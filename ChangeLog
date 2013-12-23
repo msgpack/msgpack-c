@@ -1,3 +1,10 @@
+2013-12-23 version 0.5.8:
+
+  * Move to the new github repository msgpack/msgpack-c
+  * Support the new deserialization specification
+  * fixes the problem of unpack helpers for array and map with 32bit compilers (#37, #38)
+  * Other bug fixes and refactoring: #46, #41, #36, #35, #33, #32, #30, #29, #28, #27, #26, #25, #8, #3
+  * Update of documents: #23, #18, #17
 
 2011-08-08 version 0.5.7:
 
