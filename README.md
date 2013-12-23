@@ -1,10 +1,11 @@
 # Msgpack for C/C++
+
 It's like JSON but small and fast.
+
 
 ## Overview
 
 MessagePack is an efficient binary serialization format. It lets you exchange data among multiple languages like JSON. But it's faster and smaller. Small integers are encoded into a single byte, and typical short strings require only one extra byte in addition to the strings themselves.
-Binary-based efficient object serialization library.
 
 
 ## License
@@ -40,12 +41,12 @@ $ sudo make install
 
 ##### UNIX-like platform with ./configure
 
-On typical UNIX-like platforms, download source package from [Releases|http://msgpack.org/releases/cpp/] and run `./configure && make && make install`. Example:
+On typical UNIX-like platforms, download source package from [Releases](https://github.com/msgpack/msgpack-c/releases) and run `./configure && make && make install`. Example:
 
 ```
-$ wget http://msgpack.org/releases/cpp/msgpack-0.5.5.tar.gz
-$ tar zxvf msgpack-0.5.5.tar.gz
-$ cd msgpack-0.5.5
+$ wget https://github.com/msgpack/msgpack-c/releases/download/cpp-0.5.8/msgpack-0.5.8.tar.gz
+$ tar zxvf msgpack-0.5.8.tar.gz
+$ cd msgpack-0.5.8
 $ ./configure
 $ make
 $ sudo make install
@@ -53,13 +54,11 @@ $ sudo make install
 
 ##### FreeBSD with Ports Collection
 
-On FreeBSD, you can use Ports Collection. Install [net/msgpack|http://www.freebsd.org/cgi/cvsweb.cgi/ports/devel/msgpack/] package.
-
+On FreeBSD, you can use Ports Collection. Install [net/msgpack](http://www.freebsd.org/cgi/cvsweb.cgi/ports/devel/msgpack/) package.
 
 ##### Gentoo Linux with Portage
 
-On Gentoo Linux, you can use emerge. Install [dev-libs/msgpack|http://gentoo-portage.com/dev-libs/msgpack] package.
-
+On Gentoo Linux, you can use emerge. Install [dev-libs/msgpack](http://gentoo-portage.com/dev-libs/msgpack) package.
 
 ##### Mac OS X with MacPorts
 
@@ -80,7 +79,7 @@ $ sudo brew install msgpack
 
 ##### Windows
 
-On Windows, download source package from [here|https://sourceforge.net/projects/msgpack/files/] and extract it. Open `msgpack_vc8.vcproj` or msgpack_vc2008 file and build it using batch build. It builds libraries in `lib/` folder and header files in `include/` folder.
+On Windows, download source package from [here](https://sourceforge.net/projects/msgpack/files/) and extract it. Open `msgpack_vc8.vcproj` or msgpack_vc2008 file and build it using batch build. It builds libraries in `lib/` folder and header files in `include/` folder.
 
 You can build using command line as follows:
 
