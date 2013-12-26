@@ -558,7 +558,7 @@ inline packer<Stream>& packer<Stream>::pack_float(float d)
 	union { float f; uint32_t i; } mem;
 	mem.f = d;
 	char buf[5];
-	buf[0] = 0xca; _msgpack_store32(&buf[1], mem.i);
+	buf[0] = static_cast<char>(0xca); _msgpack_store32(&buf[1], mem.i);
 	append_buffer(buf, 5);
 	return *this;
 }
@@ -569,7 +569,7 @@ inline packer<Stream>& packer<Stream>::pack_double(double d)
 	union { double f; uint64_t i; } mem;
 	mem.f = d;
 	char buf[9];
-	buf[0] = 0xcb;
+	buf[0] = static_cast<char>(0xcb);
 #if defined(__arm__) && !(__ARM_EABI__) // arm-oabi
 	// https://github.com/msgpack/msgpack-perl/pull/1
 	mem.i = (mem.i & 0xFFFFFFFFUL) << 32UL | (mem.i >> 32UL);
@@ -632,11 +632,11 @@ inline packer<Stream>& packer<Stream>::pack_map(size_t n)
 		append_buffer(&buf, 1);
 	} else if(n < 65536) {
 		char buf[3];
-		buf[0] = 0xde; _msgpack_store16(&buf[1], (uint16_t)n);
+		buf[0] = static_cast<char>(0xde); _msgpack_store16(&buf[1], (uint16_t)n);
 		append_buffer(buf, 3);
 	} else {
 		char buf[5];
-		buf[0] = 0xdf; _msgpack_store32(&buf[1], (uint32_t)n);
+		buf[0] = static_cast<char>(0xdf); _msgpack_store32(&buf[1], (uint32_t)n);
 		append_buffer(buf, 5);
 	}
 	return *this;
