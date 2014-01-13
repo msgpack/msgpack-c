@@ -13,4 +13,5 @@
 #include "type/vector.hpp"
 #include "type/tuple.hpp"
 #include "type/define.hpp"
-
+#include "type/tr1/unordered_map.hpp"
+#include "type/tr1/unordered_set.hpp"
