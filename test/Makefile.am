@@ -17,7 +17,8 @@ check_PROGRAMS = \
 		fixint_c \
 		version \
 		msgpackc_test \
-		msgpack_test
+		msgpack_test \
+		msgpack_unordered_map_set_test
 
 TESTS = $(check_PROGRAMS)
 
@@ -49,6 +50,8 @@ version_SOURCES = version.cc
 msgpackc_test_SOURCES = msgpackc_test.cpp
 
 msgpack_test_SOURCES = msgpack_test.cpp
+
+msgpack_unordered_map_set_test_SOURCES = msgpack_unordered_map_set_test.cpp
 
 EXTRA_DIST = cases.mpac cases_compact.mpac
 
