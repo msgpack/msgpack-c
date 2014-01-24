@@ -40,7 +40,7 @@ extern "C" {
  * @{
  */
 
-typedef int (*msgpack_packer_write)(void* data, const char* buf, unsigned int len);
+typedef int (*msgpack_packer_write)(void* data, const char* buf, size_t len);
 
 typedef struct msgpack_packer {
 	void* data;
