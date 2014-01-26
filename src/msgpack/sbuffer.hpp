@@ -47,7 +47,7 @@ public:
 	}
 
 public:
-	void write(const char* buf, unsigned int len)
+	void write(const char* buf, size_t len)
 	{
 		if(base::alloc - base::size < len) {
 			expand_buffer(len);

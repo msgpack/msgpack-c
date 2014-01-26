@@ -40,7 +40,7 @@ public:
 	}
 
 public:
-	void write(const char* buf, unsigned int len)
+	void write(const char* buf, size_t len)
 	{
 		if(msgpack_zbuffer_write(this, buf, len) < 0) {
 			throw std::bad_alloc();

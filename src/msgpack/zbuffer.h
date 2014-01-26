@@ -65,7 +65,7 @@ static inline char* msgpack_zbuffer_release_buffer(msgpack_zbuffer* zbuf);
 #define MSGPACK_ZBUFFER_RESERVE_SIZE 512
 #endif
 
-static inline int msgpack_zbuffer_write(void* data, const char* buf, unsigned int len);
+static inline int msgpack_zbuffer_write(void* data, const char* buf, size_t len);
 
 static inline bool msgpack_zbuffer_expand(msgpack_zbuffer* zbuf);
 
@@ -123,7 +123,7 @@ bool msgpack_zbuffer_expand(msgpack_zbuffer* zbuf)
 	return true;
 }
 
-int msgpack_zbuffer_write(void* data, const char* buf, unsigned int len)
+int msgpack_zbuffer_write(void* data, const char* buf, size_t len)
 {
 	msgpack_zbuffer* zbuf = (msgpack_zbuffer*)data;
 
