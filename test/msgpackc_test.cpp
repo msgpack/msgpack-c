@@ -417,20 +417,20 @@ TEST(MSGPACKC, simple_buffer_map)
   msgpack_sbuffer_destroy(&sbuf);
 }
 
-TEST(MSGPACKC, simple_buffer_raw)
+TEST(MSGPACKC, simple_buffer_str)
 {
-  unsigned int raw_size = 7;
+  unsigned int str_size = 7;
 
   msgpack_sbuffer sbuf;
   msgpack_sbuffer_init(&sbuf);
   msgpack_packer pk;
   msgpack_packer_init(&pk, &sbuf, msgpack_sbuffer_write);
-  msgpack_pack_raw(&pk, raw_size);
-  msgpack_pack_raw_body(&pk, "fr", 2);
-  msgpack_pack_raw_body(&pk, "syuki", 5);
+  msgpack_pack_str(&pk, str_size);
+  msgpack_pack_str_body(&pk, "fr", 2);
+  msgpack_pack_str_body(&pk, "syuki", 5);
   // invalid data
-  msgpack_pack_raw_body(&pk, "", 0);
-  msgpack_pack_raw_body(&pk, "kzk", 0);
+  msgpack_pack_str_body(&pk, "", 0);
+  msgpack_pack_str_body(&pk, "kzk", 0);
 
   msgpack_zone z;
   msgpack_zone_init(&z, 2048);
@@ -438,17 +438,37 @@ TEST(MSGPACKC, simple_buffer_raw)
   msgpack_unpack_return ret;
   ret = msgpack_unpack(sbuf.data, sbuf.size, NULL, &z, &obj);
   EXPECT_EQ(MSGPACK_UNPACK_SUCCESS, ret);
-  EXPECT_EQ(MSGPACK_OBJECT_RAW, obj.type);
-  EXPECT_EQ(raw_size, obj.via.raw.size);
-  EXPECT_EQ(0, memcmp("frsyuki", obj.via.raw.ptr, raw_size));
+  EXPECT_EQ(MSGPACK_OBJECT_STR, obj.type);
+  EXPECT_EQ(str_size, obj.via.str.size);
+  EXPECT_EQ(0, memcmp("frsyuki", obj.via.str.ptr, str_size));
 
   msgpack_zone_destroy(&z);
   msgpack_sbuffer_destroy(&sbuf);
 }
 
+TEST(MSGPACKC, unpack_fixstr)
+{
+  size_t str_size = 7;
+  const char buf[] = {
+    (char)0xa7, 'f', 'r', 's', 'y', 'u', 'k', 'i'
+  };
+
+  msgpack_zone z;
+  msgpack_zone_init(&z, 2048);
+  msgpack_object obj;
+  msgpack_unpack_return ret;
+  ret = msgpack_unpack(buf, sizeof(buf), NULL, &z, &obj);
+  EXPECT_EQ(MSGPACK_UNPACK_SUCCESS, ret);
+  EXPECT_EQ(MSGPACK_OBJECT_STR, obj.type);
+  EXPECT_EQ(str_size, obj.via.str.size);
+  EXPECT_EQ(0, memcmp("frsyuki", obj.via.str.ptr, str_size));
+
+  msgpack_zone_destroy(&z);
+}
+
 TEST(MSGPACKC, unpack_str8)
 {
-  size_t raw_size = 7;
+  size_t str_size = 7;
   const char buf[] = {
     (char)0xd9, 7, 'f', 'r', 's', 'y', 'u', 'k', 'i'
   };
@@ -459,16 +479,56 @@ TEST(MSGPACKC, unpack_str8)
   msgpack_unpack_return ret;
   ret = msgpack_unpack(buf, sizeof(buf), NULL, &z, &obj);
   EXPECT_EQ(MSGPACK_UNPACK_SUCCESS, ret);
-  EXPECT_EQ(MSGPACK_OBJECT_RAW, obj.type);
-  EXPECT_EQ(raw_size, obj.via.raw.size);
-  EXPECT_EQ(0, memcmp("frsyuki", obj.via.raw.ptr, raw_size));
+  EXPECT_EQ(MSGPACK_OBJECT_STR, obj.type);
+  EXPECT_EQ(str_size, obj.via.str.size);
+  EXPECT_EQ(0, memcmp("frsyuki", obj.via.str.ptr, str_size));
+
+  msgpack_zone_destroy(&z);
+}
+
+TEST(MSGPACKC, unpack_str16)
+{
+  size_t str_size = 7;
+  const char buf[] = {
+	  (char)0xda, 0, 7, 'f', 'r', 's', 'y', 'u', 'k', 'i'
+  };
+
+  msgpack_zone z;
+  msgpack_zone_init(&z, 2048);
+  msgpack_object obj;
+  msgpack_unpack_return ret;
+  ret = msgpack_unpack(buf, sizeof(buf), NULL, &z, &obj);
+  EXPECT_EQ(MSGPACK_UNPACK_SUCCESS, ret);
+  EXPECT_EQ(MSGPACK_OBJECT_STR, obj.type);
+  EXPECT_EQ(str_size, obj.via.str.size);
+  EXPECT_EQ(0, memcmp("frsyuki", obj.via.str.ptr, str_size));
+
+  msgpack_zone_destroy(&z);
+}
+
+TEST(MSGPACKC, unpack_str32)
+{
+  size_t str_size = 7;
+  const char buf[] = {
+	  (char)0xdb, 0, 0, 0, 7, 'f', 'r', 's', 'y', 'u', 'k', 'i'
+  };
+
+  msgpack_zone z;
+  msgpack_zone_init(&z, 2048);
+  msgpack_object obj;
+  msgpack_unpack_return ret;
+  ret = msgpack_unpack(buf, sizeof(buf), NULL, &z, &obj);
+  EXPECT_EQ(MSGPACK_UNPACK_SUCCESS, ret);
+  EXPECT_EQ(MSGPACK_OBJECT_STR, obj.type);
+  EXPECT_EQ(str_size, obj.via.str.size);
+  EXPECT_EQ(0, memcmp("frsyuki", obj.via.str.ptr, str_size));
 
   msgpack_zone_destroy(&z);
 }
 
 TEST(MSGPACKC, unpack_bin8)
 {
-  size_t raw_size = 7;
+  size_t bin_size = 7;
   const char buf[] = {
     (char)0xc4, 7, 'f', 'r', 's', 'y', 'u', 'k', 'i'
   };
@@ -479,16 +539,16 @@ TEST(MSGPACKC, unpack_bin8)
   msgpack_unpack_return ret;
   ret = msgpack_unpack(buf, sizeof(buf), NULL, &z, &obj);
   EXPECT_EQ(MSGPACK_UNPACK_SUCCESS, ret);
-  EXPECT_EQ(MSGPACK_OBJECT_RAW, obj.type);
-  EXPECT_EQ(raw_size, obj.via.raw.size);
-  EXPECT_EQ(0, memcmp("frsyuki", obj.via.raw.ptr, raw_size));
+  EXPECT_EQ(MSGPACK_OBJECT_BIN, obj.type);
+  EXPECT_EQ(bin_size, obj.via.bin.size);
+  EXPECT_EQ(0, memcmp("frsyuki", obj.via.bin.ptr, bin_size));
 
   msgpack_zone_destroy(&z);
 }
 
 TEST(MSGPACKC, unpack_bin16)
 {
-  size_t raw_size = 7;
+  size_t bin_size = 7;
   const char buf[] = {
     (char)0xc5, 0, 7, 'f', 'r', 's', 'y', 'u', 'k', 'i'
   };
@@ -499,16 +559,16 @@ TEST(MSGPACKC, unpack_bin16)
   msgpack_unpack_return ret;
   ret = msgpack_unpack(buf, sizeof(buf), NULL, &z, &obj);
   EXPECT_EQ(MSGPACK_UNPACK_SUCCESS, ret);
-  EXPECT_EQ(MSGPACK_OBJECT_RAW, obj.type);
-  EXPECT_EQ(raw_size, obj.via.raw.size);
-  EXPECT_EQ(0, memcmp("frsyuki", obj.via.raw.ptr, raw_size));
+  EXPECT_EQ(MSGPACK_OBJECT_BIN, obj.type);
+  EXPECT_EQ(bin_size, obj.via.bin.size);
+  EXPECT_EQ(0, memcmp("frsyuki", obj.via.bin.ptr, bin_size));
 
   msgpack_zone_destroy(&z);
 }
 
 TEST(MSGPACKC, unpack_bin32)
 {
-  size_t raw_size = 7;
+  size_t bin_size = 7;
   const char buf[] = {
     (char)0xc6, 0, 0, 0, 7, 'f', 'r', 's', 'y', 'u', 'k', 'i'
   };
@@ -519,9 +579,9 @@ TEST(MSGPACKC, unpack_bin32)
   msgpack_unpack_return ret;
   ret = msgpack_unpack(buf, sizeof(buf), NULL, &z, &obj);
   EXPECT_EQ(MSGPACK_UNPACK_SUCCESS, ret);
-  EXPECT_EQ(MSGPACK_OBJECT_RAW, obj.type);
-  EXPECT_EQ(raw_size, obj.via.raw.size);
-  EXPECT_EQ(0, memcmp("frsyuki", obj.via.raw.ptr, raw_size));
+  EXPECT_EQ(MSGPACK_OBJECT_BIN, obj.type);
+  EXPECT_EQ(bin_size, obj.via.bin.size);
+  EXPECT_EQ(0, memcmp("frsyuki", obj.via.bin.ptr, bin_size));
 
   msgpack_zone_destroy(&z);
 }

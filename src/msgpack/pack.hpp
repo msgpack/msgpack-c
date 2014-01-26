@@ -77,8 +77,11 @@ public:
 
 	packer<Stream>& pack_map(size_t n);
 
-	packer<Stream>& pack_raw(size_t l);
-	packer<Stream>& pack_raw_body(const char* b, size_t l);
+	packer<Stream>& pack_str(size_t l);
+	packer<Stream>& pack_str_body(const char* b, size_t l);
+
+	packer<Stream>& pack_bin(size_t l);
+	packer<Stream>& pack_bin_body(const char* b, size_t l);
 
 private:
 	template <typename T>
@@ -643,12 +646,16 @@ inline packer<Stream>& packer<Stream>::pack_map(size_t n)
 }
 
 template <typename Stream>
-inline packer<Stream>& packer<Stream>::pack_raw(size_t l)
+inline packer<Stream>& packer<Stream>::pack_str(size_t l)
 {
 	if(l < 32) {
 		unsigned char d = 0xa0 | (uint8_t)l;
 		char buf = take8_8(d);
 		append_buffer(&buf, 1);
+	} else if(l < 256) {
+		char buf[2];
+		buf[0] = static_cast<char>(0xd9); buf[1] = (uint8_t)l;
+		append_buffer(buf, 2);
 	} else if(l < 65536) {
 		char buf[3];
 		buf[0] = static_cast<char>(0xda); _msgpack_store16(&buf[1], (uint16_t)l);
@@ -662,7 +669,33 @@ inline packer<Stream>& packer<Stream>::pack_raw(size_t l)
 }
 
 template <typename Stream>
-inline packer<Stream>& packer<Stream>::pack_raw_body(const char* b, size_t l)
+inline packer<Stream>& packer<Stream>::pack_str_body(const char* b, size_t l)
+{
+	append_buffer(b, l);
+	return *this;
+}
+
+template <typename Stream>
+inline packer<Stream>& packer<Stream>::pack_bin(size_t l)
+{
+	if(l < 256) {
+		char buf[2];
+		buf[0] = static_cast<char>(0xc4); buf[1] = (uint8_t)l;
+		append_buffer(buf, 2);
+	} else if(l < 65536) {
+		char buf[3];
+		buf[0] = static_cast<char>(0xc5); _msgpack_store16(&buf[1], (uint16_t)l);
+		append_buffer(buf, 3);
+	} else {
+		char buf[5];
+		buf[0] = static_cast<char>(0xc6); _msgpack_store32(&buf[1], (uint32_t)l);
+		append_buffer(buf, 5);
+	}
+	return *this;
+}
+
+template <typename Stream>
+inline packer<Stream>& packer<Stream>::pack_bin_body(const char* b, size_t l)
 {
 	append_buffer(b, l);
 	return *this;

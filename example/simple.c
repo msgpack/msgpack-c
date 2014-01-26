@@ -14,8 +14,8 @@ int main(void)
 	msgpack_pack_array(&pk, 3);
 	msgpack_pack_int(&pk, 1);
 	msgpack_pack_true(&pk);
-	msgpack_pack_raw(&pk, 7);
-	msgpack_pack_raw_body(&pk, "example", 7);
+	msgpack_pack_str(&pk, 7);
+	msgpack_pack_str_body(&pk, "example", 7);
 
 	/* deserialize the buffer into msgpack_object instance. */
 	/* deserialized object is valid during the msgpack_zone instance alive. */

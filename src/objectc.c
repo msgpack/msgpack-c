@@ -54,11 +54,18 @@ int msgpack_pack_object(msgpack_packer* pk, msgpack_object d)
 	case MSGPACK_OBJECT_DOUBLE:
 		return msgpack_pack_double(pk, d.via.dec);
 
-	case MSGPACK_OBJECT_RAW:
+	case MSGPACK_OBJECT_STR:
 		{
-			int ret = msgpack_pack_raw(pk, d.via.raw.size);
+			int ret = msgpack_pack_str(pk, d.via.str.size);
 			if(ret < 0) { return ret; }
-			return msgpack_pack_raw_body(pk, d.via.raw.ptr, d.via.raw.size);
+			return msgpack_pack_str_body(pk, d.via.str.ptr, d.via.str.size);
+		}
+
+	case MSGPACK_OBJECT_BIN:
+		{
+			int ret = msgpack_pack_bin(pk, d.via.bin.size);
+			if(ret < 0) { return ret; }
+			return msgpack_pack_bin_body(pk, d.via.bin.ptr, d.via.bin.size);
 		}
 
 	case MSGPACK_OBJECT_ARRAY:
@@ -122,9 +129,15 @@ void msgpack_object_print(FILE* out, msgpack_object o)
 		fprintf(out, "%f", o.via.dec);
 		break;
 
-	case MSGPACK_OBJECT_RAW:
+	case MSGPACK_OBJECT_STR:
 		fprintf(out, "\"");
-		fwrite(o.via.raw.ptr, o.via.raw.size, 1, out);
+		fwrite(o.via.str.ptr, o.via.str.size, 1, out);
+		fprintf(out, "\"");
+		break;
+
+	case MSGPACK_OBJECT_BIN:
+		fprintf(out, "\"");
+		fwrite(o.via.bin.ptr, o.via.bin.size, 1, out);
 		fprintf(out, "\"");
 		break;
 
@@ -188,9 +201,13 @@ bool msgpack_object_equal(const msgpack_object x, const msgpack_object y)
 	case MSGPACK_OBJECT_DOUBLE:
 		return x.via.dec == y.via.dec;
 
-	case MSGPACK_OBJECT_RAW:
-		return x.via.raw.size == y.via.raw.size &&
-			memcmp(x.via.raw.ptr, y.via.raw.ptr, x.via.raw.size) == 0;
+	case MSGPACK_OBJECT_STR:
+		return x.via.str.size == y.via.str.size &&
+			memcmp(x.via.str.ptr, y.via.str.ptr, x.via.str.size) == 0;
+
+	case MSGPACK_OBJECT_BIN:
+		return x.via.bin.size == y.via.bin.size &&
+			memcmp(x.via.bin.ptr, y.via.bin.ptr, x.via.bin.size) == 0;
 
 	case MSGPACK_OBJECT_ARRAY:
 		if(x.via.array.size != y.via.array.size) {

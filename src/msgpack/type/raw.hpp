@@ -63,25 +63,25 @@ struct raw_ref {
 
 inline type::raw_ref& operator>> (object const& o, type::raw_ref& v)
 {
-	if(o.type != type::RAW) { throw type_error(); }
-	v.ptr  = o.via.raw.ptr;
-	v.size = o.via.raw.size;
+	if(o.type != type::BIN) { throw type_error(); }
+	v.ptr  = o.via.bin.ptr;
+	v.size = o.via.bin.size;
 	return v;
 }
 
 template <typename Stream>
 inline packer<Stream>& operator<< (packer<Stream>& o, const type::raw_ref& v)
 {
-	o.pack_raw(v.size);
-	o.pack_raw_body(v.ptr, v.size);
+	o.pack_bin(v.size);
+	o.pack_bin_body(v.ptr, v.size);
 	return o;
 }
 
 inline void operator<< (object& o, const type::raw_ref& v)
 {
-	o.type = type::RAW;
-	o.via.raw.ptr = v.ptr;
-	o.via.raw.size = v.size;
+	o.type = type::BIN;
+	o.via.bin.ptr = v.ptr;
+	o.via.bin.size = v.size;
 }
 
 inline void operator<< (object::with_zone& o, const type::raw_ref& v)

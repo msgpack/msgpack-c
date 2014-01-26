@@ -135,11 +135,19 @@ inline void unpack_map_item(unpack_user&, object& c, object const& k, object con
 	++c.via.map.size;
 }
 
-inline void unpack_raw(unpack_user& u, const char* b, const char* p, unsigned int l, object& o)
+inline void unpack_str(unpack_user& u, const char* b, const char* p, unsigned int l, object& o)
 {
-	o.type = type::RAW;
-	o.via.raw.ptr = p;
-	o.via.raw.size = l;
+	o.type = type::STR;
+	o.via.str.ptr = p;
+	o.via.str.size = l;
+	u.set_referenced(true);
+}
+
+inline void unpack_bin(unpack_user& u, const char* b, const char* p, unsigned int l, object& o)
+{
+	o.type = type::BIN;
+	o.via.bin.ptr = p;
+	o.via.bin.size = l;
 	u.set_referenced(true);
 }
 
@@ -340,9 +348,9 @@ public:
 					//case 0xd6:  // big integer 16
 					//case 0xd7:  // big integer 32
 					//case 0xd8:  // big float 16
-					case 0xd9:	// raw 8 (str 8)
-					case 0xda:	// raw 16 (str 16)
-					case 0xdb:	// raw 32 (str 32)
+					case 0xd9:	// str 8
+					case 0xda:	// str 16
+					case 0xdb:	// str 32
 						trail = 1 << ((static_cast<unsigned int>(*p) & 0x03) - 1);
 						cs_ = next_cs(p);
 						fixed_trail_again = true;
@@ -359,14 +367,14 @@ public:
 						off = update_attributes(p, data, trail);
 						return -1;
 					}
-				} else if(0xa0 <= selector && selector <= 0xbf) { // FixRaw
+				} else if(0xa0 <= selector && selector <= 0xbf) { // FixStr
 					trail = static_cast<unsigned int>(*p) & 0x1f;
 					if(trail == 0) {
-						unpack_raw(user_, data, n, trail, obj);
+						unpack_str(user_, data, n, trail, obj);
 						int ret = push_proc(c, obj, p, data, off, trail);
 						if (ret != 0) return ret;
 					}
-					cs_ = ACS_RAW_VALUE;
+					cs_ = ACS_STR_VALUE;
 					fixed_trail_again = true;
 
 				} else if(0x90 <= selector && selector <= 0x9f) { // FixArray
@@ -455,47 +463,85 @@ public:
 					int ret = push_proc(c, obj, p, data, off, trail);
 					if (ret != 0) return ret;
 				} break;
-				case CS_BIN_8:
-				case CS_RAW_8:
+				case CS_STR_8:
 					trail = load<uint8_t>(n);
 					if(trail == 0) {
-						unpack_raw(user_, data, n, trail, obj);
+						unpack_str(user_, data, n, trail, obj);
 						int ret = push_proc(c, obj, p, data, off, trail);
 						if (ret != 0) return ret;
 					}
 					else {
-						cs_ = ACS_RAW_VALUE;
+						cs_ = ACS_STR_VALUE;
+						fixed_trail_again = true;
+					}
+					break;
+				case CS_BIN_8:
+					trail = load<uint8_t>(n);
+					if(trail == 0) {
+						unpack_bin(user_, data, n, trail, obj);
+						int ret = push_proc(c, obj, p, data, off, trail);
+						if (ret != 0) return ret;
+					}
+					else {
+						cs_ = ACS_BIN_VALUE;
+						fixed_trail_again = true;
+					}
+					break;
+				case CS_STR_16:
+					trail = load<uint16_t>(n);
+					if(trail == 0) {
+						unpack_str(user_, data, n, trail, obj);
+						int ret = push_proc(c, obj, p, data, off, trail);
+						if (ret != 0) return ret;
+					}
+					else {
+						cs_ = ACS_STR_VALUE;
 						fixed_trail_again = true;
 					}
 					break;
 				case CS_BIN_16:
-				case CS_RAW_16:
 					trail = load<uint16_t>(n);
 					if(trail == 0) {
-						unpack_raw(user_, data, n, trail, obj);
+						unpack_bin(user_, data, n, trail, obj);
 						int ret = push_proc(c, obj, p, data, off, trail);
 						if (ret != 0) return ret;
 					}
 					else {
-						cs_ = ACS_RAW_VALUE;
+						cs_ = ACS_BIN_VALUE;
+						fixed_trail_again = true;
+					}
+					break;
+				case CS_STR_32:
+					trail = load<uint32_t>(n);
+					if(trail == 0) {
+						unpack_str(user_, data, n, trail, obj);
+						int ret = push_proc(c, obj, p, data, off, trail);
+						if (ret != 0) return ret;
+					}
+					else {
+						cs_ = ACS_STR_VALUE;
 						fixed_trail_again = true;
 					}
 					break;
 				case CS_BIN_32:
-				case CS_RAW_32:
 					trail = load<uint32_t>(n);
 					if(trail == 0) {
-						unpack_raw(user_, data, n, trail, obj);
+						unpack_bin(user_, data, n, trail, obj);
 						int ret = push_proc(c, obj, p, data, off, trail);
 						if (ret != 0) return ret;
 					}
 					else {
-						cs_ = ACS_RAW_VALUE;
+						cs_ = ACS_BIN_VALUE;
 						fixed_trail_again = true;
 					}
 					break;
-				case ACS_RAW_VALUE: {
-					unpack_raw(user_, data, n, trail, obj);
+				case ACS_STR_VALUE: {
+					unpack_str(user_, data, n, trail, obj);
+					int ret = push_proc(c, obj, p, data, off, trail);
+					if (ret != 0) return ret;
+				} break;
+				case ACS_BIN_VALUE: {
+					unpack_bin(user_, data, n, trail, obj);
 					int ret = push_proc(c, obj, p, data, off, trail);
 					if (ret != 0) return ret;
 				} break;

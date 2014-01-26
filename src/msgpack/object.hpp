@@ -40,7 +40,8 @@ namespace type {
 		POSITIVE_INTEGER	= MSGPACK_OBJECT_POSITIVE_INTEGER,
 		NEGATIVE_INTEGER	= MSGPACK_OBJECT_NEGATIVE_INTEGER,
 		DOUBLE				= MSGPACK_OBJECT_DOUBLE,
-		RAW				= MSGPACK_OBJECT_RAW,
+		STR				= MSGPACK_OBJECT_STR,
+		BIN				= MSGPACK_OBJECT_BIN,
 		ARRAY				= MSGPACK_OBJECT_ARRAY,
 		MAP				= MSGPACK_OBJECT_MAP
 	};
@@ -60,7 +61,12 @@ struct object_map {
 	object_kv* ptr;
 };
 
-struct object_raw {
+struct object_str {
+	uint32_t size;
+	const char* ptr;
+};
+
+struct object_bin {
 	uint32_t size;
 	const char* ptr;
 };
@@ -73,8 +79,8 @@ struct object {
 		double   dec;
 		object_array array;
 		object_map map;
-		object_raw raw;
-		object_raw ref;  // obsolete
+		object_str str;
+		object_bin bin;
 	};
 
 	type::object_type type;
@@ -228,9 +234,13 @@ inline bool operator==(const object& x, const object& y)
 	case type::DOUBLE:
 		return x.via.dec == y.via.dec;
 
-	case type::RAW:
-		return x.via.raw.size == y.via.raw.size &&
-			memcmp(x.via.raw.ptr, y.via.raw.ptr, x.via.raw.size) == 0;
+	case type::STR:
+		return x.via.str.size == y.via.str.size &&
+			memcmp(x.via.str.ptr, y.via.str.ptr, x.via.str.size) == 0;
+
+	case type::BIN:
+		return x.via.bin.size == y.via.bin.size &&
+			memcmp(x.via.bin.ptr, y.via.bin.ptr, x.via.bin.size) == 0;
 
 	case type::ARRAY:
 		if(x.via.array.size != y.via.array.size) {
@@ -424,9 +434,14 @@ packer<Stream>& operator<< (packer<Stream>& o, const object& v)
 		o.pack_double(v.via.dec);
 		return o;
 
-	case type::RAW:
-		o.pack_raw(v.via.raw.size);
-		o.pack_raw_body(v.via.raw.ptr, v.via.raw.size);
+	case type::STR:
+		o.pack_str(v.via.str.size);
+		o.pack_str_body(v.via.str.ptr, v.via.str.size);
+		return o;
+
+	case type::BIN:
+		o.pack_bin(v.via.bin.size);
+		o.pack_bin_body(v.via.bin.ptr, v.via.bin.size);
 		return o;
 
 	case type::ARRAY:
@@ -476,9 +491,14 @@ std::ostream& operator<< (std::ostream& s, const object& o)
 		s << o.via.dec;
 		break;
 
-	case type::RAW:
-		(s << '"').write(o.via.raw.ptr, o.via.raw.size) << '"';
+	case type::STR:
+		(s << '"').write(o.via.str.ptr, o.via.str.size) << '"';
 		break;
+
+	case type::BIN:
+		(s << '"').write(o.via.bin.ptr, o.via.bin.size) << '"';
+		break;
+
 
 	case type::ARRAY:
 		s << "[";

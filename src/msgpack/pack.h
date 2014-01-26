@@ -94,8 +94,11 @@ static int msgpack_pack_array(msgpack_packer* pk, size_t n);
 
 static int msgpack_pack_map(msgpack_packer* pk, size_t n);
 
-static int msgpack_pack_raw(msgpack_packer* pk, size_t l);
-static int msgpack_pack_raw_body(msgpack_packer* pk, const void* b, size_t l);
+static int msgpack_pack_str(msgpack_packer* pk, size_t l);
+static int msgpack_pack_str_body(msgpack_packer* pk, const void* b, size_t l);
+
+static int msgpack_pack_bin(msgpack_packer* pk, size_t l);
+static int msgpack_pack_bin_body(msgpack_packer* pk, const void* b, size_t l);
 
 int msgpack_pack_object(msgpack_packer* pk, msgpack_object d);
 

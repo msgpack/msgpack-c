@@ -38,9 +38,10 @@ typedef enum {
 	MSGPACK_OBJECT_POSITIVE_INTEGER	= 0x02,
 	MSGPACK_OBJECT_NEGATIVE_INTEGER	= 0x03,
 	MSGPACK_OBJECT_DOUBLE				= 0x04,
-	MSGPACK_OBJECT_RAW					= 0x05,
+	MSGPACK_OBJECT_STR					= 0x05,
 	MSGPACK_OBJECT_ARRAY				= 0x06,
-	MSGPACK_OBJECT_MAP					= 0x07
+	MSGPACK_OBJECT_MAP					= 0x07,
+	MSGPACK_OBJECT_BIN					= 0x08
 } msgpack_object_type;
 
 
@@ -60,7 +61,12 @@ typedef struct {
 typedef struct {
 	uint32_t size;
 	const char* ptr;
-} msgpack_object_raw;
+} msgpack_object_str;
+
+typedef struct {
+	uint32_t size;
+	const char* ptr;
+} msgpack_object_bin;
 
 typedef union {
 	bool boolean;
@@ -69,7 +75,8 @@ typedef union {
 	double   dec;
 	msgpack_object_array array;
 	msgpack_object_map map;
-	msgpack_object_raw raw;
+	msgpack_object_str str;
+	msgpack_object_bin bin;
 } msgpack_object_union;
 
 typedef struct msgpack_object {

@@ -8,15 +8,20 @@ TEST(streaming, basic)
 
 	msgpack_packer* pk = msgpack_packer_new(buffer, msgpack_sbuffer_write);
 
-	// 1, 2, 3, "raw", ["data"], {0.3: 0.4}
+	// 1, 2, 3, "str", ["str_data"], "bin", ["bin_data"], {0.3: 0.4}
 	EXPECT_EQ(0, msgpack_pack_int(pk, 1));
 	EXPECT_EQ(0, msgpack_pack_int(pk, 2));
 	EXPECT_EQ(0, msgpack_pack_int(pk, 3));
-	EXPECT_EQ(0, msgpack_pack_raw(pk, 3));
-	EXPECT_EQ(0, msgpack_pack_raw_body(pk, "raw", 3));
+	EXPECT_EQ(0, msgpack_pack_str(pk, 3));
+	EXPECT_EQ(0, msgpack_pack_str_body(pk, "str", 3));
 	EXPECT_EQ(0, msgpack_pack_array(pk, 1));
-	EXPECT_EQ(0, msgpack_pack_raw(pk, 4));
-	EXPECT_EQ(0, msgpack_pack_raw_body(pk, "data", 4));
+	EXPECT_EQ(0, msgpack_pack_str(pk, 8));
+	EXPECT_EQ(0, msgpack_pack_str_body(pk, "str_data", 8));
+	EXPECT_EQ(0, msgpack_pack_bin(pk, 3));
+	EXPECT_EQ(0, msgpack_pack_bin_body(pk, "bin", 3));
+	EXPECT_EQ(0, msgpack_pack_array(pk, 1));
+	EXPECT_EQ(0, msgpack_pack_bin(pk, 8));
+	EXPECT_EQ(0, msgpack_pack_bin_body(pk, "bin_data", 8));
 	EXPECT_EQ(0, msgpack_pack_map(pk, 1));
 	EXPECT_EQ(0, msgpack_pack_float(pk, 0.4));
 	EXPECT_EQ(0, msgpack_pack_double(pk, 0.8));
@@ -67,17 +72,28 @@ TEST(streaming, basic)
 					EXPECT_EQ(3, obj.via.u64);
 					break;
 				case 3:
-					EXPECT_EQ(MSGPACK_OBJECT_RAW, obj.type);
-					EXPECT_EQ(std::string("raw",3), std::string(obj.via.raw.ptr, obj.via.raw.size));
+					EXPECT_EQ(MSGPACK_OBJECT_STR, obj.type);
+					EXPECT_EQ(std::string("str",3), std::string(obj.via.str.ptr, obj.via.str.size));
 					break;
 				case 4:
 					EXPECT_EQ(MSGPACK_OBJECT_ARRAY, obj.type);
 					EXPECT_EQ(1, obj.via.array.size);
 					e = obj.via.array.ptr[0];
-					EXPECT_EQ(MSGPACK_OBJECT_RAW, e.type);
-					EXPECT_EQ(std::string("data",4), std::string(e.via.raw.ptr, e.via.raw.size));
+					EXPECT_EQ(MSGPACK_OBJECT_STR, e.type);
+					EXPECT_EQ(std::string("str_data",8), std::string(e.via.str.ptr, e.via.str.size));
 					break;
 				case 5:
+					EXPECT_EQ(MSGPACK_OBJECT_BIN, obj.type);
+					EXPECT_EQ(std::string("bin",3), std::string(obj.via.bin.ptr, obj.via.bin.size));
+					break;
+				case 6:
+					EXPECT_EQ(MSGPACK_OBJECT_ARRAY, obj.type);
+					EXPECT_EQ(1, obj.via.array.size);
+					e = obj.via.array.ptr[0];
+					EXPECT_EQ(MSGPACK_OBJECT_BIN, e.type);
+					EXPECT_EQ(std::string("bin_data",8), std::string(e.via.bin.ptr, e.via.bin.size));
+					break;
+				case 7:
 					EXPECT_EQ(MSGPACK_OBJECT_MAP, obj.type);
 					EXPECT_EQ(1, obj.via.map.size);
 					e = obj.via.map.ptr[0].key;

@@ -26,33 +26,33 @@ namespace msgpack {
 
 inline std::string& operator>> (object const& o, std::string& v)
 {
-	if(o.type != type::RAW) { throw type_error(); }
-	v.assign(o.via.raw.ptr, o.via.raw.size);
+	if(o.type != type::BIN) { throw type_error(); }
+	v.assign(o.via.bin.ptr, o.via.bin.size);
 	return v;
 }
 
 template <typename Stream>
 inline packer<Stream>& operator<< (packer<Stream>& o, const std::string& v)
 {
-	o.pack_raw(v.size());
-	o.pack_raw_body(v.data(), v.size());
+	o.pack_bin(v.size());
+	o.pack_bin_body(v.data(), v.size());
 	return o;
 }
 
 inline void operator<< (object::with_zone& o, const std::string& v)
 {
-	o.type = type::RAW;
-	char* ptr = static_cast<char*>(o.zone->malloc(v.size()));
-	o.via.raw.ptr = ptr;
-	o.via.raw.size = (uint32_t)v.size();
+	o.type = type::BIN;
+	char* ptr = (char*)o.zone->malloc(v.size());
+	o.via.bin.ptr = ptr;
+	o.via.bin.size = (uint32_t)v.size();
 	memcpy(ptr, v.data(), v.size());
 }
 
 inline void operator<< (object& o, const std::string& v)
 {
-	o.type = type::RAW;
-	o.via.raw.ptr = v.data();
-	o.via.raw.size = (uint32_t)v.size();
+	o.type = type::BIN;
+	o.via.bin.ptr = v.data();
+	o.via.bin.size = (uint32_t)v.size();
 }
 
 

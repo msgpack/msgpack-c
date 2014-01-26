@@ -143,11 +143,20 @@ static inline int template_callback_map_item(unpack_user* u, msgpack_object* c, 
 	return 0;
 }
 
-static inline int template_callback_raw(unpack_user* u, const char* b, const char* p, unsigned int l, msgpack_object* o)
+static inline int template_callback_str(unpack_user* u, const char* b, const char* p, unsigned int l, msgpack_object* o)
 {
-	o->type = MSGPACK_OBJECT_RAW;
-	o->via.raw.ptr = p;
-	o->via.raw.size = l;
+	o->type = MSGPACK_OBJECT_STR;
+	o->via.str.ptr = p;
+	o->via.str.size = l;
+	u->referenced = true;
+	return 0;
+}
+
+static inline int template_callback_bin(unpack_user* u, const char* b, const char* p, unsigned int l, msgpack_object* o)
+{
+	o->type = MSGPACK_OBJECT_BIN;
+	o->via.bin.ptr = p;
+	o->via.bin.size = l;
 	u->referenced = true;
 	return 0;
 }

@@ -224,9 +224,9 @@ msgpack_unpack_func(int, _execute)(msgpack_unpack_struct(_context)* ctx, const c
 				//case 0xd6:  // big integer 16
 				//case 0xd7:  // big integer 32
 				//case 0xd8:  // big float 16
-				case 0xd9:  // raw 8 (str 8)
-				case 0xda:  // raw 16 (str 16)
-				case 0xdb:  // raw 32 (str 32)
+				case 0xd9:  // str 8
+				case 0xda:  // str 16
+				case 0xdb:  // str 32
 					again_fixed_trail(NEXT_CS(p), 1 << ((((unsigned int)*p) & 0x03) - 1));
 				case 0xdc:  // array 16
 				case 0xdd:  // array 32
@@ -236,8 +236,8 @@ msgpack_unpack_func(int, _execute)(msgpack_unpack_struct(_context)* ctx, const c
 				default:
 					goto _failed;
 				}
-			SWITCH_RANGE(0xa0, 0xbf)  // FixRaw
-				again_fixed_trail_if_zero(ACS_RAW_VALUE, ((unsigned int)*p & 0x1f), _raw_zero);
+			SWITCH_RANGE(0xa0, 0xbf)  // FixStr
+				again_fixed_trail_if_zero(ACS_STR_VALUE, ((unsigned int)*p & 0x1f), _str_zero);
 			SWITCH_RANGE(0x90, 0x9f)  // FixArray
 				start_container(_array, ((unsigned int)*p) & 0x0f, CT_ARRAY_ITEM);
 			SWITCH_RANGE(0x80, 0x8f)  // FixMap
@@ -308,18 +308,24 @@ msgpack_unpack_func(int, _execute)(msgpack_unpack_struct(_context)* ctx, const c
 			//	// FIXME
 			//	push_variable_value(_big_float, data, n, trail);
 
+			case CS_STR_8:
+				again_fixed_trail_if_zero(ACS_STR_VALUE, *(uint8_t*)n, _str_zero);
 			case CS_BIN_8:
-			case CS_RAW_8:
-				again_fixed_trail_if_zero(ACS_RAW_VALUE, *(uint8_t*)n, _raw_zero);
+				again_fixed_trail_if_zero(ACS_BIN_VALUE, *(uint8_t*)n, _bin_zero);
+			case CS_STR_16:
+				again_fixed_trail_if_zero(ACS_STR_VALUE, _msgpack_load16(uint16_t,n), _str_zero);
 			case CS_BIN_16:
-			case CS_RAW_16:
-				again_fixed_trail_if_zero(ACS_RAW_VALUE, _msgpack_load16(uint16_t,n), _raw_zero);
+				again_fixed_trail_if_zero(ACS_BIN_VALUE, _msgpack_load16(uint16_t,n), _bin_zero);
+			case CS_STR_32:
+				again_fixed_trail_if_zero(ACS_STR_VALUE, _msgpack_load32(uint32_t,n), _str_zero);
 			case CS_BIN_32:
-			case CS_RAW_32:
-				again_fixed_trail_if_zero(ACS_RAW_VALUE, _msgpack_load32(uint32_t,n), _raw_zero);
-			case ACS_RAW_VALUE:
-			_raw_zero:
-				push_variable_value(_raw, data, n, trail);
+				again_fixed_trail_if_zero(ACS_BIN_VALUE, _msgpack_load32(uint32_t,n), _bin_zero);
+			case ACS_STR_VALUE:
+			_str_zero:
+				push_variable_value(_str, data, n, trail);
+			case ACS_BIN_VALUE:
+			_bin_zero:
+				push_variable_value(_bin, data, n, trail);
 
 			case CS_ARRAY_16:
 				start_container(_array, _msgpack_load16(uint16_t,n), CT_ARRAY_ITEM);

@@ -66,9 +66,9 @@ typedef enum {
 	//CS_FIXEXT_8        = 0x17,
 	//CS_FIXEXT_16       = 0x18,
 
-	CS_RAW_8             = 0x19, // str8
-	CS_RAW_16            = 0x1a, // str16
-	CS_RAW_32            = 0x1b, // str32
+	CS_STR_8             = 0x19, // str8
+	CS_STR_16            = 0x1a, // str16
+	CS_STR_32            = 0x1b, // str32
 	CS_ARRAY_16          = 0x1c,
 	CS_ARRAY_32          = 0x1d,
 	CS_MAP_16            = 0x1e,
@@ -76,7 +76,8 @@ typedef enum {
 
 	//ACS_BIG_INT_VALUE,
 	//ACS_BIG_FLOAT_VALUE,
-	ACS_RAW_VALUE
+	ACS_STR_VALUE,
+	ACS_BIN_VALUE
 } msgpack_unpack_state;
 
 
