@@ -109,7 +109,7 @@ struct unpack_array {
 	bool operator()(unpack_user&u, unsigned int n, object& o) const {
 		o.type = type::ARRAY;
 		o.via.array.size = 0;
-		o.via.array.ptr = (object*)u.z().malloc(n*sizeof(object));
+		o.via.array.ptr = (object*)u.z().allocate_align(n*sizeof(object));
 		if(o.via.array.ptr == nullptr) { return false; }
 		return true;
 	}
@@ -122,7 +122,7 @@ struct unpack_map {
 	bool operator()(unpack_user& u, unsigned int n, object& o) const {
 		o.type = type::MAP;
 		o.via.map.size = 0;
-		o.via.map.ptr = (object_kv*)u.z().malloc(n*sizeof(object_kv));
+		o.via.map.ptr = (object_kv*)u.z().allocate_align(n*sizeof(object_kv));
 		if(o.via.map.ptr == nullptr) { return false; }
 		return true;
 	}

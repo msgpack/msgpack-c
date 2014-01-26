@@ -42,7 +42,7 @@ inline packer<Stream>& operator<< (packer<Stream>& o, const std::string& v)
 inline void operator<< (object::with_zone& o, const std::string& v)
 {
 	o.type = type::BIN;
-	char* ptr = (char*)o.zone->malloc(v.size());
+	char* ptr = (char*)o.zone->allocate_align(v.size());
 	o.via.bin.ptr = ptr;
 	o.via.bin.size = (uint32_t)v.size();
 	memcpy(ptr, v.data(), v.size());

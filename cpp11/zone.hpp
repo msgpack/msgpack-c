@@ -155,8 +155,8 @@ public:
 public:
 	static zone* create(size_t chunk_size);
 	static void destroy(zone* zone);
-	void* malloc(size_t size);
-	void* malloc_no_align(size_t size);
+	void* allocate_align(size_t size);
+	void* allocate_no_align(size_t size);
 
 	void push_finalizer(void (*func)(void*), void* data);
 
@@ -172,12 +172,12 @@ public:
 	T* allocate(Args... args);
 
 private:
-	void undo_malloc(size_t size);
+	void undo_allocate(size_t size);
 
 	template <typename T>
 	static void object_destructor(void* obj);
 
-	void* malloc_expand(size_t size);
+	void* allocate_expand(size_t size);
 };
 
 inline zone* zone::create(size_t chunk_size)
@@ -200,16 +200,16 @@ inline zone::zone(size_t chunk_size) noexcept:chunk_size_(chunk_size), chunk_lis
 {
 }
 
-inline void* zone::malloc(size_t size)
+inline void* zone::allocate_align(size_t size)
 {
-	return malloc_no_align(
+	return allocate_no_align(
 		((size)+((MSGPACK_ZONE_ALIGN)-1)) & ~((MSGPACK_ZONE_ALIGN)-1));
 }
 
-inline void* zone::malloc_no_align(size_t size)
+inline void* zone::allocate_no_align(size_t size)
 {
 	if(chunk_list_.free_ < size) {
-		return malloc_expand(size);
+		return allocate_expand(size);
 	}
 
 	char* ptr = chunk_list_.ptr_;
@@ -219,7 +219,7 @@ inline void* zone::malloc_no_align(size_t size)
 	return ptr;
 }
 
-inline void* zone::malloc_expand(size_t size)
+inline void* zone::allocate_expand(size_t size)
 {
 	chunk_list* const cl = &chunk_list_;
 
@@ -270,7 +270,7 @@ void zone::object_destructor(void* obj)
 	reinterpret_cast<T*>(obj)->~T();
 }
 
-inline void zone::undo_malloc(size_t size)
+inline void zone::undo_allocate(size_t size)
 {
 	chunk_list_.ptr_  -= size;
 	chunk_list_.free_ += size;
@@ -280,18 +280,18 @@ inline void zone::undo_malloc(size_t size)
 template <typename T, typename... Args>
 T* zone::allocate(Args... args)
 {
-	void* x = malloc(sizeof(T));
+	void* x = allocate_align(sizeof(T));
 	try {
 		finalizer_array_.push(&zone::object_destructor<T>, x);
 	} catch (...) {
-		undo_malloc(sizeof(T));
+		undo_allocate(sizeof(T));
 		throw;
 	}
 	try {
 		return new (x) T(args...);
 	} catch (...) {
 		--finalizer_array_.tail_;
-		undo_malloc(sizeof(T));
+		undo_allocate(sizeof(T));
 		throw;
 	}
 }

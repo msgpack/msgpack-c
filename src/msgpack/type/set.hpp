@@ -56,7 +56,7 @@ inline void operator<< (object::with_zone& o, const std::set<T>& v)
 		o.via.array.ptr = nullptr;
 		o.via.array.size = 0;
 	} else {
-		object* p = static_cast<object*>(o.zone->malloc(sizeof(object)*v.size()));
+		object* p = static_cast<object*>(o.zone->allocate_align(sizeof(object)*v.size()));
 		object* const pend = p + v.size();
 		o.via.array.ptr = p;
 		o.via.array.size = v.size();
@@ -102,7 +102,7 @@ inline void operator<< (object::with_zone& o, const std::multiset<T>& v)
 		o.via.array.ptr = nullptr;
 		o.via.array.size = 0;
 	} else {
-		object* p = static_cast<object*>(o.zone->malloc(sizeof(object)*v.size()));
+		object* p = static_cast<object*>(o.zone->allocate_align(sizeof(object)*v.size()));
 		object* const pend = p + v.size();
 		o.via.array.ptr = p;
 		o.via.array.size = v.size();

@@ -121,7 +121,7 @@ struct define {
 	void msgpack_object(msgpack::object* o, msgpack::zone* z) const
 	{
 		o->type = type::ARRAY;
-		o->via.array.ptr = static_cast<object*>(z->malloc(sizeof(object)*sizeof...(Args)));
+		o->via.array.ptr = static_cast<object*>(z->allocate_align(sizeof(object)*sizeof...(Args)));
 		o->via.array.size = sizeof...(Args);
 
 		define_imp<tuple<Args&...>, sizeof...(Args)>::object(o, z, a);

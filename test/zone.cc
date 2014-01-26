@@ -1,12 +1,12 @@
 #include <msgpack.hpp>
 #include <gtest/gtest.h>
 
-TEST(zone, malloc)
+TEST(zone, allocate_align)
 {
 	msgpack::zone z;
-	char* buf1 = (char*)z.malloc(4);
+	char* buf1 = (char*)z.allocate_align(4);
 	memcpy(buf1, "test", 4);
-	char* buf2 = (char*)z.malloc(4);
+	char* buf2 = (char*)z.allocate_align(4);
 	memcpy(buf2, "test", 4);
 }
 
@@ -68,11 +68,11 @@ TEST(zone, push_finalizer_unique_ptr)
 }
 
 
-TEST(zone, malloc_no_align)
+TEST(zone, allocate_no_align)
 {
 	msgpack::zone z;
-	char* buf1 = (char*)z.malloc_no_align(4);
-	char* buf2 = (char*)z.malloc_no_align(4);
+	char* buf1 = (char*)z.allocate_no_align(4);
+	char* buf2 = (char*)z.allocate_no_align(4);
 	EXPECT_EQ(buf1+4, buf2);
 }
 

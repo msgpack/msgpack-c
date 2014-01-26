@@ -47,7 +47,7 @@ template <typename T1, typename T2>
 inline void operator<< (object::with_zone& o, const std::pair<T1, T2>& v)
 {
 	o.type = type::ARRAY;
-	object* p = static_cast<object*>(o.zone->malloc(sizeof(object)*2));
+	object* p = static_cast<object*>(o.zone->allocate_align(sizeof(object)*2));
 	o.via.array.ptr = p;
 	o.via.array.size = 2;
 	p[0] = object(v.first, o.zone);
