@@ -98,6 +98,7 @@ void msgpack_vrefbuffer_clear(msgpack_vrefbuffer* vref);
 static inline msgpack_vrefbuffer* msgpack_vrefbuffer_new(size_t ref_size, size_t chunk_size)
 {
 	msgpack_vrefbuffer* vbuf = (msgpack_vrefbuffer*)malloc(sizeof(msgpack_vrefbuffer));
+	if (vbuf == NULL) return NULL;
 	if(!msgpack_vrefbuffer_init(vbuf, ref_size, chunk_size)) {
 		free(vbuf);
 		return NULL;
