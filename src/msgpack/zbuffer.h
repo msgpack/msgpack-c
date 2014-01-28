@@ -91,6 +91,7 @@ void msgpack_zbuffer_destroy(msgpack_zbuffer* zbuf)
 msgpack_zbuffer* msgpack_zbuffer_new(int level, size_t init_size)
 {
 	msgpack_zbuffer* zbuf = (msgpack_zbuffer*)malloc(sizeof(msgpack_zbuffer));
+	if (zbuf == NULL) return NULL;
 	if(!msgpack_zbuffer_init(zbuf, level, init_size)) {
 		free(zbuf);
 		return NULL;
