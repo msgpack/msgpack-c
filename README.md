@@ -10,7 +10,7 @@ MessagePack is an efficient binary serialization format. It lets you exchange da
 
 ## License
 
-Msgpack is Copyright (C) 2008-2010 FURUHASHI Sadayuki and licensed under the Apache License, Version 2.0 (the "License"). For details see the `COPYING` file in this directory.
+Msgpack is Copyright (C) 2008-2014 FURUHASHI Sadayuki and licensed under the Apache License, Version 2.0 (the "License"). For details see the `COPYING` file in this directory.
 
 
 ## Contributing
@@ -29,8 +29,11 @@ To report an issue, use the [msgpack-c issue tracker](https://github.com/msgpack
 ##### Using autotools
 You will need gcc (4.1.0 or higher), autotools.
 
+You can use msgpack-c as a header only library on C++11 and C++03.
+You don't need to prepare ruby when you choose C++11 configuration.
+For C++11:
 ```
-$ git clone https://github.com/msgpack/msgpack-c.git
+$ git clone https://github.com/redboltz/msgpack-c/tree/cxx_separate
 $ cd msgpack-c
 $ ./bootstrap
 $ ./configure
@@ -70,39 +73,20 @@ You need the compiler that fully supports C++11.
 
 #### Install from package
 
-##### UNIX-like platform with ./configure
+Add msgpack-c/src to your include path.
+```
 
-On typical UNIX-like platforms, download source package from [Releases](https://github.com/msgpack/msgpack-c/releases) and run `./configure && make && make install`. Example:
-
+For C++03:
 ```
 $ wget https://github.com/msgpack/msgpack-c/releases/download/cpp-0.5.9/msgpack-0.5.9.tar.gz
 $ tar zxvf msgpack-0.5.9.tar.gz
 $ cd msgpack-0.5.9
 $ ./configure
-$ make
-$ sudo make install
+
+Add msgpack-c/src to your include path.
 ```
 
-##### FreeBSD with Ports Collection
-
-On FreeBSD, you can use Ports Collection. Install [net/msgpack](http://www.freebsd.org/cgi/cvsweb.cgi/ports/devel/msgpack/) package.
-
-##### Gentoo Linux with Portage
-
-On Gentoo Linux, you can use emerge. Install [dev-libs/msgpack](http://gentoo-portage.com/dev-libs/msgpack) package.
-
-##### Mac OS X with MacPorts
-
-On Mac OS X, you can install MessagePack for C using MacPorts.
-
-```
-$ sudo port install msgpack
-```
-
-You might need to run `sudo port selfupdate` before installing to update the package repository.
-
-You can also install via Homebrew.
-
+For C:
 ```
 $ sudo brew install msgpack
 ```
@@ -174,6 +158,3 @@ int main() {
     obj.as<int>();  // type is mismatched, msgpack::type_error is thrown
 }
 ```
-### Quickstart Guides
-
-For more detailed examples see [QuickStart for C](QUICKSTART-C.md) and [QuickStart for C++](QUICKSTART-CPP.md).
