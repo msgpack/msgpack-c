@@ -30,7 +30,9 @@ To report an issue, use the [msgpack-c issue tracker](https://github.com/msgpack
 You will need gcc (4.1.0 or higher), autotools.
 
 You can use msgpack-c as a header only library on C++11 and C++03.
+
 You don't need to prepare ruby when you choose C++11 configuration.
+
 For C++11:
 ```
 $ git clone https://github.com/redboltz/msgpack-c/tree/cxx_separate
