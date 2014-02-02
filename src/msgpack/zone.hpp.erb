@@ -52,7 +52,6 @@ public:
 	}
 	static void operator delete(void *p) throw()
 	{
-		if (!p) return;
 		::free(p);
 	}
 	<%0.upto(GENERATION_LIMIT) {|i|%>
