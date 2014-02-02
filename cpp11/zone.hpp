@@ -230,8 +230,13 @@ inline void* zone::allocate_expand(size_t size)
 	}
 
 	chunk* c = static_cast<chunk*>(::malloc(sizeof(chunk) + sz));
+	if (!c) return nullptr;
 
 	char* ptr = reinterpret_cast<char*>(c) + sizeof(chunk);
+	if (!ptr) {
+		::free(c);
+		return nullptr;
+	}
 
 	c->next_  = cl->head_;
 	cl->head_ = c;
