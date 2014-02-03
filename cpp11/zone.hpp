@@ -233,10 +233,6 @@ inline void* zone::allocate_expand(size_t size)
 	if (!c) return nullptr;
 
 	char* ptr = reinterpret_cast<char*>(c) + sizeof(chunk);
-	if (!ptr) {
-		::free(c);
-		return nullptr;
-	}
 
 	c->next_  = cl->head_;
 	cl->head_ = c;
