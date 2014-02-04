@@ -19,7 +19,12 @@
 #define MSGPACK_TYPE_TR1_UNORDERED_SET_HPP__
 
 #include "msgpack/object.hpp"
-#include <tr1/unordered_set>
+
+#if _MSC_VER <= 1600
+# include <unordered_set>
+#else
+# include <tr1/unordered_set>
+#endif
 
 namespace msgpack {
 
