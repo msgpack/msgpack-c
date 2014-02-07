@@ -34,13 +34,10 @@ public:
 
 		m_pac.buffer_consumed(count);
 
-		while(m_pac.execute()) {
-			msgpack::object msg = m_pac.data();
-
-			auto_zone life( m_pac.release_zone() );
-
-			m_pac.reset();
-
+		msgpack::unpacked result;
+		while (m_pac.next(&result)) {
+			msgpack::object msg = result.get();
+			auto_zone& life = result.zone();
 			process_message(msg, life);
 		}
 
