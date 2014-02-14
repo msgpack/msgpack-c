@@ -13,5 +13,8 @@
 #include "type/vector.hpp"
 #include "type/tuple.hpp"
 #include "type/define.hpp"
+
+#if !defined(_LIBCPP_VERSION)
 #include "type/tr1/unordered_map.hpp"
 #include "type/tr1/unordered_set.hpp"
+#endif  // _LIBCPP_VERSION
