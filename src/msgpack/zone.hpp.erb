@@ -165,7 +165,24 @@ public:
 	void clear();
 
 	void swap(zone& o);
-
+	static void* operator new(std::size_t size) throw(std::bad_alloc)
+	{
+		void* p = ::malloc(size);
+		if (!p) throw std::bad_alloc();
+		return p;
+	}
+	static void operator delete(void *p) throw()
+	{
+		::free(p);
+	}
+	static void* operator new(std::size_t size, void* place) throw()
+	{
+		return ::operator new(size, place);
+	}
+	static void operator delete(void* p, void* place) throw()
+	{
+		::operator delete(p, place);
+	}
 	<%0.upto(GENERATION_LIMIT) {|i|%>
 	template <typename T<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
 	T* allocate(<%=(1..i).map{|j|"A#{j} a#{j}"}.join(', ')%>);
