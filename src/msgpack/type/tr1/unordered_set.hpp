@@ -20,17 +20,24 @@
 
 #include "msgpack/object.hpp"
 
-#if defined(_LIBCPP_VERSION)
+#if defined(_LIBCPP_VERSION) || (_MSC_VER >= 1700)
 
+#define MSGPACK_HAS_STD_UNOURDERED_SET
 #include <unordered_set>
 #define MSGPACK_STD_TR1 std
 
-#else   // _LIBCPP_VERSION
+#else   // defined(_LIBCPP_VERSION) || (_MSC_VER >= 1700)
+
+#if __GNUC__ >= 4
+
+#define MSGPACK_HAS_STD_TR1_UNOURDERED_SET
 
 #include <tr1/unordered_set>
 #define MSGPACK_STD_TR1 std::tr1
 
-#endif  // _LIBCPP_VERSION
+#endif // __GNUC__ >= 4
+
+#endif  // defined(_LIBCPP_VERSION) || (_MSC_VER >= 1700)
 
 namespace msgpack {
 
