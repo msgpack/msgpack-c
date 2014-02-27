@@ -19,13 +19,31 @@
 #define MSGPACK_TYPE_TR1_UNORDERED_SET_HPP__
 
 #include "msgpack/object.hpp"
+
+#if defined(_LIBCPP_VERSION) || (_MSC_VER >= 1700)
+
+#define MSGPACK_HAS_STD_UNOURDERED_SET
+#include <unordered_set>
+#define MSGPACK_STD_TR1 std
+
+#else   // defined(_LIBCPP_VERSION) || (_MSC_VER >= 1700)
+
+#if __GNUC__ >= 4
+
+#define MSGPACK_HAS_STD_TR1_UNOURDERED_SET
+
 #include <tr1/unordered_set>
+#define MSGPACK_STD_TR1 std::tr1
+
+#endif // __GNUC__ >= 4
+
+#endif  // defined(_LIBCPP_VERSION) || (_MSC_VER >= 1700)
 
 namespace msgpack {
 
 
 template <typename T>
-inline std::tr1::unordered_set<T>& operator>> (object o, std::tr1::unordered_set<T>& v)
+inline MSGPACK_STD_TR1::unordered_set<T>& operator>> (object o, MSGPACK_STD_TR1::unordered_set<T>& v)
 {
 	if(o.type != type::ARRAY) { throw type_error(); }
 	object* p = o.via.array.ptr + o.via.array.size;
@@ -38,10 +56,10 @@ inline std::tr1::unordered_set<T>& operator>> (object o, std::tr1::unordered_set
 }
 
 template <typename Stream, typename T>
-inline packer<Stream>& operator<< (packer<Stream>& o, const std::tr1::unordered_set<T>& v)
+inline packer<Stream>& operator<< (packer<Stream>& o, const MSGPACK_STD_TR1::unordered_set<T>& v)
 {
 	o.pack_array(v.size());
-	for(typename std::tr1::unordered_set<T>::const_iterator it(v.begin()), it_end(v.end());
+	for(typename MSGPACK_STD_TR1::unordered_set<T>::const_iterator it(v.begin()), it_end(v.end());
 			it != it_end; ++it) {
 		o.pack(*it);
 	}
@@ -49,7 +67,7 @@ inline packer<Stream>& operator<< (packer<Stream>& o, const std::tr1::unordered_
 }
 
 template <typename T>
-inline void operator<< (object::with_zone& o, const std::tr1::unordered_set<T>& v)
+inline void operator<< (object::with_zone& o, const MSGPACK_STD_TR1::unordered_set<T>& v)
 {
 	o.type = type::ARRAY;
 	if(v.empty()) {
@@ -60,7 +78,7 @@ inline void operator<< (object::with_zone& o, const std::tr1::unordered_set<T>& 
 		object* const pend = p + v.size();
 		o.via.array.ptr = p;
 		o.via.array.size = v.size();
-		typename std::tr1::unordered_set<T>::const_iterator it(v.begin());
+		typename MSGPACK_STD_TR1::unordered_set<T>::const_iterator it(v.begin());
 		do {
 			*p = object(*it, o.zone);
 			++p;
@@ -71,7 +89,7 @@ inline void operator<< (object::with_zone& o, const std::tr1::unordered_set<T>& 
 
 
 template <typename T>
-inline std::tr1::unordered_multiset<T>& operator>> (object o, std::tr1::unordered_multiset<T>& v)
+inline MSGPACK_STD_TR1::unordered_multiset<T>& operator>> (object o, MSGPACK_STD_TR1::unordered_multiset<T>& v)
 {
 	if(o.type != type::ARRAY) { throw type_error(); }
 	object* p = o.via.array.ptr + o.via.array.size;
@@ -84,10 +102,10 @@ inline std::tr1::unordered_multiset<T>& operator>> (object o, std::tr1::unordere
 }
 
 template <typename Stream, typename T>
-inline packer<Stream>& operator<< (packer<Stream>& o, const std::tr1::unordered_multiset<T>& v)
+inline packer<Stream>& operator<< (packer<Stream>& o, const MSGPACK_STD_TR1::unordered_multiset<T>& v)
 {
 	o.pack_array(v.size());
-	for(typename std::tr1::unordered_multiset<T>::const_iterator it(v.begin()), it_end(v.end());
+	for(typename MSGPACK_STD_TR1::unordered_multiset<T>::const_iterator it(v.begin()), it_end(v.end());
 			it != it_end; ++it) {
 		o.pack(*it);
 	}
@@ -95,7 +113,7 @@ inline packer<Stream>& operator<< (packer<Stream>& o, const std::tr1::unordered_
 }
 
 template <typename T>
-inline void operator<< (object::with_zone& o, const std::tr1::unordered_multiset<T>& v)
+inline void operator<< (object::with_zone& o, const MSGPACK_STD_TR1::unordered_multiset<T>& v)
 {
 	o.type = type::ARRAY;
 	if(v.empty()) {
@@ -106,7 +124,7 @@ inline void operator<< (object::with_zone& o, const std::tr1::unordered_multiset
 		object* const pend = p + v.size();
 		o.via.array.ptr = p;
 		o.via.array.size = v.size();
-		typename std::tr1::unordered_multiset<T>::const_iterator it(v.begin());
+		typename MSGPACK_STD_TR1::unordered_multiset<T>::const_iterator it(v.begin());
 		do {
 			*p = object(*it, o.zone);
 			++p;
@@ -117,6 +135,8 @@ inline void operator<< (object::with_zone& o, const std::tr1::unordered_multiset
 
 
 }  // namespace msgpack
+
+#undef MSGPACK_STD_TR1
 
 #endif /* msgpack/type/set.hpp */
 
