@@ -107,8 +107,13 @@ struct define<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> {
 	{
 		if(o.type != type::ARRAY) { throw type_error(); }
 		const size_t size = o.via.array.size;
-		<%0.upto(i) {|j|%>
-		if(size <= <%=j%>) { return; } o.via.array.ptr[<%=j%>].convert(&a<%=j%>);<%}%>
+		if(size > 0) {
+			msgpack::object *ptr = o.via.array.ptr;
+			switch(size) {
+			default:<%(i).downto(0) {|j|%>
+			case <%=j+1%>: ptr[<%=j%>].convert(&a<%=j%>);<%}%>
+			}
+		}
 	}
 	void msgpack_object(msgpack::object* o, msgpack::zone* z) const
 	{
