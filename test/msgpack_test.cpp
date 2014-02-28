@@ -178,6 +178,110 @@ TEST(MSGPACK, simple_buffer_float)
   }
 }
 
+TEST(MSGPACK, simple_buffer_float_from_signed_long_long)
+{
+  vector<signed long long> v;
+  v.push_back(0);
+  v.push_back(1);
+  v.push_back(-1);
+  v.push_back(numeric_limits<signed long long>::min());
+  v.push_back(numeric_limits<signed long long>::max());
+  for (unsigned int i = 0; i < kLoop; i++) {
+    v.push_back(rand());
+  }
+  for (unsigned int i = 0; i < v.size() ; i++) {
+    msgpack::sbuffer sbuf;
+    signed long long val1 = v[i];
+    msgpack::pack(sbuf, val1);
+    msgpack::zone z;
+    msgpack::object obj;
+    msgpack::unpack_return ret =
+      msgpack::unpack(sbuf.data(), sbuf.size(), NULL, &z, &obj);
+    EXPECT_EQ(msgpack::UNPACK_SUCCESS, ret);
+    float val2;
+    obj.convert(&val2);
+    EXPECT_TRUE(fabs(val2 - val1) <= kEPS);
+  }
+}
+
+TEST(MSGPACK, simple_buffer_float_from_unsigned_long_long)
+{
+  vector<unsigned long long> v;
+  v.push_back(0);
+  v.push_back(1);
+  v.push_back(2);
+  v.push_back(numeric_limits<unsigned long long>::min());
+  v.push_back(numeric_limits<unsigned long long>::max());
+  for (unsigned int i = 0; i < kLoop; i++) {
+    v.push_back(rand());
+  }
+  for (unsigned int i = 0; i < v.size() ; i++) {
+    msgpack::sbuffer sbuf;
+    unsigned long long val1 = v[i];
+    msgpack::pack(sbuf, val1);
+    msgpack::zone z;
+    msgpack::object obj;
+    msgpack::unpack_return ret =
+      msgpack::unpack(sbuf.data(), sbuf.size(), NULL, &z, &obj);
+    EXPECT_EQ(msgpack::UNPACK_SUCCESS, ret);
+    float val2;
+    obj.convert(&val2);
+    EXPECT_TRUE(fabs(val2 - val1) <= kEPS);
+  }
+}
+
+TEST(MSGPACK, simple_buffer_double_from_signed_long_long)
+{
+  vector<signed long long> v;
+  v.push_back(0);
+  v.push_back(1);
+  v.push_back(-1);
+  v.push_back(numeric_limits<signed long long>::min());
+  v.push_back(numeric_limits<signed long long>::max());
+  for (unsigned int i = 0; i < kLoop; i++) {
+    v.push_back(rand());
+  }
+  for (unsigned int i = 0; i < v.size() ; i++) {
+    msgpack::sbuffer sbuf;
+    signed long long val1 = v[i];
+    msgpack::pack(sbuf, val1);
+    msgpack::zone z;
+    msgpack::object obj;
+    msgpack::unpack_return ret =
+      msgpack::unpack(sbuf.data(), sbuf.size(), NULL, &z, &obj);
+    EXPECT_EQ(msgpack::UNPACK_SUCCESS, ret);
+    double val2;
+    obj.convert(&val2);
+    EXPECT_TRUE(fabs(val2 - val1) <= kEPS);
+  }
+}
+
+TEST(MSGPACK, simple_buffer_double_from_unsigned_long_long)
+{
+  vector<unsigned long long> v;
+  v.push_back(0);
+  v.push_back(1);
+  v.push_back(2);
+  v.push_back(numeric_limits<unsigned long long>::min());
+  v.push_back(numeric_limits<unsigned long long>::max());
+  for (unsigned int i = 0; i < kLoop; i++) {
+    v.push_back(rand());
+  }
+  for (unsigned int i = 0; i < v.size() ; i++) {
+    msgpack::sbuffer sbuf;
+    unsigned long long val1 = v[i];
+    msgpack::pack(sbuf, val1);
+    msgpack::zone z;
+    msgpack::object obj;
+    msgpack::unpack_return ret =
+      msgpack::unpack(sbuf.data(), sbuf.size(), NULL, &z, &obj);
+    EXPECT_EQ(msgpack::UNPACK_SUCCESS, ret);
+    double val2;
+    obj.convert(&val2);
+    EXPECT_TRUE(fabs(val2 - val1) <= kEPS);
+  }
+}
+
 TEST(MSGPACK, simple_buffer_double)
 {
   vector<double> v;
