@@ -110,10 +110,8 @@ struct define<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> {
 		if(size > 0) {
 			msgpack::object *ptr = o.via.array.ptr;
 			switch(size) {
-			default:
-			<%(i).downto(0) {|j|%>
+			default:<%(i).downto(0) {|j|%>
 			case <%=j+1%>: ptr[<%=j%>].convert(&a<%=j%>);<%}%>
-				;
 			}
 		}
 	}
