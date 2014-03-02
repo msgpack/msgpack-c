@@ -7,7 +7,7 @@
 #include <deque>
 #include <set>
 #include <list>
-#include <type_traits>
+#include <limits>
 
 #include <gtest/gtest.h>
 
@@ -199,7 +199,7 @@ TYPED_TEST_P(IntegerToFloatingPointTest, simple_buffer)
   vector<integer_type> v;
   v.push_back(0);
   v.push_back(1);
-  if (is_signed<integer_type>::value) v.push_back(-1);
+  if (numeric_limits<integer_type>::is_signed) v.push_back(-1);
   else v.push_back(2);
   v.push_back(numeric_limits<integer_type>::min());
   v.push_back(numeric_limits<integer_type>::max());
