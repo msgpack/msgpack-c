@@ -26,7 +26,7 @@ namespace msgpack {
 
 class fbuffer {
 public:
-	fbuffer(FILE* file) : m_file(file) { }
+	explicit fbuffer(FILE* file) : m_file(file) { }
 
 public:
 	void write(const char* buf, unsigned int len)
