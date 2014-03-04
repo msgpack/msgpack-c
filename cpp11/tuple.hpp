@@ -32,76 +32,61 @@ namespace type {
 	using std::tuple_element;
 	using std::uses_allocator;
 	using std::ignore;
+	using std::make_tuple;
+	using std::tie;
+	using std::forward_as_tuple;
+	using std::swap;
 
 	template< class... Types >
 	class tuple : public std::tuple<Types...> {
 	public:
-		using std::tuple<Types...>::tuple;
+		using base = std::tuple<Types...>;
+
+		using base::tuple;
+
+		tuple() = default;
+		tuple(tuple const&) = default;
+		tuple(tuple&&) = default;
+
+		template<typename... OtherTypes>
+		tuple(tuple<OtherTypes...> const& other):base(static_cast<std::tuple<OtherTypes...> const&>(other)) {}
+		template<typename... OtherTypes>
+		tuple(tuple<OtherTypes...> && other):base(static_cast<std::tuple<OtherTypes...> &&>(other)) {}
+
+		tuple& operator=(tuple const&) = default;
+		tuple& operator=(tuple&&) = default;
+
+		template<typename... OtherTypes>
+		tuple& operator=(tuple<OtherTypes...> const& other) {
+			*static_cast<base*>(this) = static_cast<std::tuple<OtherTypes...> const&>(other);
+			return *this;
+		}
+		template<typename... OtherTypes>
+		tuple& operator=(tuple<OtherTypes...> && other) {
+			*static_cast<base*>(this) = static_cast<std::tuple<OtherTypes...> &&>(other);
+			return *this;
+		}
 
 		template< std::size_t I>
-		typename tuple_element<I, std::tuple<Types...> >::type&
+		typename tuple_element<I, base >::type&
 		get() { return std::get<I>(*this); }
 
 		template< std::size_t I>
-		typename tuple_element<I, std::tuple<Types...> >::type const&
+		typename tuple_element<I, base >::type const&
 		get() const { return std::get<I>(*this); }
 
 		template< std::size_t I>
-		typename tuple_element<I, std::tuple<Types...> >::type&&
+		typename tuple_element<I, base >::type&&
 		get() && { return std::get<I>(*this); }
 	};
 
-	template< class... Types >
-	tuple<Types...> make_tuple( Types&&... args ) {
-		return tuple<Types...>(std::forward<Types&&>(args)...);
-	}
-
-	template< class... Types >
-	tuple<Types...> make_tuple( std::tuple<Types...>&& arg ) {
-		return tuple<Types...>(std::forward<std::tuple<Types...>&&>(arg));
-	}
-
-	template< class... Types >
-	tuple<Types&...> tie( Types&... args ) {
-		return std::tie(args...);
-	}
-
-	template< class... Types >
-	tuple<Types&&...> forward_as_tuple( Types&&... args ) {
-		return std::forward_as_tuple(std::forward<Types&&>(args)...);
-	}
-
-	namespace detail {
-		template < typename... Types >
-		std::tuple<Types...>&& get_std_tuple(tuple<Types...>&& t) {
-			return std::forward<std::tuple<Types...>&&>(t);
-		}
-		template < typename... Types >
-		std::tuple<Types...>& get_std_tuple(tuple<Types...>& t) {
-			return t;
-		}
-		template < typename... Types >
-		std::tuple<Types...> const& get_std_tuple(tuple<Types...> const& t) {
-			return t;
-		}
-		template < typename T >
-		T&& get_std_tuple(T&& t) {
-			return t;
-		}
-	}
 	template< class... Tuples >
 	auto tuple_cat(Tuples&&... args) ->
 		decltype(
-			msgpack::type::make_tuple(std::tuple_cat(detail::get_std_tuple(std::forward<Tuples&&>(args))...))
+			std::tuple_cat(std::forward<typename std::remove_reference<Tuples>::type::base>(args)...)
 		) {
-		return std::tuple_cat(detail::get_std_tuple(std::forward<Tuples&&>(args))...);
+		return std::tuple_cat(std::forward<typename std::remove_reference<Tuples>::type::base>(args)...);
 	}
-
-	template< class... Types >
-	void swap( tuple<Types...>& lhs, tuple<Types...>& rhs ) {
-		lhs.swap(rhs);
-	}
-
 } // namespace type
 
 // --- Pack ( from tuple to packer stream ---

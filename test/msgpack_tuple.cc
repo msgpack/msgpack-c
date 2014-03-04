@@ -61,8 +61,7 @@ TEST(msgpack_tuple, make_tuple)
 
 TEST(msgpack_tuple, std_make_tuple)
 {
-	msgpack::type::tuple<int, bool, std::string> t1 = 
-		msgpack::type::make_tuple(std::make_tuple(42, true, "ABC"));
+	msgpack::type::tuple<int, bool, std::string> t1 = std::make_tuple(42, true, "ABC");
 	EXPECT_EQ(42, t1.get<0>());
 	EXPECT_EQ(true, t1.get<1>());
 	EXPECT_EQ("ABC", t1.get<2>());
@@ -70,19 +69,13 @@ TEST(msgpack_tuple, std_make_tuple)
 
 TEST(msgpack_tuple, tie)
 {
-	int i(42);
-	bool b(true);
-	std::string s("ABC");
-	msgpack::type::tuple<int, bool, std::string> t1 = msgpack::type::tie(i, b, s);
-	EXPECT_EQ(42, t1.get<0>());
-	EXPECT_EQ(true, t1.get<1>());
-	EXPECT_EQ("ABC", t1.get<2>());
-	t1.get<0>() = 40;
-	t1.get<1>() = false;
-	t1.get<2>() = "DEFG";
-	EXPECT_EQ(40, t1.get<0>());
-	EXPECT_EQ(false, t1.get<1>());
-	EXPECT_EQ("DEFG", t1.get<2>());
+	int i(43);
+	bool b(false);
+	std::string s("DEFG");
+	msgpack::type::tie(i, b, s) = msgpack::type::make_tuple(42, true, "ABC");
+	EXPECT_EQ(42, i);
+	EXPECT_EQ(true, b);
+	EXPECT_EQ("ABC", s);
 }
 
 TEST(msgpack_tuple, tuple_cat)
