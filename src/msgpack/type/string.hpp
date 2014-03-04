@@ -26,8 +26,17 @@ namespace msgpack {
 
 inline std::string& operator>> (object const& o, std::string& v)
 {
-	if(o.type != type::BIN) { throw type_error(); }
-	v.assign(o.via.bin.ptr, o.via.bin.size);
+	switch (o.type) {
+	case type::BIN:
+		v.assign(o.via.bin.ptr, o.via.bin.size);
+		break;
+	case type::STR:
+		v.assign(o.via.str.ptr, o.via.str.size);
+		break;
+	default:
+		throw type_error();
+		break;
+	}
 	return v;
 }
 
