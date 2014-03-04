@@ -21,7 +21,9 @@
 #if defined __cplusplus
 #if __cplusplus < 201103
 
+#if !defined(nullptr)
 #define nullptr (0)
+#endif
 
 namespace msgpack {
 
