@@ -101,7 +101,7 @@ private:
 	template <typename T>
 	void pack_imp_int64(T d);
 
-	void append_buffer(const char* buf, unsigned int len)
+	void append_buffer(const char* buf, size_t len)
 		{ m_stream.write(buf, len); }
 
 private:
