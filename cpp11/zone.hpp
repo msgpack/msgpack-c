@@ -168,6 +168,24 @@ public:
 	void swap(zone& o);
 
 
+	static void* operator new(std::size_t size) throw(std::bad_alloc)
+	{
+		void* p = ::malloc(size);
+		if (!p) throw std::bad_alloc();
+		return p;
+	}
+	static void operator delete(void *p) throw()
+	{
+		::free(p);
+	}
+	static void* operator new(std::size_t size, void* mem) throw()
+	{
+		return mem;
+	}
+	static void operator delete(void *p, void* mem) throw()
+	{
+	}
+
 	template <typename T, typename... Args>
 	T* allocate(Args... args);
 
