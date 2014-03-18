@@ -7,8 +7,6 @@
 /autom4te.cache/
 /config.h.in
 /configure
-/msgpack_vc2008.sln
-/msgpack_vc2008.vcproj
 /src/msgpack/pack_define.h
 /src/msgpack/pack_template.h
 /src/msgpack/sysdep.h
@@ -56,3 +54,4 @@ Makefile
 /test/streaming_c
 /test/version
 /test/zone
+
