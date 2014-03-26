@@ -43,25 +43,25 @@ inline std::string& operator>> (object const& o, std::string& v)
 template <typename Stream>
 inline packer<Stream>& operator<< (packer<Stream>& o, const std::string& v)
 {
-	o.pack_bin(v.size());
-	o.pack_bin_body(v.data(), v.size());
+	o.pack_str(v.size());
+	o.pack_str_body(v.data(), v.size());
 	return o;
 }
 
 inline void operator<< (object::with_zone& o, const std::string& v)
 {
-	o.type = type::BIN;
+	o.type = type::STR;
 	char* ptr = (char*)o.zone->allocate_align(v.size());
-	o.via.bin.ptr = ptr;
-	o.via.bin.size = (uint32_t)v.size();
+	o.via.str.ptr = ptr;
+	o.via.str.size = (uint32_t)v.size();
 	memcpy(ptr, v.data(), v.size());
 }
 
 inline void operator<< (object& o, const std::string& v)
 {
-	o.type = type::BIN;
-	o.via.bin.ptr = v.data();
-	o.via.bin.size = (uint32_t)v.size();
+	o.type = type::STR;
+	o.via.str.ptr = v.data();
+	o.via.str.size = (uint32_t)v.size();
 }
 
 
