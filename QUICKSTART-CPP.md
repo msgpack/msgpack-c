@@ -103,7 +103,7 @@ int main(void) {
         msgpack::sbuffer buffer;
 
         msgpack::packer<msgpack::sbuffer> pk(&buffer);
-        pk.pack_array(3)
+        pk.pack_array(3);
         pk.pack(std::string("Log message ... 1"));
         pk.pack(std::string("Log message ... 2"));
         pk.pack(std::string("Log message ... 3"));
@@ -112,10 +112,10 @@ int main(void) {
         msgpack::sbuffer buffer2;
 
         msgpack::packer<msgpack::sbuffer> pk2(&buffer2);
-        pk2.pack_map(2)
+        pk2.pack_map(2);
         pk2.pack(std::string("x"));
         pk2.pack(3);
-        pk2.pack(std::string("y));
+        pk2.pack(std::string("y"));
         pk2.pack(3.4321);
 
 }
@@ -124,7 +124,7 @@ int main(void) {
 
 ## User-defined classes
 
-You can use serialize/deserializes user-defined classes using MSGPACK_DEFINE macro.
+You can use serialize/deserializes user-defined classes using `MSGPACK_DEFINE` macro.
 
 ```cpp
 #include <msgpack.hpp>
