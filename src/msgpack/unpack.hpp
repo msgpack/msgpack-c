@@ -109,7 +109,7 @@ struct unpack_array {
 	bool operator()(unpack_user&u, unsigned int n, object& o) const {
 		o.type = type::ARRAY;
 		o.via.array.size = 0;
-		o.via.array.ptr = (object*)u.zone().allocate_align(n*sizeof(object));
+		o.via.array.ptr = static_cast<object*>(u.zone().allocate_align(n*sizeof(object)));
 		if(o.via.array.ptr == nullptr) { return false; }
 		return true;
 	}
@@ -128,7 +128,7 @@ struct unpack_map {
 	bool operator()(unpack_user& u, unsigned int n, object& o) const {
 		o.type = type::MAP;
 		o.via.map.size = 0;
-		o.via.map.ptr = (object_kv*)u.zone().allocate_align(n*sizeof(object_kv));
+		o.via.map.ptr = static_cast<object_kv*>(u.zone().allocate_align(n*sizeof(object_kv)));
 		if(o.via.map.ptr == nullptr) { return false; }
 		return true;
 	}
@@ -184,26 +184,24 @@ private:
 
 inline void init_count(void* buffer)
 {
-	*(volatile _msgpack_atomic_counter_t*)buffer = 1;
+	*reinterpret_cast<volatile _msgpack_atomic_counter_t*>(buffer) = 1;
 }
 
 inline void decl_count(void* buffer)
 {
-	// atomic if(--*(_msgpack_atomic_counter_t*)buffer == 0) { free(buffer); }
-	if(_msgpack_sync_decr_and_fetch((volatile _msgpack_atomic_counter_t*)buffer) == 0) {
+	if(_msgpack_sync_decr_and_fetch(reinterpret_cast<volatile _msgpack_atomic_counter_t*>(buffer)) == 0) {
 		free(buffer);
 	}
 }
 
 inline void incr_count(void* buffer)
 {
-	// atomic ++*(_msgpack_atomic_counter_t*)buffer;
-	_msgpack_sync_incr_and_fetch((volatile _msgpack_atomic_counter_t*)buffer);
+	_msgpack_sync_incr_and_fetch(reinterpret_cast<volatile _msgpack_atomic_counter_t*>(buffer));
 }
 
 inline _msgpack_atomic_counter_t get_count(void* buffer)
 {
-	return *(volatile _msgpack_atomic_counter_t*)buffer;
+	return *reinterpret_cast<volatile _msgpack_atomic_counter_t*>(buffer);
 }
 
 struct fix_tag {
@@ -872,7 +870,7 @@ inline unpacker::unpacker(size_t initial_buffer_size)
 		initial_buffer_size = COUNTER_SIZE;
 	}
 
-	char* buffer = reinterpret_cast<char*>(::malloc(initial_buffer_size));
+	char* buffer = static_cast<char*>(::malloc(initial_buffer_size));
 	if(!buffer) {
 		throw std::bad_alloc();
 	}
@@ -929,7 +927,7 @@ inline void unpacker::expand_buffer(size_t size)
 			next_size *= 2;
 		}
 
-		char* tmp = reinterpret_cast<char*>(::realloc(buffer_, next_size));
+		char* tmp = static_cast<char*>(::realloc(buffer_, next_size));
 		if(!tmp) {
 			throw std::bad_alloc();
 		}
@@ -944,7 +942,7 @@ inline void unpacker::expand_buffer(size_t size)
 			next_size *= 2;
 		}
 
-		char* tmp = reinterpret_cast<char*>(::malloc(next_size));
+		char* tmp = static_cast<char*>(::malloc(next_size));
 		if(!tmp) {
 			throw std::bad_alloc();
 		}

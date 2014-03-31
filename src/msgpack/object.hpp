@@ -530,7 +530,7 @@ std::ostream& operator<< (std::ostream& s, const object& o)
 
 	default:
 		// FIXME
-		s << "#<UNKNOWN " << (uint16_t)o.type << ">";
+		s << "#<UNKNOWN " << static_cast<uint16_t>(o.type) << ">";
 	}
 	return s;
 }

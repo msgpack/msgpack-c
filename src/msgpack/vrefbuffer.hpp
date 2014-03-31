@@ -128,7 +128,7 @@ public:
 			tail_  = nvec + nused;
 		}
 
-		tail_->iov_base = (char*)buf;
+		tail_->iov_base = const_cast<char*>(buf);
 		tail_->iov_len	= len;
 		++tail_;
 	}

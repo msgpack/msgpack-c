@@ -102,7 +102,7 @@ public:
 
 	size_t size() const
 	{
-		return (char*)stream_.next_out - data_;
+		return reinterpret_cast<char*>(stream_.next_out) - data_;
 	}
 
 	void reset()

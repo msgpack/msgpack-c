@@ -30,13 +30,13 @@ namespace msgpack {
 inline float& operator>> (object const& o, float& v)
 {
 	if(o.type == type::DOUBLE) {
-		v = (float)o.via.dec;
+		v = static_cast<float>(o.via.dec);
 	}
 	else if (o.type == type::POSITIVE_INTEGER) {
-		v = (float)o.via.u64;
+		v = static_cast<float>(o.via.u64);
 	}
 	else if (o.type == type::NEGATIVE_INTEGER) {
-		v = (float)o.via.i64;
+		v = static_cast<float>(o.via.i64);
 	}
 	else {
 		throw type_error();
@@ -58,10 +58,10 @@ inline double& operator>> (object const& o, double& v)
 		v = o.via.dec;
 	}
 	else if (o.type == type::POSITIVE_INTEGER) {
-		v = (double)o.via.u64;
+		v = static_cast<double>(o.via.u64);
 	}
 	else if (o.type == type::NEGATIVE_INTEGER) {
-		v = (double)o.via.i64;
+		v = static_cast<double>(o.via.i64);
 	}
 	else {
 		throw type_error();
@@ -80,7 +80,7 @@ inline packer<Stream>& operator<< (packer<Stream>& o, const double& v)
 inline void operator<< (object& o, float v)
 {
 	o.type = type::DOUBLE;
-	o.via.dec = (double)v;
+	o.via.dec = static_cast<double>(v);
 }
 
 inline void operator<< (object& o, double v)
