@@ -62,47 +62,47 @@ private:
 	bool referenced_;
 };
 
-inline void unpack_uint8(unpack_user&, uint8_t d, object& o)
+inline void unpack_uint8(uint8_t d, object& o)
 { o.type = type::POSITIVE_INTEGER; o.via.u64 = d; }
 
-inline void unpack_uint16(unpack_user&, uint16_t d, object& o)
+inline void unpack_uint16(uint16_t d, object& o)
 { o.type = type::POSITIVE_INTEGER; o.via.u64 = d; }
 
-inline void unpack_uint32(unpack_user&, uint32_t d, object& o)
+inline void unpack_uint32(uint32_t d, object& o)
 { o.type = type::POSITIVE_INTEGER; o.via.u64 = d; }
 
-inline void unpack_uint64(unpack_user&, uint64_t d, object& o)
+inline void unpack_uint64(uint64_t d, object& o)
 { o.type = type::POSITIVE_INTEGER; o.via.u64 = d; }
 
-inline void unpack_int8(unpack_user&, int8_t d, object& o)
+inline void unpack_int8(int8_t d, object& o)
 { if(d >= 0) { o.type = type::POSITIVE_INTEGER; o.via.u64 = d; }
 		else { o.type = type::NEGATIVE_INTEGER; o.via.i64 = d; } }
 
-inline void unpack_int16(unpack_user&, int16_t d, object& o)
+inline void unpack_int16(int16_t d, object& o)
 { if(d >= 0) { o.type = type::POSITIVE_INTEGER; o.via.u64 = d; }
 		else { o.type = type::NEGATIVE_INTEGER; o.via.i64 = d; } }
 
-inline void unpack_int32(unpack_user&, int32_t d, object& o)
+inline void unpack_int32(int32_t d, object& o)
 { if(d >= 0) { o.type = type::POSITIVE_INTEGER; o.via.u64 = d; }
 		else { o.type = type::NEGATIVE_INTEGER; o.via.i64 = d; } }
 
-inline void unpack_int64(unpack_user&, int64_t d, object& o)
+inline void unpack_int64(int64_t d, object& o)
 { if(d >= 0) { o.type = type::POSITIVE_INTEGER; o.via.u64 = d; }
 		else { o.type = type::NEGATIVE_INTEGER; o.via.i64 = d; } }
 
-inline void unpack_float(unpack_user&, float d, object& o)
+inline void unpack_float(float d, object& o)
 { o.type = type::DOUBLE; o.via.dec = d; }
 
-inline void unpack_double(unpack_user&, double d, object& o)
+inline void unpack_double(double d, object& o)
 { o.type = type::DOUBLE; o.via.dec = d; }
 
-inline void unpack_nil(unpack_user&, object& o)
+inline void unpack_nil(object& o)
 { o.type = type::NIL; }
 
-inline void unpack_true(unpack_user&, object& o)
+inline void unpack_true(object& o)
 { o.type = type::BOOLEAN; o.via.boolean = true; }
 
-inline void unpack_false(unpack_user&, object& o)
+inline void unpack_false(object& o)
 { o.type = type::BOOLEAN; o.via.boolean = false; }
 
 struct unpack_array {
@@ -115,7 +115,7 @@ struct unpack_array {
 	}
 };
 
-inline void unpack_array_item(unpack_user&, object& c, object const& o)
+inline void unpack_array_item(object& c, object const& o)
 { c.via.array.ptr[c.via.array.size++] = o; }
 
 struct unpack_map {
@@ -128,7 +128,7 @@ struct unpack_map {
 	}
 };
 
-inline void unpack_map_item(unpack_user&, object& c, object const& k, object const& v)
+inline void unpack_map_item(object& c, object const& k, object const& v)
 {
 	c.via.map.ptr[c.via.map.size].key = k;
 	c.via.map.ptr[c.via.map.size].val = v;
@@ -291,28 +291,28 @@ public:
 				int selector = *reinterpret_cast<const unsigned char*>(current_);
 				if (0) {
 				} else if(0x00 <= selector && selector <= 0x7f) { // Positive Fixnum
-					unpack_uint8(user_, *reinterpret_cast<const uint8_t*>(current_), obj);
+					unpack_uint8(*reinterpret_cast<const uint8_t*>(current_), obj);
 					int ret = push_proc(obj, off);
 					if (ret != 0) return ret;
 				} else if(0xe0 <= selector && selector <= 0xff) { // Negative Fixnum
-					unpack_int8(user_, *reinterpret_cast<const int8_t*>(current_), obj);
+					unpack_int8(*reinterpret_cast<const int8_t*>(current_), obj);
 					int ret = push_proc(obj, off);
 					if (ret != 0) return ret;
 				} else if(0xc0 <= selector && selector <= 0xdf) { // Variable
 					switch(selector) {
 					case 0xc0: {	// nil
-						unpack_nil(user_, obj);
+						unpack_nil(obj);
 						int ret = push_proc(obj, off);
 						if (ret != 0) return ret;
 					} break;
 					//case 0xc1:  // string
 					case 0xc2: {	// false
-						unpack_false(user_, obj);
+						unpack_false(obj);
 						int ret = push_proc(obj, off);
 						if (ret != 0) return ret;
 					} break;
 					case 0xc3: {	// true
-						unpack_true(user_, obj);
+						unpack_true(obj);
 						int ret = push_proc(obj, off);
 						if (ret != 0) return ret;
 					} break;
@@ -406,7 +406,7 @@ public:
 				case CS_FLOAT: {
 					union { uint32_t i; float f; } mem;
 					mem.i = load<uint32_t>(n);
-					unpack_float(user_, mem.f, obj);
+					unpack_float(mem.f, obj);
 					int ret = push_proc(obj, off);
 					if (ret != 0) return ret;
 				} break;
@@ -417,47 +417,47 @@ public:
 					// https://github.com/msgpack/msgpack-perl/pull/1
 					mem.i = (mem.i & 0xFFFFFFFFUL) << 32UL | (mem.i >> 32UL);
 #endif
-					unpack_double(user_, mem.f, obj);
+					unpack_double(mem.f, obj);
 					int ret = push_proc(obj, off);
 					if (ret != 0) return ret;
 				} break;
 				case CS_UINT_8: {
-					unpack_uint8(user_, load<uint8_t>(n), obj);
+					unpack_uint8(load<uint8_t>(n), obj);
 					int ret = push_proc(obj, off);
 					if (ret != 0) return ret;
 				} break;
 				case CS_UINT_16: {
-					unpack_uint16(user_, load<uint16_t>(n), obj);
+					unpack_uint16(load<uint16_t>(n), obj);
 					int ret = push_proc(obj, off);
 					if (ret != 0) return ret;
 				} break;
 				case CS_UINT_32: {
-					unpack_uint32(user_, load<uint32_t>(n), obj);
+					unpack_uint32(load<uint32_t>(n), obj);
 					int ret = push_proc(obj, off);
 					if (ret != 0) return ret;
 				} break;
 				case CS_UINT_64: {
-					unpack_uint64(user_, load<uint64_t>(n), obj);
+					unpack_uint64(load<uint64_t>(n), obj);
 					int ret = push_proc(obj, off);
 					if (ret != 0) return ret;
 				} break;
 				case CS_INT_8: {
-					unpack_int8(user_, load<uint8_t>(n), obj);
+					unpack_int8(load<uint8_t>(n), obj);
 					int ret = push_proc(obj, off);
 					if (ret != 0) return ret;
 				} break;
 				case CS_INT_16: {
-					unpack_int16(user_, load<int16_t>(n), obj);
+					unpack_int16(load<int16_t>(n), obj);
 					int ret = push_proc(obj, off);
 					if (ret != 0) return ret;
 				} break;
 				case CS_INT_32: {
-					unpack_int32(user_, load<int32_t>(n), obj);
+					unpack_int32(load<int32_t>(n), obj);
 					int ret = push_proc(obj, off);
 					if (ret != 0) return ret;
 				} break;
 				case CS_INT_64: {
-					unpack_int64(user_, load<int64_t>(n), obj);
+					unpack_int64(load<int64_t>(n), obj);
 					int ret = push_proc(obj, off);
 					if (ret != 0) return ret;
 				} break;
@@ -622,7 +622,7 @@ private:
 			unpack_stack* sp = &stack_[stack_idx_];
 			switch(sp->ct()) {
 			case CT_ARRAY_ITEM:
-				unpack_array_item(user_, sp->obj(), obj);
+				unpack_array_item(sp->obj(), obj);
 				if(sp->decl_count() == 0) {
 					obj = sp->obj();
 					--top_;
@@ -638,7 +638,7 @@ private:
 				finish = true;
 				break;
 			case CT_MAP_VALUE:
-				unpack_map_item(user_, sp->obj(), sp->map_key(), obj);
+				unpack_map_item(sp->obj(), sp->map_key(), obj);
 				if(sp->decl_count() == 0) {
 					obj = sp->obj();
 					--top_;
