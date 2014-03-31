@@ -116,7 +116,13 @@ struct unpack_array {
 };
 
 inline void unpack_array_item(object& c, object const& o)
-{ c.via.array.ptr[c.via.array.size++] = o; }
+{
+#if defined(__GNUC__) && !defined(__clang__)
+	memcpy(&c.via.array.ptr[c.via.array.size++], &o, sizeof(object));
+#else  /* __GNUC__ && !__clang__ */
+	c.via.array.ptr[c.via.array.size++] = o;
+#endif /* __GNUC__ && !__clang__ */
+}
 
 struct unpack_map {
 	bool operator()(unpack_user& u, unsigned int n, object& o) const {
@@ -130,8 +136,13 @@ struct unpack_map {
 
 inline void unpack_map_item(object& c, object const& k, object const& v)
 {
+#if defined(__GNUC__) && !defined(__clang__)
+	memcpy(&c.via.map.ptr[c.via.map.size].key, &k, sizeof(object));
+	memcpy(&c.via.map.ptr[c.via.map.size].val, &v, sizeof(object));
+#else  /* __GNUC__ && !__clang__ */
 	c.via.map.ptr[c.via.map.size].key = k;
 	c.via.map.ptr[c.via.map.size].val = v;
+#endif /* __GNUC__ && !__clang__ */
 	++c.via.map.size;
 }
 
@@ -675,7 +686,6 @@ private:
 	}
 
 private:
-	size_t off_;
 	char const* start_;
 	char const* current_;
 
