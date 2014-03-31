@@ -46,7 +46,7 @@
       return v; \
     } \
     template <> \
-    void operator<< (object::with_zone& o, const enum& v) \
+    inline void operator<< (object::with_zone& o, const enum& v) \
     { \
       o << static_cast<int>(v); \
     } \
