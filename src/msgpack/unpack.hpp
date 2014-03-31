@@ -52,13 +52,13 @@ namespace detail {
 
 class unpack_user {
 public:
-	zone const& z() const { return *z_; }
-	zone& z() { return *z_; }
-	void set_z(zone& z) { z_ = &z; }
+	msgpack::zone const& zone() const { return *zone_; }
+	msgpack::zone& zone() { return *zone_; }
+	void set_zone(msgpack::zone& zone) { zone_ = &zone; }
 	bool referenced() const { return referenced_; }
 	void set_referenced(bool referenced) { referenced_ = referenced; }
 private:
-	zone* z_;
+	msgpack::zone* zone_;
 	bool referenced_;
 };
 
@@ -109,7 +109,7 @@ struct unpack_array {
 	bool operator()(unpack_user&u, unsigned int n, object& o) const {
 		o.type = type::ARRAY;
 		o.via.array.size = 0;
-		o.via.array.ptr = (object*)u.z().allocate_align(n*sizeof(object));
+		o.via.array.ptr = (object*)u.zone().allocate_align(n*sizeof(object));
 		if(o.via.array.ptr == nullptr) { return false; }
 		return true;
 	}
@@ -128,7 +128,7 @@ struct unpack_map {
 	bool operator()(unpack_user& u, unsigned int n, object& o) const {
 		o.type = type::MAP;
 		o.via.map.size = 0;
-		o.via.map.ptr = (object_kv*)u.z().allocate_align(n*sizeof(object_kv));
+		o.via.map.ptr = (object_kv*)u.zone().allocate_align(n*sizeof(object_kv));
 		if(o.via.map.ptr == nullptr) { return false; }
 		return true;
 	}
@@ -894,7 +894,7 @@ inline unpacker::unpacker(size_t initial_buffer_size)
 	detail::init_count(buffer_);
 
 	ctx_.init();
-	ctx_.user().set_z(*z_);
+	ctx_.user().set_zone(*z_);
 	ctx_.user().set_referenced(false);
 }
 
@@ -1051,7 +1051,7 @@ inline zone* unpacker::release_zone()
 
 	zone* old = z_;
 	z_ = r;
-	ctx_.user().set_z(*z_);
+	ctx_.user().set_zone(*z_);
 
 	return old;
 }
@@ -1131,7 +1131,7 @@ unpack_imp(const char* data, size_t len, size_t* off,
 	detail::context ctx;
 	ctx.init();
 
-	ctx.user().set_z(result_zone);
+	ctx.user().set_zone(result_zone);
 	ctx.user().set_referenced(false);
 
 	int e = ctx.execute(data, len, noff);
