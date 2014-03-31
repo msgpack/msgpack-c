@@ -25,7 +25,7 @@
 
 #include <memory>
 #include <stdexcept>
-
+#include <byteswap.h>
 
 
 
@@ -209,42 +209,37 @@ struct fix_tag {
 };
 
 template <typename T>
-inline unsigned int load(const char* n, typename msgpack::enable_if<sizeof(T) == sizeof(fix_tag)>::type* = nullptr) {
-	return static_cast<unsigned int>(*reinterpret_cast<const uint8_t*>(n)) & 0x0f;
+struct value {
+	typedef T type;
+};
+template <>
+struct value<fix_tag> {
+	typedef unsigned int type;
+};
+
+template <typename T>
+inline void load(unsigned int& dst, const char* n, typename msgpack::enable_if<sizeof(T) == sizeof(fix_tag)>::type* = nullptr) {
+	dst = static_cast<unsigned int>(*reinterpret_cast<const uint8_t*>(n)) & 0x0f;
 }
 
 template <typename T>
-inline T load(const char* n, typename msgpack::enable_if<sizeof(T) == 1>::type* = nullptr) {
-	return static_cast<T>(*reinterpret_cast<const uint8_t*>(n));
+inline void load(T& dst, const char* n, typename msgpack::enable_if<sizeof(T) == 1>::type* = nullptr) {
+	dst = static_cast<T>(*reinterpret_cast<const uint8_t*>(n));
 }
 
 template <typename T>
-inline T load(const char* n, typename msgpack::enable_if<sizeof(T) == 2>::type* = nullptr) {
-	return static_cast<T>(
-		(static_cast<uint16_t>(reinterpret_cast<const uint8_t*>(n)[0]) <<  8) |
-		(static_cast<uint16_t>(reinterpret_cast<const uint8_t*>(n)[1])      ));
+inline void load(T& dst, const char* n, typename msgpack::enable_if<sizeof(T) == 2>::type* = nullptr) {
+	_msgpack_load16(T, n, &dst);
 }
 
 template <typename T>
-inline T load(const char* n, typename msgpack::enable_if<sizeof(T) == 4>::type* = nullptr) {
-	return static_cast<T>(
-		(static_cast<uint32_t>(reinterpret_cast<const uint8_t*>(n)[0]) << 24) |
-		(static_cast<uint32_t>(reinterpret_cast<const uint8_t*>(n)[1]) << 16) |
-		(static_cast<uint32_t>(reinterpret_cast<const uint8_t*>(n)[2]) <<  8) |
-		(static_cast<uint32_t>(reinterpret_cast<const uint8_t*>(n)[3])      ));
+inline void load(T& dst, const char* n, typename msgpack::enable_if<sizeof(T) == 4>::type* = nullptr) {
+	_msgpack_load32(T, n, &dst);
 }
 
 template <typename T>
-inline T load(const char* n, typename msgpack::enable_if<sizeof(T) == 8>::type* = nullptr) {
-	return static_cast<T>(
-		(static_cast<uint64_t>(reinterpret_cast<const uint8_t*>(n)[0]) << 56) |
-		(static_cast<uint64_t>(reinterpret_cast<const uint8_t*>(n)[1]) << 48) |
-		(static_cast<uint64_t>(reinterpret_cast<const uint8_t*>(n)[2]) << 40) |
-		(static_cast<uint64_t>(reinterpret_cast<const uint8_t*>(n)[3]) << 32) |
-		(static_cast<uint64_t>(reinterpret_cast<const uint8_t*>(n)[4]) << 24) |
-		(static_cast<uint64_t>(reinterpret_cast<const uint8_t*>(n)[5]) << 16) |
-		(static_cast<uint64_t>(reinterpret_cast<const uint8_t*>(n)[6]) <<  8) |
-		(static_cast<uint64_t>(reinterpret_cast<const uint8_t*>(n)[7])      ));
+inline void load(T& dst, const char* n, typename msgpack::enable_if<sizeof(T) == 8>::type* = nullptr) {
+	_msgpack_load64(T, n, &dst);
 }
 
 class context {
@@ -414,14 +409,14 @@ public:
 				//case CS_
 				case CS_FLOAT: {
 					union { uint32_t i; float f; } mem;
-					mem.i = load<uint32_t>(n);
+					load<uint32_t>(mem.i, n);
 					unpack_float(mem.f, obj);
 					int ret = push_proc(obj, off);
 					if (ret != 0) return ret;
 				} break;
 				case CS_DOUBLE: {
 					union { uint64_t i; double f; } mem;
-					mem.i = load<uint64_t>(n);
+					load<uint64_t>(mem.i, n);
 #if defined(__arm__) && !(__ARM_EABI__) // arm-oabi
 					// https://github.com/msgpack/msgpack-perl/pull/1
 					mem.i = (mem.i & 0xFFFFFFFFUL) << 32UL | (mem.i >> 32UL);
@@ -431,47 +426,65 @@ public:
 					if (ret != 0) return ret;
 				} break;
 				case CS_UINT_8: {
-					unpack_uint8(load<uint8_t>(n), obj);
+					uint8_t tmp;
+					load<uint8_t>(tmp, n);
+					unpack_uint8(tmp, obj);
 					int ret = push_proc(obj, off);
 					if (ret != 0) return ret;
 				} break;
 				case CS_UINT_16: {
-					unpack_uint16(load<uint16_t>(n), obj);
+					uint16_t tmp;
+					load<uint16_t>(tmp, n);
+					unpack_uint16(tmp, obj);
 					int ret = push_proc(obj, off);
 					if (ret != 0) return ret;
 				} break;
 				case CS_UINT_32: {
-					unpack_uint32(load<uint32_t>(n), obj);
+					uint32_t tmp;
+					load<uint32_t>(tmp, n);
+					unpack_uint32(tmp, obj);
 					int ret = push_proc(obj, off);
 					if (ret != 0) return ret;
 				} break;
 				case CS_UINT_64: {
-					unpack_uint64(load<uint64_t>(n), obj);
+					uint64_t tmp;
+					load<uint64_t>(tmp, n);
+					unpack_uint64(tmp, obj);
 					int ret = push_proc(obj, off);
 					if (ret != 0) return ret;
 				} break;
 				case CS_INT_8: {
-					unpack_int8(load<uint8_t>(n), obj);
+					int8_t tmp;
+					load<int8_t>(tmp, n);
+					unpack_int8(tmp, obj);
 					int ret = push_proc(obj, off);
 					if (ret != 0) return ret;
 				} break;
 				case CS_INT_16: {
-					unpack_int16(load<int16_t>(n), obj);
+					int16_t tmp;
+					load<int16_t>(tmp, n);
+					unpack_int16(tmp, obj);
 					int ret = push_proc(obj, off);
 					if (ret != 0) return ret;
 				} break;
 				case CS_INT_32: {
-					unpack_int32(load<int32_t>(n), obj);
+					int32_t tmp;
+					load<int32_t>(tmp, n);
+					unpack_int32(tmp, obj);
 					int ret = push_proc(obj, off);
 					if (ret != 0) return ret;
 				} break;
 				case CS_INT_64: {
-					unpack_int64(load<int64_t>(n), obj);
+					int64_t tmp;
+					load<int64_t>(tmp, n);
+					unpack_int64(tmp, obj);
 					int ret = push_proc(obj, off);
 					if (ret != 0) return ret;
 				} break;
-				case CS_STR_8:
-					trail_ = load<uint8_t>(n);
+				case CS_STR_8: {
+					uint8_t tmp;
+					load<uint8_t>(tmp, n);
+					trail_ = tmp;
 					if(trail_ == 0) {
 						unpack_str(user_, data, n, trail_, obj);
 						int ret = push_proc(obj, off);
@@ -481,9 +494,11 @@ public:
 						cs_ = ACS_STR_VALUE;
 						fixed_trail_again = true;
 					}
-					break;
-				case CS_BIN_8:
-					trail_ = load<uint8_t>(n);
+				} break;
+				case CS_BIN_8: {
+					uint8_t tmp;
+					load<uint8_t>(tmp, n);
+					trail_ = tmp;
 					if(trail_ == 0) {
 						unpack_bin(user_, data, n, trail_, obj);
 						int ret = push_proc(obj, off);
@@ -493,9 +508,11 @@ public:
 						cs_ = ACS_BIN_VALUE;
 						fixed_trail_again = true;
 					}
-					break;
-				case CS_STR_16:
-					trail_ = load<uint16_t>(n);
+				} break;
+				case CS_STR_16: {
+					uint16_t tmp;
+					load<uint16_t>(tmp, n);
+					trail_ = tmp;
 					if(trail_ == 0) {
 						unpack_str(user_, data, n, trail_, obj);
 						int ret = push_proc(obj, off);
@@ -505,9 +522,11 @@ public:
 						cs_ = ACS_STR_VALUE;
 						fixed_trail_again = true;
 					}
-					break;
-				case CS_BIN_16:
-					trail_ = load<uint16_t>(n);
+				} break;
+				case CS_BIN_16: {
+					uint16_t tmp;
+					load<uint16_t>(tmp, n);
+					trail_ = tmp;
 					if(trail_ == 0) {
 						unpack_bin(user_, data, n, trail_, obj);
 						int ret = push_proc(obj, off);
@@ -517,9 +536,9 @@ public:
 						cs_ = ACS_BIN_VALUE;
 						fixed_trail_again = true;
 					}
-					break;
+				} break;
 				case CS_STR_32:
-					trail_ = load<uint32_t>(n);
+					load<uint32_t>(trail_, n);
 					if(trail_ == 0) {
 						unpack_str(user_, data, n, trail_, obj);
 						int ret = push_proc(obj, off);
@@ -531,7 +550,7 @@ public:
 					}
 					break;
 				case CS_BIN_32:
-					trail_ = load<uint32_t>(n);
+					load<uint32_t>(trail_, n);
 					if(trail_ == 0) {
 						unpack_bin(user_, data, n, trail_, obj);
 						int ret = push_proc(obj, off);
@@ -599,19 +618,26 @@ private:
 		object& obj,
 		const char* load_pos,
 		size_t& off) {
-		if(top_ < MSGPACK_EMBED_STACK_SIZE /* FIXME */
-		   && f(user_, load<T>(load_pos), stack_[top_].obj())) {
-			if(load<T>(load_pos) == 0) {
-				obj = stack_[top_].obj();
-				int ret = push_proc(obj, off);
-				if (ret != 0) return ret;
+		if(top_ < MSGPACK_EMBED_STACK_SIZE /* FIXME */) {
+			typename value<T>::type tmp;
+			load<T>(tmp, load_pos);
+			if (f(user_, tmp, stack_[top_].obj())) {
+				if(tmp == 0) {
+					obj = stack_[top_].obj();
+					int ret = push_proc(obj, off);
+					if (ret != 0) return ret;
+				}
+				else {
+					stack_[top_].set_container_type(container_type);
+					stack_[top_].set_count(tmp);
+					++top_;
+					cs_ = CS_HEADER;
+					++current_;
+				}
 			}
 			else {
-				stack_[top_].set_container_type(container_type);
-				stack_[top_].set_count(load<T>(load_pos));
-				++top_;
-				cs_ = CS_HEADER;
-				++current_;
+				off = current_ - start_;
+				return -1;
 			}
 		}
 		else {

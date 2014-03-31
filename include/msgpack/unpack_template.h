@@ -260,11 +260,11 @@ msgpack_unpack_func(int, _execute)(msgpack_unpack_struct(_context)* ctx, const c
 			//case CS_
 			case CS_FLOAT: {
 					union { uint32_t i; float f; } mem;
-					mem.i = _msgpack_load32(uint32_t,n);
+					_msgpack_load32(uint32_t, n, &mem.i);
 					push_fixed_value(_float, mem.f); }
 			case CS_DOUBLE: {
 					union { uint64_t i; double f; } mem;
-					mem.i = _msgpack_load64(uint64_t,n);
+					_msgpack_load64(uint64_t, n, &mem.i);
 #if defined(__arm__) && !(__ARM_EABI__) // arm-oabi
                     // https://github.com/msgpack/msgpack-perl/pull/1
                     mem.i = (mem.i & 0xFFFFFFFFUL) << 32UL | (mem.i >> 32UL);
@@ -272,21 +272,38 @@ msgpack_unpack_func(int, _execute)(msgpack_unpack_struct(_context)* ctx, const c
 					push_fixed_value(_double, mem.f); }
 			case CS_UINT_8:
 				push_fixed_value(_uint8, *(uint8_t*)n);
-			case CS_UINT_16:
-				push_fixed_value(_uint16, _msgpack_load16(uint16_t,n));
-			case CS_UINT_32:
-				push_fixed_value(_uint32, _msgpack_load32(uint32_t,n));
-			case CS_UINT_64:
-				push_fixed_value(_uint64, _msgpack_load64(uint64_t,n));
-
+			case CS_UINT_16:{
+				uint16_t tmp;
+				_msgpack_load16(uint16_t,n,&tmp);
+				push_fixed_value(_uint16, tmp);
+			}
+			case CS_UINT_32:{
+				uint32_t tmp;
+				_msgpack_load32(uint32_t,n,&tmp);
+				push_fixed_value(_uint32, tmp);
+			}
+			case CS_UINT_64:{
+				uint64_t tmp;
+				_msgpack_load64(uint64_t,n,&tmp);
+				push_fixed_value(_uint64, tmp);
+			}
 			case CS_INT_8:
 				push_fixed_value(_int8, *(int8_t*)n);
-			case CS_INT_16:
-				push_fixed_value(_int16, _msgpack_load16(int16_t,n));
-			case CS_INT_32:
-				push_fixed_value(_int32, _msgpack_load32(int32_t,n));
-			case CS_INT_64:
-				push_fixed_value(_int64, _msgpack_load64(int64_t,n));
+			case CS_INT_16:{
+				int16_t tmp;
+				_msgpack_load16(int16_t,n,&tmp);
+				push_fixed_value(_int16, tmp);
+			}
+			case CS_INT_32:{
+				int32_t tmp;
+				_msgpack_load32(int32_t,n,&tmp);
+				push_fixed_value(_int32, tmp);
+			}
+			case CS_INT_64:{
+				int64_t tmp;
+				_msgpack_load64(int64_t,n,&tmp);
+				push_fixed_value(_int64, tmp);
+			}
 
 			//case CS_
 			//case CS_
@@ -312,14 +329,26 @@ msgpack_unpack_func(int, _execute)(msgpack_unpack_struct(_context)* ctx, const c
 				again_fixed_trail_if_zero(ACS_STR_VALUE, *(uint8_t*)n, _str_zero);
 			case CS_BIN_8:
 				again_fixed_trail_if_zero(ACS_BIN_VALUE, *(uint8_t*)n, _bin_zero);
-			case CS_STR_16:
-				again_fixed_trail_if_zero(ACS_STR_VALUE, _msgpack_load16(uint16_t,n), _str_zero);
-			case CS_BIN_16:
-				again_fixed_trail_if_zero(ACS_BIN_VALUE, _msgpack_load16(uint16_t,n), _bin_zero);
-			case CS_STR_32:
-				again_fixed_trail_if_zero(ACS_STR_VALUE, _msgpack_load32(uint32_t,n), _str_zero);
-			case CS_BIN_32:
-				again_fixed_trail_if_zero(ACS_BIN_VALUE, _msgpack_load32(uint32_t,n), _bin_zero);
+			case CS_STR_16:{
+				uint16_t tmp;
+				_msgpack_load16(uint16_t,n,&tmp);
+				again_fixed_trail_if_zero(ACS_STR_VALUE, tmp, _str_zero);
+			}
+			case CS_BIN_16:{
+				uint16_t tmp;
+				_msgpack_load16(uint16_t,n,&tmp);
+				again_fixed_trail_if_zero(ACS_BIN_VALUE, tmp, _bin_zero);
+			}
+			case CS_STR_32:{
+				uint32_t tmp;
+				_msgpack_load32(uint32_t,n,&tmp);
+				again_fixed_trail_if_zero(ACS_STR_VALUE, tmp, _str_zero);
+			}
+			case CS_BIN_32:{
+				uint32_t tmp;
+				_msgpack_load32(uint32_t,n,&tmp);
+				again_fixed_trail_if_zero(ACS_BIN_VALUE, tmp, _bin_zero);
+			}
 			case ACS_STR_VALUE:
 			_str_zero:
 				push_variable_value(_str, data, n, trail);
@@ -327,17 +356,29 @@ msgpack_unpack_func(int, _execute)(msgpack_unpack_struct(_context)* ctx, const c
 			_bin_zero:
 				push_variable_value(_bin, data, n, trail);
 
-			case CS_ARRAY_16:
-				start_container(_array, _msgpack_load16(uint16_t,n), CT_ARRAY_ITEM);
-			case CS_ARRAY_32:
+			case CS_ARRAY_16:{
+				uint16_t tmp;
+				_msgpack_load16(uint16_t,n,&tmp);
+				start_container(_array, tmp, CT_ARRAY_ITEM);
+			}
+			case CS_ARRAY_32:{
 				/* FIXME security guard */
-				start_container(_array, _msgpack_load32(uint32_t,n), CT_ARRAY_ITEM);
+				uint32_t tmp;
+				_msgpack_load32(uint32_t,n,&tmp);
+				start_container(_array, tmp, CT_ARRAY_ITEM);
+			}
 
-			case CS_MAP_16:
-				start_container(_map, _msgpack_load16(uint16_t,n), CT_MAP_KEY);
-			case CS_MAP_32:
+			case CS_MAP_16:{
+				uint16_t tmp;
+				_msgpack_load16(uint16_t,n,&tmp);
+				start_container(_map, tmp, CT_MAP_KEY);
+			}
+			case CS_MAP_32:{
 				/* FIXME security guard */
-				start_container(_map, _msgpack_load32(uint32_t,n), CT_MAP_KEY);
+				uint32_t tmp;
+				_msgpack_load32(uint32_t,n,&tmp);
+				start_container(_map, tmp, CT_MAP_KEY);
+			}
 
 			default:
 				goto _failed;

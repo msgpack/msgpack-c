@@ -18,9 +18,11 @@
 #ifndef MSGPACK_PACK_HPP
 #define MSGPACK_PACK_HPP
 
-#include "pack_define.h"
 #include <stdexcept>
-#include <limits.h>
+#include <limits>
+#include <cstring>
+
+#include "sysdep.h"
 
 namespace msgpack {
 
@@ -30,7 +32,6 @@ class packer {
 public:
 	packer(Stream* s);
 	packer(Stream& s);
-	~packer();
 
 public:
 	template <typename T>
@@ -168,9 +169,6 @@ inline packer<Stream>::packer(Stream* s) : m_stream(*s) { }
 
 template <typename Stream>
 inline packer<Stream>::packer(Stream& s) : m_stream(s) { }
-
-template <typename Stream>
-inline packer<Stream>::~packer() { }
 
 
 template <typename Stream>
