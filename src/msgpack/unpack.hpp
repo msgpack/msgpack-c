@@ -171,14 +171,14 @@ public:
 	size_t count() const { return count_; }
 	void set_count(size_t count) { count_ = count; }
 	size_t decl_count() { return --count_; }
-	unsigned int ct() const { return ct_; }
-	void set_ct(unsigned int ct) { ct_ = ct; }
+	unsigned int container_type() const { return container_type_; }
+	void set_container_type(unsigned int container_type) { container_type_ = container_type; }
 	object const& map_key() const { return map_key_; }
 	void set_map_key(object const& map_key) { map_key_ = map_key; }
 private:
 	object obj_;
 	size_t count_;
-	unsigned int ct_;
+	unsigned int container_type_;
 	object map_key_;
 };
 
@@ -597,7 +597,7 @@ private:
 	template <typename T, typename Func>
 	int push_aggregate(
 		Func const& f,
-		unsigned int ct,
+		unsigned int container_type,
 		object& obj,
 		const char* load_pos,
 		size_t& off) {
@@ -609,7 +609,7 @@ private:
 				if (ret != 0) return ret;
 			}
 			else {
-				stack_[top_].set_ct(ct);
+				stack_[top_].set_container_type(container_type);
 				stack_[top_].set_count(load<T>(load_pos));
 				++top_;
 				cs_ = CS_HEADER;
@@ -631,7 +631,7 @@ private:
 			}
 			stack_idx_ = top_ - 1;
 			unpack_stack* sp = &stack_[stack_idx_];
-			switch(sp->ct()) {
+			switch(sp->container_type()) {
 			case CT_ARRAY_ITEM:
 				unpack_array_item(sp->obj(), obj);
 				if(sp->decl_count() == 0) {
@@ -645,7 +645,7 @@ private:
 				break;
 			case CT_MAP_KEY:
 				sp->set_map_key(obj);
-				sp->set_ct(CT_MAP_VALUE);
+				sp->set_container_type(CT_MAP_VALUE);
 				finish = true;
 				break;
 			case CT_MAP_VALUE:
@@ -656,7 +656,7 @@ private:
 					/*printf("stack pop %d\n", top_);*/
 				}
 				else {
-					sp->set_ct(CT_MAP_KEY);
+					sp->set_container_type(CT_MAP_KEY);
 					finish = true;
 				}
 				break;
