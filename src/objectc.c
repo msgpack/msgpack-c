@@ -111,11 +111,11 @@ void msgpack_object_print(FILE* out, msgpack_object o)
 		break;
 
 	case MSGPACK_OBJECT_POSITIVE_INTEGER:
-		fprintf(out, "%"PRIu64, o.via.u64);
+		fprintf(out, "%" PRIu64, o.via.u64);
 		break;
 
 	case MSGPACK_OBJECT_NEGATIVE_INTEGER:
-		fprintf(out, "%"PRIi64, o.via.i64);
+		fprintf(out, "%" PRIi64, o.via.i64);
 		break;
 
 	case MSGPACK_OBJECT_DOUBLE:
@@ -164,7 +164,7 @@ void msgpack_object_print(FILE* out, msgpack_object o)
 
 	default:
 		// FIXME
-		fprintf(out, "#<UNKNOWN %i %"PRIu64">", o.type, o.via.u64);
+		fprintf(out, "#<UNKNOWN %i %" PRIu64 ">", o.type, o.via.u64);
 	}
 }
 
