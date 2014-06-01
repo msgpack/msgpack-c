@@ -232,7 +232,7 @@ msgpack_unpack_func(int, _execute)(msgpack_unpack_struct(_context)* ctx, const c
 				case 0xdd:  // array 32
 				case 0xde:  // map 16
 				case 0xdf:  // map 32
-					again_fixed_trail(NEXT_CS(p), 2 << (((unsigned int)*p) & 0x01));
+					again_fixed_trail(NEXT_CS(p), 2u << (((unsigned int)*p) & 0x01));
 				default:
 					goto _failed;
 				}
@@ -397,7 +397,7 @@ _end:
 	ctx->cs = cs;
 	ctx->trail = trail;
 	ctx->top = top;
-	*off = p - (const unsigned char*)data;
+	*off = (size_t)(p - (const unsigned char*)data);
 
 	return ret;
 }
