@@ -94,7 +94,7 @@ You can build using command line as follows:
 
 Include `msgpack.hpp` (or `msgpack.h` for C) in your application and link with libmsgpack. Here is a typical gcc link command:
 
-    g++ -lmsgpack myapp.c -o myapp
+    g++ myapp.cpp -lmsgpack -o myapp
 
 
 ### Code Example
