@@ -713,7 +713,7 @@ msgpack_pack_inline_func(_false)(msgpack_pack_user x)
 msgpack_pack_inline_func(_array)(msgpack_pack_user x, size_t n)
 {
 	if(n < 16) {
-		unsigned char d = 0x90 | n;
+		unsigned char d = 0x90 | (uint8_t)n;
 		msgpack_pack_append_buffer(x, &d, 1);
 	} else if(n < 65536) {
 		unsigned char buf[3];
@@ -734,7 +734,7 @@ msgpack_pack_inline_func(_array)(msgpack_pack_user x, size_t n)
 msgpack_pack_inline_func(_map)(msgpack_pack_user x, size_t n)
 {
 	if(n < 16) {
-		unsigned char d = 0x80 | n;
+		unsigned char d = 0x80 | (uint8_t)n;
 		msgpack_pack_append_buffer(x, &TAKE8_8(d), 1);
 	} else if(n < 65536) {
 		unsigned char buf[3];

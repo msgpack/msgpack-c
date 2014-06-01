@@ -127,7 +127,7 @@ bool msgpack_zone_push_finalizer_expand(msgpack_zone* zone,
 {
 	msgpack_zone_finalizer_array* const fa = &zone->finalizer_array;
 
-	const size_t nused = fa->end - fa->array;
+	const size_t nused = (size_t)(fa->end - fa->array);
 
 	size_t nnext;
 	if(nused == 0) {

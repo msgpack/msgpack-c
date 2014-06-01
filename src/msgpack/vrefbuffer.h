@@ -131,7 +131,7 @@ static inline const struct iovec* msgpack_vrefbuffer_vec(const msgpack_vrefbuffe
 
 static inline size_t msgpack_vrefbuffer_veclen(const msgpack_vrefbuffer* vref)
 {
-	return vref->tail - vref->array;
+	return (size_t)(vref->tail - vref->array);
 }
 
 

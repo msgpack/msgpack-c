@@ -98,7 +98,7 @@ int msgpack_vrefbuffer_append_ref(msgpack_vrefbuffer* vbuf,
 		const char* buf, size_t len)
 {
 	if(vbuf->tail == vbuf->end) {
-		const size_t nused = vbuf->tail - vbuf->array;
+		const size_t nused = (size_t)(vbuf->tail - vbuf->array);
 		const size_t nnext = nused * 2;
 
 		struct iovec* nvec = (struct iovec*)realloc(
@@ -169,11 +169,11 @@ int msgpack_vrefbuffer_migrate(msgpack_vrefbuffer* vbuf, msgpack_vrefbuffer* to)
 	empty->next = NULL;
 
 
-	const size_t nused = vbuf->tail - vbuf->array;
+	const size_t nused = (size_t)(vbuf->tail - vbuf->array);
 	if(to->tail + nused < vbuf->end) {
-		const size_t tosize = to->tail - to->array;
+		const size_t tosize = (size_t)(to->tail - to->array);
 		const size_t reqsize = nused + tosize;
-		size_t nnext = (to->end - to->array) * 2;
+		size_t nnext = (size_t)(to->end - to->array) * 2;
 		while(nnext < reqsize) {
 			nnext *= 2;
 		}

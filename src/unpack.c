@@ -71,19 +71,19 @@ static inline int template_callback_uint64(unpack_user* u, uint64_t d, msgpack_o
 { o->type = MSGPACK_OBJECT_POSITIVE_INTEGER; o->via.u64 = d; return 0; }
 
 static inline int template_callback_int8(unpack_user* u, int8_t d, msgpack_object* o)
-{ if(d >= 0) { o->type = MSGPACK_OBJECT_POSITIVE_INTEGER; o->via.u64 = d; return 0; }
+{ if(d >= 0) { o->type = MSGPACK_OBJECT_POSITIVE_INTEGER; o->via.u64 = (uint64_t)d; return 0; }
 		else { o->type = MSGPACK_OBJECT_NEGATIVE_INTEGER; o->via.i64 = d; return 0; } }
 
 static inline int template_callback_int16(unpack_user* u, int16_t d, msgpack_object* o)
-{ if(d >= 0) { o->type = MSGPACK_OBJECT_POSITIVE_INTEGER; o->via.u64 = d; return 0; }
+{ if(d >= 0) { o->type = MSGPACK_OBJECT_POSITIVE_INTEGER; o->via.u64 = (uint64_t)d; return 0; }
 		else { o->type = MSGPACK_OBJECT_NEGATIVE_INTEGER; o->via.i64 = d; return 0; } }
 
 static inline int template_callback_int32(unpack_user* u, int32_t d, msgpack_object* o)
-{ if(d >= 0) { o->type = MSGPACK_OBJECT_POSITIVE_INTEGER; o->via.u64 = d; return 0; }
+{ if(d >= 0) { o->type = MSGPACK_OBJECT_POSITIVE_INTEGER; o->via.u64 = (uint64_t)d; return 0; }
 		else { o->type = MSGPACK_OBJECT_NEGATIVE_INTEGER; o->via.i64 = d; return 0; } }
 
 static inline int template_callback_int64(unpack_user* u, int64_t d, msgpack_object* o)
-{ if(d >= 0) { o->type = MSGPACK_OBJECT_POSITIVE_INTEGER; o->via.u64 = d; return 0; }
+{ if(d >= 0) { o->type = MSGPACK_OBJECT_POSITIVE_INTEGER; o->via.u64 = (uint64_t)d; return 0; }
 		else { o->type = MSGPACK_OBJECT_NEGATIVE_INTEGER; o->via.i64 = d; return 0; } }
 
 static inline int template_callback_float(unpack_user* u, float d, msgpack_object* o)
