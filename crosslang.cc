@@ -5,7 +5,7 @@
 // or
 // $ port install msgpack  # MacPorts
 //
-// $ g++ -Wall -lmsgpack crosslang.cc
+// $ g++ -Wall crosslang.cc -lmsgpack
 //
 #include <msgpack.hpp>
 #include <iostream>

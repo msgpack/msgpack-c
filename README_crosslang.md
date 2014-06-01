@@ -22,7 +22,7 @@ as comparing that implementations.
     or
     $ port install msgpack  # MacPorts
     
-    $ g++ -Wall -lmsgpack crosslang.cc -o crosslang
+    $ g++ -Wall crosslang.cc -lmsgpack -o crosslang
 
     $ ./crosslang
     Usage: ./crosslang [in-file] [out-file]

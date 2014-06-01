@@ -94,15 +94,17 @@ You can build using command line as follows:
 
 Include `msgpack.hpp` (or `msgpack.h` for C) in your application and link with libmsgpack. Here is a typical gcc link command:
 
-    gcc -lmsgpack myapp.c -o myapp
+    g++ myapp.cpp -lmsgpack -o myapp
 
 
 ### Code Example
 ```CPP
 #include <msgpack.hpp>
 #include <vector>
+#include <string>
+#include <iostream>
 
-int main(void) {
+int main() {
     // This is target object.
     std::vector<std::string> target;
     target.push_back("Hello,");
