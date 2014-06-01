@@ -843,8 +843,10 @@ public:
   TestEnumType t2;
   TestEnumType t3;
 
-  MSGPACK_DEFINE((int&)t1, (int&)t2, (int&)t3);
+  MSGPACK_DEFINE(t1, t2, t3);
 };
+
+MSGPACK_ADD_ENUM(TestEnumMemberClass::TestEnumType);
 
 TEST(MSGPACK_USER_DEFINED, simple_buffer_enum_member)
 {
