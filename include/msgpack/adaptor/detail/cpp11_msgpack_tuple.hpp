@@ -15,8 +15,8 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 //
-#ifndef MSGPACK_TYPE_TUPLE_HPP
-#define MSGPACK_TYPE_TUPLE_HPP
+#ifndef MSGPACK_CPP11_MSGPACK_TUPLE_HPP
+#define MSGPACK_CPP11_MSGPACK_TUPLE_HPP
 
 #include <tuple>
 
@@ -181,5 +181,5 @@ inline void operator<< (
 
 } // msgpack
 
-#endif /* msgpack/type/tuple.hpp */
+#endif // MSGPACK_CPP11_MSGPACK_TUPLE_HPP
 

@@ -1,6 +1,6 @@
 
-AM_CPPFLAGS   = -I$(top_srcdir)/src -I$(top_builddir)/src
-AM_C_CPPFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src
+AM_CPPFLAGS   = -I$(top_srcdir)/include
+AM_C_CPPFLAGS = -I$(top_srcdir)/include
 AM_LDFLAGS = $(top_builddir)/src/libmsgpack.la -lgtest_main -lgtest -pthread
 
 check_PROGRAMS = \

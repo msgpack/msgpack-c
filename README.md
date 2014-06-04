@@ -22,6 +22,15 @@ To report an issue, use the [msgpack-c issue tracker](https://github.com/msgpack
 
 ## Using Msgpack
 
+### Header only library for C++
+When you use msgpack on C++03 and C++11, you just add msgpack-c/include to your include path. You don't need to link any msgpack libraries.
+
+e.g.)
+
+```
+g++ -I msgpack-c/include your_source_file.cpp
+```
+
 ### Building and Installing
 
 #### Install from git repository
@@ -29,11 +38,8 @@ To report an issue, use the [msgpack-c issue tracker](https://github.com/msgpack
 ##### Using autotools
 You will need gcc (4.1.0 or higher), autotools.
 
-You can use msgpack-c as a header only library on C++11 and C++03.
+For C++03 and C:
 
-You don't need to prepare ruby when you choose C++11 configuration.
-
-For C++11:
 ```
 $ git clone https://github.com/redboltz/msgpack-c/tree/cxx_separate
 $ cd msgpack-c
@@ -43,14 +49,17 @@ $ make
 $ sudo make install
 ```
 
-If you want to setup C++11 version of msgpack, execute the following command:
+For C++11:
 
 ```
 $ git clone https://github.com/msgpack/msgpack-c.git
 $ cd msgpack-c
 $ ./bootstrap
 $ ./configure CXXFLAGS="-std=c++11"
+$ make
+$ sudo make install
 ```
+
 You need the compiler that fully supports C++11.
 
 ##### Using cmake
@@ -120,12 +129,13 @@ Open the created msgpack.sln on Visual Studio.
 
 Build all.
 
-### Linking with an Application
+### Linking with an Application for C
 
-Include `msgpack.hpp` (or `msgpack.h` for C) in your application and link with libmsgpack. Here is a typical gcc link command:
+Include `msgpack.h` in your application and link with libmsgpack. Here is a typical gcc link command:
 
-    g++ myapp.cpp -lmsgpack -o myapp
+    gcc myapp.c -lmsgpack -o myapp
 
+When you use the C++ version of the msgpack, you don't need to link any msgpack libraries.
 
 ### Code Example
 ```CPP

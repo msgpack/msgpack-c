@@ -508,7 +508,7 @@ TEST(MSGPACK_STL, simple_buffer_multiset)
 
 #ifdef MSGPACK_HAS_STD_TR1_UNOURDERED_MAP
 #include <tr1/unordered_map>
-#include "msgpack/type/tr1/unordered_map.hpp"
+#include "msgpack/adaptor/tr1/unordered_map.hpp"
 TEST(MSGPACK_TR1, simple_buffer_tr1_unordered_map)
 {
   for (unsigned int k = 0; k < kLoop; k++) {
@@ -569,7 +569,7 @@ TEST(MSGPACK_TR1, simple_buffer_tr1_unordered_multimap)
 
 #ifdef MSGPACK_HAS_STD_TR1_UNOURDERED_SET
 #include <tr1/unordered_set>
-#include "msgpack/type/tr1/unordered_set.hpp"
+#include "msgpack/adaptor/tr1/unordered_set.hpp"
 TEST(MSGPACK_TR1, simple_buffer_tr1_unordered_set)
 {
   for (unsigned int k = 0; k < kLoop; k++) {
@@ -625,7 +625,7 @@ TEST(MSGPACK_TR1, simple_buffer_tr1_unordered_multiset)
 
 #ifdef MSGPACK_HAS_STD_UNOURDERED_MAP
 #include <unordered_map>
-#include "msgpack/type/tr1/unordered_map.hpp"
+#include "msgpack/adaptor/tr1/unordered_map.hpp"
 TEST(MSGPACK_TR1, simple_buffer_unordered_map)
 {
   for (unsigned int k = 0; k < kLoop; k++) {
@@ -686,7 +686,7 @@ TEST(MSGPACK_TR1, simple_buffer_unordered_multimap)
 
 #ifdef MSGPACK_HAS_STD_UNOURDERED_SET
 #include <unordered_set>
-#include "msgpack/type/tr1/unordered_set.hpp"
+#include "msgpack/adaptor/tr1/unordered_set.hpp"
 TEST(MSGPACK_TR1, simple_buffer_unordered_set)
 {
   for (unsigned int k = 0; k < kLoop; k++) {

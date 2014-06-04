@@ -1,6 +1,8 @@
 
 lib_LTLIBRARIES = libmsgpack.la
 
+AM_CPPFLAGS = -I../include
+
 libmsgpack_la_SOURCES = \
 		unpack.c \
 		objectc.c \
@@ -31,60 +33,62 @@ libmsgpackc_la_LDFLAGS = -version-info 2:0:0 -no-undefined
 
 
 nobase_include_HEADERS = \
-		msgpack/pack_define.h \
-		msgpack/pack_template.h \
-		msgpack/unpack_define.h \
-		msgpack/unpack_template.h \
-		msgpack/sysdep.h \
-		msgpack.h \
-		msgpack/sbuffer.h \
-		msgpack/version.h \
-		msgpack/vrefbuffer.h \
-		msgpack/zbuffer.h \
-		msgpack/fbuffer.h \
-		msgpack/pack.h \
-		msgpack/unpack.h \
-		msgpack/object.h \
-		msgpack/zone.h
+		../include/msgpack/pack_define.h \
+		../include/msgpack/pack_template.h \
+		../include/msgpack/unpack_define.h \
+		../include/msgpack/unpack_template.h \
+		../include/msgpack/sysdep.h \
+		../include/msgpack.h \
+		../include/msgpack/sbuffer.h \
+		../include/msgpack/version.h \
+		../include/msgpack/version_master.h \
+		../include/msgpack/vrefbuffer.h \
+		../include/msgpack/zbuffer.h \
+		../include/msgpack/fbuffer.h \
+		../include/msgpack/pack.h \
+		../include/msgpack/unpack.h \
+		../include/msgpack/object.h \
+		../include/msgpack/zone.h
 
 if ENABLE_CXX
 nobase_include_HEADERS += \
-		msgpack.hpp \
-		msgpack/sbuffer.hpp \
-		msgpack/vrefbuffer.hpp \
-		msgpack/zbuffer.hpp \
-		msgpack/fbuffer.hpp \
-		msgpack/pack.hpp \
-		msgpack/unpack.hpp \
-		msgpack/version.hpp \
-		msgpack/object.hpp \
-		msgpack/zone.hpp \
-		msgpack/type.hpp \
-		msgpack/type/bool.hpp \
-		msgpack/type/deque.hpp \
-		msgpack/type/float.hpp \
-		msgpack/type/fixint.hpp \
-		msgpack/type/int.hpp \
-		msgpack/type/list.hpp \
-		msgpack/type/map.hpp \
-		msgpack/type/nil.hpp \
-		msgpack/type/pair.hpp \
-		msgpack/type/raw.hpp \
-		msgpack/type/set.hpp \
-		msgpack/type/string.hpp \
-		msgpack/type/vector.hpp \
-		msgpack/type/tuple.hpp \
-		msgpack/type/define.hpp \
-		msgpack/type/tr1/unordered_map.hpp \
-		msgpack/type/tr1/unordered_set.hpp
+		../include/msgpack.hpp \
+		../include/msgpack/sbuffer.hpp \
+		../include/msgpack/vrefbuffer.hpp \
+		../include/msgpack/zbuffer.hpp \
+		../include/msgpack/fbuffer.hpp \
+		../include/msgpack/pack.hpp \
+		../include/msgpack/unpack.hpp \
+		../include/msgpack/version.hpp \
+		../include/msgpack/object.hpp \
+		../include/msgpack/zone.hpp \
+		../include/msgpack/type.hpp \
+		../include/msgpack/detail/cpp11_zone.hpp \
+		../include/msgpack/adaptor/bool.hpp \
+		../include/msgpack/adaptor/deque.hpp \
+		../include/msgpack/adaptor/float.hpp \
+		../include/msgpack/adaptor/fixint.hpp \
+		../include/msgpack/adaptor/int.hpp \
+		../include/msgpack/adaptor/list.hpp \
+		../include/msgpack/adaptor/map.hpp \
+		../include/msgpack/adaptor/nil.hpp \
+		../include/msgpack/adaptor/pair.hpp \
+		../include/msgpack/adaptor/raw.hpp \
+		../include/msgpack/adaptor/set.hpp \
+		../include/msgpack/adaptor/string.hpp \
+		../include/msgpack/adaptor/vector.hpp \
+		../include/msgpack/adaptor/msgpack_tuple.hpp \
+		../include/msgpack/adaptor/detail/cpp11_msgpack_tuple.hpp \
+		../include/msgpack/adaptor/define.hpp \
+		../include/msgpack/adaptor/detail/cpp11_define.hpp \
+		../include/msgpack/adaptor/tr1/unordered_map.hpp \
+		../include/msgpack/adaptor/tr1/unordered_set.hpp
 endif
 
 EXTRA_DIST = \
-		msgpack/version.h.in \
-		msgpack/version.hpp.in \
-		msgpack/zone.hpp.erb \
-		msgpack/type/define.hpp.erb \
-		msgpack/type/tuple.hpp.erb
+		../erb/cpp03_zone.hpp.erb \
+		../erb/cpp03_define.hpp.erb \
+		../erb/cpp03_msgpack_tuple.hpp.erb
 
 
 doxygen_c:

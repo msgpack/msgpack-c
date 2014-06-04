@@ -18,12 +18,25 @@
 #ifndef MSGPACK_CPP_CONFIG_HPP
 #define MSGPACK_CPP_CONFIG_HPP
 
+#if !defined(MSGPACK_USE_CPP03)
+  // If MSVC would support C++11 completely,
+  // then 'defined(_MSC_VER)' would replace with
+  // '_MSC_VER < XXXX'
+# if (__cplusplus < 201103) || defined(_MSC_VER)
+#  define MSGPACK_USE_CPP03
+# endif
+#endif // MSGPACK_USE_CPP03
+
+
+
 #if defined __cplusplus
 #if __cplusplus < 201103
 
 #if !defined(nullptr)
 #define nullptr (0)
 #endif
+
+#include <memory>
 
 namespace msgpack {
 

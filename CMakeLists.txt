@@ -29,26 +29,6 @@ IF (GTEST_FOUND AND ZLIB_FOUND AND THREADS_FOUND)
 	OPTION (MSGPACK_BUILD_TESTS "Build msgpack tests." ON)
 ENDIF ()
 
-
-# Files to copy
-
-MACRO (COPY_FILE SOURCE DESTINATION)
-	# COPY_FILE (readme.txt dir1/dir2/) would add new target
-	# that will copy readme.txt to dir1/dir2 where dir1 will be located
-	# in current binary directory.
-	ADD_CUSTOM_COMMAND (
-		OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${DESTINATION}/${SOURCE}
-		COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/${DESTINATION}
-		COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/${SOURCE} ${CMAKE_CURRENT_BINARY_DIR}/${DESTINATION}/${SOURCE}
-	)
-ENDMACRO ()
-
-IF (MSGPACK_CXX11)
-   COPY_FILE (cpp11/zone.hpp src/msgpack/zone.hpp)
-   COPY_FILE (cpp11/define.hpp src/msgpack/type/define.hpp)
-   COPY_FILE (cpp11/tuple.hpp src/msgpack/type/tuple.hpp)
-ENDIF ()
-
 OPTION (MSGPACK_ENABLE_CXX "Enable C++ interface." ON)
 
 INCLUDE (CheckCXXSourceCompiles)
@@ -79,65 +59,62 @@ LIST (APPEND msgpack_SOURCES
 )
 
 LIST (APPEND msgpack_HEADERS
-	src/msgpack/pack_define.h
-	src/msgpack/pack_template.h
-	src/msgpack/unpack_define.h
-	src/msgpack/unpack_template.h
-	src/msgpack/sysdep.h
-	src/msgpack/sbuffer.h
-	src/msgpack/version.h
-	src/msgpack/vrefbuffer.h
-	src/msgpack/zbuffer.h
-	src/msgpack/fbuffer.h
-	src/msgpack/pack.h
-	src/msgpack/unpack.h
-	src/msgpack/object.h
-	src/msgpack/zone.h
+	include/msgpack/pack_define.h
+	include/msgpack/pack_template.h
+	include/msgpack/unpack_define.h
+	include/msgpack/unpack_template.h
+	include/msgpack/sysdep.h
+	include/msgpack/sbuffer.h
+	include/msgpack/version.h
+	include/msgpack/vrefbuffer.h
+	include/msgpack/zbuffer.h
+	include/msgpack/fbuffer.h
+	include/msgpack/pack.h
+	include/msgpack/unpack.h
+	include/msgpack/object.h
+	include/msgpack/zone.h
 )
 
 IF (MSGPACK_ENABLE_CXX)
 	LIST (APPEND msgpack_HEADERS
-		src/msgpack.hpp
-		src/msgpack/sbuffer.hpp
-		src/msgpack/vrefbuffer.hpp
-		src/msgpack/zbuffer.hpp
-		src/msgpack/fbuffer.hpp
-		src/msgpack/pack.hpp
-		src/msgpack/unpack.hpp
-		src/msgpack/object.hpp
-		src/msgpack/zone.hpp
-		src/msgpack/type.hpp
-		src/msgpack/type/bool.hpp
-		src/msgpack/type/deque.hpp
-		src/msgpack/type/float.hpp
-		src/msgpack/type/fixint.hpp
-		src/msgpack/type/int.hpp
-		src/msgpack/type/list.hpp
-		src/msgpack/type/map.hpp
-		src/msgpack/type/nil.hpp
-		src/msgpack/type/pair.hpp
-		src/msgpack/type/raw.hpp
-		src/msgpack/type/set.hpp
-		src/msgpack/type/string.hpp
-		src/msgpack/type/vector.hpp
-		src/msgpack/type/tuple.hpp
-		src/msgpack/type/define.hpp
-		src/msgpack/type/tr1/unordered_map.hpp
-		src/msgpack/type/tr1/unordered_set.hpp
+		include/msgpack.hpp
+		include/msgpack/sbuffer.hpp
+		include/msgpack/vrefbuffer.hpp
+		include/msgpack/zbuffer.hpp
+		include/msgpack/fbuffer.hpp
+		include/msgpack/pack.hpp
+		include/msgpack/unpack.hpp
+		include/msgpack/object.hpp
+		include/msgpack/zone.hpp
+		include/msgpack/detail/cpp03_zone.hpp
+		include/msgpack/detail/cpp11_zone.hpp
+		include/msgpack/type.hpp
+		include/msgpack/adaptor/bool.hpp
+		include/msgpack/adaptor/deque.hpp
+		include/msgpack/adaptor/float.hpp
+		include/msgpack/adaptor/fixint.hpp
+		include/msgpack/adaptor/int.hpp
+		include/msgpack/adaptor/list.hpp
+		include/msgpack/adaptor/map.hpp
+		include/msgpack/adaptor/nil.hpp
+		include/msgpack/adaptor/pair.hpp
+		include/msgpack/adaptor/raw.hpp
+		include/msgpack/adaptor/set.hpp
+		include/msgpack/adaptor/string.hpp
+		include/msgpack/adaptor/vector.hpp
+		include/msgpack/adaptor/msgpack_tuple.hpp
+		include/msgpack/adaptor/detail/cpp03_msgpack_tuple.hpp
+		include/msgpack/adaptor/detail/cpp11_msgpack_tuple.hpp
+		include/msgpack/adaptor/define.hpp
+		include/msgpack/adaptor/detail/cpp03_define.hpp
+		include/msgpack/adaptor/detail/cpp11_define.hpp
+		include/msgpack/adaptor/tr1/unordered_map.hpp
+		include/msgpack/adaptor/tr1/unordered_set.hpp
 	)
 ENDIF ()
 
 EXECUTE_PROCESS (
 	COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/src/msgpack
-)
-
-CONFIGURE_FILE (
-	src/msgpack/version.h.in
-	${CMAKE_CURRENT_BINARY_DIR}/src/msgpack/version.h
-)
-CONFIGURE_FILE (
-	src/msgpack/version.hpp.in
-	${CMAKE_CURRENT_BINARY_DIR}/src/msgpack/version.hpp
 )
 
 CONFIGURE_FILE (
@@ -148,10 +125,8 @@ CONFIGURE_FILE (
 
 INCLUDE_DIRECTORIES (
 	./
-	src/
-	src/msgpack/
-	${CMAKE_CURRENT_BINARY_DIR}/src/
-	${CMAKE_CURRENT_BINARY_DIR}/src/msgpack/
+	include/
+	${CMAKE_CURRENT_BINARY_DIR}/include/
 )
 
 ADD_LIBRARY (msgpack SHARED
@@ -186,8 +161,7 @@ IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
 ENDIF ()
 
 INSTALL (TARGETS msgpack msgpack-static DESTINATION lib)
-INSTALL (DIRECTORY src/msgpack DESTINATION include)
-INSTALL (FILES src/msgpack.h src/msgpack.hpp DESTINATION include)
+INSTALL (DIRECTORY include DESTINATION ${CMAKE_INSTALL_PREFIX})
 INSTALL (FILES msgpack.pc DESTINATION lib/pkgconfig)
 
 # Doxygen

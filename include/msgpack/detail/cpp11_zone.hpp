@@ -1,28 +1,28 @@
 //
 // MessagePack for C++ memory pool
 //
-// Copyright (C) 2008-2010 FURUHASHI Sadayuki
+// Copyright (C) 2008-2013 FURUHASHI Sadayuki and KONDO Takatoshi
 //
-//	  Licensed under the Apache License, Version 2.0 (the "License");
-//	  you may not use this file except in compliance with the License.
-//	  You may obtain a copy of the License at
+//    Licensed under the Apache License, Version 2.0 (the "License");
+//    you may not use this file except in compliance with the License.
+//    You may obtain a copy of the License at
 //
-//		  http://www.apache.org/licenses/LICENSE-2.0
+//        http://www.apache.org/licenses/LICENSE-2.0
 //
-//	  Unless required by applicable law or agreed to in writing, software
-//	  distributed under the License is distributed on an "AS IS" BASIS,
-//	  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//	  See the License for the specific language governing permissions and
-//	  limitations under the License.
+//    Unless required by applicable law or agreed to in writing, software
+//    distributed under the License is distributed on an "AS IS" BASIS,
+//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//    See the License for the specific language governing permissions and
+//    limitations under the License.
 //
-#ifndef MSGPACK_ZONE_HPP
-#define MSGPACK_ZONE_HPP
+#ifndef MSGPACK_CPP11_ZONE_HPP
+#define MSGPACK_CPP11_ZONE_HPP
 
 #include <cstdlib>
 #include <memory>
 #include <vector>
 
-#include "cpp_config.hpp"
+#include "msgpack/cpp_config.hpp"
 
 #ifndef MSGPACK_ZONE_CHUNK_SIZE
 #define MSGPACK_ZONE_CHUNK_SIZE 8192
@@ -32,10 +32,10 @@
 #define MSGPACK_ZONE_ALIGN sizeof(int)
 #endif
 
-<% GENERATION_LIMIT = 15 %>
 namespace msgpack {
 
 class zone {
+private:
 	struct finalizer {
 		finalizer(void (*func)(void*), void* data):func_(func), data_(data) {}
 		void operator()() { func_(data_); }
@@ -133,6 +133,7 @@ class zone {
 					::free(c);
 					c = n;
 				} else {
+					head_ = c;
 					break;
 				}
 			}
@@ -149,7 +150,7 @@ class zone {
 	finalizer_array finalizer_array_;
 
 public:
-	zone(size_t chunk_size = MSGPACK_ZONE_CHUNK_SIZE) /* throw() */;
+	zone(size_t chunk_size = MSGPACK_ZONE_CHUNK_SIZE) noexcept;
 
 public:
 	static zone* create(size_t chunk_size);
@@ -165,6 +166,8 @@ public:
 	void clear();
 
 	void swap(zone& o);
+
+
 	static void* operator new(std::size_t size) throw(std::bad_alloc)
 	{
 		void* p = ::malloc(size);
@@ -175,18 +178,16 @@ public:
 	{
 		::free(p);
 	}
-	static void* operator new(std::size_t size, void* place) throw()
+	static void* operator new(std::size_t size, void* mem) throw()
 	{
-		return ::operator new(size, place);
+		return mem;
 	}
-	static void operator delete(void* p, void* place) throw()
+	static void operator delete(void *p, void* mem) throw()
 	{
-		::operator delete(p, place);
 	}
-	<%0.upto(GENERATION_LIMIT) {|i|%>
-	template <typename T<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
-	T* allocate(<%=(1..i).map{|j|"A#{j} a#{j}"}.join(', ')%>);
-	<%}%>
+
+	template <typename T, typename... Args>
+	T* allocate(Args... args);
 
 private:
 	void undo_allocate(size_t size);
@@ -196,7 +197,6 @@ private:
 
 	void* allocate_expand(size_t size);
 };
-
 
 inline zone* zone::create(size_t chunk_size)
 {
@@ -214,7 +214,7 @@ inline void zone::destroy(zone* z)
 	::free(z);
 }
 
-inline zone::zone(size_t chunk_size) /* throw() */ :chunk_size_(chunk_size), chunk_list_(chunk_size_)
+inline zone::zone(size_t chunk_size) noexcept:chunk_size_(chunk_size), chunk_list_(chunk_size_)
 {
 }
 
@@ -248,6 +248,7 @@ inline void* zone::allocate_expand(size_t size)
 	}
 
 	chunk* c = static_cast<chunk*>(::malloc(sizeof(chunk) + sz));
+	if (!c) return nullptr;
 
 	char* ptr = reinterpret_cast<char*>(c) + sizeof(chunk);
 
@@ -294,9 +295,9 @@ inline void zone::undo_allocate(size_t size)
 	chunk_list_.free_ += size;
 }
 
-<%0.upto(GENERATION_LIMIT) {|i|%>
-template <typename T<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
-T* zone::allocate(<%=(1..i).map{|j|"A#{j} a#{j}"}.join(', ')%>)
+
+template <typename T, typename... Args>
+T* zone::allocate(Args... args)
 {
 	void* x = allocate_align(sizeof(T));
 	try {
@@ -306,15 +307,14 @@ T* zone::allocate(<%=(1..i).map{|j|"A#{j} a#{j}"}.join(', ')%>)
 		throw;
 	}
 	try {
-		return new (x) T(<%=(1..i).map{|j|"a#{j}"}.join(', ')%>);
+		return new (x) T(args...);
 	} catch (...) {
 		--finalizer_array_.tail_;
 		undo_allocate(sizeof(T));
 		throw;
 	}
 }
-<%}%>
 
 }  // namespace msgpack
 
-#endif /* msgpack/zone.hpp */
+#endif // MSGPACK_CPP11_ZONE_HPP

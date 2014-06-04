@@ -19,7 +19,7 @@
 #define MSGPACK_TYPE_FIXINT_HPP
 
 #include "msgpack/object.hpp"
-#include "msgpack/type/int.hpp"
+#include "msgpack/adaptor/int.hpp"
 
 namespace msgpack {
 

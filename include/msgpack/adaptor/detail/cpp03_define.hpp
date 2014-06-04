@@ -15,8 +15,8 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 //
-#ifndef MSGPACK_TYPE_DEFINE_HPP__
-#define MSGPACK_TYPE_DEFINE_HPP__
+#ifndef MSGPACK_CPP03_DEFINE_HPP
+#define MSGPACK_CPP03_DEFINE_HPP
 
 #define MSGPACK_DEFINE(...) \
 	template <typename Packer> \
@@ -24,7 +24,7 @@
 	{ \
 		msgpack::type::make_define(__VA_ARGS__).msgpack_pack(pk); \
 	} \
-	void msgpack_unpack(msgpack::object o) \
+	void msgpack_unpack(msgpack::object const& o) \
 	{ \
 		msgpack::type::make_define(__VA_ARGS__).msgpack_unpack(o); \
 	}\
@@ -38,7 +38,7 @@
 #define MSGPACK_ADD_ENUM(enum) \
   namespace msgpack { \
     template <> \
-    inline enum& operator>> (object o, enum& v) \
+    inline enum& operator>> (object const& o, enum& v) \
     { \
       int tmp; \
       o >> tmp; \
@@ -78,14 +78,14 @@ struct define<> {
 	{
 		pk.pack_array(0);
 	}
-	void msgpack_unpack(msgpack::object o)
+	void msgpack_unpack(msgpack::object const& o)
 	{
 		if(o.type != type::ARRAY) { throw type_error(); }
 	}
 	void msgpack_object(msgpack::object* o, msgpack::zone* z) const
 	{
 		o->type = type::ARRAY;
-		o->via.array.ptr = NULL;
+		o->via.array.ptr = nullptr;
 		o->via.array.size = 0;
 	}
 };
@@ -103,7 +103,7 @@ struct define<A0> {
 		
 		pk.pack(a0);
 	}
-	void msgpack_unpack(msgpack::object o)
+	void msgpack_unpack(msgpack::object const& o)
 	{
 		if(o.type != type::ARRAY) { throw type_error(); }
 		const size_t size = o.via.array.size;
@@ -111,14 +111,14 @@ struct define<A0> {
 			msgpack::object *ptr = o.via.array.ptr;
 			switch(size) {
 			default:
-			case 1: ptr[0].convert(&a0);
+			case 1: ptr[0].convert(a0);
 			}
 		}
 	}
 	void msgpack_object(msgpack::object* o, msgpack::zone* z) const
 	{
 		o->type = type::ARRAY;
-		o->via.array.ptr = (object*)z->malloc(sizeof(object)*1);
+		o->via.array.ptr = static_cast<object*>(z->allocate_align(sizeof(object)*1));
 		o->via.array.size = 1;
 		
 		o->via.array.ptr[0] = object(a0, z);
@@ -141,7 +141,7 @@ struct define<A0, A1> {
 		pk.pack(a0);
 		pk.pack(a1);
 	}
-	void msgpack_unpack(msgpack::object o)
+	void msgpack_unpack(msgpack::object const& o)
 	{
 		if(o.type != type::ARRAY) { throw type_error(); }
 		const size_t size = o.via.array.size;
@@ -149,15 +149,15 @@ struct define<A0, A1> {
 			msgpack::object *ptr = o.via.array.ptr;
 			switch(size) {
 			default:
-			case 2: ptr[1].convert(&a1);
-			case 1: ptr[0].convert(&a0);
+			case 2: ptr[1].convert(a1);
+			case 1: ptr[0].convert(a0);
 			}
 		}
 	}
 	void msgpack_object(msgpack::object* o, msgpack::zone* z) const
 	{
 		o->type = type::ARRAY;
-		o->via.array.ptr = (object*)z->malloc(sizeof(object)*2);
+		o->via.array.ptr = static_cast<object*>(z->allocate_align(sizeof(object)*2));
 		o->via.array.size = 2;
 		
 		o->via.array.ptr[0] = object(a0, z);
@@ -183,7 +183,7 @@ struct define<A0, A1, A2> {
 		pk.pack(a1);
 		pk.pack(a2);
 	}
-	void msgpack_unpack(msgpack::object o)
+	void msgpack_unpack(msgpack::object const& o)
 	{
 		if(o.type != type::ARRAY) { throw type_error(); }
 		const size_t size = o.via.array.size;
@@ -191,16 +191,16 @@ struct define<A0, A1, A2> {
 			msgpack::object *ptr = o.via.array.ptr;
 			switch(size) {
 			default:
-			case 3: ptr[2].convert(&a2);
-			case 2: ptr[1].convert(&a1);
-			case 1: ptr[0].convert(&a0);
+			case 3: ptr[2].convert(a2);
+			case 2: ptr[1].convert(a1);
+			case 1: ptr[0].convert(a0);
 			}
 		}
 	}
 	void msgpack_object(msgpack::object* o, msgpack::zone* z) const
 	{
 		o->type = type::ARRAY;
-		o->via.array.ptr = (object*)z->malloc(sizeof(object)*3);
+		o->via.array.ptr = static_cast<object*>(z->allocate_align(sizeof(object)*3));
 		o->via.array.size = 3;
 		
 		o->via.array.ptr[0] = object(a0, z);
@@ -229,7 +229,7 @@ struct define<A0, A1, A2, A3> {
 		pk.pack(a2);
 		pk.pack(a3);
 	}
-	void msgpack_unpack(msgpack::object o)
+	void msgpack_unpack(msgpack::object const& o)
 	{
 		if(o.type != type::ARRAY) { throw type_error(); }
 		const size_t size = o.via.array.size;
@@ -237,17 +237,17 @@ struct define<A0, A1, A2, A3> {
 			msgpack::object *ptr = o.via.array.ptr;
 			switch(size) {
 			default:
-			case 4: ptr[3].convert(&a3);
-			case 3: ptr[2].convert(&a2);
-			case 2: ptr[1].convert(&a1);
-			case 1: ptr[0].convert(&a0);
+			case 4: ptr[3].convert(a3);
+			case 3: ptr[2].convert(a2);
+			case 2: ptr[1].convert(a1);
+			case 1: ptr[0].convert(a0);
 			}
 		}
 	}
 	void msgpack_object(msgpack::object* o, msgpack::zone* z) const
 	{
 		o->type = type::ARRAY;
-		o->via.array.ptr = (object*)z->malloc(sizeof(object)*4);
+		o->via.array.ptr = static_cast<object*>(z->allocate_align(sizeof(object)*4));
 		o->via.array.size = 4;
 		
 		o->via.array.ptr[0] = object(a0, z);
@@ -279,7 +279,7 @@ struct define<A0, A1, A2, A3, A4> {
 		pk.pack(a3);
 		pk.pack(a4);
 	}
-	void msgpack_unpack(msgpack::object o)
+	void msgpack_unpack(msgpack::object const& o)
 	{
 		if(o.type != type::ARRAY) { throw type_error(); }
 		const size_t size = o.via.array.size;
@@ -287,18 +287,18 @@ struct define<A0, A1, A2, A3, A4> {
 			msgpack::object *ptr = o.via.array.ptr;
 			switch(size) {
 			default:
-			case 5: ptr[4].convert(&a4);
-			case 4: ptr[3].convert(&a3);
-			case 3: ptr[2].convert(&a2);
-			case 2: ptr[1].convert(&a1);
-			case 1: ptr[0].convert(&a0);
+			case 5: ptr[4].convert(a4);
+			case 4: ptr[3].convert(a3);
+			case 3: ptr[2].convert(a2);
+			case 2: ptr[1].convert(a1);
+			case 1: ptr[0].convert(a0);
 			}
 		}
 	}
 	void msgpack_object(msgpack::object* o, msgpack::zone* z) const
 	{
 		o->type = type::ARRAY;
-		o->via.array.ptr = (object*)z->malloc(sizeof(object)*5);
+		o->via.array.ptr = static_cast<object*>(z->allocate_align(sizeof(object)*5));
 		o->via.array.size = 5;
 		
 		o->via.array.ptr[0] = object(a0, z);
@@ -333,7 +333,7 @@ struct define<A0, A1, A2, A3, A4, A5> {
 		pk.pack(a4);
 		pk.pack(a5);
 	}
-	void msgpack_unpack(msgpack::object o)
+	void msgpack_unpack(msgpack::object const& o)
 	{
 		if(o.type != type::ARRAY) { throw type_error(); }
 		const size_t size = o.via.array.size;
@@ -341,19 +341,19 @@ struct define<A0, A1, A2, A3, A4, A5> {
 			msgpack::object *ptr = o.via.array.ptr;
 			switch(size) {
 			default:
-			case 6: ptr[5].convert(&a5);
-			case 5: ptr[4].convert(&a4);
-			case 4: ptr[3].convert(&a3);
-			case 3: ptr[2].convert(&a2);
-			case 2: ptr[1].convert(&a1);
-			case 1: ptr[0].convert(&a0);
+			case 6: ptr[5].convert(a5);
+			case 5: ptr[4].convert(a4);
+			case 4: ptr[3].convert(a3);
+			case 3: ptr[2].convert(a2);
+			case 2: ptr[1].convert(a1);
+			case 1: ptr[0].convert(a0);
 			}
 		}
 	}
 	void msgpack_object(msgpack::object* o, msgpack::zone* z) const
 	{
 		o->type = type::ARRAY;
-		o->via.array.ptr = (object*)z->malloc(sizeof(object)*6);
+		o->via.array.ptr = static_cast<object*>(z->allocate_align(sizeof(object)*6));
 		o->via.array.size = 6;
 		
 		o->via.array.ptr[0] = object(a0, z);
@@ -391,7 +391,7 @@ struct define<A0, A1, A2, A3, A4, A5, A6> {
 		pk.pack(a5);
 		pk.pack(a6);
 	}
-	void msgpack_unpack(msgpack::object o)
+	void msgpack_unpack(msgpack::object const& o)
 	{
 		if(o.type != type::ARRAY) { throw type_error(); }
 		const size_t size = o.via.array.size;
@@ -399,20 +399,20 @@ struct define<A0, A1, A2, A3, A4, A5, A6> {
 			msgpack::object *ptr = o.via.array.ptr;
 			switch(size) {
 			default:
-			case 7: ptr[6].convert(&a6);
-			case 6: ptr[5].convert(&a5);
-			case 5: ptr[4].convert(&a4);
-			case 4: ptr[3].convert(&a3);
-			case 3: ptr[2].convert(&a2);
-			case 2: ptr[1].convert(&a1);
-			case 1: ptr[0].convert(&a0);
+			case 7: ptr[6].convert(a6);
+			case 6: ptr[5].convert(a5);
+			case 5: ptr[4].convert(a4);
+			case 4: ptr[3].convert(a3);
+			case 3: ptr[2].convert(a2);
+			case 2: ptr[1].convert(a1);
+			case 1: ptr[0].convert(a0);
 			}
 		}
 	}
 	void msgpack_object(msgpack::object* o, msgpack::zone* z) const
 	{
 		o->type = type::ARRAY;
-		o->via.array.ptr = (object*)z->malloc(sizeof(object)*7);
+		o->via.array.ptr = static_cast<object*>(z->allocate_align(sizeof(object)*7));
 		o->via.array.size = 7;
 		
 		o->via.array.ptr[0] = object(a0, z);
@@ -453,7 +453,7 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7> {
 		pk.pack(a6);
 		pk.pack(a7);
 	}
-	void msgpack_unpack(msgpack::object o)
+	void msgpack_unpack(msgpack::object const& o)
 	{
 		if(o.type != type::ARRAY) { throw type_error(); }
 		const size_t size = o.via.array.size;
@@ -461,21 +461,21 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7> {
 			msgpack::object *ptr = o.via.array.ptr;
 			switch(size) {
 			default:
-			case 8: ptr[7].convert(&a7);
-			case 7: ptr[6].convert(&a6);
-			case 6: ptr[5].convert(&a5);
-			case 5: ptr[4].convert(&a4);
-			case 4: ptr[3].convert(&a3);
-			case 3: ptr[2].convert(&a2);
-			case 2: ptr[1].convert(&a1);
-			case 1: ptr[0].convert(&a0);
+			case 8: ptr[7].convert(a7);
+			case 7: ptr[6].convert(a6);
+			case 6: ptr[5].convert(a5);
+			case 5: ptr[4].convert(a4);
+			case 4: ptr[3].convert(a3);
+			case 3: ptr[2].convert(a2);
+			case 2: ptr[1].convert(a1);
+			case 1: ptr[0].convert(a0);
 			}
 		}
 	}
 	void msgpack_object(msgpack::object* o, msgpack::zone* z) const
 	{
 		o->type = type::ARRAY;
-		o->via.array.ptr = (object*)z->malloc(sizeof(object)*8);
+		o->via.array.ptr = static_cast<object*>(z->allocate_align(sizeof(object)*8));
 		o->via.array.size = 8;
 		
 		o->via.array.ptr[0] = object(a0, z);
@@ -519,7 +519,7 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8> {
 		pk.pack(a7);
 		pk.pack(a8);
 	}
-	void msgpack_unpack(msgpack::object o)
+	void msgpack_unpack(msgpack::object const& o)
 	{
 		if(o.type != type::ARRAY) { throw type_error(); }
 		const size_t size = o.via.array.size;
@@ -527,22 +527,22 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8> {
 			msgpack::object *ptr = o.via.array.ptr;
 			switch(size) {
 			default:
-			case 9: ptr[8].convert(&a8);
-			case 8: ptr[7].convert(&a7);
-			case 7: ptr[6].convert(&a6);
-			case 6: ptr[5].convert(&a5);
-			case 5: ptr[4].convert(&a4);
-			case 4: ptr[3].convert(&a3);
-			case 3: ptr[2].convert(&a2);
-			case 2: ptr[1].convert(&a1);
-			case 1: ptr[0].convert(&a0);
+			case 9: ptr[8].convert(a8);
+			case 8: ptr[7].convert(a7);
+			case 7: ptr[6].convert(a6);
+			case 6: ptr[5].convert(a5);
+			case 5: ptr[4].convert(a4);
+			case 4: ptr[3].convert(a3);
+			case 3: ptr[2].convert(a2);
+			case 2: ptr[1].convert(a1);
+			case 1: ptr[0].convert(a0);
 			}
 		}
 	}
 	void msgpack_object(msgpack::object* o, msgpack::zone* z) const
 	{
 		o->type = type::ARRAY;
-		o->via.array.ptr = (object*)z->malloc(sizeof(object)*9);
+		o->via.array.ptr = static_cast<object*>(z->allocate_align(sizeof(object)*9));
 		o->via.array.size = 9;
 		
 		o->via.array.ptr[0] = object(a0, z);
@@ -589,7 +589,7 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9> {
 		pk.pack(a8);
 		pk.pack(a9);
 	}
-	void msgpack_unpack(msgpack::object o)
+	void msgpack_unpack(msgpack::object const& o)
 	{
 		if(o.type != type::ARRAY) { throw type_error(); }
 		const size_t size = o.via.array.size;
@@ -597,23 +597,23 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9> {
 			msgpack::object *ptr = o.via.array.ptr;
 			switch(size) {
 			default:
-			case 10: ptr[9].convert(&a9);
-			case 9: ptr[8].convert(&a8);
-			case 8: ptr[7].convert(&a7);
-			case 7: ptr[6].convert(&a6);
-			case 6: ptr[5].convert(&a5);
-			case 5: ptr[4].convert(&a4);
-			case 4: ptr[3].convert(&a3);
-			case 3: ptr[2].convert(&a2);
-			case 2: ptr[1].convert(&a1);
-			case 1: ptr[0].convert(&a0);
+			case 10: ptr[9].convert(a9);
+			case 9: ptr[8].convert(a8);
+			case 8: ptr[7].convert(a7);
+			case 7: ptr[6].convert(a6);
+			case 6: ptr[5].convert(a5);
+			case 5: ptr[4].convert(a4);
+			case 4: ptr[3].convert(a3);
+			case 3: ptr[2].convert(a2);
+			case 2: ptr[1].convert(a1);
+			case 1: ptr[0].convert(a0);
 			}
 		}
 	}
 	void msgpack_object(msgpack::object* o, msgpack::zone* z) const
 	{
 		o->type = type::ARRAY;
-		o->via.array.ptr = (object*)z->malloc(sizeof(object)*10);
+		o->via.array.ptr = static_cast<object*>(z->allocate_align(sizeof(object)*10));
 		o->via.array.size = 10;
 		
 		o->via.array.ptr[0] = object(a0, z);
@@ -663,7 +663,7 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10> {
 		pk.pack(a9);
 		pk.pack(a10);
 	}
-	void msgpack_unpack(msgpack::object o)
+	void msgpack_unpack(msgpack::object const& o)
 	{
 		if(o.type != type::ARRAY) { throw type_error(); }
 		const size_t size = o.via.array.size;
@@ -671,24 +671,24 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10> {
 			msgpack::object *ptr = o.via.array.ptr;
 			switch(size) {
 			default:
-			case 11: ptr[10].convert(&a10);
-			case 10: ptr[9].convert(&a9);
-			case 9: ptr[8].convert(&a8);
-			case 8: ptr[7].convert(&a7);
-			case 7: ptr[6].convert(&a6);
-			case 6: ptr[5].convert(&a5);
-			case 5: ptr[4].convert(&a4);
-			case 4: ptr[3].convert(&a3);
-			case 3: ptr[2].convert(&a2);
-			case 2: ptr[1].convert(&a1);
-			case 1: ptr[0].convert(&a0);
+			case 11: ptr[10].convert(a10);
+			case 10: ptr[9].convert(a9);
+			case 9: ptr[8].convert(a8);
+			case 8: ptr[7].convert(a7);
+			case 7: ptr[6].convert(a6);
+			case 6: ptr[5].convert(a5);
+			case 5: ptr[4].convert(a4);
+			case 4: ptr[3].convert(a3);
+			case 3: ptr[2].convert(a2);
+			case 2: ptr[1].convert(a1);
+			case 1: ptr[0].convert(a0);
 			}
 		}
 	}
 	void msgpack_object(msgpack::object* o, msgpack::zone* z) const
 	{
 		o->type = type::ARRAY;
-		o->via.array.ptr = (object*)z->malloc(sizeof(object)*11);
+		o->via.array.ptr = static_cast<object*>(z->allocate_align(sizeof(object)*11));
 		o->via.array.size = 11;
 		
 		o->via.array.ptr[0] = object(a0, z);
@@ -741,7 +741,7 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11> {
 		pk.pack(a10);
 		pk.pack(a11);
 	}
-	void msgpack_unpack(msgpack::object o)
+	void msgpack_unpack(msgpack::object const& o)
 	{
 		if(o.type != type::ARRAY) { throw type_error(); }
 		const size_t size = o.via.array.size;
@@ -749,25 +749,25 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11> {
 			msgpack::object *ptr = o.via.array.ptr;
 			switch(size) {
 			default:
-			case 12: ptr[11].convert(&a11);
-			case 11: ptr[10].convert(&a10);
-			case 10: ptr[9].convert(&a9);
-			case 9: ptr[8].convert(&a8);
-			case 8: ptr[7].convert(&a7);
-			case 7: ptr[6].convert(&a6);
-			case 6: ptr[5].convert(&a5);
-			case 5: ptr[4].convert(&a4);
-			case 4: ptr[3].convert(&a3);
-			case 3: ptr[2].convert(&a2);
-			case 2: ptr[1].convert(&a1);
-			case 1: ptr[0].convert(&a0);
+			case 12: ptr[11].convert(a11);
+			case 11: ptr[10].convert(a10);
+			case 10: ptr[9].convert(a9);
+			case 9: ptr[8].convert(a8);
+			case 8: ptr[7].convert(a7);
+			case 7: ptr[6].convert(a6);
+			case 6: ptr[5].convert(a5);
+			case 5: ptr[4].convert(a4);
+			case 4: ptr[3].convert(a3);
+			case 3: ptr[2].convert(a2);
+			case 2: ptr[1].convert(a1);
+			case 1: ptr[0].convert(a0);
 			}
 		}
 	}
 	void msgpack_object(msgpack::object* o, msgpack::zone* z) const
 	{
 		o->type = type::ARRAY;
-		o->via.array.ptr = (object*)z->malloc(sizeof(object)*12);
+		o->via.array.ptr = static_cast<object*>(z->allocate_align(sizeof(object)*12));
 		o->via.array.size = 12;
 		
 		o->via.array.ptr[0] = object(a0, z);
@@ -823,7 +823,7 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12> {
 		pk.pack(a11);
 		pk.pack(a12);
 	}
-	void msgpack_unpack(msgpack::object o)
+	void msgpack_unpack(msgpack::object const& o)
 	{
 		if(o.type != type::ARRAY) { throw type_error(); }
 		const size_t size = o.via.array.size;
@@ -831,26 +831,26 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12> {
 			msgpack::object *ptr = o.via.array.ptr;
 			switch(size) {
 			default:
-			case 13: ptr[12].convert(&a12);
-			case 12: ptr[11].convert(&a11);
-			case 11: ptr[10].convert(&a10);
-			case 10: ptr[9].convert(&a9);
-			case 9: ptr[8].convert(&a8);
-			case 8: ptr[7].convert(&a7);
-			case 7: ptr[6].convert(&a6);
-			case 6: ptr[5].convert(&a5);
-			case 5: ptr[4].convert(&a4);
-			case 4: ptr[3].convert(&a3);
-			case 3: ptr[2].convert(&a2);
-			case 2: ptr[1].convert(&a1);
-			case 1: ptr[0].convert(&a0);
+			case 13: ptr[12].convert(a12);
+			case 12: ptr[11].convert(a11);
+			case 11: ptr[10].convert(a10);
+			case 10: ptr[9].convert(a9);
+			case 9: ptr[8].convert(a8);
+			case 8: ptr[7].convert(a7);
+			case 7: ptr[6].convert(a6);
+			case 6: ptr[5].convert(a5);
+			case 5: ptr[4].convert(a4);
+			case 4: ptr[3].convert(a3);
+			case 3: ptr[2].convert(a2);
+			case 2: ptr[1].convert(a1);
+			case 1: ptr[0].convert(a0);
 			}
 		}
 	}
 	void msgpack_object(msgpack::object* o, msgpack::zone* z) const
 	{
 		o->type = type::ARRAY;
-		o->via.array.ptr = (object*)z->malloc(sizeof(object)*13);
+		o->via.array.ptr = static_cast<object*>(z->allocate_align(sizeof(object)*13));
 		o->via.array.size = 13;
 		
 		o->via.array.ptr[0] = object(a0, z);
@@ -909,7 +909,7 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13> {
 		pk.pack(a12);
 		pk.pack(a13);
 	}
-	void msgpack_unpack(msgpack::object o)
+	void msgpack_unpack(msgpack::object const& o)
 	{
 		if(o.type != type::ARRAY) { throw type_error(); }
 		const size_t size = o.via.array.size;
@@ -917,27 +917,27 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13> {
 			msgpack::object *ptr = o.via.array.ptr;
 			switch(size) {
 			default:
-			case 14: ptr[13].convert(&a13);
-			case 13: ptr[12].convert(&a12);
-			case 12: ptr[11].convert(&a11);
-			case 11: ptr[10].convert(&a10);
-			case 10: ptr[9].convert(&a9);
-			case 9: ptr[8].convert(&a8);
-			case 8: ptr[7].convert(&a7);
-			case 7: ptr[6].convert(&a6);
-			case 6: ptr[5].convert(&a5);
-			case 5: ptr[4].convert(&a4);
-			case 4: ptr[3].convert(&a3);
-			case 3: ptr[2].convert(&a2);
-			case 2: ptr[1].convert(&a1);
-			case 1: ptr[0].convert(&a0);
+			case 14: ptr[13].convert(a13);
+			case 13: ptr[12].convert(a12);
+			case 12: ptr[11].convert(a11);
+			case 11: ptr[10].convert(a10);
+			case 10: ptr[9].convert(a9);
+			case 9: ptr[8].convert(a8);
+			case 8: ptr[7].convert(a7);
+			case 7: ptr[6].convert(a6);
+			case 6: ptr[5].convert(a5);
+			case 5: ptr[4].convert(a4);
+			case 4: ptr[3].convert(a3);
+			case 3: ptr[2].convert(a2);
+			case 2: ptr[1].convert(a1);
+			case 1: ptr[0].convert(a0);
 			}
 		}
 	}
 	void msgpack_object(msgpack::object* o, msgpack::zone* z) const
 	{
 		o->type = type::ARRAY;
-		o->via.array.ptr = (object*)z->malloc(sizeof(object)*14);
+		o->via.array.ptr = static_cast<object*>(z->allocate_align(sizeof(object)*14));
 		o->via.array.size = 14;
 		
 		o->via.array.ptr[0] = object(a0, z);
@@ -999,7 +999,7 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14> {
 		pk.pack(a13);
 		pk.pack(a14);
 	}
-	void msgpack_unpack(msgpack::object o)
+	void msgpack_unpack(msgpack::object const& o)
 	{
 		if(o.type != type::ARRAY) { throw type_error(); }
 		const size_t size = o.via.array.size;
@@ -1007,28 +1007,28 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14> {
 			msgpack::object *ptr = o.via.array.ptr;
 			switch(size) {
 			default:
-			case 15: ptr[14].convert(&a14);
-			case 14: ptr[13].convert(&a13);
-			case 13: ptr[12].convert(&a12);
-			case 12: ptr[11].convert(&a11);
-			case 11: ptr[10].convert(&a10);
-			case 10: ptr[9].convert(&a9);
-			case 9: ptr[8].convert(&a8);
-			case 8: ptr[7].convert(&a7);
-			case 7: ptr[6].convert(&a6);
-			case 6: ptr[5].convert(&a5);
-			case 5: ptr[4].convert(&a4);
-			case 4: ptr[3].convert(&a3);
-			case 3: ptr[2].convert(&a2);
-			case 2: ptr[1].convert(&a1);
-			case 1: ptr[0].convert(&a0);
+			case 15: ptr[14].convert(a14);
+			case 14: ptr[13].convert(a13);
+			case 13: ptr[12].convert(a12);
+			case 12: ptr[11].convert(a11);
+			case 11: ptr[10].convert(a10);
+			case 10: ptr[9].convert(a9);
+			case 9: ptr[8].convert(a8);
+			case 8: ptr[7].convert(a7);
+			case 7: ptr[6].convert(a6);
+			case 6: ptr[5].convert(a5);
+			case 5: ptr[4].convert(a4);
+			case 4: ptr[3].convert(a3);
+			case 3: ptr[2].convert(a2);
+			case 2: ptr[1].convert(a1);
+			case 1: ptr[0].convert(a0);
 			}
 		}
 	}
 	void msgpack_object(msgpack::object* o, msgpack::zone* z) const
 	{
 		o->type = type::ARRAY;
-		o->via.array.ptr = (object*)z->malloc(sizeof(object)*15);
+		o->via.array.ptr = static_cast<object*>(z->allocate_align(sizeof(object)*15));
 		o->via.array.size = 15;
 		
 		o->via.array.ptr[0] = object(a0, z);
@@ -1093,7 +1093,7 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A
 		pk.pack(a14);
 		pk.pack(a15);
 	}
-	void msgpack_unpack(msgpack::object o)
+	void msgpack_unpack(msgpack::object const& o)
 	{
 		if(o.type != type::ARRAY) { throw type_error(); }
 		const size_t size = o.via.array.size;
@@ -1101,29 +1101,29 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A
 			msgpack::object *ptr = o.via.array.ptr;
 			switch(size) {
 			default:
-			case 16: ptr[15].convert(&a15);
-			case 15: ptr[14].convert(&a14);
-			case 14: ptr[13].convert(&a13);
-			case 13: ptr[12].convert(&a12);
-			case 12: ptr[11].convert(&a11);
-			case 11: ptr[10].convert(&a10);
-			case 10: ptr[9].convert(&a9);
-			case 9: ptr[8].convert(&a8);
-			case 8: ptr[7].convert(&a7);
-			case 7: ptr[6].convert(&a6);
-			case 6: ptr[5].convert(&a5);
-			case 5: ptr[4].convert(&a4);
-			case 4: ptr[3].convert(&a3);
-			case 3: ptr[2].convert(&a2);
-			case 2: ptr[1].convert(&a1);
-			case 1: ptr[0].convert(&a0);
+			case 16: ptr[15].convert(a15);
+			case 15: ptr[14].convert(a14);
+			case 14: ptr[13].convert(a13);
+			case 13: ptr[12].convert(a12);
+			case 12: ptr[11].convert(a11);
+			case 11: ptr[10].convert(a10);
+			case 10: ptr[9].convert(a9);
+			case 9: ptr[8].convert(a8);
+			case 8: ptr[7].convert(a7);
+			case 7: ptr[6].convert(a6);
+			case 6: ptr[5].convert(a5);
+			case 5: ptr[4].convert(a4);
+			case 4: ptr[3].convert(a3);
+			case 3: ptr[2].convert(a2);
+			case 2: ptr[1].convert(a1);
+			case 1: ptr[0].convert(a0);
 			}
 		}
 	}
 	void msgpack_object(msgpack::object* o, msgpack::zone* z) const
 	{
 		o->type = type::ARRAY;
-		o->via.array.ptr = (object*)z->malloc(sizeof(object)*16);
+		o->via.array.ptr = static_cast<object*>(z->allocate_align(sizeof(object)*16));
 		o->via.array.size = 16;
 		
 		o->via.array.ptr[0] = object(a0, z);
@@ -1191,7 +1191,7 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A
 		pk.pack(a15);
 		pk.pack(a16);
 	}
-	void msgpack_unpack(msgpack::object o)
+	void msgpack_unpack(msgpack::object const& o)
 	{
 		if(o.type != type::ARRAY) { throw type_error(); }
 		const size_t size = o.via.array.size;
@@ -1199,30 +1199,30 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A
 			msgpack::object *ptr = o.via.array.ptr;
 			switch(size) {
 			default:
-			case 17: ptr[16].convert(&a16);
-			case 16: ptr[15].convert(&a15);
-			case 15: ptr[14].convert(&a14);
-			case 14: ptr[13].convert(&a13);
-			case 13: ptr[12].convert(&a12);
-			case 12: ptr[11].convert(&a11);
-			case 11: ptr[10].convert(&a10);
-			case 10: ptr[9].convert(&a9);
-			case 9: ptr[8].convert(&a8);
-			case 8: ptr[7].convert(&a7);
-			case 7: ptr[6].convert(&a6);
-			case 6: ptr[5].convert(&a5);
-			case 5: ptr[4].convert(&a4);
-			case 4: ptr[3].convert(&a3);
-			case 3: ptr[2].convert(&a2);
-			case 2: ptr[1].convert(&a1);
-			case 1: ptr[0].convert(&a0);
+			case 17: ptr[16].convert(a16);
+			case 16: ptr[15].convert(a15);
+			case 15: ptr[14].convert(a14);
+			case 14: ptr[13].convert(a13);
+			case 13: ptr[12].convert(a12);
+			case 12: ptr[11].convert(a11);
+			case 11: ptr[10].convert(a10);
+			case 10: ptr[9].convert(a9);
+			case 9: ptr[8].convert(a8);
+			case 8: ptr[7].convert(a7);
+			case 7: ptr[6].convert(a6);
+			case 6: ptr[5].convert(a5);
+			case 5: ptr[4].convert(a4);
+			case 4: ptr[3].convert(a3);
+			case 3: ptr[2].convert(a2);
+			case 2: ptr[1].convert(a1);
+			case 1: ptr[0].convert(a0);
 			}
 		}
 	}
 	void msgpack_object(msgpack::object* o, msgpack::zone* z) const
 	{
 		o->type = type::ARRAY;
-		o->via.array.ptr = (object*)z->malloc(sizeof(object)*17);
+		o->via.array.ptr = static_cast<object*>(z->allocate_align(sizeof(object)*17));
 		o->via.array.size = 17;
 		
 		o->via.array.ptr[0] = object(a0, z);
@@ -1293,7 +1293,7 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A
 		pk.pack(a16);
 		pk.pack(a17);
 	}
-	void msgpack_unpack(msgpack::object o)
+	void msgpack_unpack(msgpack::object const& o)
 	{
 		if(o.type != type::ARRAY) { throw type_error(); }
 		const size_t size = o.via.array.size;
@@ -1301,31 +1301,31 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A
 			msgpack::object *ptr = o.via.array.ptr;
 			switch(size) {
 			default:
-			case 18: ptr[17].convert(&a17);
-			case 17: ptr[16].convert(&a16);
-			case 16: ptr[15].convert(&a15);
-			case 15: ptr[14].convert(&a14);
-			case 14: ptr[13].convert(&a13);
-			case 13: ptr[12].convert(&a12);
-			case 12: ptr[11].convert(&a11);
-			case 11: ptr[10].convert(&a10);
-			case 10: ptr[9].convert(&a9);
-			case 9: ptr[8].convert(&a8);
-			case 8: ptr[7].convert(&a7);
-			case 7: ptr[6].convert(&a6);
-			case 6: ptr[5].convert(&a5);
-			case 5: ptr[4].convert(&a4);
-			case 4: ptr[3].convert(&a3);
-			case 3: ptr[2].convert(&a2);
-			case 2: ptr[1].convert(&a1);
-			case 1: ptr[0].convert(&a0);
+			case 18: ptr[17].convert(a17);
+			case 17: ptr[16].convert(a16);
+			case 16: ptr[15].convert(a15);
+			case 15: ptr[14].convert(a14);
+			case 14: ptr[13].convert(a13);
+			case 13: ptr[12].convert(a12);
+			case 12: ptr[11].convert(a11);
+			case 11: ptr[10].convert(a10);
+			case 10: ptr[9].convert(a9);
+			case 9: ptr[8].convert(a8);
+			case 8: ptr[7].convert(a7);
+			case 7: ptr[6].convert(a6);
+			case 6: ptr[5].convert(a5);
+			case 5: ptr[4].convert(a4);
+			case 4: ptr[3].convert(a3);
+			case 3: ptr[2].convert(a2);
+			case 2: ptr[1].convert(a1);
+			case 1: ptr[0].convert(a0);
 			}
 		}
 	}
 	void msgpack_object(msgpack::object* o, msgpack::zone* z) const
 	{
 		o->type = type::ARRAY;
-		o->via.array.ptr = (object*)z->malloc(sizeof(object)*18);
+		o->via.array.ptr = static_cast<object*>(z->allocate_align(sizeof(object)*18));
 		o->via.array.size = 18;
 		
 		o->via.array.ptr[0] = object(a0, z);
@@ -1399,7 +1399,7 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A
 		pk.pack(a17);
 		pk.pack(a18);
 	}
-	void msgpack_unpack(msgpack::object o)
+	void msgpack_unpack(msgpack::object const& o)
 	{
 		if(o.type != type::ARRAY) { throw type_error(); }
 		const size_t size = o.via.array.size;
@@ -1407,32 +1407,32 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A
 			msgpack::object *ptr = o.via.array.ptr;
 			switch(size) {
 			default:
-			case 19: ptr[18].convert(&a18);
-			case 18: ptr[17].convert(&a17);
-			case 17: ptr[16].convert(&a16);
-			case 16: ptr[15].convert(&a15);
-			case 15: ptr[14].convert(&a14);
-			case 14: ptr[13].convert(&a13);
-			case 13: ptr[12].convert(&a12);
-			case 12: ptr[11].convert(&a11);
-			case 11: ptr[10].convert(&a10);
-			case 10: ptr[9].convert(&a9);
-			case 9: ptr[8].convert(&a8);
-			case 8: ptr[7].convert(&a7);
-			case 7: ptr[6].convert(&a6);
-			case 6: ptr[5].convert(&a5);
-			case 5: ptr[4].convert(&a4);
-			case 4: ptr[3].convert(&a3);
-			case 3: ptr[2].convert(&a2);
-			case 2: ptr[1].convert(&a1);
-			case 1: ptr[0].convert(&a0);
+			case 19: ptr[18].convert(a18);
+			case 18: ptr[17].convert(a17);
+			case 17: ptr[16].convert(a16);
+			case 16: ptr[15].convert(a15);
+			case 15: ptr[14].convert(a14);
+			case 14: ptr[13].convert(a13);
+			case 13: ptr[12].convert(a12);
+			case 12: ptr[11].convert(a11);
+			case 11: ptr[10].convert(a10);
+			case 10: ptr[9].convert(a9);
+			case 9: ptr[8].convert(a8);
+			case 8: ptr[7].convert(a7);
+			case 7: ptr[6].convert(a6);
+			case 6: ptr[5].convert(a5);
+			case 5: ptr[4].convert(a4);
+			case 4: ptr[3].convert(a3);
+			case 3: ptr[2].convert(a2);
+			case 2: ptr[1].convert(a1);
+			case 1: ptr[0].convert(a0);
 			}
 		}
 	}
 	void msgpack_object(msgpack::object* o, msgpack::zone* z) const
 	{
 		o->type = type::ARRAY;
-		o->via.array.ptr = (object*)z->malloc(sizeof(object)*19);
+		o->via.array.ptr = static_cast<object*>(z->allocate_align(sizeof(object)*19));
 		o->via.array.size = 19;
 		
 		o->via.array.ptr[0] = object(a0, z);
@@ -1509,7 +1509,7 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A
 		pk.pack(a18);
 		pk.pack(a19);
 	}
-	void msgpack_unpack(msgpack::object o)
+	void msgpack_unpack(msgpack::object const& o)
 	{
 		if(o.type != type::ARRAY) { throw type_error(); }
 		const size_t size = o.via.array.size;
@@ -1517,33 +1517,33 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A
 			msgpack::object *ptr = o.via.array.ptr;
 			switch(size) {
 			default:
-			case 20: ptr[19].convert(&a19);
-			case 19: ptr[18].convert(&a18);
-			case 18: ptr[17].convert(&a17);
-			case 17: ptr[16].convert(&a16);
-			case 16: ptr[15].convert(&a15);
-			case 15: ptr[14].convert(&a14);
-			case 14: ptr[13].convert(&a13);
-			case 13: ptr[12].convert(&a12);
-			case 12: ptr[11].convert(&a11);
-			case 11: ptr[10].convert(&a10);
-			case 10: ptr[9].convert(&a9);
-			case 9: ptr[8].convert(&a8);
-			case 8: ptr[7].convert(&a7);
-			case 7: ptr[6].convert(&a6);
-			case 6: ptr[5].convert(&a5);
-			case 5: ptr[4].convert(&a4);
-			case 4: ptr[3].convert(&a3);
-			case 3: ptr[2].convert(&a2);
-			case 2: ptr[1].convert(&a1);
-			case 1: ptr[0].convert(&a0);
+			case 20: ptr[19].convert(a19);
+			case 19: ptr[18].convert(a18);
+			case 18: ptr[17].convert(a17);
+			case 17: ptr[16].convert(a16);
+			case 16: ptr[15].convert(a15);
+			case 15: ptr[14].convert(a14);
+			case 14: ptr[13].convert(a13);
+			case 13: ptr[12].convert(a12);
+			case 12: ptr[11].convert(a11);
+			case 11: ptr[10].convert(a10);
+			case 10: ptr[9].convert(a9);
+			case 9: ptr[8].convert(a8);
+			case 8: ptr[7].convert(a7);
+			case 7: ptr[6].convert(a6);
+			case 6: ptr[5].convert(a5);
+			case 5: ptr[4].convert(a4);
+			case 4: ptr[3].convert(a3);
+			case 3: ptr[2].convert(a2);
+			case 2: ptr[1].convert(a1);
+			case 1: ptr[0].convert(a0);
 			}
 		}
 	}
 	void msgpack_object(msgpack::object* o, msgpack::zone* z) const
 	{
 		o->type = type::ARRAY;
-		o->via.array.ptr = (object*)z->malloc(sizeof(object)*20);
+		o->via.array.ptr = static_cast<object*>(z->allocate_align(sizeof(object)*20));
 		o->via.array.size = 20;
 		
 		o->via.array.ptr[0] = object(a0, z);
@@ -1623,7 +1623,7 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A
 		pk.pack(a19);
 		pk.pack(a20);
 	}
-	void msgpack_unpack(msgpack::object o)
+	void msgpack_unpack(msgpack::object const& o)
 	{
 		if(o.type != type::ARRAY) { throw type_error(); }
 		const size_t size = o.via.array.size;
@@ -1631,34 +1631,34 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A
 			msgpack::object *ptr = o.via.array.ptr;
 			switch(size) {
 			default:
-			case 21: ptr[20].convert(&a20);
-			case 20: ptr[19].convert(&a19);
-			case 19: ptr[18].convert(&a18);
-			case 18: ptr[17].convert(&a17);
-			case 17: ptr[16].convert(&a16);
-			case 16: ptr[15].convert(&a15);
-			case 15: ptr[14].convert(&a14);
-			case 14: ptr[13].convert(&a13);
-			case 13: ptr[12].convert(&a12);
-			case 12: ptr[11].convert(&a11);
-			case 11: ptr[10].convert(&a10);
-			case 10: ptr[9].convert(&a9);
-			case 9: ptr[8].convert(&a8);
-			case 8: ptr[7].convert(&a7);
-			case 7: ptr[6].convert(&a6);
-			case 6: ptr[5].convert(&a5);
-			case 5: ptr[4].convert(&a4);
-			case 4: ptr[3].convert(&a3);
-			case 3: ptr[2].convert(&a2);
-			case 2: ptr[1].convert(&a1);
-			case 1: ptr[0].convert(&a0);
+			case 21: ptr[20].convert(a20);
+			case 20: ptr[19].convert(a19);
+			case 19: ptr[18].convert(a18);
+			case 18: ptr[17].convert(a17);
+			case 17: ptr[16].convert(a16);
+			case 16: ptr[15].convert(a15);
+			case 15: ptr[14].convert(a14);
+			case 14: ptr[13].convert(a13);
+			case 13: ptr[12].convert(a12);
+			case 12: ptr[11].convert(a11);
+			case 11: ptr[10].convert(a10);
+			case 10: ptr[9].convert(a9);
+			case 9: ptr[8].convert(a8);
+			case 8: ptr[7].convert(a7);
+			case 7: ptr[6].convert(a6);
+			case 6: ptr[5].convert(a5);
+			case 5: ptr[4].convert(a4);
+			case 4: ptr[3].convert(a3);
+			case 3: ptr[2].convert(a2);
+			case 2: ptr[1].convert(a1);
+			case 1: ptr[0].convert(a0);
 			}
 		}
 	}
 	void msgpack_object(msgpack::object* o, msgpack::zone* z) const
 	{
 		o->type = type::ARRAY;
-		o->via.array.ptr = (object*)z->malloc(sizeof(object)*21);
+		o->via.array.ptr = static_cast<object*>(z->allocate_align(sizeof(object)*21));
 		o->via.array.size = 21;
 		
 		o->via.array.ptr[0] = object(a0, z);
@@ -1741,7 +1741,7 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A
 		pk.pack(a20);
 		pk.pack(a21);
 	}
-	void msgpack_unpack(msgpack::object o)
+	void msgpack_unpack(msgpack::object const& o)
 	{
 		if(o.type != type::ARRAY) { throw type_error(); }
 		const size_t size = o.via.array.size;
@@ -1749,35 +1749,35 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A
 			msgpack::object *ptr = o.via.array.ptr;
 			switch(size) {
 			default:
-			case 22: ptr[21].convert(&a21);
-			case 21: ptr[20].convert(&a20);
-			case 20: ptr[19].convert(&a19);
-			case 19: ptr[18].convert(&a18);
-			case 18: ptr[17].convert(&a17);
-			case 17: ptr[16].convert(&a16);
-			case 16: ptr[15].convert(&a15);
-			case 15: ptr[14].convert(&a14);
-			case 14: ptr[13].convert(&a13);
-			case 13: ptr[12].convert(&a12);
-			case 12: ptr[11].convert(&a11);
-			case 11: ptr[10].convert(&a10);
-			case 10: ptr[9].convert(&a9);
-			case 9: ptr[8].convert(&a8);
-			case 8: ptr[7].convert(&a7);
-			case 7: ptr[6].convert(&a6);
-			case 6: ptr[5].convert(&a5);
-			case 5: ptr[4].convert(&a4);
-			case 4: ptr[3].convert(&a3);
-			case 3: ptr[2].convert(&a2);
-			case 2: ptr[1].convert(&a1);
-			case 1: ptr[0].convert(&a0);
+			case 22: ptr[21].convert(a21);
+			case 21: ptr[20].convert(a20);
+			case 20: ptr[19].convert(a19);
+			case 19: ptr[18].convert(a18);
+			case 18: ptr[17].convert(a17);
+			case 17: ptr[16].convert(a16);
+			case 16: ptr[15].convert(a15);
+			case 15: ptr[14].convert(a14);
+			case 14: ptr[13].convert(a13);
+			case 13: ptr[12].convert(a12);
+			case 12: ptr[11].convert(a11);
+			case 11: ptr[10].convert(a10);
+			case 10: ptr[9].convert(a9);
+			case 9: ptr[8].convert(a8);
+			case 8: ptr[7].convert(a7);
+			case 7: ptr[6].convert(a6);
+			case 6: ptr[5].convert(a5);
+			case 5: ptr[4].convert(a4);
+			case 4: ptr[3].convert(a3);
+			case 3: ptr[2].convert(a2);
+			case 2: ptr[1].convert(a1);
+			case 1: ptr[0].convert(a0);
 			}
 		}
 	}
 	void msgpack_object(msgpack::object* o, msgpack::zone* z) const
 	{
 		o->type = type::ARRAY;
-		o->via.array.ptr = (object*)z->malloc(sizeof(object)*22);
+		o->via.array.ptr = static_cast<object*>(z->allocate_align(sizeof(object)*22));
 		o->via.array.size = 22;
 		
 		o->via.array.ptr[0] = object(a0, z);
@@ -1863,7 +1863,7 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A
 		pk.pack(a21);
 		pk.pack(a22);
 	}
-	void msgpack_unpack(msgpack::object o)
+	void msgpack_unpack(msgpack::object const& o)
 	{
 		if(o.type != type::ARRAY) { throw type_error(); }
 		const size_t size = o.via.array.size;
@@ -1871,36 +1871,36 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A
 			msgpack::object *ptr = o.via.array.ptr;
 			switch(size) {
 			default:
-			case 23: ptr[22].convert(&a22);
-			case 22: ptr[21].convert(&a21);
-			case 21: ptr[20].convert(&a20);
-			case 20: ptr[19].convert(&a19);
-			case 19: ptr[18].convert(&a18);
-			case 18: ptr[17].convert(&a17);
-			case 17: ptr[16].convert(&a16);
-			case 16: ptr[15].convert(&a15);
-			case 15: ptr[14].convert(&a14);
-			case 14: ptr[13].convert(&a13);
-			case 13: ptr[12].convert(&a12);
-			case 12: ptr[11].convert(&a11);
-			case 11: ptr[10].convert(&a10);
-			case 10: ptr[9].convert(&a9);
-			case 9: ptr[8].convert(&a8);
-			case 8: ptr[7].convert(&a7);
-			case 7: ptr[6].convert(&a6);
-			case 6: ptr[5].convert(&a5);
-			case 5: ptr[4].convert(&a4);
-			case 4: ptr[3].convert(&a3);
-			case 3: ptr[2].convert(&a2);
-			case 2: ptr[1].convert(&a1);
-			case 1: ptr[0].convert(&a0);
+			case 23: ptr[22].convert(a22);
+			case 22: ptr[21].convert(a21);
+			case 21: ptr[20].convert(a20);
+			case 20: ptr[19].convert(a19);
+			case 19: ptr[18].convert(a18);
+			case 18: ptr[17].convert(a17);
+			case 17: ptr[16].convert(a16);
+			case 16: ptr[15].convert(a15);
+			case 15: ptr[14].convert(a14);
+			case 14: ptr[13].convert(a13);
+			case 13: ptr[12].convert(a12);
+			case 12: ptr[11].convert(a11);
+			case 11: ptr[10].convert(a10);
+			case 10: ptr[9].convert(a9);
+			case 9: ptr[8].convert(a8);
+			case 8: ptr[7].convert(a7);
+			case 7: ptr[6].convert(a6);
+			case 6: ptr[5].convert(a5);
+			case 5: ptr[4].convert(a4);
+			case 4: ptr[3].convert(a3);
+			case 3: ptr[2].convert(a2);
+			case 2: ptr[1].convert(a1);
+			case 1: ptr[0].convert(a0);
 			}
 		}
 	}
 	void msgpack_object(msgpack::object* o, msgpack::zone* z) const
 	{
 		o->type = type::ARRAY;
-		o->via.array.ptr = (object*)z->malloc(sizeof(object)*23);
+		o->via.array.ptr = static_cast<object*>(z->allocate_align(sizeof(object)*23));
 		o->via.array.size = 23;
 		
 		o->via.array.ptr[0] = object(a0, z);
@@ -1989,7 +1989,7 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A
 		pk.pack(a22);
 		pk.pack(a23);
 	}
-	void msgpack_unpack(msgpack::object o)
+	void msgpack_unpack(msgpack::object const& o)
 	{
 		if(o.type != type::ARRAY) { throw type_error(); }
 		const size_t size = o.via.array.size;
@@ -1997,37 +1997,37 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A
 			msgpack::object *ptr = o.via.array.ptr;
 			switch(size) {
 			default:
-			case 24: ptr[23].convert(&a23);
-			case 23: ptr[22].convert(&a22);
-			case 22: ptr[21].convert(&a21);
-			case 21: ptr[20].convert(&a20);
-			case 20: ptr[19].convert(&a19);
-			case 19: ptr[18].convert(&a18);
-			case 18: ptr[17].convert(&a17);
-			case 17: ptr[16].convert(&a16);
-			case 16: ptr[15].convert(&a15);
-			case 15: ptr[14].convert(&a14);
-			case 14: ptr[13].convert(&a13);
-			case 13: ptr[12].convert(&a12);
-			case 12: ptr[11].convert(&a11);
-			case 11: ptr[10].convert(&a10);
-			case 10: ptr[9].convert(&a9);
-			case 9: ptr[8].convert(&a8);
-			case 8: ptr[7].convert(&a7);
-			case 7: ptr[6].convert(&a6);
-			case 6: ptr[5].convert(&a5);
-			case 5: ptr[4].convert(&a4);
-			case 4: ptr[3].convert(&a3);
-			case 3: ptr[2].convert(&a2);
-			case 2: ptr[1].convert(&a1);
-			case 1: ptr[0].convert(&a0);
+			case 24: ptr[23].convert(a23);
+			case 23: ptr[22].convert(a22);
+			case 22: ptr[21].convert(a21);
+			case 21: ptr[20].convert(a20);
+			case 20: ptr[19].convert(a19);
+			case 19: ptr[18].convert(a18);
+			case 18: ptr[17].convert(a17);
+			case 17: ptr[16].convert(a16);
+			case 16: ptr[15].convert(a15);
+			case 15: ptr[14].convert(a14);
+			case 14: ptr[13].convert(a13);
+			case 13: ptr[12].convert(a12);
+			case 12: ptr[11].convert(a11);
+			case 11: ptr[10].convert(a10);
+			case 10: ptr[9].convert(a9);
+			case 9: ptr[8].convert(a8);
+			case 8: ptr[7].convert(a7);
+			case 7: ptr[6].convert(a6);
+			case 6: ptr[5].convert(a5);
+			case 5: ptr[4].convert(a4);
+			case 4: ptr[3].convert(a3);
+			case 3: ptr[2].convert(a2);
+			case 2: ptr[1].convert(a1);
+			case 1: ptr[0].convert(a0);
 			}
 		}
 	}
 	void msgpack_object(msgpack::object* o, msgpack::zone* z) const
 	{
 		o->type = type::ARRAY;
-		o->via.array.ptr = (object*)z->malloc(sizeof(object)*24);
+		o->via.array.ptr = static_cast<object*>(z->allocate_align(sizeof(object)*24));
 		o->via.array.size = 24;
 		
 		o->via.array.ptr[0] = object(a0, z);
@@ -2119,7 +2119,7 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A
 		pk.pack(a23);
 		pk.pack(a24);
 	}
-	void msgpack_unpack(msgpack::object o)
+	void msgpack_unpack(msgpack::object const& o)
 	{
 		if(o.type != type::ARRAY) { throw type_error(); }
 		const size_t size = o.via.array.size;
@@ -2127,38 +2127,38 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A
 			msgpack::object *ptr = o.via.array.ptr;
 			switch(size) {
 			default:
-			case 25: ptr[24].convert(&a24);
-			case 24: ptr[23].convert(&a23);
-			case 23: ptr[22].convert(&a22);
-			case 22: ptr[21].convert(&a21);
-			case 21: ptr[20].convert(&a20);
-			case 20: ptr[19].convert(&a19);
-			case 19: ptr[18].convert(&a18);
-			case 18: ptr[17].convert(&a17);
-			case 17: ptr[16].convert(&a16);
-			case 16: ptr[15].convert(&a15);
-			case 15: ptr[14].convert(&a14);
-			case 14: ptr[13].convert(&a13);
-			case 13: ptr[12].convert(&a12);
-			case 12: ptr[11].convert(&a11);
-			case 11: ptr[10].convert(&a10);
-			case 10: ptr[9].convert(&a9);
-			case 9: ptr[8].convert(&a8);
-			case 8: ptr[7].convert(&a7);
-			case 7: ptr[6].convert(&a6);
-			case 6: ptr[5].convert(&a5);
-			case 5: ptr[4].convert(&a4);
-			case 4: ptr[3].convert(&a3);
-			case 3: ptr[2].convert(&a2);
-			case 2: ptr[1].convert(&a1);
-			case 1: ptr[0].convert(&a0);
+			case 25: ptr[24].convert(a24);
+			case 24: ptr[23].convert(a23);
+			case 23: ptr[22].convert(a22);
+			case 22: ptr[21].convert(a21);
+			case 21: ptr[20].convert(a20);
+			case 20: ptr[19].convert(a19);
+			case 19: ptr[18].convert(a18);
+			case 18: ptr[17].convert(a17);
+			case 17: ptr[16].convert(a16);
+			case 16: ptr[15].convert(a15);
+			case 15: ptr[14].convert(a14);
+			case 14: ptr[13].convert(a13);
+			case 13: ptr[12].convert(a12);
+			case 12: ptr[11].convert(a11);
+			case 11: ptr[10].convert(a10);
+			case 10: ptr[9].convert(a9);
+			case 9: ptr[8].convert(a8);
+			case 8: ptr[7].convert(a7);
+			case 7: ptr[6].convert(a6);
+			case 6: ptr[5].convert(a5);
+			case 5: ptr[4].convert(a4);
+			case 4: ptr[3].convert(a3);
+			case 3: ptr[2].convert(a2);
+			case 2: ptr[1].convert(a1);
+			case 1: ptr[0].convert(a0);
 			}
 		}
 	}
 	void msgpack_object(msgpack::object* o, msgpack::zone* z) const
 	{
 		o->type = type::ARRAY;
-		o->via.array.ptr = (object*)z->malloc(sizeof(object)*25);
+		o->via.array.ptr = static_cast<object*>(z->allocate_align(sizeof(object)*25));
 		o->via.array.size = 25;
 		
 		o->via.array.ptr[0] = object(a0, z);
@@ -2253,7 +2253,7 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A
 		pk.pack(a24);
 		pk.pack(a25);
 	}
-	void msgpack_unpack(msgpack::object o)
+	void msgpack_unpack(msgpack::object const& o)
 	{
 		if(o.type != type::ARRAY) { throw type_error(); }
 		const size_t size = o.via.array.size;
@@ -2261,39 +2261,39 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A
 			msgpack::object *ptr = o.via.array.ptr;
 			switch(size) {
 			default:
-			case 26: ptr[25].convert(&a25);
-			case 25: ptr[24].convert(&a24);
-			case 24: ptr[23].convert(&a23);
-			case 23: ptr[22].convert(&a22);
-			case 22: ptr[21].convert(&a21);
-			case 21: ptr[20].convert(&a20);
-			case 20: ptr[19].convert(&a19);
-			case 19: ptr[18].convert(&a18);
-			case 18: ptr[17].convert(&a17);
-			case 17: ptr[16].convert(&a16);
-			case 16: ptr[15].convert(&a15);
-			case 15: ptr[14].convert(&a14);
-			case 14: ptr[13].convert(&a13);
-			case 13: ptr[12].convert(&a12);
-			case 12: ptr[11].convert(&a11);
-			case 11: ptr[10].convert(&a10);
-			case 10: ptr[9].convert(&a9);
-			case 9: ptr[8].convert(&a8);
-			case 8: ptr[7].convert(&a7);
-			case 7: ptr[6].convert(&a6);
-			case 6: ptr[5].convert(&a5);
-			case 5: ptr[4].convert(&a4);
-			case 4: ptr[3].convert(&a3);
-			case 3: ptr[2].convert(&a2);
-			case 2: ptr[1].convert(&a1);
-			case 1: ptr[0].convert(&a0);
+			case 26: ptr[25].convert(a25);
+			case 25: ptr[24].convert(a24);
+			case 24: ptr[23].convert(a23);
+			case 23: ptr[22].convert(a22);
+			case 22: ptr[21].convert(a21);
+			case 21: ptr[20].convert(a20);
+			case 20: ptr[19].convert(a19);
+			case 19: ptr[18].convert(a18);
+			case 18: ptr[17].convert(a17);
+			case 17: ptr[16].convert(a16);
+			case 16: ptr[15].convert(a15);
+			case 15: ptr[14].convert(a14);
+			case 14: ptr[13].convert(a13);
+			case 13: ptr[12].convert(a12);
+			case 12: ptr[11].convert(a11);
+			case 11: ptr[10].convert(a10);
+			case 10: ptr[9].convert(a9);
+			case 9: ptr[8].convert(a8);
+			case 8: ptr[7].convert(a7);
+			case 7: ptr[6].convert(a6);
+			case 6: ptr[5].convert(a5);
+			case 5: ptr[4].convert(a4);
+			case 4: ptr[3].convert(a3);
+			case 3: ptr[2].convert(a2);
+			case 2: ptr[1].convert(a1);
+			case 1: ptr[0].convert(a0);
 			}
 		}
 	}
 	void msgpack_object(msgpack::object* o, msgpack::zone* z) const
 	{
 		o->type = type::ARRAY;
-		o->via.array.ptr = (object*)z->malloc(sizeof(object)*26);
+		o->via.array.ptr = static_cast<object*>(z->allocate_align(sizeof(object)*26));
 		o->via.array.size = 26;
 		
 		o->via.array.ptr[0] = object(a0, z);
@@ -2391,7 +2391,7 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A
 		pk.pack(a25);
 		pk.pack(a26);
 	}
-	void msgpack_unpack(msgpack::object o)
+	void msgpack_unpack(msgpack::object const& o)
 	{
 		if(o.type != type::ARRAY) { throw type_error(); }
 		const size_t size = o.via.array.size;
@@ -2399,40 +2399,40 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A
 			msgpack::object *ptr = o.via.array.ptr;
 			switch(size) {
 			default:
-			case 27: ptr[26].convert(&a26);
-			case 26: ptr[25].convert(&a25);
-			case 25: ptr[24].convert(&a24);
-			case 24: ptr[23].convert(&a23);
-			case 23: ptr[22].convert(&a22);
-			case 22: ptr[21].convert(&a21);
-			case 21: ptr[20].convert(&a20);
-			case 20: ptr[19].convert(&a19);
-			case 19: ptr[18].convert(&a18);
-			case 18: ptr[17].convert(&a17);
-			case 17: ptr[16].convert(&a16);
-			case 16: ptr[15].convert(&a15);
-			case 15: ptr[14].convert(&a14);
-			case 14: ptr[13].convert(&a13);
-			case 13: ptr[12].convert(&a12);
-			case 12: ptr[11].convert(&a11);
-			case 11: ptr[10].convert(&a10);
-			case 10: ptr[9].convert(&a9);
-			case 9: ptr[8].convert(&a8);
-			case 8: ptr[7].convert(&a7);
-			case 7: ptr[6].convert(&a6);
-			case 6: ptr[5].convert(&a5);
-			case 5: ptr[4].convert(&a4);
-			case 4: ptr[3].convert(&a3);
-			case 3: ptr[2].convert(&a2);
-			case 2: ptr[1].convert(&a1);
-			case 1: ptr[0].convert(&a0);
+			case 27: ptr[26].convert(a26);
+			case 26: ptr[25].convert(a25);
+			case 25: ptr[24].convert(a24);
+			case 24: ptr[23].convert(a23);
+			case 23: ptr[22].convert(a22);
+			case 22: ptr[21].convert(a21);
+			case 21: ptr[20].convert(a20);
+			case 20: ptr[19].convert(a19);
+			case 19: ptr[18].convert(a18);
+			case 18: ptr[17].convert(a17);
+			case 17: ptr[16].convert(a16);
+			case 16: ptr[15].convert(a15);
+			case 15: ptr[14].convert(a14);
+			case 14: ptr[13].convert(a13);
+			case 13: ptr[12].convert(a12);
+			case 12: ptr[11].convert(a11);
+			case 11: ptr[10].convert(a10);
+			case 10: ptr[9].convert(a9);
+			case 9: ptr[8].convert(a8);
+			case 8: ptr[7].convert(a7);
+			case 7: ptr[6].convert(a6);
+			case 6: ptr[5].convert(a5);
+			case 5: ptr[4].convert(a4);
+			case 4: ptr[3].convert(a3);
+			case 3: ptr[2].convert(a2);
+			case 2: ptr[1].convert(a1);
+			case 1: ptr[0].convert(a0);
 			}
 		}
 	}
 	void msgpack_object(msgpack::object* o, msgpack::zone* z) const
 	{
 		o->type = type::ARRAY;
-		o->via.array.ptr = (object*)z->malloc(sizeof(object)*27);
+		o->via.array.ptr = static_cast<object*>(z->allocate_align(sizeof(object)*27));
 		o->via.array.size = 27;
 		
 		o->via.array.ptr[0] = object(a0, z);
@@ -2533,7 +2533,7 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A
 		pk.pack(a26);
 		pk.pack(a27);
 	}
-	void msgpack_unpack(msgpack::object o)
+	void msgpack_unpack(msgpack::object const& o)
 	{
 		if(o.type != type::ARRAY) { throw type_error(); }
 		const size_t size = o.via.array.size;
@@ -2541,41 +2541,41 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A
 			msgpack::object *ptr = o.via.array.ptr;
 			switch(size) {
 			default:
-			case 28: ptr[27].convert(&a27);
-			case 27: ptr[26].convert(&a26);
-			case 26: ptr[25].convert(&a25);
-			case 25: ptr[24].convert(&a24);
-			case 24: ptr[23].convert(&a23);
-			case 23: ptr[22].convert(&a22);
-			case 22: ptr[21].convert(&a21);
-			case 21: ptr[20].convert(&a20);
-			case 20: ptr[19].convert(&a19);
-			case 19: ptr[18].convert(&a18);
-			case 18: ptr[17].convert(&a17);
-			case 17: ptr[16].convert(&a16);
-			case 16: ptr[15].convert(&a15);
-			case 15: ptr[14].convert(&a14);
-			case 14: ptr[13].convert(&a13);
-			case 13: ptr[12].convert(&a12);
-			case 12: ptr[11].convert(&a11);
-			case 11: ptr[10].convert(&a10);
-			case 10: ptr[9].convert(&a9);
-			case 9: ptr[8].convert(&a8);
-			case 8: ptr[7].convert(&a7);
-			case 7: ptr[6].convert(&a6);
-			case 6: ptr[5].convert(&a5);
-			case 5: ptr[4].convert(&a4);
-			case 4: ptr[3].convert(&a3);
-			case 3: ptr[2].convert(&a2);
-			case 2: ptr[1].convert(&a1);
-			case 1: ptr[0].convert(&a0);
+			case 28: ptr[27].convert(a27);
+			case 27: ptr[26].convert(a26);
+			case 26: ptr[25].convert(a25);
+			case 25: ptr[24].convert(a24);
+			case 24: ptr[23].convert(a23);
+			case 23: ptr[22].convert(a22);
+			case 22: ptr[21].convert(a21);
+			case 21: ptr[20].convert(a20);
+			case 20: ptr[19].convert(a19);
+			case 19: ptr[18].convert(a18);
+			case 18: ptr[17].convert(a17);
+			case 17: ptr[16].convert(a16);
+			case 16: ptr[15].convert(a15);
+			case 15: ptr[14].convert(a14);
+			case 14: ptr[13].convert(a13);
+			case 13: ptr[12].convert(a12);
+			case 12: ptr[11].convert(a11);
+			case 11: ptr[10].convert(a10);
+			case 10: ptr[9].convert(a9);
+			case 9: ptr[8].convert(a8);
+			case 8: ptr[7].convert(a7);
+			case 7: ptr[6].convert(a6);
+			case 6: ptr[5].convert(a5);
+			case 5: ptr[4].convert(a4);
+			case 4: ptr[3].convert(a3);
+			case 3: ptr[2].convert(a2);
+			case 2: ptr[1].convert(a1);
+			case 1: ptr[0].convert(a0);
 			}
 		}
 	}
 	void msgpack_object(msgpack::object* o, msgpack::zone* z) const
 	{
 		o->type = type::ARRAY;
-		o->via.array.ptr = (object*)z->malloc(sizeof(object)*28);
+		o->via.array.ptr = static_cast<object*>(z->allocate_align(sizeof(object)*28));
 		o->via.array.size = 28;
 		
 		o->via.array.ptr[0] = object(a0, z);
@@ -2679,7 +2679,7 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A
 		pk.pack(a27);
 		pk.pack(a28);
 	}
-	void msgpack_unpack(msgpack::object o)
+	void msgpack_unpack(msgpack::object const& o)
 	{
 		if(o.type != type::ARRAY) { throw type_error(); }
 		const size_t size = o.via.array.size;
@@ -2687,42 +2687,42 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A
 			msgpack::object *ptr = o.via.array.ptr;
 			switch(size) {
 			default:
-			case 29: ptr[28].convert(&a28);
-			case 28: ptr[27].convert(&a27);
-			case 27: ptr[26].convert(&a26);
-			case 26: ptr[25].convert(&a25);
-			case 25: ptr[24].convert(&a24);
-			case 24: ptr[23].convert(&a23);
-			case 23: ptr[22].convert(&a22);
-			case 22: ptr[21].convert(&a21);
-			case 21: ptr[20].convert(&a20);
-			case 20: ptr[19].convert(&a19);
-			case 19: ptr[18].convert(&a18);
-			case 18: ptr[17].convert(&a17);
-			case 17: ptr[16].convert(&a16);
-			case 16: ptr[15].convert(&a15);
-			case 15: ptr[14].convert(&a14);
-			case 14: ptr[13].convert(&a13);
-			case 13: ptr[12].convert(&a12);
-			case 12: ptr[11].convert(&a11);
-			case 11: ptr[10].convert(&a10);
-			case 10: ptr[9].convert(&a9);
-			case 9: ptr[8].convert(&a8);
-			case 8: ptr[7].convert(&a7);
-			case 7: ptr[6].convert(&a6);
-			case 6: ptr[5].convert(&a5);
-			case 5: ptr[4].convert(&a4);
-			case 4: ptr[3].convert(&a3);
-			case 3: ptr[2].convert(&a2);
-			case 2: ptr[1].convert(&a1);
-			case 1: ptr[0].convert(&a0);
+			case 29: ptr[28].convert(a28);
+			case 28: ptr[27].convert(a27);
+			case 27: ptr[26].convert(a26);
+			case 26: ptr[25].convert(a25);
+			case 25: ptr[24].convert(a24);
+			case 24: ptr[23].convert(a23);
+			case 23: ptr[22].convert(a22);
+			case 22: ptr[21].convert(a21);
+			case 21: ptr[20].convert(a20);
+			case 20: ptr[19].convert(a19);
+			case 19: ptr[18].convert(a18);
+			case 18: ptr[17].convert(a17);
+			case 17: ptr[16].convert(a16);
+			case 16: ptr[15].convert(a15);
+			case 15: ptr[14].convert(a14);
+			case 14: ptr[13].convert(a13);
+			case 13: ptr[12].convert(a12);
+			case 12: ptr[11].convert(a11);
+			case 11: ptr[10].convert(a10);
+			case 10: ptr[9].convert(a9);
+			case 9: ptr[8].convert(a8);
+			case 8: ptr[7].convert(a7);
+			case 7: ptr[6].convert(a6);
+			case 6: ptr[5].convert(a5);
+			case 5: ptr[4].convert(a4);
+			case 4: ptr[3].convert(a3);
+			case 3: ptr[2].convert(a2);
+			case 2: ptr[1].convert(a1);
+			case 1: ptr[0].convert(a0);
 			}
 		}
 	}
 	void msgpack_object(msgpack::object* o, msgpack::zone* z) const
 	{
 		o->type = type::ARRAY;
-		o->via.array.ptr = (object*)z->malloc(sizeof(object)*29);
+		o->via.array.ptr = static_cast<object*>(z->allocate_align(sizeof(object)*29));
 		o->via.array.size = 29;
 		
 		o->via.array.ptr[0] = object(a0, z);
@@ -2829,7 +2829,7 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A
 		pk.pack(a28);
 		pk.pack(a29);
 	}
-	void msgpack_unpack(msgpack::object o)
+	void msgpack_unpack(msgpack::object const& o)
 	{
 		if(o.type != type::ARRAY) { throw type_error(); }
 		const size_t size = o.via.array.size;
@@ -2837,43 +2837,43 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A
 			msgpack::object *ptr = o.via.array.ptr;
 			switch(size) {
 			default:
-			case 30: ptr[29].convert(&a29);
-			case 29: ptr[28].convert(&a28);
-			case 28: ptr[27].convert(&a27);
-			case 27: ptr[26].convert(&a26);
-			case 26: ptr[25].convert(&a25);
-			case 25: ptr[24].convert(&a24);
-			case 24: ptr[23].convert(&a23);
-			case 23: ptr[22].convert(&a22);
-			case 22: ptr[21].convert(&a21);
-			case 21: ptr[20].convert(&a20);
-			case 20: ptr[19].convert(&a19);
-			case 19: ptr[18].convert(&a18);
-			case 18: ptr[17].convert(&a17);
-			case 17: ptr[16].convert(&a16);
-			case 16: ptr[15].convert(&a15);
-			case 15: ptr[14].convert(&a14);
-			case 14: ptr[13].convert(&a13);
-			case 13: ptr[12].convert(&a12);
-			case 12: ptr[11].convert(&a11);
-			case 11: ptr[10].convert(&a10);
-			case 10: ptr[9].convert(&a9);
-			case 9: ptr[8].convert(&a8);
-			case 8: ptr[7].convert(&a7);
-			case 7: ptr[6].convert(&a6);
-			case 6: ptr[5].convert(&a5);
-			case 5: ptr[4].convert(&a4);
-			case 4: ptr[3].convert(&a3);
-			case 3: ptr[2].convert(&a2);
-			case 2: ptr[1].convert(&a1);
-			case 1: ptr[0].convert(&a0);
+			case 30: ptr[29].convert(a29);
+			case 29: ptr[28].convert(a28);
+			case 28: ptr[27].convert(a27);
+			case 27: ptr[26].convert(a26);
+			case 26: ptr[25].convert(a25);
+			case 25: ptr[24].convert(a24);
+			case 24: ptr[23].convert(a23);
+			case 23: ptr[22].convert(a22);
+			case 22: ptr[21].convert(a21);
+			case 21: ptr[20].convert(a20);
+			case 20: ptr[19].convert(a19);
+			case 19: ptr[18].convert(a18);
+			case 18: ptr[17].convert(a17);
+			case 17: ptr[16].convert(a16);
+			case 16: ptr[15].convert(a15);
+			case 15: ptr[14].convert(a14);
+			case 14: ptr[13].convert(a13);
+			case 13: ptr[12].convert(a12);
+			case 12: ptr[11].convert(a11);
+			case 11: ptr[10].convert(a10);
+			case 10: ptr[9].convert(a9);
+			case 9: ptr[8].convert(a8);
+			case 8: ptr[7].convert(a7);
+			case 7: ptr[6].convert(a6);
+			case 6: ptr[5].convert(a5);
+			case 5: ptr[4].convert(a4);
+			case 4: ptr[3].convert(a3);
+			case 3: ptr[2].convert(a2);
+			case 2: ptr[1].convert(a1);
+			case 1: ptr[0].convert(a0);
 			}
 		}
 	}
 	void msgpack_object(msgpack::object* o, msgpack::zone* z) const
 	{
 		o->type = type::ARRAY;
-		o->via.array.ptr = (object*)z->malloc(sizeof(object)*30);
+		o->via.array.ptr = static_cast<object*>(z->allocate_align(sizeof(object)*30));
 		o->via.array.size = 30;
 		
 		o->via.array.ptr[0] = object(a0, z);
@@ -2983,7 +2983,7 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A
 		pk.pack(a29);
 		pk.pack(a30);
 	}
-	void msgpack_unpack(msgpack::object o)
+	void msgpack_unpack(msgpack::object const& o)
 	{
 		if(o.type != type::ARRAY) { throw type_error(); }
 		const size_t size = o.via.array.size;
@@ -2991,44 +2991,44 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A
 			msgpack::object *ptr = o.via.array.ptr;
 			switch(size) {
 			default:
-			case 31: ptr[30].convert(&a30);
-			case 30: ptr[29].convert(&a29);
-			case 29: ptr[28].convert(&a28);
-			case 28: ptr[27].convert(&a27);
-			case 27: ptr[26].convert(&a26);
-			case 26: ptr[25].convert(&a25);
-			case 25: ptr[24].convert(&a24);
-			case 24: ptr[23].convert(&a23);
-			case 23: ptr[22].convert(&a22);
-			case 22: ptr[21].convert(&a21);
-			case 21: ptr[20].convert(&a20);
-			case 20: ptr[19].convert(&a19);
-			case 19: ptr[18].convert(&a18);
-			case 18: ptr[17].convert(&a17);
-			case 17: ptr[16].convert(&a16);
-			case 16: ptr[15].convert(&a15);
-			case 15: ptr[14].convert(&a14);
-			case 14: ptr[13].convert(&a13);
-			case 13: ptr[12].convert(&a12);
-			case 12: ptr[11].convert(&a11);
-			case 11: ptr[10].convert(&a10);
-			case 10: ptr[9].convert(&a9);
-			case 9: ptr[8].convert(&a8);
-			case 8: ptr[7].convert(&a7);
-			case 7: ptr[6].convert(&a6);
-			case 6: ptr[5].convert(&a5);
-			case 5: ptr[4].convert(&a4);
-			case 4: ptr[3].convert(&a3);
-			case 3: ptr[2].convert(&a2);
-			case 2: ptr[1].convert(&a1);
-			case 1: ptr[0].convert(&a0);
+			case 31: ptr[30].convert(a30);
+			case 30: ptr[29].convert(a29);
+			case 29: ptr[28].convert(a28);
+			case 28: ptr[27].convert(a27);
+			case 27: ptr[26].convert(a26);
+			case 26: ptr[25].convert(a25);
+			case 25: ptr[24].convert(a24);
+			case 24: ptr[23].convert(a23);
+			case 23: ptr[22].convert(a22);
+			case 22: ptr[21].convert(a21);
+			case 21: ptr[20].convert(a20);
+			case 20: ptr[19].convert(a19);
+			case 19: ptr[18].convert(a18);
+			case 18: ptr[17].convert(a17);
+			case 17: ptr[16].convert(a16);
+			case 16: ptr[15].convert(a15);
+			case 15: ptr[14].convert(a14);
+			case 14: ptr[13].convert(a13);
+			case 13: ptr[12].convert(a12);
+			case 12: ptr[11].convert(a11);
+			case 11: ptr[10].convert(a10);
+			case 10: ptr[9].convert(a9);
+			case 9: ptr[8].convert(a8);
+			case 8: ptr[7].convert(a7);
+			case 7: ptr[6].convert(a6);
+			case 6: ptr[5].convert(a5);
+			case 5: ptr[4].convert(a4);
+			case 4: ptr[3].convert(a3);
+			case 3: ptr[2].convert(a2);
+			case 2: ptr[1].convert(a1);
+			case 1: ptr[0].convert(a0);
 			}
 		}
 	}
 	void msgpack_object(msgpack::object* o, msgpack::zone* z) const
 	{
 		o->type = type::ARRAY;
-		o->via.array.ptr = (object*)z->malloc(sizeof(object)*31);
+		o->via.array.ptr = static_cast<object*>(z->allocate_align(sizeof(object)*31));
 		o->via.array.size = 31;
 		
 		o->via.array.ptr[0] = object(a0, z);
@@ -3141,7 +3141,7 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A
 		pk.pack(a30);
 		pk.pack(a31);
 	}
-	void msgpack_unpack(msgpack::object o)
+	void msgpack_unpack(msgpack::object const& o)
 	{
 		if(o.type != type::ARRAY) { throw type_error(); }
 		const size_t size = o.via.array.size;
@@ -3149,45 +3149,45 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A
 			msgpack::object *ptr = o.via.array.ptr;
 			switch(size) {
 			default:
-			case 32: ptr[31].convert(&a31);
-			case 31: ptr[30].convert(&a30);
-			case 30: ptr[29].convert(&a29);
-			case 29: ptr[28].convert(&a28);
-			case 28: ptr[27].convert(&a27);
-			case 27: ptr[26].convert(&a26);
-			case 26: ptr[25].convert(&a25);
-			case 25: ptr[24].convert(&a24);
-			case 24: ptr[23].convert(&a23);
-			case 23: ptr[22].convert(&a22);
-			case 22: ptr[21].convert(&a21);
-			case 21: ptr[20].convert(&a20);
-			case 20: ptr[19].convert(&a19);
-			case 19: ptr[18].convert(&a18);
-			case 18: ptr[17].convert(&a17);
-			case 17: ptr[16].convert(&a16);
-			case 16: ptr[15].convert(&a15);
-			case 15: ptr[14].convert(&a14);
-			case 14: ptr[13].convert(&a13);
-			case 13: ptr[12].convert(&a12);
-			case 12: ptr[11].convert(&a11);
-			case 11: ptr[10].convert(&a10);
-			case 10: ptr[9].convert(&a9);
-			case 9: ptr[8].convert(&a8);
-			case 8: ptr[7].convert(&a7);
-			case 7: ptr[6].convert(&a6);
-			case 6: ptr[5].convert(&a5);
-			case 5: ptr[4].convert(&a4);
-			case 4: ptr[3].convert(&a3);
-			case 3: ptr[2].convert(&a2);
-			case 2: ptr[1].convert(&a1);
-			case 1: ptr[0].convert(&a0);
+			case 32: ptr[31].convert(a31);
+			case 31: ptr[30].convert(a30);
+			case 30: ptr[29].convert(a29);
+			case 29: ptr[28].convert(a28);
+			case 28: ptr[27].convert(a27);
+			case 27: ptr[26].convert(a26);
+			case 26: ptr[25].convert(a25);
+			case 25: ptr[24].convert(a24);
+			case 24: ptr[23].convert(a23);
+			case 23: ptr[22].convert(a22);
+			case 22: ptr[21].convert(a21);
+			case 21: ptr[20].convert(a20);
+			case 20: ptr[19].convert(a19);
+			case 19: ptr[18].convert(a18);
+			case 18: ptr[17].convert(a17);
+			case 17: ptr[16].convert(a16);
+			case 16: ptr[15].convert(a15);
+			case 15: ptr[14].convert(a14);
+			case 14: ptr[13].convert(a13);
+			case 13: ptr[12].convert(a12);
+			case 12: ptr[11].convert(a11);
+			case 11: ptr[10].convert(a10);
+			case 10: ptr[9].convert(a9);
+			case 9: ptr[8].convert(a8);
+			case 8: ptr[7].convert(a7);
+			case 7: ptr[6].convert(a6);
+			case 6: ptr[5].convert(a5);
+			case 5: ptr[4].convert(a4);
+			case 4: ptr[3].convert(a3);
+			case 3: ptr[2].convert(a2);
+			case 2: ptr[1].convert(a1);
+			case 1: ptr[0].convert(a0);
 			}
 		}
 	}
 	void msgpack_object(msgpack::object* o, msgpack::zone* z) const
 	{
 		o->type = type::ARRAY;
-		o->via.array.ptr = (object*)z->malloc(sizeof(object)*32);
+		o->via.array.ptr = static_cast<object*>(z->allocate_align(sizeof(object)*32));
 		o->via.array.size = 32;
 		
 		o->via.array.ptr[0] = object(a0, z);
@@ -3461,5 +3461,5 @@ define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16
 }  // namespace msgpack
 
 
-#endif /* msgpack/type/define.hpp */
+#endif // MSGPACK_CPP03_DEFINE_HPP
 

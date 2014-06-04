@@ -27,10 +27,12 @@ const char* msgpack_version(void);
 int msgpack_version_major(void);
 int msgpack_version_minor(void);
 
-#define MSGPACK_VERSION "@VERSION@"
-#define MSGPACK_VERSION_MAJOR @VERSION_MAJOR@
-#define MSGPACK_VERSION_MINOR @VERSION_MINOR@
+#include "version_master.h"
 
+#define MSGPACK_STR(v) #v
+#define MSGPACK_VERSION_I(maj, min, rel) MSGPACK_STR(maj) "." MSGPACK_STR(min) "." MSGPACK_STR(rel)
+
+#define MSGPACK_VERSION MSGPACK_VERSION_I(MSGPACK_VERSION_MAJOR, MSGPACK_VERSION_MINOR, MSGPACK_VERSION_RELEASE)
 
 #ifdef __cplusplus
 }

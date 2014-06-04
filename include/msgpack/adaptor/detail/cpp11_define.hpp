@@ -15,8 +15,8 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 //
-#ifndef MSGPACK_TYPE_DEFINE_HPP
-#define MSGPACK_TYPE_DEFINE_HPP
+#ifndef MSGPACK_CPP11_DEFINE_HPP
+#define MSGPACK_CPP11_DEFINE_HPP
 
 #define MSGPACK_DEFINE(...) \
 	template <typename Packer> \
@@ -46,7 +46,7 @@
 	  return v; \
 	} \
 	template <> \
-	void operator<< (object::with_zone& o, const enum& v) \
+	inline void operator<< (object::with_zone& o, const enum& v) \
 	{ \
 	  int tmp = static_cast<enum>(v); \
 	  o << tmp; \
@@ -165,6 +165,4 @@ define<Args...> make_define(Args&... args)
 }  // namespace type
 }  // namespace msgpack
 
-
-#endif /* msgpack/type/define.hpp */
-
+#endif // MSGPACK_CPP11_DEFINE_HPP
