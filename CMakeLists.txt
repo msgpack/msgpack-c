@@ -117,10 +117,18 @@ INCLUDE_DIRECTORIES (
 	${CMAKE_CURRENT_BINARY_DIR}/src/msgpack/
 )
 
-ADD_LIBRARY (msgpack
+ADD_LIBRARY (msgpack SHARED
 	${msgpack_SOURCES}
 	${msgpack_HEADERS}
 )
+
+ADD_LIBRARY (msgpack-static STATIC
+	${msgpack_SOURCES}
+	${msgpack_HEADERS}
+)
+
+SET_TARGET_PROPERTIES (msgpack-static PROPERTIES OUTPUT_NAME "msgpack")
+SET_TARGET_PROPERTIES (msgpack PROPERTIES IMPORT_SUFFIX "_import.lib")
 
 IF (MSGPACK_BUILD_TESTS)
 	ENABLE_TESTING ()
