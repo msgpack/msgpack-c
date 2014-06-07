@@ -48,13 +48,18 @@ LIST (APPEND msgpack_SOURCES
 	src/zone.c
 )
 
-LIST (APPEND msgpack_HEADERS
+LIST (APPEND msgpack_root_HEADERS
+	src/msgpack.h
+)
+
+LIST (APPEND msgpack_HEADERS ${msgpack_root_HEADERS})
+
+LIST (APPEND msgpack_msgpack_HEADERS
 	src/msgpack/pack_define.h
 	src/msgpack/pack_template.h
 	src/msgpack/unpack_define.h
 	src/msgpack/unpack_template.h
 	src/msgpack/sysdep.h
-	src/msgpack.h
 	src/msgpack/sbuffer.h
 	src/msgpack/version.h
 	src/msgpack/vrefbuffer.h
@@ -65,9 +70,15 @@ LIST (APPEND msgpack_HEADERS
 	src/msgpack/zone.h
 )
 
+LIST (APPEND msgpack_HEADERS ${msgpack_msgpack_HEADERS})
+
 IF (MSGPACK_ENABLE_CXX)
-	LIST (APPEND msgpack_HEADERS
+	LIST (APPEND msgpack_root_HEADERS
 		src/msgpack.hpp
+	)
+	LIST (APPEND msgpack_HEADERS ${msgpack_root_HEADERS})
+
+	LIST (APPEND msgpack_msgpack_HEADERS
 		src/msgpack/sbuffer.hpp
 		src/msgpack/vrefbuffer.hpp
 		src/msgpack/zbuffer.hpp
@@ -75,6 +86,10 @@ IF (MSGPACK_ENABLE_CXX)
 		src/msgpack/unpack.hpp
 		src/msgpack/object.hpp
 		src/msgpack/zone.hpp
+	)
+	LIST (APPEND msgpack_HEADERS ${msgpack_msgpack_HEADERS})
+
+	LIST (APPEND msgpack_type_HEADERS
 		src/msgpack/type.hpp
 		src/msgpack/type/bool.hpp
 		src/msgpack/type/deque.hpp
@@ -91,9 +106,14 @@ IF (MSGPACK_ENABLE_CXX)
 		src/msgpack/type/vector.hpp
 		src/msgpack/type/tuple.hpp
 		src/msgpack/type/define.hpp
+	)
+	LIST (APPEND msgpack_HEADERS ${msgpack_type_HEADERS})
+
+	LIST (APPEND msgpack_tr1_HEADERS
 		src/msgpack/type/tr1/unordered_map.hpp
 		src/msgpack/type/tr1/unordered_set.hpp
 	)
+	LIST (APPEND msgpack_HEADERS ${msgpack_tr1_HEADERS})
 ENDIF ()
 
 IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
@@ -134,6 +154,12 @@ IF (MSGPACK_BUILD_TESTS)
 	ENABLE_TESTING ()
 	ADD_SUBDIRECTORY (test)
 ENDIF ()
+
+INSTALL (TARGETS msgpack msgpack-static DESTINATION lib)
+INSTALL (FILES ${msgpack_root_HEADERS} DESTINATION include)
+INSTALL (FILES ${msgpack_msgpack_HEADERS} DESTINATION include/msgpack)
+INSTALL (FILES ${msgpack_type_HEADERS} DESTINATION include/msgpack/type)
+INSTALL (FILES ${msgpack_tr1_HEADERS} DESTINATION include/msgpack/type/tr1)
 
 # Doxygen
 FIND_PACKAGE (Doxygen)
