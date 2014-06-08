@@ -1,9 +1,14 @@
 CMAKE_MINIMUM_REQUIRED (VERSION 2.6.4)
 PROJECT (msgpack)
 
-SET (VERSION 0.5.7)
-SET (VERSION_MAJOR 5)
-SET (VERSION_MINOR 7)
+SET (VERSION 0.5.8)
+SET (VERSION_MAJOR 0)
+SET (VERSION_MINOR 5)
+
+SET (prefix ${CMAKE_INSTALL_PREFIX})
+SET (exec_prefix "\${prefix}")
+SET (libdir "\${exec_prefix}/lib")
+SET (includedir "\${prefix}/include")
 
 FIND_PACKAGE (GTest)
 FIND_PACKAGE (ZLIB)
@@ -128,6 +133,12 @@ CONFIGURE_FILE (
 	${CMAKE_CURRENT_BINARY_DIR}/src/msgpack/version.h
 )
 
+CONFIGURE_FILE (
+	msgpack.pc.in
+	msgpack.pc
+	@ONLY
+)
+
 INCLUDE_DIRECTORIES (
 	./
 	src/
@@ -160,6 +171,7 @@ INSTALL (FILES ${msgpack_root_HEADERS} DESTINATION include)
 INSTALL (FILES ${msgpack_msgpack_HEADERS} DESTINATION include/msgpack)
 INSTALL (FILES ${msgpack_type_HEADERS} DESTINATION include/msgpack/type)
 INSTALL (FILES ${msgpack_tr1_HEADERS} DESTINATION include/msgpack/type/tr1)
+INSTALL (FILES msgpack.pc DESTINATION lib/pkgconfig)
 
 # Doxygen
 FIND_PACKAGE (Doxygen)
