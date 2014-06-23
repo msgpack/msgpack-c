@@ -90,13 +90,14 @@ void* msgpack_zone_malloc_expand(msgpack_zone* zone, size_t size);
 
 void* msgpack_zone_malloc_no_align(msgpack_zone* zone, size_t size)
 {
+	char* ptr;
 	msgpack_zone_chunk_list* cl = &zone->chunk_list;
 
 	if(zone->chunk_list.free < size) {
 		return msgpack_zone_malloc_expand(zone, size);
 	}
 
-	char* ptr = cl->ptr;
+	ptr = cl->ptr;
 	cl->free -= size;
 	cl->ptr  += size;
 

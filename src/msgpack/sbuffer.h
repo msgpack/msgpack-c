@@ -69,12 +69,13 @@ static inline int msgpack_sbuffer_write(void* data, const char* buf, size_t len)
 	msgpack_sbuffer* sbuf = (msgpack_sbuffer*)data;
 
 	if(sbuf->alloc - sbuf->size < len) {
+		void* tmp;
 		size_t nsize = (sbuf->alloc) ?
 				sbuf->alloc * 2 : MSGPACK_SBUFFER_INIT_SIZE;
 
 		while(nsize < sbuf->size + len) { nsize *= 2; }
 
-		void* tmp = realloc(sbuf->data, nsize);
+		tmp = realloc(sbuf->data, nsize);
 		if(!tmp) { return -1; }
 
 		sbuf->data = (char*)tmp;
