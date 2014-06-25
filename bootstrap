@@ -45,7 +45,7 @@ fi
 
 
 
-ACLOCAL="aclocal"
+ACLOCAL="aclocal-1.9"
 ACLOCAL_FILES="aclocal.m4"
 ALWAYS_CLEAN="config.status config.log config.cache libtool"
 AUTOCONF="autoconf"

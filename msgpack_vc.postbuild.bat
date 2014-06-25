@@ -40,6 +40,8 @@ copy src\msgpack\type\string.hpp       include\msgpack\type\
 copy src\msgpack\type\vector.hpp       include\msgpack\type\
 copy src\msgpack\type\tuple.hpp        include\msgpack\type\
 copy src\msgpack\type\define.hpp       include\msgpack\type\
+copy src\msgpack\type\unordered_map.hpp	include\msgpack\type\
+copy src\msgpack\type\unordered_set.hpp	include\msgpack\type\
 copy src\msgpack\type\tr1\unordered_map.hpp  include\msgpack\type\tr1\
 copy src\msgpack\type\tr1\unordered_set.hpp  include\msgpack\type\tr1\
 
