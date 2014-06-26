@@ -376,8 +376,10 @@ public:
 						int ret = push_proc(obj, off);
 						if (ret != 0) return ret;
 					}
-					cs_ = ACS_STR_VALUE;
-					fixed_trail_again = true;
+					else {
+						cs_ = ACS_STR_VALUE;
+						fixed_trail_again = true;
+					}
 
 				} else if(0x90 <= selector && selector <= 0x9f) { // FixArray
 					int ret = push_aggregate<fix_tag>(
