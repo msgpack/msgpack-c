@@ -1,3 +1,17 @@
+2014-07-02 version 0.5.9:
+
+  * Support std::tr1 unordered containers by default (#51, #63, #68, #69)
+  * Remove some warnings (#56)
+  * Fix segmentation fault after malloc failures (#58, #59)
+  * Fix alloc/dealloc mismatch (#52, #61)
+  * Fix sample codes (#60, #64)
+  * Support implicit conversion from integer to float/double (#54)
+  * Improve documents (#45, #75, #82, #83)
+  * Support CMake (#20, #87)
+  * Remove Ruby dependencies in bootstrap (#86, #87)
+  * Add FILE* buffer (#40)
+  * Other bug fixes and refactoring: #39, #73, #77, #79, #80, #81, #84, #90
+
 2013-12-23 version 0.5.8:
 
   * Move to the new github repository msgpack/msgpack-c
