@@ -38,13 +38,6 @@ test -f ChangeLog || touch ChangeLog
 test -f NEWS      || touch NEWS
 test -f README    || cp -f README.md README
 
-./preprocess
-if [ $? -ne 0 ]; then
-	exit 1
-fi
-
-
-
 ACLOCAL="aclocal"
 ACLOCAL_FILES="aclocal.m4"
 ALWAYS_CLEAN="config.status config.log config.cache libtool"

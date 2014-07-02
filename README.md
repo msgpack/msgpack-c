@@ -26,6 +26,7 @@ To report an issue, use the [msgpack-c issue tracker](https://github.com/msgpack
 
 #### Install from git repository
 
+##### Using autotools
 You will need gcc (4.1.0 or higher), autotools.
 
 ```
@@ -35,6 +36,16 @@ $ ./bootstrap
 $ ./configure
 $ make
 $ sudo make install
+```
+
+##### Using cmake
+You will need gcc (4.1.0 or higher), cmake.
+
+```
+$ git clone https://github.com/msgpack/msgpack-c.git
+$ cd msgpack-c
+$ cmake .
+$ make
 ```
 
 #### Install from package
@@ -79,16 +90,29 @@ $ sudo brew install msgpack
 
 ##### Windows
 
-On Windows, download source package from [here](https://sourceforge.net/projects/msgpack/files/) and extract it. Open `msgpack_vc8.vcproj` or msgpack_vc2008 file and build it using batch build. It builds libraries in `lib/` folder and header files in `include/` folder.
-
-You can build using command line as follows:
+Clone msgpack-c git repository.
 
 ```
-> vcbuild msgpack_vc2008.vcproj
-> dir lib       % DLL files are here
-> dir include   % header files are here
+$ git clone https://github.com/msgpack/msgpack-c.git
 ```
 
+or using GUI git client. 
+
+e.g.) tortoise git https://code.google.com/p/tortoisegit/
+
+Launch cmake GUI client. http://www.cmake.org/cmake/resources/software.html
+
+Set 'Where is the source code:' text box and 'Where to build the binaries:' text box.
+
+Click 'Configure' button.
+
+Choose your Visual Studio version.
+
+Click 'Generate' button.
+
+Open the created msgpack.sln on Visual Studio.
+
+Build all.
 
 ### Linking with an Application
 
