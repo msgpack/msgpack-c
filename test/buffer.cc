@@ -93,6 +93,7 @@ TEST(buffer, fbuffer)
 		EXPECT_EQ('a', static_cast<char>(ch));
 	}
 	EXPECT_EQ(EOF, fgetc(file));
+	fclose(file);
 }
 
 
@@ -114,5 +115,6 @@ TEST(buffer, fbuffer_c)
 		EXPECT_EQ('a', (char) ch);
 	}
 	EXPECT_EQ(EOF, fgetc(file));
+	fclose(file);
 }
 
