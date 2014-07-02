@@ -12,6 +12,7 @@ copy src\msgpack\sbuffer.h             include\msgpack\
 copy src\msgpack\version.h             include\msgpack\
 copy src\msgpack\vrefbuffer.h          include\msgpack\
 copy src\msgpack\zbuffer.h             include\msgpack\
+copy src\msgpack\fbuffer.h             include\msgpack\
 copy src\msgpack\pack.h                include\msgpack\
 copy src\msgpack\unpack.h              include\msgpack\
 copy src\msgpack\object.h              include\msgpack\
@@ -20,6 +21,7 @@ copy src\msgpack.hpp                   include\
 copy src\msgpack\sbuffer.hpp           include\msgpack\
 copy src\msgpack\vrefbuffer.hpp        include\msgpack\
 copy src\msgpack\zbuffer.hpp           include\msgpack\
+copy src\msgpack\fbuffer.hpp           include\msgpack\
 copy src\msgpack\pack.hpp              include\msgpack\
 copy src\msgpack\unpack.hpp            include\msgpack\
 copy src\msgpack\object.hpp            include\msgpack\

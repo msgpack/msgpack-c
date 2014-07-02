@@ -62,6 +62,7 @@ LIST (APPEND msgpack_HEADERS
 	src/msgpack/version.h
 	src/msgpack/vrefbuffer.h
 	src/msgpack/zbuffer.h
+	src/msgpack/fbuffer.h
 	src/msgpack/pack.h
 	src/msgpack/unpack.h
 	src/msgpack/object.h
@@ -74,6 +75,7 @@ IF (MSGPACK_ENABLE_CXX)
 		src/msgpack/sbuffer.hpp
 		src/msgpack/vrefbuffer.hpp
 		src/msgpack/zbuffer.hpp
+		src/msgpack/fbuffer.hpp
 		src/msgpack/pack.hpp
 		src/msgpack/unpack.hpp
 		src/msgpack/object.hpp
