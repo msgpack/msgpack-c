@@ -191,5 +191,18 @@ typedef unsigned int _msgpack_atomic_counter_t;
 */
 
 
+#if !defined(__cplusplus) && defined(_MSC_VER)
+#if !defined(FALSE)
+#define FALSE (0)
+#endif
+#if !defined(TRUE)
+#define TRUE (!FALSE)
+#endif
+#define bool int
+#define true TRUE
+#define false FALSE
+#define inline __inline
+#endif
+
 #endif /* msgpack/sysdep.h */
 
