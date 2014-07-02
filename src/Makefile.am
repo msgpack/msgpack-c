@@ -47,6 +47,7 @@ nobase_include_HEADERS = \
 		msgpack/version.h \
 		msgpack/vrefbuffer.h \
 		msgpack/zbuffer.h \
+		msgpack/fbuffer.h \
 		msgpack/pack.h \
 		msgpack/unpack.h \
 		msgpack/object.h \
@@ -58,6 +59,7 @@ nobase_include_HEADERS += \
 		msgpack/sbuffer.hpp \
 		msgpack/vrefbuffer.hpp \
 		msgpack/zbuffer.hpp \
+		msgpack/fbuffer.hpp \
 		msgpack/pack.hpp \
 		msgpack/unpack.hpp \
 		msgpack/object.hpp \
