@@ -55,9 +55,9 @@ $ make
 On typical UNIX-like platforms, download source package from [Releases](https://github.com/msgpack/msgpack-c/releases) and run `./configure && make && make install`. Example:
 
 ```
-$ wget https://github.com/msgpack/msgpack-c/releases/download/cpp-0.5.8/msgpack-0.5.8.tar.gz
-$ tar zxvf msgpack-0.5.8.tar.gz
-$ cd msgpack-0.5.8
+$ wget https://github.com/msgpack/msgpack-c/releases/download/cpp-0.5.9/msgpack-0.5.9.tar.gz
+$ tar zxvf msgpack-0.5.9.tar.gz
+$ cd msgpack-0.5.9
 $ ./configure
 $ make
 $ sudo make install
