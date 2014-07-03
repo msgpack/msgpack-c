@@ -1,6 +1,6 @@
 # Msgpack for C/C++
 
-It's like JSON but small and fast.
+It's a bit like JSON but small and fast.
 
 
 ## Overview
