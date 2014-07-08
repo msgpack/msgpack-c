@@ -1,3 +1,4 @@
+#include "cpp_config.hpp"
 #include "adaptor/bool.hpp"
 #include "adaptor/deque.hpp"
 #include "adaptor/fixint.hpp"
@@ -15,3 +16,10 @@
 #include "adaptor/define.hpp"
 #include "adaptor/tr1/unordered_map.hpp"
 #include "adaptor/tr1/unordered_set.hpp"
+
+#if !defined(MSGPACK_USE_CPP03)
+
+#include "adaptor/cpp11/tuple.hpp"
+
+#endif // !defined(MSGPACK_USE_CPP03)
+

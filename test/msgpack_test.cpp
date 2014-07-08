@@ -740,6 +740,26 @@ TEST(MSGPACK_TR1, simple_buffer_unordered_multiset)
 }
 #endif
 
+#if !defined(MSGPACK_USE_CPP03)
+// C++11
+
+TEST(MSGPACK_CPP11, simple_tuple)
+{
+  msgpack::sbuffer sbuf;
+  std::tuple<bool, std::string, double> val1(true, "kzk", 12.3);
+  msgpack::pack(sbuf, val1);
+  msgpack::zone z;
+  msgpack::object obj;
+  msgpack::unpack_return ret =
+    msgpack::unpack(sbuf.data(), sbuf.size(), NULL, z, obj);
+  EXPECT_EQ(msgpack::UNPACK_SUCCESS, ret);
+  std::tuple<bool, std::string, double> val2;
+  obj.convert(&val2);
+  EXPECT_EQ(val1, val2);
+}
+
+#endif // !defined(MSGPACK_USE_CPP03)
+
 // User-Defined Structures
 
 class TestClass
