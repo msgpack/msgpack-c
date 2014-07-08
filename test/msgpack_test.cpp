@@ -888,6 +888,51 @@ TEST(MSGPACK_USER_DEFINED, simple_buffer_enum_member)
   EXPECT_EQ(val1.t3, val2.t3);
 }
 
+#if !defined(MSGPACK_USE_CPP03)
+
+class TestEnumClassMemberClass
+{
+public:
+  TestEnumClassMemberClass()
+  : t1(TestEnumClassType::STATE_A), t2(TestEnumClassType::STATE_B), t3(TestEnumClassType::STATE_C) {}
+
+  enum class TestEnumClassType:long {
+    STATE_INVALID = 0,
+    STATE_A = 1,
+    STATE_B = 2,
+    STATE_C = 3
+  };
+  TestEnumClassType t1;
+  TestEnumClassType t2;
+  TestEnumClassType t3;
+
+  MSGPACK_DEFINE(t1, t2, t3);
+};
+
+MSGPACK_ADD_ENUM(TestEnumClassMemberClass::TestEnumClassType);
+
+TEST(MSGPACK_USER_DEFINED, simple_buffer_enum_class_member)
+{
+  TestEnumClassMemberClass val1;
+  msgpack::sbuffer sbuf;
+  msgpack::pack(sbuf, val1);
+  msgpack::zone z;
+  msgpack::object obj;
+  msgpack::unpack_return ret =
+    msgpack::unpack(sbuf.data(), sbuf.size(), NULL, z, obj);
+  EXPECT_EQ(msgpack::UNPACK_SUCCESS, ret);
+  TestEnumClassMemberClass val2;
+  val2.t1 = TestEnumClassMemberClass::TestEnumClassType::STATE_INVALID;
+  val2.t2 = TestEnumClassMemberClass::TestEnumClassType::STATE_INVALID;
+  val2.t3 = TestEnumClassMemberClass::TestEnumClassType::STATE_INVALID;
+  obj.convert(&val2);
+  EXPECT_EQ(val1.t1, val2.t1);
+  EXPECT_EQ(val1.t2, val2.t2);
+  EXPECT_EQ(val1.t3, val2.t3);
+}
+
+#endif // !defined(MSGPACK_USE_CPP03)
+
 class TestUnionMemberClass
 {
 public:

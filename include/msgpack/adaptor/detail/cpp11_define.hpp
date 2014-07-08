@@ -18,6 +18,8 @@
 #ifndef MSGPACK_CPP11_DEFINE_HPP
 #define MSGPACK_CPP11_DEFINE_HPP
 
+#include <type_traits>
+
 #define MSGPACK_DEFINE(...) \
 	template <typename Packer> \
 	void msgpack_pack(Packer& pk) const \
@@ -42,20 +44,20 @@
 	{ \
 	  int tmp; \
 	  o >> tmp; \
-	  v = static_cast<enum>(tmp); \
+	  v = static_cast<enum>(tmp);	\
 	  return v; \
 	} \
 	template <> \
 	inline void operator<< (object::with_zone& o, const enum& v) \
 	{ \
-	  int tmp = static_cast<enum>(v); \
+	  int tmp = static_cast<std::underlying_type<enum>::type>(v); \
 	  o << tmp; \
 	} \
 	namespace detail { \
 	  template <typename Stream> \
 	  struct packer_serializer<Stream, enum> { \
 		static packer<Stream>& pack(packer<Stream>& o, const enum& v) { \
-		  return o << static_cast<int>(v); \
+		  return o << static_cast<std::underlying_type<enum>::type>(v); \
 		} \
 	  }; \
 	} \
