@@ -29,13 +29,13 @@ namespace msgpack {
 
 class sbuffer {
 public:
-	sbuffer(size_t initsz = MSGPACK_SBUFFER_INIT_SIZE):size_(0), alloc_(initsz)
+	sbuffer(size_t initsz = MSGPACK_SBUFFER_INIT_SIZE):m_size(0), m_alloc(initsz)
 	{
 		if(initsz == 0) {
-			data_ = nullptr;
+			m_data = nullptr;
 		} else {
-			data_ = (char*)::malloc(initsz);
-			if(!data_) {
+			m_data = (char*)::malloc(initsz);
+			if(!m_data) {
 				throw std::bad_alloc();
 			}
 		}
@@ -43,71 +43,71 @@ public:
 
 	~sbuffer()
 	{
-		::free(data_);
+		::free(m_data);
 	}
 
 public:
 	void write(const char* buf, size_t len)
 	{
-		if(alloc_ - size_ < len) {
+		if(m_alloc - m_size < len) {
 			expand_buffer(len);
 		}
-		::memcpy(data_ + size_, buf, len);
-		size_ += len;
+		::memcpy(m_data + m_size, buf, len);
+		m_size += len;
 	}
 
 	char* data()
 	{
-		return data_;
+		return m_data;
 	}
 
 	const char* data() const
 	{
-		return data_;
+		return m_data;
 	}
 
 	size_t size() const
 	{
-		return size_;
+		return m_size;
 	}
 
 	char* release()
 	{
-		char* tmp = data_;
-		size_ = 0;
-		data_ = nullptr;
-		alloc_ = 0;
+		char* tmp = m_data;
+		m_size = 0;
+		m_data = nullptr;
+		m_alloc = 0;
 		return tmp;
 	}
 
 	void clear()
 	{
-		size_ = 0;
+		m_size = 0;
 	}
 
 private:
 	void expand_buffer(size_t len)
 	{
-		size_t nsize = (alloc_ > 0) ?
-				alloc_ * 2 : MSGPACK_SBUFFER_INIT_SIZE;
+		size_t nsize = (m_alloc > 0) ?
+				m_alloc * 2 : MSGPACK_SBUFFER_INIT_SIZE;
 	
-		while(nsize < size_ + len) { nsize *= 2; }
+		while(nsize < m_size + len) { nsize *= 2; }
 	
-		void* tmp = ::realloc(data_, nsize);
+		void* tmp = ::realloc(m_data, nsize);
 		if(!tmp) {
 			throw std::bad_alloc();
 		}
 	
-		data_ = static_cast<char*>(tmp);
-		alloc_ = nsize;
+		m_data = static_cast<char*>(tmp);
+		m_alloc = nsize;
 	}
 
 private:
 	sbuffer(const sbuffer&);
 private:
-	size_t size_;
-	char* data_;
-	size_t alloc_;
+	size_t m_size;
+	char* m_data;
+	size_t m_alloc;
 };
 
 

@@ -68,11 +68,11 @@ struct tuple_type<const T&> {
 <%0.upto(i) {|j|%>
 template <typename A0<%1.upto(i) {|k|%>, typename A<%=k%><%}%>>
 struct tuple_element<tuple<A0<%1.upto(i) {|k|%>, A<%=k%><%}%>>, <%=j%>> : tuple_type<A<%=j%>> {
-	tuple_element(tuple<A0<%1.upto(i) {|k|%>, A<%=k%> <%}%>>& x) : _x(x.a<%=j%>) {}
-	typename tuple_type<A<%=j%>>::reference get() { return _x; }
-	typename tuple_type<A<%=j%>>::const_reference get() const { return _x; }
+	tuple_element(tuple<A0<%1.upto(i) {|k|%>, A<%=k%> <%}%>>& x) : m_x(x.a<%=j%>) {}
+	typename tuple_type<A<%=j%>>::reference get() { return m_x; }
+	typename tuple_type<A<%=j%>>::const_reference get() const { return m_x; }
 private:
-	typename tuple_type<A<%=j%>>::reference _x;
+	typename tuple_type<A<%=j%>>::reference m_x;
 };
 <%}%>
 <%}%>
@@ -81,10 +81,10 @@ private:
 <%0.upto(i) {|j|%>
 template <typename A0<%1.upto(i) {|k|%>, typename A<%=k%><%}%>>
 struct const_tuple_element<tuple<A0<%1.upto(i) {|k|%>, A<%=k%><%}%>>, <%=j%>> : tuple_type<A<%=j%>> {
-	const_tuple_element(const tuple<A0<%1.upto(i) {|k|%>, A<%=k%><%}%>>& x) : _x(x.a<%=j%>) {}
-	typename tuple_type<A<%=j%>>::const_reference get() const { return _x; }
+	const_tuple_element(const tuple<A0<%1.upto(i) {|k|%>, A<%=k%><%}%>>& x) : m_x(x.a<%=j%>) {}
+	typename tuple_type<A<%=j%>>::const_reference get() const { return m_x; }
 private:
-	typename tuple_type<A<%=j%>>::const_reference _x;
+	typename tuple_type<A<%=j%>>::const_reference m_x;
 };
 <%}%>
 <%}%>

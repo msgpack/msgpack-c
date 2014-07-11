@@ -52,14 +52,14 @@ namespace detail {
 
 class unpack_user {
 public:
-	msgpack::zone const& zone() const { return *zone_; }
-	msgpack::zone& zone() { return *zone_; }
-	void set_zone(msgpack::zone& zone) { zone_ = &zone; }
-	bool referenced() const { return referenced_; }
-	void set_referenced(bool referenced) { referenced_ = referenced; }
+	msgpack::zone const& zone() const { return *m_zone; }
+	msgpack::zone& zone() { return *m_zone; }
+	void set_zone(msgpack::zone& zone) { m_zone = &zone; }
+	bool referenced() const { return m_referenced; }
+	void set_referenced(bool referenced) { m_referenced = referenced; }
 private:
-	msgpack::zone* zone_;
-	bool referenced_;
+	msgpack::zone* m_zone;
+	bool m_referenced;
 };
 
 inline void unpack_uint8(uint8_t d, object& o)
@@ -165,21 +165,21 @@ inline void unpack_bin(unpack_user& u, const char* b, const char* p, unsigned in
 
 class unpack_stack {
 public:
-	object const& obj() const { return obj_; }
-	object& obj() { return obj_; }
-	void set_obj(object const& obj) { obj_ = obj; }
-	size_t count() const { return count_; }
-	void set_count(size_t count) { count_ = count; }
-	size_t decl_count() { return --count_; }
-	unsigned int container_type() const { return container_type_; }
-	void set_container_type(unsigned int container_type) { container_type_ = container_type; }
-	object const& map_key() const { return map_key_; }
-	void set_map_key(object const& map_key) { map_key_ = map_key; }
+	object const& obj() const { return m_obj; }
+	object& obj() { return m_obj; }
+	void set_obj(object const& obj) { m_obj = obj; }
+	size_t count() const { return m_count; }
+	void set_count(size_t count) { m_count = count; }
+	size_t decl_count() { return --m_count; }
+	unsigned int container_type() const { return m_container_type; }
+	void set_container_type(unsigned int container_type) { m_container_type = container_type; }
+	object const& map_key() const { return m_map_key; }
+	void set_map_key(object const& map_key) { m_map_key = map_key; }
 private:
-	object obj_;
-	size_t count_;
-	unsigned int container_type_;
-	object map_key_;
+	object m_obj;
+	size_t m_count;
+	unsigned int m_container_type;
+	object m_map_key;
 };
 
 inline void init_count(void* buffer)
@@ -244,62 +244,62 @@ inline void load(T& dst, const char* n, typename msgpack::enable_if<sizeof(T) ==
 
 class context {
 public:
-	context():trail_(0), cs_(CS_HEADER), top_(0)
+	context():m_trail(0), m_cs(CS_HEADER), m_top(0)
 	{
-		stack_[0].set_obj(object());
+		m_stack[0].set_obj(object());
 	}
 
 	void init()
 	{
-		cs_ = CS_HEADER;
-		trail_ = 0;
-		top_ = 0;
-		stack_[0].set_obj(object());
+		m_cs = CS_HEADER;
+		m_trail = 0;
+		m_top = 0;
+		m_stack[0].set_obj(object());
 	}
 
 	object const& data() const
 	{
-		return stack_[0].obj();
+		return m_stack[0].obj();
 	}
 
 	unpack_user& user()
 	{
-		return user_;
+		return m_user;
 	}
 
 	unpack_user const& user() const
 	{
-		return user_;
+		return m_user;
 	}
 
 	int execute(const char* data, size_t len, size_t& off)
 	{
 		assert(len >= off);
 
-		start_ = data;
-		current_ = data + off;
-		stack_idx_ = 0;
+		m_start = data;
+		m_current = data + off;
+		m_stack_idx = 0;
 		const char* const pe = data + len;
 		const char* n = nullptr;
 
 		object obj;
 
-		if(current_ == pe) {
-			off = current_ - start_;
+		if(m_current == pe) {
+			off = m_current - m_start;
 			return 0;
 		}
 		bool fixed_trail_again = false;
 		do {
-			if (cs_ == CS_HEADER) {
+			if (m_cs == CS_HEADER) {
 				fixed_trail_again = false;
-				int selector = *reinterpret_cast<const unsigned char*>(current_);
+				int selector = *reinterpret_cast<const unsigned char*>(m_current);
 				if (0) {
 				} else if(0x00 <= selector && selector <= 0x7f) { // Positive Fixnum
-					unpack_uint8(*reinterpret_cast<const uint8_t*>(current_), obj);
+					unpack_uint8(*reinterpret_cast<const uint8_t*>(m_current), obj);
 					int ret = push_proc(obj, off);
 					if (ret != 0) return ret;
 				} else if(0xe0 <= selector && selector <= 0xff) { // Negative Fixnum
-					unpack_int8(*reinterpret_cast<const int8_t*>(current_), obj);
+					unpack_int8(*reinterpret_cast<const int8_t*>(m_current), obj);
 					int ret = push_proc(obj, off);
 					if (ret != 0) return ret;
 				} else if(0xc0 <= selector && selector <= 0xdf) { // Variable
@@ -323,8 +323,8 @@ public:
 					case 0xc4: // bin 8
 					case 0xc5: // bin 16
 					case 0xc6: // bin 32
-						trail_ = 1 << (static_cast<unsigned int>(*current_) & 0x03);
-						cs_ = next_cs(current_);
+						m_trail = 1 << (static_cast<unsigned int>(*m_current) & 0x03);
+						m_cs = next_cs(m_current);
 						fixed_trail_again = true;
 						break;
 
@@ -341,8 +341,8 @@ public:
 					case 0xd1:	// signed int 16
 					case 0xd2:	// signed int 32
 					case 0xd3:	// signed int 64
-						trail_ = 1 << (static_cast<unsigned int>(*current_) & 0x03);
-						cs_ = next_cs(current_);
+						m_trail = 1 << (static_cast<unsigned int>(*m_current) & 0x03);
+						m_cs = next_cs(m_current);
 						fixed_trail_again = true;
 						break;
 					//case 0xd4:
@@ -353,60 +353,60 @@ public:
 					case 0xd9:	// str 8
 					case 0xda:	// str 16
 					case 0xdb:	// str 32
-						trail_ = 1 << ((static_cast<unsigned int>(*current_) & 0x03) - 1);
-						cs_ = next_cs(current_);
+						m_trail = 1 << ((static_cast<unsigned int>(*m_current) & 0x03) - 1);
+						m_cs = next_cs(m_current);
 						fixed_trail_again = true;
 						break;
 					case 0xdc:	// array 16
 					case 0xdd:	// array 32
 					case 0xde:	// map 16
 					case 0xdf:	// map 32
-						trail_ = 2 << (static_cast<unsigned int>(*current_) & 0x01);
-						cs_ = next_cs(current_);
+						m_trail = 2 << (static_cast<unsigned int>(*m_current) & 0x01);
+						m_cs = next_cs(m_current);
 						fixed_trail_again = true;
 						break;
 					default:
-						off = current_ - start_;
+						off = m_current - m_start;
 						return -1;
 					}
 				} else if(0xa0 <= selector && selector <= 0xbf) { // FixStr
-					trail_ = static_cast<unsigned int>(*current_) & 0x1f;
-					if(trail_ == 0) {
-						unpack_str(user_, data, n, trail_, obj);
+					m_trail = static_cast<unsigned int>(*m_current) & 0x1f;
+					if(m_trail == 0) {
+						unpack_str(m_user, data, n, m_trail, obj);
 						int ret = push_proc(obj, off);
 						if (ret != 0) return ret;
 					}
 					else {
-						cs_ = ACS_STR_VALUE;
+						m_cs = ACS_STR_VALUE;
 						fixed_trail_again = true;
 					}
 
 				} else if(0x90 <= selector && selector <= 0x9f) { // FixArray
 					int ret = push_aggregate<fix_tag>(
-						unpack_array(), CT_ARRAY_ITEM, obj, current_, off);
+						unpack_array(), CT_ARRAY_ITEM, obj, m_current, off);
 					if (ret != 0) return ret;
 				} else if(0x80 <= selector && selector <= 0x8f) { // FixMap
 					int ret = push_aggregate<fix_tag>(
-						unpack_map(), CT_MAP_KEY, obj, current_, off);
+						unpack_map(), CT_MAP_KEY, obj, m_current, off);
 					if (ret != 0) return ret;
 				} else {
-					off = current_ - start_;
+					off = m_current - m_start;
 					return -1;
 				}
 				// end CS_HEADER
 			}
-			if (cs_ != CS_HEADER || fixed_trail_again) {
+			if (m_cs != CS_HEADER || fixed_trail_again) {
 				if (fixed_trail_again) {
-					++current_;
+					++m_current;
 					fixed_trail_again = false;
 				}
-				if((size_t)(pe - current_) < trail_) {
-					off = current_ - start_;
+				if((size_t)(pe - m_current) < m_trail) {
+					off = m_current - m_start;
 					return 0;
 				}
-				n = current_;
-				current_ += trail_ - 1;
-				switch(cs_) {
+				n = m_current;
+				m_current += m_trail - 1;
+				switch(m_cs) {
 				//case CS_
 				//case CS_
 				case CS_FLOAT: {
@@ -486,90 +486,90 @@ public:
 				case CS_STR_8: {
 					uint8_t tmp;
 					load<uint8_t>(tmp, n);
-					trail_ = tmp;
-					if(trail_ == 0) {
-						unpack_str(user_, data, n, trail_, obj);
+					m_trail = tmp;
+					if(m_trail == 0) {
+						unpack_str(m_user, data, n, m_trail, obj);
 						int ret = push_proc(obj, off);
 						if (ret != 0) return ret;
 					}
 					else {
-						cs_ = ACS_STR_VALUE;
+						m_cs = ACS_STR_VALUE;
 						fixed_trail_again = true;
 					}
 				} break;
 				case CS_BIN_8: {
 					uint8_t tmp;
 					load<uint8_t>(tmp, n);
-					trail_ = tmp;
-					if(trail_ == 0) {
-						unpack_bin(user_, data, n, trail_, obj);
+					m_trail = tmp;
+					if(m_trail == 0) {
+						unpack_bin(m_user, data, n, m_trail, obj);
 						int ret = push_proc(obj, off);
 						if (ret != 0) return ret;
 					}
 					else {
-						cs_ = ACS_BIN_VALUE;
+						m_cs = ACS_BIN_VALUE;
 						fixed_trail_again = true;
 					}
 				} break;
 				case CS_STR_16: {
 					uint16_t tmp;
 					load<uint16_t>(tmp, n);
-					trail_ = tmp;
-					if(trail_ == 0) {
-						unpack_str(user_, data, n, trail_, obj);
+					m_trail = tmp;
+					if(m_trail == 0) {
+						unpack_str(m_user, data, n, m_trail, obj);
 						int ret = push_proc(obj, off);
 						if (ret != 0) return ret;
 					}
 					else {
-						cs_ = ACS_STR_VALUE;
+						m_cs = ACS_STR_VALUE;
 						fixed_trail_again = true;
 					}
 				} break;
 				case CS_BIN_16: {
 					uint16_t tmp;
 					load<uint16_t>(tmp, n);
-					trail_ = tmp;
-					if(trail_ == 0) {
-						unpack_bin(user_, data, n, trail_, obj);
+					m_trail = tmp;
+					if(m_trail == 0) {
+						unpack_bin(m_user, data, n, m_trail, obj);
 						int ret = push_proc(obj, off);
 						if (ret != 0) return ret;
 					}
 					else {
-						cs_ = ACS_BIN_VALUE;
+						m_cs = ACS_BIN_VALUE;
 						fixed_trail_again = true;
 					}
 				} break;
 				case CS_STR_32:
-					load<uint32_t>(trail_, n);
-					if(trail_ == 0) {
-						unpack_str(user_, data, n, trail_, obj);
+					load<uint32_t>(m_trail, n);
+					if(m_trail == 0) {
+						unpack_str(m_user, data, n, m_trail, obj);
 						int ret = push_proc(obj, off);
 						if (ret != 0) return ret;
 					}
 					else {
-						cs_ = ACS_STR_VALUE;
+						m_cs = ACS_STR_VALUE;
 						fixed_trail_again = true;
 					}
 					break;
 				case CS_BIN_32:
-					load<uint32_t>(trail_, n);
-					if(trail_ == 0) {
-						unpack_bin(user_, data, n, trail_, obj);
+					load<uint32_t>(m_trail, n);
+					if(m_trail == 0) {
+						unpack_bin(m_user, data, n, m_trail, obj);
 						int ret = push_proc(obj, off);
 						if (ret != 0) return ret;
 					}
 					else {
-						cs_ = ACS_BIN_VALUE;
+						m_cs = ACS_BIN_VALUE;
 						fixed_trail_again = true;
 					}
 					break;
 				case ACS_STR_VALUE: {
-					unpack_str(user_, data, n, trail_, obj);
+					unpack_str(m_user, data, n, m_trail, obj);
 					int ret = push_proc(obj, off);
 					if (ret != 0) return ret;
 				} break;
 				case ACS_BIN_VALUE: {
-					unpack_bin(user_, data, n, trail_, obj);
+					unpack_bin(m_user, data, n, m_trail, obj);
 					int ret = push_proc(obj, off);
 					if (ret != 0) return ret;
 				} break;
@@ -596,13 +596,13 @@ public:
 					if (ret != 0) return ret;
 				} break;
 				default:
-					off = current_ - start_;
+					off = m_current - m_start;
 					return -1;
 				}
 			}
-		} while(current_ != pe);
+		} while(m_current != pe);
 
-		off = current_ - start_;
+		off = m_current - m_start;
 		return 0;
 	}
 
@@ -620,30 +620,30 @@ private:
 		object& obj,
 		const char* load_pos,
 		size_t& off) {
-		if(top_ < MSGPACK_EMBED_STACK_SIZE /* FIXME */) {
+		if(m_top < MSGPACK_EMBED_STACK_SIZE /* FIXME */) {
 			typename value<T>::type tmp;
 			load<T>(tmp, load_pos);
-			if (f(user_, tmp, stack_[top_].obj())) {
+			if (f(m_user, tmp, m_stack[m_top].obj())) {
 				if(tmp == 0) {
-					obj = stack_[top_].obj();
+					obj = m_stack[m_top].obj();
 					int ret = push_proc(obj, off);
 					if (ret != 0) return ret;
 				}
 				else {
-					stack_[top_].set_container_type(container_type);
-					stack_[top_].set_count(tmp);
-					++top_;
-					cs_ = CS_HEADER;
-					++current_;
+					m_stack[m_top].set_container_type(container_type);
+					m_stack[m_top].set_count(tmp);
+					++m_top;
+					m_cs = CS_HEADER;
+					++m_current;
 				}
 			}
 			else {
-				off = current_ - start_;
+				off = m_current - m_start;
 				return -1;
 			}
 		}
 		else {
-			off = current_ - start_;
+			off = m_current - m_start;
 			return -1;
 		}
 		return 0;
@@ -652,18 +652,18 @@ private:
 	int push_item(object& obj) {
 		bool finish = false;
 		while (!finish) {
-			if(top_ == 0) {
+			if(m_top == 0) {
 				return 1;
 			}
-			stack_idx_ = top_ - 1;
-			unpack_stack* sp = &stack_[stack_idx_];
+			m_stack_idx = m_top - 1;
+			unpack_stack* sp = &m_stack[m_stack_idx];
 			switch(sp->container_type()) {
 			case CT_ARRAY_ITEM:
 				unpack_array_item(sp->obj(), obj);
 				if(sp->decl_count() == 0) {
 					obj = sp->obj();
-					--top_;
-					/*printf("stack pop %d\n", top_);*/
+					--m_top;
+					/*printf("stack pop %d\n", m_top);*/
 				}
 				else {
 					finish = true;
@@ -678,8 +678,8 @@ private:
 				unpack_map_item(sp->obj(), sp->map_key(), obj);
 				if(sp->decl_count() == 0) {
 					obj = sp->obj();
-					--top_;
-					/*printf("stack pop %d\n", top_);*/
+					--m_top;
+					/*printf("stack pop %d\n", m_top);*/
 				}
 				else {
 					sp->set_container_type(CT_MAP_KEY);
@@ -696,31 +696,31 @@ private:
 	int push_proc(object& obj, size_t& off) {
 		int ret = push_item(obj);
 		if (ret > 0) {
-			stack_[0].set_obj(obj);
-			++current_;
+			m_stack[0].set_obj(obj);
+			++m_current;
 			/*printf("-- finish --\n"); */
-			off = current_ - start_;
+			off = m_current - m_start;
 		}
 		else if (ret < 0) {
-			off = current_ - start_;
+			off = m_current - m_start;
 		}
 		else {
-			cs_ = CS_HEADER;
-			++current_;
+			m_cs = CS_HEADER;
+			++m_current;
 		}
 		return ret;
 	}
 
 private:
-	char const* start_;
-	char const* current_;
+	char const* m_start;
+	char const* m_current;
 
-	unsigned int trail_;
-	unpack_user user_;
-	unsigned int cs_;
-	unsigned int top_;
-	unsigned int stack_idx_;
-	unpack_stack stack_[MSGPACK_EMBED_STACK_SIZE];
+	unsigned int m_trail;
+	unpack_user m_user;
+	unsigned int m_cs;
+	unsigned int m_top;
+	unsigned int m_stack_idx;
+	unpack_stack m_stack[MSGPACK_EMBED_STACK_SIZE];
 };
 
 } // detail
@@ -853,14 +853,14 @@ private:
 	bool flush_zone();
 
 private:
-	char* buffer_;
-	size_t used_;
-	size_t free_;
-	size_t off_;
-	size_t parsed_;
-	zone* z_;
-	size_t initial_buffer_size_;
-	detail::context ctx_;
+	char* m_buffer;
+	size_t m_used;
+	size_t m_free;
+	size_t m_off;
+	size_t m_parsed;
+	zone* m_z;
+	size_t m_initial_buffer_size;
+	detail::context m_ctx;
 
 private:
 	unpacker(const unpacker&);
@@ -909,63 +909,63 @@ inline unpacker::unpacker(size_t initial_buffer_size)
 		throw std::bad_alloc();
 	}
 
-	buffer_ = buffer;
-	used_ = COUNTER_SIZE;
-	free_ = initial_buffer_size - used_;
-	off_ = COUNTER_SIZE;
-	parsed_ = 0;
-	initial_buffer_size_ = initial_buffer_size;
-	z_ = z;
+	m_buffer = buffer;
+	m_used = COUNTER_SIZE;
+	m_free = initial_buffer_size - m_used;
+	m_off = COUNTER_SIZE;
+	m_parsed = 0;
+	m_initial_buffer_size = initial_buffer_size;
+	m_z = z;
 
-	detail::init_count(buffer_);
+	detail::init_count(m_buffer);
 
-	ctx_.init();
-	ctx_.user().set_zone(*z_);
-	ctx_.user().set_referenced(false);
+	m_ctx.init();
+	m_ctx.user().set_zone(*m_z);
+	m_ctx.user().set_referenced(false);
 }
 
 inline unpacker::~unpacker()
 {
-	zone::destroy(z_);
-	detail::decl_count(buffer_);
+	zone::destroy(m_z);
+	detail::decl_count(m_buffer);
 }
 
 
 inline void unpacker::reserve_buffer(size_t size)
 {
-	if(free_ >= size) return;
+	if(m_free >= size) return;
 	expand_buffer(size);
 }
 
 inline void unpacker::expand_buffer(size_t size)
 {
-	if(used_ == off_ && detail::get_count(buffer_) == 1
-		&& !ctx_.user().referenced()) {
+	if(m_used == m_off && detail::get_count(m_buffer) == 1
+		&& !m_ctx.user().referenced()) {
 		// rewind buffer
-		free_ += used_ - COUNTER_SIZE;
-		used_ = COUNTER_SIZE;
-		off_  = COUNTER_SIZE;
+		m_free += m_used - COUNTER_SIZE;
+		m_used = COUNTER_SIZE;
+		m_off  = COUNTER_SIZE;
 
-		if(free_ >= size) return;
+		if(m_free >= size) return;
 	}
 
-	if(off_ == COUNTER_SIZE) {
-		size_t next_size = (used_ + free_) * 2;	 // include COUNTER_SIZE
-		while(next_size < size + used_) {
+	if(m_off == COUNTER_SIZE) {
+		size_t next_size = (m_used + m_free) * 2;	 // include COUNTER_SIZE
+		while(next_size < size + m_used) {
 			next_size *= 2;
 		}
 
-		char* tmp = static_cast<char*>(::realloc(buffer_, next_size));
+		char* tmp = static_cast<char*>(::realloc(m_buffer, next_size));
 		if(!tmp) {
 			throw std::bad_alloc();
 		}
 
-		buffer_ = tmp;
-		free_ = next_size - used_;
+		m_buffer = tmp;
+		m_free = next_size - m_used;
 
 	} else {
-		size_t next_size = initial_buffer_size_;  // include COUNTER_SIZE
-		size_t not_parsed = used_ - off_;
+		size_t next_size = m_initial_buffer_size;  // include COUNTER_SIZE
+		size_t not_parsed = m_used - m_off;
 		while(next_size < size + not_parsed + COUNTER_SIZE) {
 			next_size *= 2;
 		}
@@ -977,42 +977,42 @@ inline void unpacker::expand_buffer(size_t size)
 
 		detail::init_count(tmp);
 
-		::memcpy(tmp+COUNTER_SIZE, buffer_ + off_, not_parsed);
+		::memcpy(tmp+COUNTER_SIZE, m_buffer + m_off, not_parsed);
 
-		if(ctx_.user().referenced()) {
+		if(m_ctx.user().referenced()) {
 			try {
-				z_->push_finalizer(&detail::decl_count, buffer_);
+				m_z->push_finalizer(&detail::decl_count, m_buffer);
 			}
 			catch (...) {
 				::free(tmp);
 				throw;
 			}
-			ctx_.user().set_referenced(false);
+			m_ctx.user().set_referenced(false);
 		} else {
-			detail::decl_count(buffer_);
+			detail::decl_count(m_buffer);
 		}
 
-		buffer_ = tmp;
-		used_	= not_parsed + COUNTER_SIZE;
-		free_	= next_size - used_;
-		off_	= COUNTER_SIZE;
+		m_buffer = tmp;
+		m_used	= not_parsed + COUNTER_SIZE;
+		m_free	= next_size - m_used;
+		m_off	= COUNTER_SIZE;
 	}
 }
 
 inline char* unpacker::buffer()
 {
-	return buffer_ + used_;
+	return m_buffer + m_used;
 }
 
 inline size_t unpacker::buffer_capacity() const
 {
-	return free_;
+	return m_free;
 }
 
 inline void unpacker::buffer_consumed(size_t size)
 {
-	used_ += size;
-	free_ -= size;
+	m_used += size;
+	m_free -= size;
 }
 
 inline bool unpacker::next(unpacked* result)
@@ -1051,17 +1051,17 @@ inline bool unpacker::execute()
 
 inline int unpacker::execute_imp()
 {
-	size_t off = off_;
-	int ret = ctx_.execute(buffer_, used_, off_);
-	if(off_ > off) {
-		parsed_ += off_ - off;
+	size_t off = m_off;
+	int ret = m_ctx.execute(m_buffer, m_used, m_off);
+	if(m_off > off) {
+		m_parsed += m_off - off;
 	}
 	return ret;
 }
 
 inline object const& unpacker::data()
 {
-	return ctx_.data();
+	return m_ctx.data();
 }
 
 inline zone* unpacker::release_zone()
@@ -1075,29 +1075,29 @@ inline zone* unpacker::release_zone()
 		return nullptr;
 	}
 
-	zone* old = z_;
-	z_ = r;
-	ctx_.user().set_zone(*z_);
+	zone* old = m_z;
+	m_z = r;
+	m_ctx.user().set_zone(*m_z);
 
 	return old;
 }
 
 inline void unpacker::reset_zone()
 {
-	z_->clear();
+	m_z->clear();
 }
 
 inline bool unpacker::flush_zone()
 {
-	if(ctx_.user().referenced()) {
+	if(m_ctx.user().referenced()) {
 		try {
-			z_->push_finalizer(&detail::decl_count, buffer_);
+			m_z->push_finalizer(&detail::decl_count, m_buffer);
 		} catch (...) {
 			return false;
 		}
-		ctx_.user().set_referenced(false);
+		m_ctx.user().set_referenced(false);
 
-		detail::incr_count(buffer_);
+		detail::incr_count(m_buffer);
 	}
 
 	return true;
@@ -1105,39 +1105,39 @@ inline bool unpacker::flush_zone()
 
 inline void unpacker::reset()
 {
-	ctx_.init();
+	m_ctx.init();
 	// don't reset referenced flag
-	parsed_ = 0;
+	m_parsed = 0;
 }
 
 inline size_t unpacker::message_size() const
 {
-	return parsed_ - off_ + used_;
+	return m_parsed - m_off + m_used;
 }
 
 inline size_t unpacker::parsed_size() const
 {
-	return parsed_;
+	return m_parsed;
 }
 
 inline char* unpacker::nonparsed_buffer()
 {
-	return buffer_ + off_;
+	return m_buffer + m_off;
 }
 
 inline size_t unpacker::nonparsed_size() const
 {
-	return used_ - off_;
+	return m_used - m_off;
 }
 
 inline void unpacker::skip_nonparsed_buffer(size_t size)
 {
-	off_ += size;
+	m_off += size;
 }
 
 inline void unpacker::remove_nonparsed_buffer()
 {
-	used_ = off_;
+	m_used = m_off;
 }
 
 namespace detail {

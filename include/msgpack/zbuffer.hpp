@@ -36,49 +36,49 @@ class zbuffer {
 public:
 	zbuffer(int level = Z_DEFAULT_COMPRESSION,
 			size_t init_size = MSGPACK_ZBUFFER_INIT_SIZE)
-		: data_(nullptr), init_size_(init_size)
+		: m_data(nullptr), m_init_size(init_size)
 	{
-		stream_.zalloc = Z_NULL;
-		stream_.zfree = Z_NULL;
-		stream_.opaque = Z_NULL;
-		stream_.next_out = Z_NULL;
-		stream_.avail_out = 0;
-		if(deflateInit(&stream_, level) != Z_OK) {
+		m_stream.zalloc = Z_NULL;
+		m_stream.zfree = Z_NULL;
+		m_stream.opaque = Z_NULL;
+		m_stream.next_out = Z_NULL;
+		m_stream.avail_out = 0;
+		if(deflateInit(&m_stream, level) != Z_OK) {
 			throw std::bad_alloc();
 		}
 	}
 
 	~zbuffer()
 	{
-		deflateEnd(&stream_);
-		::free(data_);
+		deflateEnd(&m_stream);
+		::free(m_data);
 	}
 
 public:
 	void write(const char* buf, size_t len)
 	{
-		stream_.next_in = reinterpret_cast<Bytef*>(const_cast<char*>(buf));
-		stream_.avail_in = len;
+		m_stream.next_in = reinterpret_cast<Bytef*>(const_cast<char*>(buf));
+		m_stream.avail_in = len;
 
 		do {
-			if(stream_.avail_out < MSGPACK_ZBUFFER_RESERVE_SIZE) {
+			if(m_stream.avail_out < MSGPACK_ZBUFFER_RESERVE_SIZE) {
 				if(!expand()) {
 					throw std::bad_alloc();
 				}
 			}
 
-			if(deflate(&stream_, Z_NO_FLUSH) != Z_OK) {
+			if(deflate(&m_stream, Z_NO_FLUSH) != Z_OK) {
 				throw std::bad_alloc();
 			}
-		} while(stream_.avail_in > 0);
+		} while(m_stream.avail_in > 0);
 	}
 
 	char* flush()
 	{
 		while(true) {
-			switch(deflate(&stream_, Z_FINISH)) {
+			switch(deflate(&m_stream, Z_FINISH)) {
 			case Z_STREAM_END:
-				return data_;
+				return m_data;
 			case Z_OK:
 				if(!expand()) {
 					throw std::bad_alloc();
@@ -92,22 +92,22 @@ public:
 
 	char* data()
 	{
-		return data_;
+		return m_data;
 	}
 
 	const char* data() const
 	{
-		return data_;
+		return m_data;
 	}
 
 	size_t size() const
 	{
-		return reinterpret_cast<char*>(stream_.next_out) - data_;
+		return reinterpret_cast<char*>(m_stream.next_out) - m_data;
 	}
 
 	void reset()
 	{
-		if(deflateReset(&stream_) != Z_OK) {
+		if(deflateReset(&m_stream) != Z_OK) {
 			throw std::bad_alloc();
 		}
 		reset_buffer();
@@ -115,34 +115,34 @@ public:
 
 	void reset_buffer()
 	{
-		stream_.avail_out += reinterpret_cast<char*>(stream_.next_out) - data_;
-		stream_.next_out = reinterpret_cast<Bytef*>(data_);
+		m_stream.avail_out += reinterpret_cast<char*>(m_stream.next_out) - m_data;
+		m_stream.next_out = reinterpret_cast<Bytef*>(m_data);
 	}
 
 	char* release_buffer()
 	{
-		char* tmp = data_;
-		data_ = nullptr;
-		stream_.next_out = nullptr;
-		stream_.avail_out = 0;
+		char* tmp = m_data;
+		m_data = nullptr;
+		m_stream.next_out = nullptr;
+		m_stream.avail_out = 0;
 		return tmp;
 	}
 
 private:
 	bool expand()
 	{
-		size_t used = reinterpret_cast<char*>(stream_.next_out) - data_;
-		size_t csize = used + stream_.avail_out;
-		size_t nsize = (csize == 0) ? init_size_ : csize * 2;
+		size_t used = reinterpret_cast<char*>(m_stream.next_out) - m_data;
+		size_t csize = used + m_stream.avail_out;
+		size_t nsize = (csize == 0) ? m_init_size : csize * 2;
 
-		char* tmp = static_cast<char*>(::realloc(data_, nsize));
+		char* tmp = static_cast<char*>(::realloc(m_data, nsize));
 		if(tmp == nullptr) {
 			return false;
 		}
 
-		data_ = tmp;
-		stream_.next_out  = reinterpret_cast<Bytef*>(tmp + used);
-		stream_.avail_out = nsize - used;
+		m_data = tmp;
+		m_stream.next_out  = reinterpret_cast<Bytef*>(tmp + used);
+		m_stream.avail_out = nsize - used;
 
 		return true;
 	}
@@ -150,9 +150,9 @@ private:
 	zbuffer(const zbuffer&);
 
 private:
-	z_stream stream_;
-	char* data_;
-	size_t init_size_;
+	z_stream m_stream;
+	char* m_data;
+	size_t m_init_size;
 };
 
 

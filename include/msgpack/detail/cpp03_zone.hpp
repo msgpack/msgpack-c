@@ -37,41 +37,41 @@ namespace msgpack {
 
 class zone {
 	struct finalizer {
-		finalizer(void (*func)(void*), void* data):func_(func), data_(data) {}
-		void operator()() { func_(data_); }
-		void (*func_)(void*);
-		void* data_;
+		finalizer(void (*func)(void*), void* data):m_func(func), m_data(data) {}
+		void operator()() { m_func(m_data); }
+		void (*m_func)(void*);
+		void* m_data;
 	};
 	struct finalizer_array {
-		finalizer_array():tail_(nullptr), end_(nullptr), array_(nullptr) {}
+		finalizer_array():m_tail(nullptr), m_end(nullptr), m_array(nullptr) {}
 		void call() {
-			finalizer* fin = tail_;
-			for(; fin != array_; --fin) (*(fin-1))();
+			finalizer* fin = m_tail;
+			for(; fin != m_array; --fin) (*(fin-1))();
 		}
 		~finalizer_array() {
 			call();
-			::free(array_);
+			::free(m_array);
 		}
 		void clear() {
 			call();
-			tail_ = array_;
+			m_tail = m_array;
 		}
 		void push(void (*func)(void* data), void* data)
 		{
-			finalizer* fin = tail_;
+			finalizer* fin = m_tail;
 
-			if(fin == end_) {
+			if(fin == m_end) {
 				push_expand(func, data);
 				return;
 			}
 
-			fin->func_ = func;
-			fin->data_ = data;
+			fin->m_func = func;
+			fin->m_data = data;
 
-			++tail_;
+			++m_tail;
 		}
 		void push_expand(void (*func)(void*), void* data) {
-			const size_t nused = end_ - array_;
+			const size_t nused = m_end - m_array;
 			size_t nnext;
 			if(nused == 0) {
 				nnext = (sizeof(finalizer) < 72/2) ?
@@ -80,23 +80,23 @@ class zone {
 				nnext = nused * 2;
 			}
 			finalizer* tmp =
-				static_cast<finalizer*>(::realloc(array_, sizeof(finalizer) * nnext));
+				static_cast<finalizer*>(::realloc(m_array, sizeof(finalizer) * nnext));
 			if(!tmp) {
 				throw std::bad_alloc();
 			}
-			array_	= tmp;
-			end_	= tmp + nnext;
-			tail_	= tmp + nused;
-			new (tail_) finalizer(func, data);
+			m_array	= tmp;
+			m_end	= tmp + nnext;
+			m_tail	= tmp + nused;
+			new (m_tail) finalizer(func, data);
 
-			++tail_;
+			++m_tail;
 		}
-		finalizer* tail_;
-		finalizer* end_;
-		finalizer* array_;
+		finalizer* m_tail;
+		finalizer* m_end;
+		finalizer* m_array;
 	};
 	struct chunk {
-		chunk* next_;
+		chunk* m_next;
 	};
 	struct chunk_list {
 		chunk_list(size_t chunk_size)
@@ -106,16 +106,16 @@ class zone {
 				throw std::bad_alloc();
 			}
 
-			head_ = c;
-			free_ = chunk_size;
-			ptr_  = reinterpret_cast<char*>(c) + sizeof(chunk);
-			c->next_ = nullptr;
+			m_head = c;
+			m_free = chunk_size;
+			m_ptr  = reinterpret_cast<char*>(c) + sizeof(chunk);
+			c->m_next = nullptr;
 		}
 		~chunk_list()
 		{
-			chunk* c = head_;
+			chunk* c = m_head;
 			while(true) {
-				chunk* n = c->next_;
+				chunk* n = c->m_next;
 				::free(c);
 				if(n) {
 					c = n;
@@ -126,9 +126,9 @@ class zone {
 		}
 		void clear(size_t chunk_size)
 		{
-			chunk* c = head_;
+			chunk* c = m_head;
 			while(true) {
-				chunk* n = c->next_;
+				chunk* n = c->m_next;
 				if(n) {
 					::free(c);
 					c = n;
@@ -136,17 +136,17 @@ class zone {
 					break;
 				}
 			}
-			head_->next_ = nullptr;
-			free_ = chunk_size;
-			ptr_  = reinterpret_cast<char*>(head_) + sizeof(chunk);
+			m_head->m_next = nullptr;
+			m_free = chunk_size;
+			m_ptr  = reinterpret_cast<char*>(m_head) + sizeof(chunk);
 		}
-		size_t free_;
-		char* ptr_;
-		chunk* head_;
+		size_t m_free;
+		char* m_ptr;
+		chunk* m_head;
 	};
-	size_t chunk_size_;
-	chunk_list chunk_list_;
-	finalizer_array finalizer_array_;
+	size_t m_chunk_size;
+	chunk_list m_chunk_list;
+	finalizer_array m_finalizer_array;
 
 public:
 	zone(size_t chunk_size = MSGPACK_ZONE_CHUNK_SIZE) /* throw() */;
@@ -259,7 +259,7 @@ inline void zone::destroy(zone* z)
 	::free(z);
 }
 
-inline zone::zone(size_t chunk_size) /* throw() */ :chunk_size_(chunk_size), chunk_list_(chunk_size_)
+inline zone::zone(size_t chunk_size) /* throw() */ :m_chunk_size(chunk_size), m_chunk_list(m_chunk_size)
 {
 }
 
@@ -271,22 +271,22 @@ inline void* zone::allocate_align(size_t size)
 
 inline void* zone::allocate_no_align(size_t size)
 {
-	if(chunk_list_.free_ < size) {
+	if(m_chunk_list.m_free < size) {
 		return allocate_expand(size);
 	}
 
-	char* ptr = chunk_list_.ptr_;
-	chunk_list_.free_ -= size;
-	chunk_list_.ptr_  += size;
+	char* ptr = m_chunk_list.m_ptr;
+	m_chunk_list.m_free -= size;
+	m_chunk_list.m_ptr  += size;
 
 	return ptr;
 }
 
 inline void* zone::allocate_expand(size_t size)
 {
-	chunk_list* const cl = &chunk_list_;
+	chunk_list* const cl = &m_chunk_list;
 
-	size_t sz = chunk_size_;
+	size_t sz = m_chunk_size;
 
 	while(sz < size) {
 		sz *= 2;
@@ -296,30 +296,30 @@ inline void* zone::allocate_expand(size_t size)
 
 	char* ptr = reinterpret_cast<char*>(c) + sizeof(chunk);
 
-	c->next_  = cl->head_;
-	cl->head_ = c;
-	cl->free_ = sz - size;
-	cl->ptr_  = ptr + size;
+	c->m_next  = cl->m_head;
+	cl->m_head = c;
+	cl->m_free = sz - size;
+	cl->m_ptr  = ptr + size;
 
 	return ptr;
 }
 
 inline void zone::push_finalizer(void (*func)(void*), void* data)
 {
-	finalizer_array_.push(func, data);
+	m_finalizer_array.push(func, data);
 }
 
 template <typename T>
 inline void zone::push_finalizer(msgpack::unique_ptr<T> obj)
 {
-	finalizer_array_.push(&zone::object_destructor<T>, obj.get());
+	m_finalizer_array.push(&zone::object_destructor<T>, obj.get());
 	obj.release();
 }
 
 inline void zone::clear()
 {
-	finalizer_array_.clear();
-	chunk_list_.clear(chunk_size_);
+	m_finalizer_array.clear();
+	m_chunk_list.clear(m_chunk_size);
 }
 
 inline void zone::swap(zone& o)
@@ -335,8 +335,8 @@ void zone::object_destructor(void* obj)
 
 inline void zone::undo_allocate(size_t size)
 {
-	chunk_list_.ptr_  -= size;
-	chunk_list_.free_ += size;
+	m_chunk_list.m_ptr  -= size;
+	m_chunk_list.m_free += size;
 }
 
 
@@ -345,7 +345,7 @@ T* zone::allocate()
 {
 	void* x = allocate_align(sizeof(T));
 	try {
-		finalizer_array_.push(&zone::object_destructor<T>, x);
+		m_finalizer_array.push(&zone::object_destructor<T>, x);
 	} catch (...) {
 		undo_allocate(sizeof(T));
 		throw;
@@ -353,7 +353,7 @@ T* zone::allocate()
 	try {
 		return new (x) T();
 	} catch (...) {
-		--finalizer_array_.tail_;
+		--m_finalizer_array.m_tail;
 		undo_allocate(sizeof(T));
 		throw;
 	}
@@ -364,7 +364,7 @@ T* zone::allocate(A1 a1)
 {
 	void* x = allocate_align(sizeof(T));
 	try {
-		finalizer_array_.push(&zone::object_destructor<T>, x);
+		m_finalizer_array.push(&zone::object_destructor<T>, x);
 	} catch (...) {
 		undo_allocate(sizeof(T));
 		throw;
@@ -372,7 +372,7 @@ T* zone::allocate(A1 a1)
 	try {
 		return new (x) T(a1);
 	} catch (...) {
-		--finalizer_array_.tail_;
+		--m_finalizer_array.m_tail;
 		undo_allocate(sizeof(T));
 		throw;
 	}
@@ -383,7 +383,7 @@ T* zone::allocate(A1 a1, A2 a2)
 {
 	void* x = allocate_align(sizeof(T));
 	try {
-		finalizer_array_.push(&zone::object_destructor<T>, x);
+		m_finalizer_array.push(&zone::object_destructor<T>, x);
 	} catch (...) {
 		undo_allocate(sizeof(T));
 		throw;
@@ -391,7 +391,7 @@ T* zone::allocate(A1 a1, A2 a2)
 	try {
 		return new (x) T(a1, a2);
 	} catch (...) {
-		--finalizer_array_.tail_;
+		--m_finalizer_array.m_tail;
 		undo_allocate(sizeof(T));
 		throw;
 	}
@@ -402,7 +402,7 @@ T* zone::allocate(A1 a1, A2 a2, A3 a3)
 {
 	void* x = allocate_align(sizeof(T));
 	try {
-		finalizer_array_.push(&zone::object_destructor<T>, x);
+		m_finalizer_array.push(&zone::object_destructor<T>, x);
 	} catch (...) {
 		undo_allocate(sizeof(T));
 		throw;
@@ -410,7 +410,7 @@ T* zone::allocate(A1 a1, A2 a2, A3 a3)
 	try {
 		return new (x) T(a1, a2, a3);
 	} catch (...) {
-		--finalizer_array_.tail_;
+		--m_finalizer_array.m_tail;
 		undo_allocate(sizeof(T));
 		throw;
 	}
@@ -421,7 +421,7 @@ T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4)
 {
 	void* x = allocate_align(sizeof(T));
 	try {
-		finalizer_array_.push(&zone::object_destructor<T>, x);
+		m_finalizer_array.push(&zone::object_destructor<T>, x);
 	} catch (...) {
 		undo_allocate(sizeof(T));
 		throw;
@@ -429,7 +429,7 @@ T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4)
 	try {
 		return new (x) T(a1, a2, a3, a4);
 	} catch (...) {
-		--finalizer_array_.tail_;
+		--m_finalizer_array.m_tail;
 		undo_allocate(sizeof(T));
 		throw;
 	}
@@ -440,7 +440,7 @@ T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5)
 {
 	void* x = allocate_align(sizeof(T));
 	try {
-		finalizer_array_.push(&zone::object_destructor<T>, x);
+		m_finalizer_array.push(&zone::object_destructor<T>, x);
 	} catch (...) {
 		undo_allocate(sizeof(T));
 		throw;
@@ -448,7 +448,7 @@ T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5)
 	try {
 		return new (x) T(a1, a2, a3, a4, a5);
 	} catch (...) {
-		--finalizer_array_.tail_;
+		--m_finalizer_array.m_tail;
 		undo_allocate(sizeof(T));
 		throw;
 	}
@@ -459,7 +459,7 @@ T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6)
 {
 	void* x = allocate_align(sizeof(T));
 	try {
-		finalizer_array_.push(&zone::object_destructor<T>, x);
+		m_finalizer_array.push(&zone::object_destructor<T>, x);
 	} catch (...) {
 		undo_allocate(sizeof(T));
 		throw;
@@ -467,7 +467,7 @@ T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6)
 	try {
 		return new (x) T(a1, a2, a3, a4, a5, a6);
 	} catch (...) {
-		--finalizer_array_.tail_;
+		--m_finalizer_array.m_tail;
 		undo_allocate(sizeof(T));
 		throw;
 	}
@@ -478,7 +478,7 @@ T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7)
 {
 	void* x = allocate_align(sizeof(T));
 	try {
-		finalizer_array_.push(&zone::object_destructor<T>, x);
+		m_finalizer_array.push(&zone::object_destructor<T>, x);
 	} catch (...) {
 		undo_allocate(sizeof(T));
 		throw;
@@ -486,7 +486,7 @@ T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7)
 	try {
 		return new (x) T(a1, a2, a3, a4, a5, a6, a7);
 	} catch (...) {
-		--finalizer_array_.tail_;
+		--m_finalizer_array.m_tail;
 		undo_allocate(sizeof(T));
 		throw;
 	}
@@ -497,7 +497,7 @@ T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8)
 {
 	void* x = allocate_align(sizeof(T));
 	try {
-		finalizer_array_.push(&zone::object_destructor<T>, x);
+		m_finalizer_array.push(&zone::object_destructor<T>, x);
 	} catch (...) {
 		undo_allocate(sizeof(T));
 		throw;
@@ -505,7 +505,7 @@ T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8)
 	try {
 		return new (x) T(a1, a2, a3, a4, a5, a6, a7, a8);
 	} catch (...) {
-		--finalizer_array_.tail_;
+		--m_finalizer_array.m_tail;
 		undo_allocate(sizeof(T));
 		throw;
 	}
@@ -516,7 +516,7 @@ T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9)
 {
 	void* x = allocate_align(sizeof(T));
 	try {
-		finalizer_array_.push(&zone::object_destructor<T>, x);
+		m_finalizer_array.push(&zone::object_destructor<T>, x);
 	} catch (...) {
 		undo_allocate(sizeof(T));
 		throw;
@@ -524,7 +524,7 @@ T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9)
 	try {
 		return new (x) T(a1, a2, a3, a4, a5, a6, a7, a8, a9);
 	} catch (...) {
-		--finalizer_array_.tail_;
+		--m_finalizer_array.m_tail;
 		undo_allocate(sizeof(T));
 		throw;
 	}
@@ -535,7 +535,7 @@ T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9,
 {
 	void* x = allocate_align(sizeof(T));
 	try {
-		finalizer_array_.push(&zone::object_destructor<T>, x);
+		m_finalizer_array.push(&zone::object_destructor<T>, x);
 	} catch (...) {
 		undo_allocate(sizeof(T));
 		throw;
@@ -543,7 +543,7 @@ T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9,
 	try {
 		return new (x) T(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10);
 	} catch (...) {
-		--finalizer_array_.tail_;
+		--m_finalizer_array.m_tail;
 		undo_allocate(sizeof(T));
 		throw;
 	}
@@ -554,7 +554,7 @@ T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9,
 {
 	void* x = allocate_align(sizeof(T));
 	try {
-		finalizer_array_.push(&zone::object_destructor<T>, x);
+		m_finalizer_array.push(&zone::object_destructor<T>, x);
 	} catch (...) {
 		undo_allocate(sizeof(T));
 		throw;
@@ -562,7 +562,7 @@ T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9,
 	try {
 		return new (x) T(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11);
 	} catch (...) {
-		--finalizer_array_.tail_;
+		--m_finalizer_array.m_tail;
 		undo_allocate(sizeof(T));
 		throw;
 	}
@@ -573,7 +573,7 @@ T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9,
 {
 	void* x = allocate_align(sizeof(T));
 	try {
-		finalizer_array_.push(&zone::object_destructor<T>, x);
+		m_finalizer_array.push(&zone::object_destructor<T>, x);
 	} catch (...) {
 		undo_allocate(sizeof(T));
 		throw;
@@ -581,7 +581,7 @@ T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9,
 	try {
 		return new (x) T(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12);
 	} catch (...) {
-		--finalizer_array_.tail_;
+		--m_finalizer_array.m_tail;
 		undo_allocate(sizeof(T));
 		throw;
 	}
@@ -592,7 +592,7 @@ T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9,
 {
 	void* x = allocate_align(sizeof(T));
 	try {
-		finalizer_array_.push(&zone::object_destructor<T>, x);
+		m_finalizer_array.push(&zone::object_destructor<T>, x);
 	} catch (...) {
 		undo_allocate(sizeof(T));
 		throw;
@@ -600,7 +600,7 @@ T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9,
 	try {
 		return new (x) T(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13);
 	} catch (...) {
-		--finalizer_array_.tail_;
+		--m_finalizer_array.m_tail;
 		undo_allocate(sizeof(T));
 		throw;
 	}
@@ -611,7 +611,7 @@ T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9,
 {
 	void* x = allocate_align(sizeof(T));
 	try {
-		finalizer_array_.push(&zone::object_destructor<T>, x);
+		m_finalizer_array.push(&zone::object_destructor<T>, x);
 	} catch (...) {
 		undo_allocate(sizeof(T));
 		throw;
@@ -619,7 +619,7 @@ T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9,
 	try {
 		return new (x) T(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14);
 	} catch (...) {
-		--finalizer_array_.tail_;
+		--m_finalizer_array.m_tail;
 		undo_allocate(sizeof(T));
 		throw;
 	}
@@ -630,7 +630,7 @@ T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9,
 {
 	void* x = allocate_align(sizeof(T));
 	try {
-		finalizer_array_.push(&zone::object_destructor<T>, x);
+		m_finalizer_array.push(&zone::object_destructor<T>, x);
 	} catch (...) {
 		undo_allocate(sizeof(T));
 		throw;
@@ -638,7 +638,7 @@ T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9,
 	try {
 		return new (x) T(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15);
 	} catch (...) {
-		--finalizer_array_.tail_;
+		--m_finalizer_array.m_tail;
 		undo_allocate(sizeof(T));
 		throw;
 	}

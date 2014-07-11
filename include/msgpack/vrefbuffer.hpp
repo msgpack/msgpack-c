@@ -57,7 +57,7 @@ private:
 public:
 	vrefbuffer(size_t ref_size = MSGPACK_VREFBUFFER_REF_SIZE,
 			   size_t chunk_size = MSGPACK_VREFBUFFER_CHUNK_SIZE)
-		:ref_size_(ref_size), chunk_size_(chunk_size)
+		:m_ref_size(ref_size), m_chunk_size(chunk_size)
 	{
 		size_t nfirst = (sizeof(iovec) < 72/2) ?
 			72 / sizeof(iovec) : 8;
@@ -68,16 +68,16 @@ public:
 			throw std::bad_alloc();
 		}
 
-		tail_  = array;
-		end_   = array + nfirst;
-		array_ = array;
+		m_tail  = array;
+		m_end   = array + nfirst;
+		m_array = array;
 
 		chunk* c = static_cast<chunk*>(::malloc(sizeof(chunk) + chunk_size));
 		if(!c) {
 			::free(array);
 			throw std::bad_alloc();
 		}
-		inner_buffer* const ib = &inner_buffer_;
+		inner_buffer* const ib = &m_inner_buffer;
 
 		ib->free = chunk_size;
 		ib->ptr	 = reinterpret_cast<char*>(c) + sizeof(chunk);
@@ -88,7 +88,7 @@ public:
 
 	~vrefbuffer()
 	{
-		chunk* c = inner_buffer_.head;
+		chunk* c = m_inner_buffer.head;
 		while(true) {
 			chunk* n = c->next;
 			::free(c);
@@ -98,13 +98,13 @@ public:
 				break;
 			}
 		}
-		::free(array_);
+		::free(m_array);
 	}
 
 public:
 	void write(const char* buf, size_t len)
 	{
-		if(len < ref_size_) {
+		if(len < m_ref_size) {
 			append_copy(buf, len);
 		} else {
 			append_ref(buf, len);
@@ -113,32 +113,32 @@ public:
 
 	void append_ref(const char* buf, size_t len)
 	{
-		if(tail_ == end_) {
-			const size_t nused = tail_ - array_;
+		if(m_tail == m_end) {
+			const size_t nused = m_tail - m_array;
 			const size_t nnext = nused * 2;
 
 			iovec* nvec = static_cast<iovec*>(::realloc(
-				array_, sizeof(iovec)*nnext));
+				m_array, sizeof(iovec)*nnext));
 			if(!nvec) {
 				throw std::bad_alloc();
 			}
 
-			array_ = nvec;
-			end_   = nvec + nnext;
-			tail_  = nvec + nused;
+			m_array = nvec;
+			m_end   = nvec + nnext;
+			m_tail  = nvec + nused;
 		}
 
-		tail_->iov_base = const_cast<char*>(buf);
-		tail_->iov_len	= len;
-		++tail_;
+		m_tail->iov_base = const_cast<char*>(buf);
+		m_tail->iov_len	= len;
+		++m_tail;
 	}
 
 	void append_copy(const char* buf, size_t len)
 	{
-		inner_buffer* const ib = &inner_buffer_;
+		inner_buffer* const ib = &m_inner_buffer;
 
 		if(ib->free < len) {
-			size_t sz = chunk_size_;
+			size_t sz = m_chunk_size;
 			if(sz < len) {
 				sz = len;
 			}
@@ -159,11 +159,11 @@ public:
 		ib->free -= len;
 		ib->ptr	 += len;
 
-		if(tail_ != array_ && m ==
+		if(m_tail != m_array && m ==
 			static_cast<const char*>(
-				const_cast<const void *>((tail_ - 1)->iov_base)
-			) + (tail_ - 1)->iov_len) {
-			(tail_ - 1)->iov_len += len;
+				const_cast<const void *>((m_tail - 1)->iov_base)
+			) + (m_tail - 1)->iov_len) {
+			(m_tail - 1)->iov_len += len;
 			return;
 		} else {
 			append_ref( m, len);
@@ -172,17 +172,17 @@ public:
 
 	const struct iovec* vector() const
 	{
-		return array_;
+		return m_array;
 	}
 
 	size_t vector_size() const
 	{
-		return tail_ - array_;
+		return m_tail - m_array;
 	}
 
 	void migrate(vrefbuffer* to)
 	{
-		size_t sz = chunk_size_;
+		size_t sz = m_chunk_size;
 
 		chunk* empty = static_cast<chunk*>(::malloc(sizeof(chunk) + sz));
 		if(!empty) {
@@ -191,35 +191,35 @@ public:
 
 		empty->next = nullptr;
 
-		const size_t nused = tail_ - array_;
-		if(to->tail_ + nused < end_) {
-			const size_t tosize = to->tail_ - to->array_;
+		const size_t nused = m_tail - m_array;
+		if(to->m_tail + nused < m_end) {
+			const size_t tosize = to->m_tail - to->m_array;
 			const size_t reqsize = nused + tosize;
-			size_t nnext = (to->end_ - to->array_) * 2;
+			size_t nnext = (to->m_end - to->m_array) * 2;
 			while(nnext < reqsize) {
 				nnext *= 2;
 			}
 
 			iovec* nvec = static_cast<iovec*>(::realloc(
-				to->array_, sizeof(iovec)*nnext));
+				to->m_array, sizeof(iovec)*nnext));
 			if(!nvec) {
 				::free(empty);
 				throw std::bad_alloc();
 			}
 
-			to->array_ = nvec;
-			to->end_   = nvec + nnext;
-			to->tail_  = nvec + tosize;
+			to->m_array = nvec;
+			to->m_end   = nvec + nnext;
+			to->m_tail  = nvec + tosize;
 		}
 
-		::memcpy(to->tail_, array_, sizeof(iovec)*nused);
+		::memcpy(to->m_tail, m_array, sizeof(iovec)*nused);
 
-		to->tail_ += nused;
-		tail_ = array_;
+		to->m_tail += nused;
+		m_tail = m_array;
 
 
-		inner_buffer* const ib = &inner_buffer_;
-		inner_buffer* const toib = &to->inner_buffer_;
+		inner_buffer* const ib = &m_inner_buffer;
+		inner_buffer* const toib = &to->m_inner_buffer;
 
 		chunk* last = ib->head;
 		while(last->next) {
@@ -241,7 +241,7 @@ public:
 
 	void clear()
 	{
-		chunk* c = inner_buffer_.head->next;
+		chunk* c = m_inner_buffer.head->next;
 		chunk* n;
 		while(c) {
 			n = c->next;
@@ -249,27 +249,27 @@ public:
 			c = n;
 		}
 
-		inner_buffer* const ib = &inner_buffer_;
+		inner_buffer* const ib = &m_inner_buffer;
 		c = ib->head;
 		c->next = nullptr;
-		ib->free = chunk_size_;
+		ib->free = m_chunk_size;
 		ib->ptr	 = reinterpret_cast<char*>(c) + sizeof(chunk);
 
-		tail_ = array_;
+		m_tail = m_array;
 	}
 
 private:
 	vrefbuffer(const vrefbuffer&);
 
 private:
-	iovec* tail_;
-	iovec* end_;
-	iovec* array_;
+	iovec* m_tail;
+	iovec* m_end;
+	iovec* m_array;
 
-	size_t ref_size_;
-	size_t chunk_size_;
+	size_t m_ref_size;
+	size_t m_chunk_size;
 
-	inner_buffer inner_buffer_;
+	inner_buffer m_inner_buffer;
 
 };
 
