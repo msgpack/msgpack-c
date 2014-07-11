@@ -16,7 +16,7 @@ endif
 
 
 # -version-info CURRENT:REVISION:AGE
-libmsgpack_la_LDFLAGS = -version-info 3:0:0 -no-undefined
+libmsgpack_la_LDFLAGS = -version-info 4:0:0 -no-undefined
 
 
 # backward compatibility
