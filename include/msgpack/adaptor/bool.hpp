@@ -26,27 +26,27 @@ namespace msgpack {
 
 inline bool& operator>> (object const& o, bool& v)
 {
-	if(o.type != type::BOOLEAN) { throw type_error(); }
-	v = o.via.boolean;
-	return v;
+    if(o.type != type::BOOLEAN) { throw type_error(); }
+    v = o.via.boolean;
+    return v;
 }
 
 template <typename Stream>
 inline packer<Stream>& operator<< (packer<Stream>& o, const bool& v)
 {
-	if(v) { o.pack_true(); }
-	else { o.pack_false(); }
-	return o;
+    if(v) { o.pack_true(); }
+    else { o.pack_false(); }
+    return o;
 }
 
 inline void operator<< (object& o, bool v)
 {
-	o.type = type::BOOLEAN;
-	o.via.boolean = v;
+    o.type = type::BOOLEAN;
+    o.via.boolean = v;
 }
 
 inline void operator<< (object::with_zone& o, bool v)
-	{ static_cast<object&>(o) << v; }
+    { static_cast<object&>(o) << v; }
 
 
 }  // namespace msgpack

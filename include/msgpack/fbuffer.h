@@ -33,7 +33,7 @@ extern "C" {
 
 static inline int msgpack_fbuffer_write(void* data, const char* buf, unsigned int len)
 {
-	return (1 == fwrite(buf, len, 1, (FILE *)data)) ? 0 : -1;
+    return (1 == fwrite(buf, len, 1, (FILE *)data)) ? 0 : -1;
 }
 
 /** @} */

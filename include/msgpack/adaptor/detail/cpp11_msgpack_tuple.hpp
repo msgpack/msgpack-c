@@ -26,157 +26,157 @@
 namespace msgpack {
 
 namespace type {
-	// tuple
-	using std::get;
-	using std::tuple_size;
-	using std::tuple_element;
-	using std::uses_allocator;
-	using std::ignore;
-	using std::make_tuple;
-	using std::tie;
-	using std::forward_as_tuple;
-	using std::swap;
+    // tuple
+    using std::get;
+    using std::tuple_size;
+    using std::tuple_element;
+    using std::uses_allocator;
+    using std::ignore;
+    using std::make_tuple;
+    using std::tie;
+    using std::forward_as_tuple;
+    using std::swap;
 
-	template< class... Types >
-	class tuple : public std::tuple<Types...> {
-	public:
-		using base = std::tuple<Types...>;
+    template< class... Types >
+    class tuple : public std::tuple<Types...> {
+    public:
+        using base = std::tuple<Types...>;
 
-		using base::tuple;
+        using base::tuple;
 
-		tuple() = default;
-		tuple(tuple const&) = default;
-		tuple(tuple&&) = default;
+        tuple() = default;
+        tuple(tuple const&) = default;
+        tuple(tuple&&) = default;
 
-		template<typename... OtherTypes>
-		tuple(tuple<OtherTypes...> const& other):base(static_cast<std::tuple<OtherTypes...> const&>(other)) {}
-		template<typename... OtherTypes>
-		tuple(tuple<OtherTypes...> && other):base(static_cast<std::tuple<OtherTypes...> &&>(other)) {}
+        template<typename... OtherTypes>
+        tuple(tuple<OtherTypes...> const& other):base(static_cast<std::tuple<OtherTypes...> const&>(other)) {}
+        template<typename... OtherTypes>
+        tuple(tuple<OtherTypes...> && other):base(static_cast<std::tuple<OtherTypes...> &&>(other)) {}
 
-		tuple& operator=(tuple const&) = default;
-		tuple& operator=(tuple&&) = default;
+        tuple& operator=(tuple const&) = default;
+        tuple& operator=(tuple&&) = default;
 
-		template<typename... OtherTypes>
-		tuple& operator=(tuple<OtherTypes...> const& other) {
-			*static_cast<base*>(this) = static_cast<std::tuple<OtherTypes...> const&>(other);
-			return *this;
-		}
-		template<typename... OtherTypes>
-		tuple& operator=(tuple<OtherTypes...> && other) {
-			*static_cast<base*>(this) = static_cast<std::tuple<OtherTypes...> &&>(other);
-			return *this;
-		}
+        template<typename... OtherTypes>
+        tuple& operator=(tuple<OtherTypes...> const& other) {
+            *static_cast<base*>(this) = static_cast<std::tuple<OtherTypes...> const&>(other);
+            return *this;
+        }
+        template<typename... OtherTypes>
+        tuple& operator=(tuple<OtherTypes...> && other) {
+            *static_cast<base*>(this) = static_cast<std::tuple<OtherTypes...> &&>(other);
+            return *this;
+        }
 
-		template< std::size_t I>
-		typename tuple_element<I, base >::type&
-		get() { return std::get<I>(*this); }
+        template< std::size_t I>
+        typename tuple_element<I, base >::type&
+        get() { return std::get<I>(*this); }
 
-		template< std::size_t I>
-		typename tuple_element<I, base >::type const&
-		get() const { return std::get<I>(*this); }
+        template< std::size_t I>
+        typename tuple_element<I, base >::type const&
+        get() const { return std::get<I>(*this); }
 
-		template< std::size_t I>
-		typename tuple_element<I, base >::type&&
-		get() && { return std::get<I>(*this); }
-	};
+        template< std::size_t I>
+        typename tuple_element<I, base >::type&&
+        get() && { return std::get<I>(*this); }
+    };
 
-	template< class... Tuples >
-	auto tuple_cat(Tuples&&... args) ->
-		decltype(
-			std::tuple_cat(std::forward<typename std::remove_reference<Tuples>::type::base>(args)...)
-		) {
-		return std::tuple_cat(std::forward<typename std::remove_reference<Tuples>::type::base>(args)...);
-	}
+    template< class... Tuples >
+    auto tuple_cat(Tuples&&... args) ->
+        decltype(
+            std::tuple_cat(std::forward<typename std::remove_reference<Tuples>::type::base>(args)...)
+        ) {
+        return std::tuple_cat(std::forward<typename std::remove_reference<Tuples>::type::base>(args)...);
+    }
 } // namespace type
 
 // --- Pack ( from tuple to packer stream ---
 template <typename Stream, typename Tuple, std::size_t N>
 struct MsgpackTuplePacker {
-	static void pack(
-		packer<Stream>& o,
-		const Tuple& v) {
-		MsgpackTuplePacker<Stream, Tuple, N-1>::pack(o, v);
-		o.pack(type::get<N-1>(v));
-	}
+    static void pack(
+        packer<Stream>& o,
+        const Tuple& v) {
+        MsgpackTuplePacker<Stream, Tuple, N-1>::pack(o, v);
+        o.pack(type::get<N-1>(v));
+    }
 };
 
 template <typename Stream, typename Tuple>
 struct MsgpackTuplePacker<Stream, Tuple, 1> {
-	static void pack (
-		packer<Stream>& o,
-		const Tuple& v) {
-		o.pack(type::get<0>(v));
-	}
+    static void pack (
+        packer<Stream>& o,
+        const Tuple& v) {
+        o.pack(type::get<0>(v));
+    }
 };
 
 template <typename Stream, typename... Args>
 const packer<Stream>& operator<< (
-	packer<Stream>& o,
-	const type::tuple<Args...>& v) {
-	o.pack_array(sizeof...(Args));
-	MsgpackTuplePacker<Stream, decltype(v), sizeof...(Args)>::pack(o, v);
-	return o;
+    packer<Stream>& o,
+    const type::tuple<Args...>& v) {
+    o.pack_array(sizeof...(Args));
+    MsgpackTuplePacker<Stream, decltype(v), sizeof...(Args)>::pack(o, v);
+    return o;
 }
 
 // --- Convert from tuple to object ---
 
 template <typename Tuple, std::size_t N>
 struct MsgpackTupleConverter {
-	static void convert(
-		object const& o,
-		Tuple& v) {
-		MsgpackTupleConverter<Tuple, N-1>::convert(o, v);
-		o.via.array.ptr[N-1].convert<typename std::remove_reference<decltype(type::get<N-1>(v))>::type>(type::get<N-1>(v));
-	}
+    static void convert(
+        object const& o,
+        Tuple& v) {
+        MsgpackTupleConverter<Tuple, N-1>::convert(o, v);
+        o.via.array.ptr[N-1].convert<typename std::remove_reference<decltype(type::get<N-1>(v))>::type>(type::get<N-1>(v));
+    }
 };
 
 template <typename Tuple>
 struct MsgpackTupleConverter<Tuple, 1> {
-	static void convert (
-		object const& o,
-		Tuple& v) {
-		o.via.array.ptr[0].convert<typename std::remove_reference<decltype(type::get<0>(v))>::type>(type::get<0>(v));
-	}
+    static void convert (
+        object const& o,
+        Tuple& v) {
+        o.via.array.ptr[0].convert<typename std::remove_reference<decltype(type::get<0>(v))>::type>(type::get<0>(v));
+    }
 };
 
 template <typename... Args>
 type::tuple<Args...>& operator>> (
-	object const& o,
-	type::tuple<Args...>& v) {
-	if(o.type != type::ARRAY) { throw type_error(); }
-	if(o.via.array.size < sizeof...(Args)) { throw type_error(); }
-	MsgpackTupleConverter<decltype(v), sizeof...(Args)>::convert(o, v);
-	return v;
+    object const& o,
+    type::tuple<Args...>& v) {
+    if(o.type != type::ARRAY) { throw type_error(); }
+    if(o.via.array.size < sizeof...(Args)) { throw type_error(); }
+    MsgpackTupleConverter<decltype(v), sizeof...(Args)>::convert(o, v);
+    return v;
 }
 
 // --- Convert from tuple to object with zone ---
 template <typename Tuple, std::size_t N>
 struct MsgpackTupleToObjectWithZone {
-	static void convert(
-		object::with_zone& o,
-		const Tuple& v) {
-		MsgpackTupleToObjectWithZone<Tuple, N-1>::convert(o, v);
-		o.via.array.ptr[N-1] = object(type::get<N-1>(v), o.zone);
-	}
+    static void convert(
+        object::with_zone& o,
+        const Tuple& v) {
+        MsgpackTupleToObjectWithZone<Tuple, N-1>::convert(o, v);
+        o.via.array.ptr[N-1] = object(type::get<N-1>(v), o.zone);
+    }
 };
 
 template <typename Tuple>
 struct MsgpackTupleToObjectWithZone<Tuple, 1> {
-	static void convert (
-		object::with_zone& o,
-		const Tuple& v) {
-		o.via.array.ptr[0] = object(type::get<0>(v), o.zone);
-	}
+    static void convert (
+        object::with_zone& o,
+        const Tuple& v) {
+        o.via.array.ptr[0] = object(type::get<0>(v), o.zone);
+    }
 };
 
 template <typename... Args>
 inline void operator<< (
-		object::with_zone& o,
-		type::tuple<Args...>& v) {
-	o.type = type::ARRAY;
-	o.via.array.ptr = static_cast<object*>(o.zone->allocate_align(sizeof(object)*sizeof...(Args)));
-	o.via.array.size = sizeof...(Args);
-	MsgpackTupleToObjectWithZone<decltype(v), sizeof...(Args)>::convert(o, v);
+        object::with_zone& o,
+        type::tuple<Args...>& v) {
+    o.type = type::ARRAY;
+    o.via.array.ptr = static_cast<object*>(o.zone->allocate_align(sizeof(object)*sizeof...(Args)));
+    o.via.array.size = sizeof...(Args);
+    MsgpackTupleToObjectWithZone<decltype(v), sizeof...(Args)>::convert(o, v);
 }
 
 } // msgpack

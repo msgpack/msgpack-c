@@ -31,31 +31,31 @@ struct nil { };
 
 inline type::nil& operator>> (object const& o, type::nil& v)
 {
-	if(o.type != type::NIL) { throw type_error(); }
-	return v;
+    if(o.type != type::NIL) { throw type_error(); }
+    return v;
 }
 
 template <typename Stream>
 inline packer<Stream>& operator<< (packer<Stream>& o, const type::nil& v)
 {
-	o.pack_nil();
-	return o;
+    o.pack_nil();
+    return o;
 }
 
 inline void operator<< (object& o, type::nil v)
 {
-	o.type = type::NIL;
+    o.type = type::NIL;
 }
 
 inline void operator<< (object::with_zone& o, type::nil v)
-	{ static_cast<object&>(o) << v; }
+    { static_cast<object&>(o) << v; }
 
 
 template <>
 inline void object::as<void>() const
 {
-	msgpack::type::nil v;
-	convert(v);
+    msgpack::type::nil v;
+    convert(v);
 }
 
 

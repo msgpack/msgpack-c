@@ -42,27 +42,27 @@ namespace msgpack {
 
 template <typename T>
 struct unique_ptr : std::auto_ptr<T> {
-	explicit unique_ptr(T* p = 0) throw() : std::auto_ptr<T>(p) {}
-	unique_ptr(unique_ptr& a) throw() : std::auto_ptr<T>(a) {}
-	template<class Y>
-	unique_ptr (unique_ptr<Y>& a) throw() : std::auto_ptr<T>(a) {}
+    explicit unique_ptr(T* p = 0) throw() : std::auto_ptr<T>(p) {}
+    unique_ptr(unique_ptr& a) throw() : std::auto_ptr<T>(a) {}
+    template<class Y>
+    unique_ptr (unique_ptr<Y>& a) throw() : std::auto_ptr<T>(a) {}
 };
 
 template <typename T>
 T& move(T& t)
 {
-	return t;
+    return t;
 }
 
 template <typename T>
 T const& move(T const& t)
 {
-	return t;
+    return t;
 }
 
 template <bool P, typename T = void>
 struct enable_if {
-	typedef T type;
+    typedef T type;
 };
 
 template <typename T>
@@ -78,15 +78,15 @@ struct enable_if<false, T> {
 #include <tuple>
 
 namespace msgpack {
-	// unique_ptr
-	using std::unique_ptr;
-	// using std::make_unique; // since C++14
-	using std::hash;
+    // unique_ptr
+    using std::unique_ptr;
+    // using std::make_unique; // since C++14
+    using std::hash;
 
-	// utility
-	using std::move;
-	using std::swap;
-	using std::enable_if;
+    // utility
+    using std::move;
+    using std::swap;
+    using std::enable_if;
 
 } // msgpack
 

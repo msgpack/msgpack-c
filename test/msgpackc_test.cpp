@@ -80,9 +80,9 @@ TEST(MSGPACKC, simple_buffer_char)
 {
 #if defined(CHAR_MIN)
 #if CHAR_MIN < 0
-	GEN_TEST_SIGNED(char, char);
+    GEN_TEST_SIGNED(char, char);
 #else
-	GEN_TEST_UNSIGNED(char, char);
+    GEN_TEST_UNSIGNED(char, char);
 #endif
 #else
 #error CHAR_MIN is not defined
@@ -490,7 +490,7 @@ TEST(MSGPACKC, unpack_str16)
 {
   size_t str_size = 7;
   const char buf[] = {
-	  (char)0xda, 0, 7, 'f', 'r', 's', 'y', 'u', 'k', 'i'
+      (char)0xda, 0, 7, 'f', 'r', 's', 'y', 'u', 'k', 'i'
   };
 
   msgpack_zone z;
@@ -510,7 +510,7 @@ TEST(MSGPACKC, unpack_str32)
 {
   size_t str_size = 7;
   const char buf[] = {
-	  (char)0xdb, 0, 0, 0, 7, 'f', 'r', 's', 'y', 'u', 'k', 'i'
+      (char)0xdb, 0, 0, 0, 7, 'f', 'r', 's', 'y', 'u', 'k', 'i'
   };
 
   msgpack_zone z;

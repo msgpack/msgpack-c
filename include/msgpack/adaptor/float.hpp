@@ -29,71 +29,71 @@ namespace msgpack {
 
 inline float& operator>> (object const& o, float& v)
 {
-	if(o.type == type::DOUBLE) {
-		v = static_cast<float>(o.via.dec);
-	}
-	else if (o.type == type::POSITIVE_INTEGER) {
-		v = static_cast<float>(o.via.u64);
-	}
-	else if (o.type == type::NEGATIVE_INTEGER) {
-		v = static_cast<float>(o.via.i64);
-	}
-	else {
-		throw type_error();
-	}
-	return v;
+    if(o.type == type::DOUBLE) {
+        v = static_cast<float>(o.via.dec);
+    }
+    else if (o.type == type::POSITIVE_INTEGER) {
+        v = static_cast<float>(o.via.u64);
+    }
+    else if (o.type == type::NEGATIVE_INTEGER) {
+        v = static_cast<float>(o.via.i64);
+    }
+    else {
+        throw type_error();
+    }
+    return v;
 }
 
 template <typename Stream>
 inline packer<Stream>& operator<< (packer<Stream>& o, const float& v)
 {
-	o.pack_float(v);
-	return o;
+    o.pack_float(v);
+    return o;
 }
 
 
 inline double& operator>> (object const& o, double& v)
 {
-	if(o.type == type::DOUBLE) {
-		v = o.via.dec;
-	}
-	else if (o.type == type::POSITIVE_INTEGER) {
-		v = static_cast<double>(o.via.u64);
-	}
-	else if (o.type == type::NEGATIVE_INTEGER) {
-		v = static_cast<double>(o.via.i64);
-	}
-	else {
-		throw type_error();
-	}
-	return v;
+    if(o.type == type::DOUBLE) {
+        v = o.via.dec;
+    }
+    else if (o.type == type::POSITIVE_INTEGER) {
+        v = static_cast<double>(o.via.u64);
+    }
+    else if (o.type == type::NEGATIVE_INTEGER) {
+        v = static_cast<double>(o.via.i64);
+    }
+    else {
+        throw type_error();
+    }
+    return v;
 }
 
 template <typename Stream>
 inline packer<Stream>& operator<< (packer<Stream>& o, const double& v)
 {
-	o.pack_double(v);
-	return o;
+    o.pack_double(v);
+    return o;
 }
 
 
 inline void operator<< (object& o, float v)
 {
-	o.type = type::DOUBLE;
-	o.via.dec = static_cast<double>(v);
+    o.type = type::DOUBLE;
+    o.via.dec = static_cast<double>(v);
 }
 
 inline void operator<< (object& o, double v)
 {
-	o.type = type::DOUBLE;
-	o.via.dec = v;
+    o.type = type::DOUBLE;
+    o.via.dec = v;
 }
 
 inline void operator<< (object::with_zone& o, float v)
-	{ static_cast<object&>(o) << v; }
+    { static_cast<object&>(o) << v; }
 
 inline void operator<< (object::with_zone& o, double v)
-	{ static_cast<object&>(o) << v; }
+    { static_cast<object&>(o) << v; }
 
 
 }  // namespace msgpack

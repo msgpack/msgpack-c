@@ -26,15 +26,15 @@
 #define MSGPACK_VERSION MSGPACK_VERSION_I(MSGPACK_VERSION_MAJOR, MSGPACK_VERSION_MINOR, MSGPACK_VERSION_RELEASE)
 
 inline const char* msgpack_version(void) {
-	return MSGPACK_VERSION;
+    return MSGPACK_VERSION;
 }
 
 inline int msgpack_version_major(void) {
-	return MSGPACK_VERSION_MAJOR;
+    return MSGPACK_VERSION_MAJOR;
 }
 
 inline int msgpack_version_minor(void) {
-	return MSGPACK_VERSION_MINOR;
+    return MSGPACK_VERSION_MINOR;
 }
 
 #endif /* msgpack/version.hpp */

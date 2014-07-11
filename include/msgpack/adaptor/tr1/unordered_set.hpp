@@ -45,92 +45,92 @@ namespace msgpack {
 template <typename T>
 inline MSGPACK_STD_TR1::unordered_set<T>& operator>> (object o, MSGPACK_STD_TR1::unordered_set<T>& v)
 {
-	if(o.type != type::ARRAY) { throw type_error(); }
-	object* p = o.via.array.ptr + o.via.array.size;
-	object* const pbegin = o.via.array.ptr;
-	while(p > pbegin) {
-		--p;
-		v.insert(p->as<T>());
-	}
-	return v;
+    if(o.type != type::ARRAY) { throw type_error(); }
+    object* p = o.via.array.ptr + o.via.array.size;
+    object* const pbegin = o.via.array.ptr;
+    while(p > pbegin) {
+        --p;
+        v.insert(p->as<T>());
+    }
+    return v;
 }
 
 template <typename Stream, typename T>
 inline packer<Stream>& operator<< (packer<Stream>& o, const MSGPACK_STD_TR1::unordered_set<T>& v)
 {
-	o.pack_array(v.size());
-	for(typename MSGPACK_STD_TR1::unordered_set<T>::const_iterator it(v.begin()), it_end(v.end());
-			it != it_end; ++it) {
-		o.pack(*it);
-	}
-	return o;
+    o.pack_array(v.size());
+    for(typename MSGPACK_STD_TR1::unordered_set<T>::const_iterator it(v.begin()), it_end(v.end());
+            it != it_end; ++it) {
+        o.pack(*it);
+    }
+    return o;
 }
 
 template <typename T>
 inline void operator<< (object::with_zone& o, const MSGPACK_STD_TR1::unordered_set<T>& v)
 {
-	o.type = type::ARRAY;
-	if(v.empty()) {
-		o.via.array.ptr = nullptr;
-		o.via.array.size = 0;
-	} else {
-		object* p = static_cast<object*>(o.zone->allocate_align(sizeof(object)*v.size()));
-		object* const pend = p + v.size();
-		o.via.array.ptr = p;
-		o.via.array.size = v.size();
-		typename MSGPACK_STD_TR1::unordered_set<T>::const_iterator it(v.begin());
-		do {
-			*p = object(*it, o.zone);
-			++p;
-			++it;
-		} while(p < pend);
-	}
+    o.type = type::ARRAY;
+    if(v.empty()) {
+        o.via.array.ptr = nullptr;
+        o.via.array.size = 0;
+    } else {
+        object* p = static_cast<object*>(o.zone->allocate_align(sizeof(object)*v.size()));
+        object* const pend = p + v.size();
+        o.via.array.ptr = p;
+        o.via.array.size = v.size();
+        typename MSGPACK_STD_TR1::unordered_set<T>::const_iterator it(v.begin());
+        do {
+            *p = object(*it, o.zone);
+            ++p;
+            ++it;
+        } while(p < pend);
+    }
 }
 
 
 template <typename T>
 inline MSGPACK_STD_TR1::unordered_multiset<T>& operator>> (object o, MSGPACK_STD_TR1::unordered_multiset<T>& v)
 {
-	if(o.type != type::ARRAY) { throw type_error(); }
-	object* p = o.via.array.ptr + o.via.array.size;
-	object* const pbegin = o.via.array.ptr;
-	while(p > pbegin) {
-		--p;
-		v.insert(p->as<T>());
-	}
-	return v;
+    if(o.type != type::ARRAY) { throw type_error(); }
+    object* p = o.via.array.ptr + o.via.array.size;
+    object* const pbegin = o.via.array.ptr;
+    while(p > pbegin) {
+        --p;
+        v.insert(p->as<T>());
+    }
+    return v;
 }
 
 template <typename Stream, typename T>
 inline packer<Stream>& operator<< (packer<Stream>& o, const MSGPACK_STD_TR1::unordered_multiset<T>& v)
 {
-	o.pack_array(v.size());
-	for(typename MSGPACK_STD_TR1::unordered_multiset<T>::const_iterator it(v.begin()), it_end(v.end());
-			it != it_end; ++it) {
-		o.pack(*it);
-	}
-	return o;
+    o.pack_array(v.size());
+    for(typename MSGPACK_STD_TR1::unordered_multiset<T>::const_iterator it(v.begin()), it_end(v.end());
+            it != it_end; ++it) {
+        o.pack(*it);
+    }
+    return o;
 }
 
 template <typename T>
 inline void operator<< (object::with_zone& o, const MSGPACK_STD_TR1::unordered_multiset<T>& v)
 {
-	o.type = type::ARRAY;
-	if(v.empty()) {
-		o.via.array.ptr = nullptr;
-		o.via.array.size = 0;
-	} else {
-		object* p = static_cast<object*>(o.zone->allocate_align(sizeof(object)*v.size()));
-		object* const pend = p + v.size();
-		o.via.array.ptr = p;
-		o.via.array.size = v.size();
-		typename MSGPACK_STD_TR1::unordered_multiset<T>::const_iterator it(v.begin());
-		do {
-			*p = object(*it, o.zone);
-			++p;
-			++it;
-		} while(p < pend);
-	}
+    o.type = type::ARRAY;
+    if(v.empty()) {
+        o.via.array.ptr = nullptr;
+        o.via.array.size = 0;
+    } else {
+        object* p = static_cast<object*>(o.zone->allocate_align(sizeof(object)*v.size()));
+        object* const pend = p + v.size();
+        o.via.array.ptr = p;
+        o.via.array.size = v.size();
+        typename MSGPACK_STD_TR1::unordered_multiset<T>::const_iterator it(v.begin());
+        do {
+            *p = object(*it, o.zone);
+            ++p;
+            ++it;
+        } while(p < pend);
+    }
 }
 
 

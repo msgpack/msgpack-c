@@ -27,35 +27,35 @@ namespace msgpack {
 namespace type {
 
 struct raw_ref {
-	raw_ref() : size(0), ptr(nullptr) {}
-	raw_ref(const char* p, uint32_t s) : size(s), ptr(p) {}
+    raw_ref() : size(0), ptr(nullptr) {}
+    raw_ref(const char* p, uint32_t s) : size(s), ptr(p) {}
 
-	uint32_t size;
-	const char* ptr;
+    uint32_t size;
+    const char* ptr;
 
-	std::string str() const { return std::string(ptr, size); }
+    std::string str() const { return std::string(ptr, size); }
 
-	bool operator== (const raw_ref& x) const
-	{
-		return size == x.size && memcmp(ptr, x.ptr, size) == 0;
-	}
+    bool operator== (const raw_ref& x) const
+    {
+        return size == x.size && memcmp(ptr, x.ptr, size) == 0;
+    }
 
-	bool operator!= (const raw_ref& x) const
-	{
-		return !(*this != x);
-	}
+    bool operator!= (const raw_ref& x) const
+    {
+        return !(*this != x);
+    }
 
-	bool operator< (const raw_ref& x) const
-	{
-		if(size == x.size) { return memcmp(ptr, x.ptr, size) < 0; }
-		else { return size < x.size; }
-	}
+    bool operator< (const raw_ref& x) const
+    {
+        if(size == x.size) { return memcmp(ptr, x.ptr, size) < 0; }
+        else { return size < x.size; }
+    }
 
-	bool operator> (const raw_ref& x) const
-	{
-		if(size == x.size) { return memcmp(ptr, x.ptr, size) > 0; }
-		else { return size > x.size; }
-	}
+    bool operator> (const raw_ref& x) const
+    {
+        if(size == x.size) { return memcmp(ptr, x.ptr, size) > 0; }
+        else { return size > x.size; }
+    }
 };
 
 }  // namespace type
@@ -63,29 +63,29 @@ struct raw_ref {
 
 inline type::raw_ref& operator>> (object const& o, type::raw_ref& v)
 {
-	if(o.type != type::BIN) { throw type_error(); }
-	v.ptr  = o.via.bin.ptr;
-	v.size = o.via.bin.size;
-	return v;
+    if(o.type != type::BIN) { throw type_error(); }
+    v.ptr  = o.via.bin.ptr;
+    v.size = o.via.bin.size;
+    return v;
 }
 
 template <typename Stream>
 inline packer<Stream>& operator<< (packer<Stream>& o, const type::raw_ref& v)
 {
-	o.pack_bin(v.size);
-	o.pack_bin_body(v.ptr, v.size);
-	return o;
+    o.pack_bin(v.size);
+    o.pack_bin_body(v.ptr, v.size);
+    return o;
 }
 
 inline void operator<< (object& o, const type::raw_ref& v)
 {
-	o.type = type::BIN;
-	o.via.bin.ptr = v.ptr;
-	o.via.bin.size = v.size;
+    o.type = type::BIN;
+    o.via.bin.ptr = v.ptr;
+    o.via.bin.size = v.size;
 }
 
 inline void operator<< (object::with_zone& o, const type::raw_ref& v)
-	{ static_cast<object&>(o) << v; }
+    { static_cast<object&>(o) << v; }
 
 
 }  // namespace msgpack

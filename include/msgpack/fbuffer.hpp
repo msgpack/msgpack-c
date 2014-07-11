@@ -26,27 +26,27 @@ namespace msgpack {
 
 class fbuffer {
 public:
-	explicit fbuffer(FILE* file) : m_file(file) { }
+    explicit fbuffer(FILE* file) : m_file(file) { }
 
 public:
-	void write(const char* buf, unsigned int len)
-	{
-		if (1 != fwrite(buf, len, 1, m_file)) {
-			throw std::runtime_error("fwrite() failed");
-		}
-	}
+    void write(const char* buf, unsigned int len)
+    {
+        if (1 != fwrite(buf, len, 1, m_file)) {
+            throw std::runtime_error("fwrite() failed");
+        }
+    }
 
-	FILE* file() const
-	{
-		return m_file;
-	}
-
-private:
-	fbuffer(const fbuffer&);
-	fbuffer& operator= (const fbuffer&);
+    FILE* file() const
+    {
+        return m_file;
+    }
 
 private:
-	FILE* m_file;
+    fbuffer(const fbuffer&);
+    fbuffer& operator= (const fbuffer&);
+
+private:
+    FILE* m_file;
 };
 
 
