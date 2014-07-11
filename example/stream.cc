@@ -13,7 +13,7 @@ public:
 
     ~Server() { }
 
-    typedef std::auto_ptr<msgpack::zone> auto_zone;
+    typedef msgpack::unique_ptr<msgpack::zone> auto_zone;
 
     void socket_readable()
     {
