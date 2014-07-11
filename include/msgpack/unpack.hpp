@@ -864,6 +864,7 @@ private:
 
 private:
     unpacker(const unpacker&);
+    unpacker& operator=(const unpacker&);
 };
 
 
