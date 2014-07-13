@@ -38,7 +38,17 @@ typedef struct msgpack_unpacked {
     msgpack_object data;
 } msgpack_unpacked;
 
-bool msgpack_unpack_next(msgpack_unpacked* result,
+typedef enum {
+    MSGPACK_UNPACK_SUCCESS              =  2,
+    MSGPACK_UNPACK_EXTRA_BYTES          =  1,
+    MSGPACK_UNPACK_CONTINUE             =  0,
+    MSGPACK_UNPACK_PARSE_ERROR          = -1,
+    MSGPACK_UNPACK_NOMEM_ERROR          = -2
+} msgpack_unpack_return;
+
+
+msgpack_unpack_return
+msgpack_unpack_next(msgpack_unpacked* result,
         const char* data, size_t len, size_t* off);
 
 /** @} */
@@ -136,7 +146,7 @@ static inline void   msgpack_unpacker_buffer_consumed(msgpack_unpacker* mpac, si
  * Returns true if it successes. Otherwise false is returned.
  * @param pac  pointer to an initialized msgpack_unpacked object.
  */
-bool msgpack_unpacker_next(msgpack_unpacker* mpac, msgpack_unpacked* pac);
+msgpack_unpack_return msgpack_unpacker_next(msgpack_unpacker* mpac, msgpack_unpacked* pac);
 
 /**
  * Initializes a msgpack_unpacked object.
@@ -175,17 +185,11 @@ static inline size_t msgpack_unpacker_message_size(const msgpack_unpacker* mpac)
 
 
 // obsolete
-typedef enum {
-    MSGPACK_UNPACK_SUCCESS              =  2,
-    MSGPACK_UNPACK_EXTRA_BYTES          =  1,
-    MSGPACK_UNPACK_CONTINUE             =  0,
-    MSGPACK_UNPACK_PARSE_ERROR          = -1
-} msgpack_unpack_return;
-
-// obsolete
 msgpack_unpack_return
 msgpack_unpack(const char* data, size_t len, size_t* off,
         msgpack_zone* result_zone, msgpack_object* result);
+
+
 
 
 static inline size_t msgpack_unpacker_parsed_size(const msgpack_unpacker* mpac);

@@ -54,7 +54,7 @@ TEST(streaming, basic)
 
             msgpack_unpacker_buffer_consumed(&pac, 1);
 
-            while(msgpack_unpacker_next(&pac, &result)) {
+            while(msgpack_unpacker_next(&pac, &result) == MSGPACK_UNPACK_SUCCESS) {
                 unpacked = 1;
                 msgpack_object obj = result.data;
                 msgpack_object e;
