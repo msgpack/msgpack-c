@@ -27,9 +27,7 @@ When you use msgpack on C++03 and C++11, you just add msgpack-c/include to your 
 
 e.g.)
 
-```
-g++ -I msgpack-c/include your_source_file.cpp
-```
+    g++ -I msgpack-c/include your_source_file.cpp
 
 ### Building and Installing
 
@@ -40,94 +38,79 @@ You will need gcc (4.1.0 or higher), autotools.
 
 For C++03 and C:
 
-```
-$ git clone https://github.com/redboltz/msgpack-c/tree/cxx_separate
-$ cd msgpack-c
-$ ./bootstrap
-$ ./configure
-$ make
-$ sudo make install
-```
+    $ git clone https://github.com/redboltz/msgpack-c/tree/cxx_separate
+    $ cd msgpack-c
+    $ ./bootstrap
+    $ ./configure
+    $ make
+    $ sudo make install
 
 For C++11:
 
-```
-$ git clone https://github.com/msgpack/msgpack-c.git
-$ cd msgpack-c
-$ ./bootstrap
-$ ./configure CXXFLAGS="-std=c++11"
-$ make
-$ sudo make install
-```
+    $ git clone https://github.com/msgpack/msgpack-c.git
+    $ cd msgpack-c
+    $ ./bootstrap
+    $ ./configure CXXFLAGS="-std=c++11"
+    $ make
+    $ sudo make install
 
 You need the compiler that fully supports C++11.
 
 ##### Using cmake
 You will need gcc (4.1.0 or higher), cmake.
 
-```
-$ git clone https://github.com/msgpack/msgpack-c.git
-$ cd msgpack-c
-$ cmake .
-$ make
-```
+    $ git clone https://github.com/msgpack/msgpack-c.git
+    $ cd msgpack-c
+    $ cmake .
+    $ make
 
 If you want to setup C++11 version of msgpack, execute the following command:
 
-```
-$ git clone https://github.com/msgpack/msgpack-c.git
-$ cd msgpack-c
-$ cmake -DMSGPACK_CXX11=ON .
-```
+    $ git clone https://github.com/msgpack/msgpack-c.git
+    $ cd msgpack-c
+    $ cmake -DMSGPACK_CXX11=ON .
 
 You need the compiler that fully supports C++11.
 
 #### Install from package
 
-Add msgpack-c/src to your include path.
-```
-
 For C++03:
-```
-$ wget https://github.com/msgpack/msgpack-c/releases/download/cpp-0.5.9/msgpack-0.5.9.tar.gz
-$ tar zxvf msgpack-0.5.9.tar.gz
-$ cd msgpack-0.5.9
-$ ./configure
+
+    $ wget https://github.com/msgpack/msgpack-c/releases/download/cpp-0.5.9/msgpack-0.5.9.tar.gz
+    $ tar zxvf msgpack-0.5.9.tar.gz
+    $ cd msgpack-0.5.9
+    $ ./configure
 
 Add msgpack-c/src to your include path.
-```
 
 For C:
-```
-$ sudo brew install msgpack
-```
+
+    $ sudo brew install msgpack
 
 
 ##### Windows
 
 Clone msgpack-c git repository.
 
-```
-$ git clone https://github.com/msgpack/msgpack-c.git
-```
+    $ git clone https://github.com/msgpack/msgpack-c.git
 
-or using GUI git client. 
+or using GUI git client.
 
 e.g.) tortoise git https://code.google.com/p/tortoisegit/
 
-Launch cmake GUI client. http://www.cmake.org/cmake/resources/software.html
+1. Launch cmake GUI client. http://www.cmake.org/cmake/resources/software.html
 
-Set 'Where is the source code:' text box and 'Where to build the binaries:' text box.
+1. Set 'Where is the source code:' text box and 'Where to build the binaries:' text box.
 
-Click 'Configure' button.
+1. Click 'Configure' button.
 
-Choose your Visual Studio version.
+1. Choose your Visual Studio version.
 
-Click 'Generate' button.
+1. Click 'Generate' button.
 
-Open the created msgpack.sln on Visual Studio.
+1. Open the created msgpack.sln on Visual Studio.
 
-Build all.
+1. Build all.
 
 ### Linking with an Application for C
 
@@ -138,35 +121,34 @@ Include `msgpack.h` in your application and link with libmsgpack. Here is a typi
 When you use the C++ version of the msgpack, you don't need to link any msgpack libraries.
 
 ### Code Example
-```CPP
-#include <msgpack.hpp>
-#include <vector>
-#include <string>
-#include <iostream>
 
-int main() {
-    // This is target object.
-    std::vector<std::string> target;
-    target.push_back("Hello,");
-    target.push_back("World!");
+    #include <msgpack.hpp>
+    #include <vector>
+    #include <string>
+    #include <iostream>
 
-    // Serialize it.
-    msgpack::sbuffer sbuf;  // simple buffer
-    msgpack::pack(&sbuf, target);
+    int main() {
+        // This is target object.
+        std::vector<std::string> target;
+        target.push_back("Hello,");
+        target.push_back("World!");
 
-    // Deserialize the serialized data.
-    msgpack::unpacked msg;    // includes memory pool and deserialized object
-    msgpack::unpack(&msg, sbuf.data(), sbuf.size());
-    msgpack::object obj = msg.get();
+        // Serialize it.
+        msgpack::sbuffer sbuf;  // simple buffer
+        msgpack::pack(&sbuf, target);
 
-    // Print the deserialized object to stdout.
-    std::cout << obj << std::endl;    // ["Hello," "World!"]
+        // Deserialize the serialized data.
+        msgpack::unpacked msg;    // includes memory pool and deserialized object
+        msgpack::unpack(&msg, sbuf.data(), sbuf.size());
+        msgpack::object obj = msg.get();
 
-    // Convert the deserialized object to staticaly typed object.
-    std::vector<std::string> result;
-    obj.convert(&result);
+        // Print the deserialized object to stdout.
+        std::cout << obj << std::endl;    // ["Hello," "World!"]
 
-    // If the type is mismatched, it throws msgpack::type_error.
-    obj.as<int>();  // type is mismatched, msgpack::type_error is thrown
-}
-```
+        // Convert the deserialized object to staticaly typed object.
+        std::vector<std::string> result;
+        obj.convert(&result);
+
+        // If the type is mismatched, it throws msgpack::type_error.
+        obj.as<int>();  // type is mismatched, msgpack::type_error is thrown
+    }
