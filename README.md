@@ -29,6 +29,8 @@ e.g.)
 
     g++ -I msgpack-c/include your_source_file.cpp
 
+If you want to use C version of msgpack, you need to build it. You can also install C and C++ version of msgpack.
+
 ### Building and Installing
 
 #### Install from git repository
@@ -36,7 +38,8 @@ e.g.)
 ##### Using autotools
 You will need gcc (4.1.0 or higher), autotools.
 
-For C++03 and C:
+For C:
+C++03 and C:
 
     $ git clone https://github.com/redboltz/msgpack-c/tree/cxx_separate
     $ cd msgpack-c
@@ -57,38 +60,27 @@ For C++11:
 You need the compiler that fully supports C++11.
 
 ##### Using cmake
+
+###### CUI
+
 You will need gcc (4.1.0 or higher), cmake.
 
     $ git clone https://github.com/msgpack/msgpack-c.git
     $ cd msgpack-c
     $ cmake .
     $ make
+    $ sudo make install
 
 If you want to setup C++11 version of msgpack, execute the following command:
 
     $ git clone https://github.com/msgpack/msgpack-c.git
     $ cd msgpack-c
     $ cmake -DMSGPACK_CXX11=ON .
+    $ sudo make install
 
 You need the compiler that fully supports C++11.
 
-#### Install from package
-
-For C++03:
-
-    $ wget https://github.com/msgpack/msgpack-c/releases/download/cpp-0.5.9/msgpack-0.5.9.tar.gz
-    $ tar zxvf msgpack-0.5.9.tar.gz
-    $ cd msgpack-0.5.9
-    $ ./configure
-
-Add msgpack-c/src to your include path.
-
-For C:
-
-    $ sudo brew install msgpack
-
-
-##### Windows
+##### GUI on Windows
 
 Clone msgpack-c git repository.
 
@@ -112,13 +104,10 @@ e.g.) tortoise git https://code.google.com/p/tortoisegit/
 
 1. Build all.
 
-### Linking with an Application for C
 
-Include `msgpack.h` in your application and link with libmsgpack. Here is a typical gcc link command:
+#### Install from package
 
-    gcc myapp.c -lmsgpack -o myapp
-
-When you use the C++ version of the msgpack, you don't need to link any msgpack libraries.
+Install from package for this branch (poc/0.6) is not supported yet.
 
 ### Code Example
 
