@@ -955,16 +955,8 @@ inline unpacker::unpacker(unpacker&& other)
 }
 
 inline unpacker& unpacker::operator=(unpacker&& other) {
-    m_buffer = other.m_buffer;
-    m_used = other.m_used;
-    m_free = other.m_free;
-    m_off = other.m_off;
-    m_parsed = other.m_parsed;
-    m_z = other.m_z;
-    m_initial_buffer_size = other.m_initial_buffer_size;
-    m_ctx = msgpack::move(other.m_ctx);
-    other.m_buffer = nullptr;
-    other.m_z = nullptr;
+    std::swap(m_z, other.m_z);
+    std::swap(m_buffer, other.m_buffer);
     return *this;
 }
 
