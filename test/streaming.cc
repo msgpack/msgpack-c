@@ -48,6 +48,57 @@ TEST(streaming, basic)
     }
 }
 
+#if !defined(MSGPACK_USE_CPP03)
+
+TEST(streaming, move)
+{
+    msgpack::sbuffer buffer;
+
+    msgpack::packer<msgpack::sbuffer> pk(&buffer);
+    pk.pack(1);
+    pk.pack(2);
+    pk.pack(3);
+
+    const char* input = buffer.data();
+    const char* const eof = input + buffer.size();
+
+    msgpack::unpacker pac;
+    msgpack::unpacked result;
+
+    int count = 0;
+    while(count < 3) {
+        msgpack::unpacker pac_in(std::move(pac));
+        pac_in.reserve_buffer(32*1024);
+
+        // read buffer into pac_in.buffer() upto
+        // pac_in.buffer_capac_inity() bytes.
+        size_t len = 1;
+        memcpy(pac_in.buffer(), input, len);
+        input += len;
+
+        pac_in.buffer_consumed(len);
+
+        while(pac_in.next(&result)) {
+            msgpack::object obj = result.get();
+            switch(count++) {
+            case 0:
+                EXPECT_EQ(1, obj.as<int>());
+                break;
+            case 1:
+                EXPECT_EQ(2, obj.as<int>());
+                break;
+            case 2:
+                EXPECT_EQ(3, obj.as<int>());
+                return;
+            }
+        }
+
+        EXPECT_TRUE(input < eof);
+        pac = std::move(pac_in);
+    }
+}
+
+#endif // !defined(MSGPACK_USE_CPP03)
 
 class event_handler {
 public:
@@ -217,4 +268,3 @@ TEST(streaming, event_compat)
     handler.expect = 3;
     handler.on_read();
 }
-

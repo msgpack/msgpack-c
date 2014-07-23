@@ -248,6 +248,10 @@ public:
     {
         m_stack[0].set_obj(object());
     }
+#if !defined(MSGPACK_USE_CPP03)
+    context(context&& other) = default;
+    context& operator=(context&& other) = default;
+#endif // !defined(MSGPACK_USE_CPP03)
 
     void init()
     {
@@ -721,6 +725,9 @@ private:
     unsigned int m_top;
     unsigned int m_stack_idx;
     unpack_stack m_stack[MSGPACK_EMBED_STACK_SIZE];
+private:
+    context(context const&);
+    context& operator=(context const&);
 };
 
 } // detail
@@ -760,6 +767,12 @@ private:
 class unpacker {
 public:
     unpacker(size_t init_buffer_size = MSGPACK_UNPACKER_INIT_BUFFER_SIZE);
+
+#if !defined(MSGPACK_USE_CPP03)
+    unpacker(unpacker&& other);
+    unpacker& operator=(unpacker&& other);
+#endif // !defined(MSGPACK_USE_CPP03)
+
     ~unpacker();
 
 public:
@@ -925,10 +938,44 @@ inline unpacker::unpacker(size_t initial_buffer_size)
     m_ctx.user().set_referenced(false);
 }
 
+#if !defined(MSGPACK_USE_CPP03)
+// Move constructor and move assignment operator
+
+inline unpacker::unpacker(unpacker&& other)
+    :m_buffer(other.m_buffer),
+     m_used(other.m_used),
+     m_free(other.m_free),
+     m_off(other.m_off),
+     m_parsed(other.m_parsed),
+     m_z(other.m_z),
+     m_initial_buffer_size(other.m_initial_buffer_size),
+     m_ctx(msgpack::move(other.m_ctx)) {
+    other.m_buffer = nullptr;
+    other.m_z = nullptr;
+}
+
+inline unpacker& unpacker::operator=(unpacker&& other) {
+    m_buffer = other.m_buffer;
+    m_used = other.m_used;
+    m_free = other.m_free;
+    m_off = other.m_off;
+    m_parsed = other.m_parsed;
+    m_z = other.m_z;
+    m_initial_buffer_size = other.m_initial_buffer_size;
+    m_ctx = msgpack::move(other.m_ctx);
+    other.m_buffer = nullptr;
+    other.m_z = nullptr;
+    return *this;
+}
+
+#endif // !defined(MSGPACK_USE_CPP03)
+
+
 inline unpacker::~unpacker()
 {
-    zone::destroy(m_z);
-    detail::decl_count(m_buffer);
+    // These checks are required for move operations.
+    if (m_z) zone::destroy(m_z);
+    if (m_buffer) detail::decl_count(m_buffer);
 }
 
 
@@ -1269,4 +1316,3 @@ inline object unpack(const char* data, size_t len, zone* z, size_t* off)
 }  // namespace msgpack
 
 #endif /* msgpack/unpack.hpp */
-
