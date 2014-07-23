@@ -1,4 +1,3 @@
-
 lib_LTLIBRARIES = libmsgpack.la
 
 AM_CPPFLAGS = -I../include
@@ -53,6 +52,7 @@ nobase_include_HEADERS = \
 if ENABLE_CXX
 nobase_include_HEADERS += \
 		../include/msgpack.hpp \
+		../include/msgpack/cpp_config.hpp \
 		../include/msgpack/sbuffer.hpp \
 		../include/msgpack/vrefbuffer.hpp \
 		../include/msgpack/zbuffer.hpp \
@@ -106,4 +106,3 @@ doxygen_cpp:
 	doxygen Doxyfile_cpp
 
 doxygen: doxygen_c doxygen_cpp
-

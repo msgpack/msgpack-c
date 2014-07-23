@@ -26,7 +26,7 @@ FIND_PACKAGE (GTest)
 FIND_PACKAGE (ZLIB)
 FIND_PACKAGE (Threads)
 IF (GTEST_FOUND AND ZLIB_FOUND AND THREADS_FOUND)
-	OPTION (MSGPACK_BUILD_TESTS "Build msgpack tests." ON)
+    OPTION (MSGPACK_BUILD_TESTS "Build msgpack tests." ON)
 ENDIF ()
 
 OPTION (MSGPACK_ENABLE_CXX "Enable C++ interface." ON)
@@ -38,105 +38,106 @@ int atomic_sub(int i) { return __gnu_cxx::__exchange_and_add(&i, -1) - 1; }
 int atomic_add(int i) { return __gnu_cxx::__exchange_and_add(&i, 1) + 1; }
 int main(int argc, char * argv[])
 {
-	atomic_sub(1);
-	atomic_add(1);
+    atomic_sub(1);
+    atomic_add(1);
 }
 " MSGPACK_ENABLE_GCC_CXX_ATOMIC)
 
 IF (MSGPACK_ENABLE_GCC_CXX_ATOMIC)
-	LIST (APPEND msgpack_SOURCES
-		src/gcc_atomic.cpp
-	)
+    LIST (APPEND msgpack_SOURCES
+        src/gcc_atomic.cpp
+    )
 ENDIF ()
 
 
 LIST (APPEND msgpack_SOURCES
-	src/unpack.c
-	src/objectc.c
-	src/version.c
-	src/vrefbuffer.c
-	src/zone.c
+    src/unpack.c
+    src/objectc.c
+    src/version.c
+    src/vrefbuffer.c
+    src/zone.c
 )
 
 LIST (APPEND msgpack_HEADERS
-	include/msgpack/pack_define.h
-	include/msgpack/pack_template.h
-	include/msgpack/unpack_define.h
-	include/msgpack/unpack_template.h
-	include/msgpack/sysdep.h
-	include/msgpack/sbuffer.h
-	include/msgpack/version.h
-	include/msgpack/vrefbuffer.h
-	include/msgpack/zbuffer.h
-	include/msgpack/fbuffer.h
-	include/msgpack/pack.h
-	include/msgpack/unpack.h
-	include/msgpack/object.h
-	include/msgpack/zone.h
+    include/msgpack/pack_define.h
+    include/msgpack/pack_template.h
+    include/msgpack/unpack_define.h
+    include/msgpack/unpack_template.h
+    include/msgpack/sysdep.h
+    include/msgpack/sbuffer.h
+    include/msgpack/version.h
+    include/msgpack/vrefbuffer.h
+    include/msgpack/zbuffer.h
+    include/msgpack/fbuffer.h
+    include/msgpack/pack.h
+    include/msgpack/unpack.h
+    include/msgpack/object.h
+    include/msgpack/zone.h
 )
 
 IF (MSGPACK_ENABLE_CXX)
-	LIST (APPEND msgpack_HEADERS
-		include/msgpack.hpp
-		include/msgpack/sbuffer.hpp
-		include/msgpack/vrefbuffer.hpp
-		include/msgpack/zbuffer.hpp
-		include/msgpack/fbuffer.hpp
-		include/msgpack/pack.hpp
-		include/msgpack/unpack.hpp
-		include/msgpack/object.hpp
-		include/msgpack/zone.hpp
-		include/msgpack/detail/cpp03_zone.hpp
-		include/msgpack/detail/cpp11_zone.hpp
-		include/msgpack/type.hpp
-		include/msgpack/adaptor/bool.hpp
-		include/msgpack/adaptor/deque.hpp
-		include/msgpack/adaptor/float.hpp
-		include/msgpack/adaptor/fixint.hpp
-		include/msgpack/adaptor/int.hpp
-		include/msgpack/adaptor/list.hpp
-		include/msgpack/adaptor/map.hpp
-		include/msgpack/adaptor/nil.hpp
-		include/msgpack/adaptor/pair.hpp
-		include/msgpack/adaptor/raw.hpp
-		include/msgpack/adaptor/set.hpp
-		include/msgpack/adaptor/string.hpp
-		include/msgpack/adaptor/vector.hpp
-		include/msgpack/adaptor/msgpack_tuple.hpp
-		include/msgpack/adaptor/detail/cpp03_msgpack_tuple.hpp
-		include/msgpack/adaptor/detail/cpp11_msgpack_tuple.hpp
-		include/msgpack/adaptor/define.hpp
-		include/msgpack/adaptor/detail/cpp03_define.hpp
-		include/msgpack/adaptor/detail/cpp11_define.hpp
-		include/msgpack/adaptor/tr1/unordered_map.hpp
-		include/msgpack/adaptor/tr1/unordered_set.hpp
-	)
+    LIST (APPEND msgpack_HEADERS
+        include/msgpack.hpp
+        include/msgpack/cpp_config.hpp
+        include/msgpack/sbuffer.hpp
+        include/msgpack/vrefbuffer.hpp
+        include/msgpack/zbuffer.hpp
+        include/msgpack/fbuffer.hpp
+        include/msgpack/pack.hpp
+        include/msgpack/unpack.hpp
+        include/msgpack/object.hpp
+        include/msgpack/zone.hpp
+        include/msgpack/detail/cpp03_zone.hpp
+        include/msgpack/detail/cpp11_zone.hpp
+        include/msgpack/type.hpp
+        include/msgpack/adaptor/bool.hpp
+        include/msgpack/adaptor/deque.hpp
+        include/msgpack/adaptor/float.hpp
+        include/msgpack/adaptor/fixint.hpp
+        include/msgpack/adaptor/int.hpp
+        include/msgpack/adaptor/list.hpp
+        include/msgpack/adaptor/map.hpp
+        include/msgpack/adaptor/nil.hpp
+        include/msgpack/adaptor/pair.hpp
+        include/msgpack/adaptor/raw.hpp
+        include/msgpack/adaptor/set.hpp
+        include/msgpack/adaptor/string.hpp
+        include/msgpack/adaptor/vector.hpp
+        include/msgpack/adaptor/msgpack_tuple.hpp
+        include/msgpack/adaptor/detail/cpp03_msgpack_tuple.hpp
+        include/msgpack/adaptor/detail/cpp11_msgpack_tuple.hpp
+        include/msgpack/adaptor/define.hpp
+        include/msgpack/adaptor/detail/cpp03_define.hpp
+        include/msgpack/adaptor/detail/cpp11_define.hpp
+        include/msgpack/adaptor/tr1/unordered_map.hpp
+        include/msgpack/adaptor/tr1/unordered_set.hpp
+    )
 ENDIF ()
 
 EXECUTE_PROCESS (
-	COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/src/msgpack
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/src/msgpack
 )
 
 CONFIGURE_FILE (
-	msgpack.pc.in
-	msgpack.pc
-	@ONLY
+    msgpack.pc.in
+    msgpack.pc
+    @ONLY
 )
 
 INCLUDE_DIRECTORIES (
-	./
-	include/
-	${CMAKE_CURRENT_BINARY_DIR}/include/
+    ./
+    include/
+    ${CMAKE_CURRENT_BINARY_DIR}/include/
 )
 
 ADD_LIBRARY (msgpack SHARED
-	${msgpack_SOURCES}
-	${msgpack_HEADERS}
+    ${msgpack_SOURCES}
+    ${msgpack_HEADERS}
 )
 
 ADD_LIBRARY (msgpack-static STATIC
-	${msgpack_SOURCES}
-	${msgpack_HEADERS}
+    ${msgpack_SOURCES}
+    ${msgpack_HEADERS}
 )
 
 SET_TARGET_PROPERTIES (msgpack-static PROPERTIES OUTPUT_NAME "msgpack")
@@ -144,20 +145,20 @@ SET_TARGET_PROPERTIES (msgpack PROPERTIES IMPORT_SUFFIX "_import.lib")
 SET_TARGET_PROPERTIES (msgpack PROPERTIES SOVERSION 3 VERSION 4.0.0)
 
 IF (MSGPACK_BUILD_TESTS)
-	ENABLE_TESTING ()
-	ADD_SUBDIRECTORY (test)
+    ENABLE_TESTING ()
+    ADD_SUBDIRECTORY (test)
 ENDIF ()
 
 IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-	SET_PROPERTY (TARGET msgpack APPEND_STRING PROPERTY COMPILE_FLAGS "-Wall -g -O3 -DPIC")
-	SET_PROPERTY (TARGET msgpack-static APPEND_STRING PROPERTY COMPILE_FLAGS "-Wall -g -O3" )
+    SET_PROPERTY (TARGET msgpack APPEND_STRING PROPERTY COMPILE_FLAGS "-Wall -g -O3 -DPIC")
+    SET_PROPERTY (TARGET msgpack-static APPEND_STRING PROPERTY COMPILE_FLAGS "-Wall -g -O3" )
 ENDIF ()
 IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-	IF (CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
-		STRING(REGEX REPLACE "/W[0-4]" "/W4" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-	ELSE ()
-		SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
-	ENDIF ()
+    IF (CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
+        STRING(REGEX REPLACE "/W[0-4]" "/W4" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+    ELSE ()
+        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
+    ENDIF ()
 ENDIF ()
 
 INSTALL (TARGETS msgpack msgpack-static DESTINATION lib)
@@ -167,26 +168,26 @@ INSTALL (FILES msgpack.pc DESTINATION lib/pkgconfig)
 # Doxygen
 FIND_PACKAGE (Doxygen)
 IF (DOXYGEN_FOUND)
-	ADD_CUSTOM_TARGET (
-		doxygen_c
-		COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile_c
-		COMMAND ${CMAKE_COMMAND} -E echo "FILE_PATTERNS      = *.h" >> ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile_c
-		COMMAND ${CMAKE_COMMAND} -E echo "OUTPUT_DIRECTORY   = doc_c" >> ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile_c
-		COMMAND ${CMAKE_COMMAND} -E echo "PROJECT_NAME       = \"MessagePack for C\"" >> ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile_c
-		COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile_c
-		VERBATIM
-	)
-	ADD_CUSTOM_TARGET (
-		doxygen_cpp
-		COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile_cpp
-		COMMAND ${CMAKE_COMMAND} -E echo "FILE_PATTERNS      = *.hpp" >> ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile_cpp
-		COMMAND ${CMAKE_COMMAND} -E echo "OUTPUT_DIRECTORY   = doc_cpp" >> ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile_cpp
-		COMMAND ${CMAKE_COMMAND} -E echo "PROJECT_NAME       = \"MessagePack for C++\"" >> ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile_cpp
-		COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile_cpp
-		VERBATIM
-	)
-	ADD_CUSTOM_TARGET (
-		doxygen
-		DEPENDS doxygen_c doxygen_cpp
-	)
+    ADD_CUSTOM_TARGET (
+        doxygen_c
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile_c
+        COMMAND ${CMAKE_COMMAND} -E echo "FILE_PATTERNS      = *.h" >> ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile_c
+        COMMAND ${CMAKE_COMMAND} -E echo "OUTPUT_DIRECTORY   = doc_c" >> ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile_c
+        COMMAND ${CMAKE_COMMAND} -E echo "PROJECT_NAME       = \"MessagePack for C\"" >> ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile_c
+        COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile_c
+        VERBATIM
+    )
+    ADD_CUSTOM_TARGET (
+        doxygen_cpp
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile_cpp
+        COMMAND ${CMAKE_COMMAND} -E echo "FILE_PATTERNS      = *.hpp" >> ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile_cpp
+        COMMAND ${CMAKE_COMMAND} -E echo "OUTPUT_DIRECTORY   = doc_cpp" >> ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile_cpp
+        COMMAND ${CMAKE_COMMAND} -E echo "PROJECT_NAME       = \"MessagePack for C++\"" >> ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile_cpp
+        COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile_cpp
+        VERBATIM
+    )
+    ADD_CUSTOM_TARGET (
+        doxygen
+        DEPENDS doxygen_c doxygen_cpp
+    )
 ENDIF ()
