@@ -468,7 +468,7 @@ packer<Stream>& operator<< (packer<Stream>& o, const object& v)
     }
 }
 
-std::ostream& operator<< (std::ostream& s, const object& o)
+inline std::ostream& operator<< (std::ostream& s, const object& o)
 {
     switch(o.type) {
     case type::NIL:
