@@ -248,10 +248,6 @@ public:
     {
         m_stack[0].set_obj(object());
     }
-#if !defined(MSGPACK_USE_CPP03)
-    context(context&& other) = default;
-    context& operator=(context&& other) = default;
-#endif // !defined(MSGPACK_USE_CPP03)
 
     void init()
     {
@@ -725,9 +721,6 @@ private:
     unsigned int m_top;
     unsigned int m_stack_idx;
     unpack_stack m_stack[MSGPACK_EMBED_STACK_SIZE];
-private:
-    context(context const&);
-    context& operator=(context const&);
 };
 
 } // detail
@@ -949,14 +942,14 @@ inline unpacker::unpacker(unpacker&& other)
      m_parsed(other.m_parsed),
      m_z(other.m_z),
      m_initial_buffer_size(other.m_initial_buffer_size),
-     m_ctx(msgpack::move(other.m_ctx)) {
+     m_ctx(other.m_ctx) {
     other.m_buffer = nullptr;
     other.m_z = nullptr;
 }
 
 inline unpacker& unpacker::operator=(unpacker&& other) {
-    std::swap(m_z, other.m_z);
-    std::swap(m_buffer, other.m_buffer);
+    this->~unpacker();
+    new (this) unpacker(std::move(other));
     return *this;
 }
 
