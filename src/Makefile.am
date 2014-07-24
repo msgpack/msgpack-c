@@ -85,7 +85,8 @@ nobase_include_HEADERS += \
 		../include/msgpack/unpack.hpp \
 		../include/msgpack/version.hpp \
 		../include/msgpack/vrefbuffer.hpp \
-		../include/msgpack/zbuffer.hpp
+		../include/msgpack/zbuffer.hpp \
+		../include/msgpack/zone.hpp
 endif
 
 EXTRA_DIST = \

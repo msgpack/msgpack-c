@@ -112,6 +112,7 @@ IF (MSGPACK_ENABLE_CXX)
         include/msgpack/version.hpp
         include/msgpack/vrefbuffer.hpp
         include/msgpack/zbuffer.hpp
+        include/msgpack/zone.hpp
     )
 ENDIF ()
 
