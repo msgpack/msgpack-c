@@ -201,10 +201,8 @@ TYPED_TEST_P(IntegerToFloatingPointTest, simple_buffer)
   v.push_back(1);
   if (numeric_limits<integer_type>::is_signed) v.push_back(-1);
   else v.push_back(2);
-  v.push_back(numeric_limits<integer_type>::min());
-  v.push_back(numeric_limits<integer_type>::max());
   for (unsigned int i = 0; i < kLoop; i++) {
-    v.push_back(rand());
+    v.push_back(rand() % 0x7FFFFF);
   }
   for (unsigned int i = 0; i < v.size() ; i++) {
     msgpack::sbuffer sbuf;
