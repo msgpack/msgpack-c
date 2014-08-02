@@ -873,11 +873,13 @@ private:
     unpacker& operator=(const unpacker&);
 };
 
-
 inline void unpack(unpacked& result,
-        const char* data, size_t len, size_t* offset = nullptr);
+        const char* data, size_t len, size_t& off);
+inline void unpack(unpacked& result,
+        const char* data, size_t len);
+// obsolete
 inline void unpack(unpacked* result,
-        const char* data, size_t len, size_t* offset = nullptr);
+        const char* data, size_t len, size_t* off = nullptr);
 
 // obsolete
 typedef enum {
@@ -888,14 +890,17 @@ typedef enum {
 } unpack_return;
 
 // obsolete
-static unpack_return unpack(const char* data, size_t len, size_t* off,
+static unpack_return unpack(const char* data, size_t len, size_t& off,
+        zone& z, object& result);
+static unpack_return unpack(const char* data, size_t len,
         zone& z, object& result);
 static unpack_return unpack(const char* data, size_t len, size_t* off,
         zone* z, object* result);
 
 
 // obsolete
-static object unpack(const char* data, size_t len, zone& z, size_t* off = nullptr);
+static object unpack(const char* data, size_t len, zone& z, size_t& off);
+static object unpack(const char* data, size_t len, zone& z);
 static object unpack(const char* data, size_t len, zone* z, size_t* off = nullptr);
 
 
@@ -1176,11 +1181,10 @@ inline void unpacker::remove_nonparsed_buffer()
 namespace detail {
 
 inline unpack_return
-unpack_imp(const char* data, size_t len, size_t* off,
+unpack_imp(const char* data, size_t len, size_t& off,
     zone& result_zone, object& result)
 {
-    size_t noff = 0;
-    if(off != nullptr) { noff = *off; }
+    size_t noff = off;
 
     if(len <= noff) {
         // FIXME
@@ -1198,7 +1202,7 @@ unpack_imp(const char* data, size_t len, size_t* off,
         return UNPACK_PARSE_ERROR;
     }
 
-    if(off != nullptr) { *off = noff; }
+    off = noff;
 
     if(e == 0) {
         return UNPACK_CONTINUE;
@@ -1217,13 +1221,13 @@ unpack_imp(const char* data, size_t len, size_t* off,
 
 // reference version
 inline void unpack(unpacked& result,
-    const char* data, size_t len, size_t* offset)
+    const char* data, size_t len, size_t& off)
 {
     object obj;
     msgpack::unique_ptr<zone> z(new zone());
 
     unpack_return ret = detail::unpack_imp(
-            data, len, offset, *z, obj);
+            data, len, off, *z, obj);
 
 
     switch(ret) {
@@ -1245,31 +1249,51 @@ inline void unpack(unpacked& result,
         throw unpack_error("parse error");
     }
 }
+
+inline void unpack(unpacked& result,
+    const char* data, size_t len)
+{
+    std::size_t off = 0;
+    return unpack(result, data, len, off);
+}
+
+// obsolete
 // pointer version
 inline void unpack(unpacked* result,
-    const char* data, size_t len, size_t* offset) {
-    unpack(*result, data, len, offset);
+    const char* data, size_t len, size_t* off) {
+    if (off) unpack(*result, data, len, *off);
+    else unpack(*result, data, len);
 }
 
 
 // obsolete
 // reference version
-inline unpack_return unpack(const char* data, size_t len, size_t* off,
+inline unpack_return unpack(const char* data, size_t len, size_t& off,
         zone& z, object& result)
 {
-    return detail::unpack_imp(data, len, off,
-            z, result);
+    return detail::unpack_imp(data, len, off, z, result);
 }
+
+// obsolete
+inline unpack_return unpack(const char* data, size_t len,
+        zone& z, object& result)
+{
+    std::size_t off = 0;
+    return detail::unpack_imp(data, len, off, z, result);
+}
+
+// obsolete
 // pointer version
 inline unpack_return unpack(const char* data, size_t len, size_t* off,
         zone* z, object* result)
 {
-    return unpack(data, len, off, *z, *result);
+    if (off) return unpack(data, len, *off, *z, *result);
+    else return unpack(data, len, *z, *result);
 }
 
 // obsolete
 // reference version
-inline object unpack(const char* data, size_t len, zone& z, size_t* off)
+inline object unpack(const char* data, size_t len, zone& z, size_t& off)
 {
     object result;
 
@@ -1292,10 +1316,21 @@ inline object unpack(const char* data, size_t len, zone& z, size_t* off)
         throw unpack_error("parse error");
     }
 }
+
+// obsolete
+inline object unpack(const char* data, size_t len, zone& z)
+{
+    std::size_t off = 0;
+    return unpack(data, len, z, off);
+}
+
+
+// obsolete
 // pointer version
 inline object unpack(const char* data, size_t len, zone* z, size_t* off)
 {
-    return unpack(data, len, *z, off);
+    if (off) return unpack(data, len, *z, *off);
+    else return unpack(data, len, *z);
 }
 
 }  // namespace msgpack
