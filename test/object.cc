@@ -33,15 +33,11 @@ TEST(object, convert)
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, m1);
 
-    msgpack::zone z;
-    msgpack::object obj;
-
-    msgpack::unpack_return ret =
-        msgpack::unpack(sbuf.data(), sbuf.size(), z, obj);
-    EXPECT_EQ(ret, msgpack::UNPACK_SUCCESS);
+    msgpack::unpacked ret;
+    msgpack::unpack(ret, sbuf.data(), sbuf.size());
 
     myclass m2;
-    obj.convert(&m2);
+    ret.get().convert(&m2);
 
     EXPECT_EQ(m1, m2);
 }
@@ -54,14 +50,10 @@ TEST(object, as)
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, m1);
 
-    msgpack::zone z;
-    msgpack::object obj;
+    msgpack::unpacked ret;
+    msgpack::unpack(ret, sbuf.data(), sbuf.size());
 
-    msgpack::unpack_return ret =
-        msgpack::unpack(sbuf.data(), sbuf.size(), z, obj);
-    EXPECT_EQ(ret, msgpack::UNPACK_SUCCESS);
-
-    EXPECT_EQ(m1, obj.as<myclass>());
+    EXPECT_EQ(m1, ret.get().as<myclass>());
 }
 
 
