@@ -1017,17 +1017,14 @@ TEST(MSGPACK, vrefbuffer_int64)
       pac.reserve_buffer(sz);                                           \
       memcpy(pac.buffer(), p, sz);                                      \
       pac.buffer_consumed(sz);                                          \
-      while (pac.execute()) {                                           \
+      msgpack::unpacked result;                                         \
+      while (pac.next(result)) {                                        \
         if (it == vec.end()) goto out;                                  \
-        msgpack::object obj = pac.data();                               \
-        msgpack::zone *life = pac.release_zone();                       \
-        EXPECT_TRUE(life != NULL);                                      \
-        pac.reset();                                                    \
+        msgpack::object obj = result.get();                             \
         vec_type::value_type val;                                       \
         obj.convert(&val);                                              \
         EXPECT_EQ(*it, val);                                            \
         ++it;                                                           \
-        msgpack::zone::destroy(life);                                   \
       }                                                                 \
       p += sz;                                                          \
     }                                                                   \

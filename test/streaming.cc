@@ -124,7 +124,7 @@ TEST(streaming, move)
 
         pac_in.buffer_consumed(len);
 
-        while(pac_in.next(&result)) {
+        while(pac_in.next(result)) {
             msgpack::object obj = result.get();
             switch(count++) {
             case 0:
@@ -165,7 +165,7 @@ public:
             pac.buffer_consumed(len);
 
             msgpack::unpacked result;
-            while(pac.next(&result)) {
+            while(pac.next(result)) {
                 on_message(result.get(), msgpack::move(result.zone()));
             }
 
