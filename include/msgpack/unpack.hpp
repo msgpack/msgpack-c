@@ -168,16 +168,16 @@ public:
     object const& obj() const { return m_obj; }
     object& obj() { return m_obj; }
     void set_obj(object const& obj) { m_obj = obj; }
-    size_t count() const { return m_count; }
-    void set_count(size_t count) { m_count = count; }
-    size_t decl_count() { return --m_count; }
+    std::size_t count() const { return m_count; }
+    void set_count(std::size_t count) { m_count = count; }
+    std::size_t decl_count() { return --m_count; }
     unsigned int container_type() const { return m_container_type; }
     void set_container_type(unsigned int container_type) { m_container_type = container_type; }
     object const& map_key() const { return m_map_key; }
     void set_map_key(object const& map_key) { m_map_key = map_key; }
 private:
     object m_obj;
-    size_t m_count;
+    std::size_t m_count;
     unsigned int m_container_type;
     object m_map_key;
 };
@@ -272,7 +272,7 @@ public:
         return m_user;
     }
 
-    int execute(const char* data, size_t len, size_t& off)
+    int execute(const char* data, std::size_t len, std::size_t& off)
     {
         assert(len >= off);
 
@@ -400,7 +400,7 @@ public:
                     ++m_current;
                     fixed_trail_again = false;
                 }
-                if((size_t)(pe - m_current) < m_trail) {
+                if((std::size_t)(pe - m_current) < m_trail) {
                     off = m_current - m_start;
                     return 0;
                 }
@@ -619,7 +619,7 @@ private:
         unsigned int container_type,
         object& obj,
         const char* load_pos,
-        size_t& off) {
+        std::size_t& off) {
         if(m_top < MSGPACK_EMBED_STACK_SIZE /* FIXME */) {
             typename value<T>::type tmp;
             load<T>(tmp, load_pos);
@@ -693,7 +693,7 @@ private:
         return 0;
     }
 
-    int push_proc(object& obj, size_t& off) {
+    int push_proc(object& obj, std::size_t& off) {
         int ret = push_item(obj);
         if (ret > 0) {
             m_stack[0].set_obj(obj);
@@ -759,7 +759,7 @@ private:
 
 class unpacker {
 public:
-    unpacker(size_t init_buffer_size = MSGPACK_UNPACKER_INIT_BUFFER_SIZE);
+    unpacker(std::size_t init_buffer_size = MSGPACK_UNPACKER_INIT_BUFFER_SIZE);
 
 #if !defined(MSGPACK_USE_CPP03)
     unpacker(unpacker&& other);
@@ -770,20 +770,20 @@ public:
 
 public:
     /*! 1. reserve buffer. at least `size' bytes of capacity will be ready */
-    void reserve_buffer(size_t size = MSGPACK_UNPACKER_RESERVE_SIZE);
+    void reserve_buffer(std::size_t size = MSGPACK_UNPACKER_RESERVE_SIZE);
 
     /*! 2. read data to the buffer() up to buffer_capacity() bytes */
     char* buffer();
-    size_t buffer_capacity() const;
+    std::size_t buffer_capacity() const;
 
     /*! 3. specify the number of bytes actually copied */
-    void buffer_consumed(size_t size);
+    void buffer_consumed(std::size_t size);
 
     /*! 4. repeat next() until it retunrs false */
     bool next(unpacked* result);
 
     /*! 5. check if the size of message doesn't exceed assumption. */
-    size_t message_size() const;
+    std::size_t message_size() const;
 
     // Basic usage of the unpacker is as following:
     //
@@ -794,7 +794,7 @@ public:
     //     pac.reserve_buffer(32*1024);
     //
     //     // 2.
-    //     size_t bytes = input.readsome(pac.buffer(), pac.buffer_capacity());
+    //     std::size_t bytes = input.readsome(pac.buffer(), pac.buffer_capacity());
     //
     //     // error handling ...
     //
@@ -839,33 +839,33 @@ public:
 public:
     // These functions are usable when non-MessagePack message follows after
     // MessagePack message.
-    size_t parsed_size() const;
+    std::size_t parsed_size() const;
 
     /*! get address of the buffer that is not parsed */
     char* nonparsed_buffer();
-    size_t nonparsed_size() const;
+    std::size_t nonparsed_size() const;
 
     /*! skip specified size of non-parsed buffer, leaving the buffer */
     // Note that the `size' argument must be smaller than nonparsed_size()
-    void skip_nonparsed_buffer(size_t size);
+    void skip_nonparsed_buffer(std::size_t size);
 
     /*! remove unparsed buffer from unpacker */
     // Note that reset() leaves non-parsed buffer.
     void remove_nonparsed_buffer();
 
 private:
-    void expand_buffer(size_t size);
+    void expand_buffer(std::size_t size);
     int execute_imp();
     bool flush_zone();
 
 private:
     char* m_buffer;
-    size_t m_used;
-    size_t m_free;
-    size_t m_off;
-    size_t m_parsed;
+    std::size_t m_used;
+    std::size_t m_free;
+    std::size_t m_off;
+    std::size_t m_parsed;
     zone* m_z;
-    size_t m_initial_buffer_size;
+    std::size_t m_initial_buffer_size;
     detail::context m_ctx;
 
 private:
@@ -874,12 +874,12 @@ private:
 };
 
 inline void unpack(unpacked& result,
-        const char* data, size_t len, size_t& off);
+        const char* data, std::size_t len, std::size_t& off);
 inline void unpack(unpacked& result,
-        const char* data, size_t len);
+        const char* data, std::size_t len);
 // obsolete
 inline void unpack(unpacked* result,
-        const char* data, size_t len, size_t* off = nullptr);
+        const char* data, std::size_t len, std::size_t* off = nullptr);
 
 // obsolete
 typedef enum {
@@ -890,21 +890,21 @@ typedef enum {
 } unpack_return;
 
 // obsolete
-static unpack_return unpack(const char* data, size_t len, size_t& off,
+static unpack_return unpack(const char* data, std::size_t len, std::size_t& off,
         zone& z, object& result);
-static unpack_return unpack(const char* data, size_t len,
+static unpack_return unpack(const char* data, std::size_t len,
         zone& z, object& result);
-static unpack_return unpack(const char* data, size_t len, size_t* off,
+static unpack_return unpack(const char* data, std::size_t len, std::size_t* off,
         zone* z, object* result);
 
 
 // obsolete
-static object unpack(const char* data, size_t len, zone& z, size_t& off);
-static object unpack(const char* data, size_t len, zone& z);
-static object unpack(const char* data, size_t len, zone* z, size_t* off = nullptr);
+static object unpack(const char* data, std::size_t len, zone& z, std::size_t& off);
+static object unpack(const char* data, std::size_t len, zone& z);
+static object unpack(const char* data, std::size_t len, zone* z, std::size_t* off = nullptr);
 
 
-inline unpacker::unpacker(size_t initial_buffer_size)
+inline unpacker::unpacker(std::size_t initial_buffer_size)
 {
     if(initial_buffer_size < COUNTER_SIZE) {
         initial_buffer_size = COUNTER_SIZE;
@@ -969,13 +969,13 @@ inline unpacker::~unpacker()
 }
 
 
-inline void unpacker::reserve_buffer(size_t size)
+inline void unpacker::reserve_buffer(std::size_t size)
 {
     if(m_free >= size) return;
     expand_buffer(size);
 }
 
-inline void unpacker::expand_buffer(size_t size)
+inline void unpacker::expand_buffer(std::size_t size)
 {
     if(m_used == m_off && detail::get_count(m_buffer) == 1
         && !m_ctx.user().referenced()) {
@@ -988,7 +988,7 @@ inline void unpacker::expand_buffer(size_t size)
     }
 
     if(m_off == COUNTER_SIZE) {
-        size_t next_size = (m_used + m_free) * 2;    // include COUNTER_SIZE
+        std::size_t next_size = (m_used + m_free) * 2;    // include COUNTER_SIZE
         while(next_size < size + m_used) {
             next_size *= 2;
         }
@@ -1002,8 +1002,8 @@ inline void unpacker::expand_buffer(size_t size)
         m_free = next_size - m_used;
 
     } else {
-        size_t next_size = m_initial_buffer_size;  // include COUNTER_SIZE
-        size_t not_parsed = m_used - m_off;
+        std::size_t next_size = m_initial_buffer_size;  // include COUNTER_SIZE
+        std::size_t not_parsed = m_used - m_off;
         while(next_size < size + not_parsed + COUNTER_SIZE) {
             next_size *= 2;
         }
@@ -1042,12 +1042,12 @@ inline char* unpacker::buffer()
     return m_buffer + m_used;
 }
 
-inline size_t unpacker::buffer_capacity() const
+inline std::size_t unpacker::buffer_capacity() const
 {
     return m_free;
 }
 
-inline void unpacker::buffer_consumed(size_t size)
+inline void unpacker::buffer_consumed(std::size_t size)
 {
     m_used += size;
     m_free -= size;
@@ -1089,7 +1089,7 @@ inline bool unpacker::execute()
 
 inline int unpacker::execute_imp()
 {
-    size_t off = m_off;
+    std::size_t off = m_off;
     int ret = m_ctx.execute(m_buffer, m_used, m_off);
     if(m_off > off) {
         m_parsed += m_off - off;
@@ -1148,12 +1148,12 @@ inline void unpacker::reset()
     m_parsed = 0;
 }
 
-inline size_t unpacker::message_size() const
+inline std::size_t unpacker::message_size() const
 {
     return m_parsed - m_off + m_used;
 }
 
-inline size_t unpacker::parsed_size() const
+inline std::size_t unpacker::parsed_size() const
 {
     return m_parsed;
 }
@@ -1163,12 +1163,12 @@ inline char* unpacker::nonparsed_buffer()
     return m_buffer + m_off;
 }
 
-inline size_t unpacker::nonparsed_size() const
+inline std::size_t unpacker::nonparsed_size() const
 {
     return m_used - m_off;
 }
 
-inline void unpacker::skip_nonparsed_buffer(size_t size)
+inline void unpacker::skip_nonparsed_buffer(std::size_t size)
 {
     m_off += size;
 }
@@ -1181,10 +1181,10 @@ inline void unpacker::remove_nonparsed_buffer()
 namespace detail {
 
 inline unpack_return
-unpack_imp(const char* data, size_t len, size_t& off,
+unpack_imp(const char* data, std::size_t len, std::size_t& off,
     zone& result_zone, object& result)
 {
-    size_t noff = off;
+    std::size_t noff = off;
 
     if(len <= noff) {
         // FIXME
@@ -1221,7 +1221,7 @@ unpack_imp(const char* data, size_t len, size_t& off,
 
 // reference version
 inline void unpack(unpacked& result,
-    const char* data, size_t len, size_t& off)
+    const char* data, std::size_t len, std::size_t& off)
 {
     object obj;
     msgpack::unique_ptr<zone> z(new zone());
@@ -1251,7 +1251,7 @@ inline void unpack(unpacked& result,
 }
 
 inline void unpack(unpacked& result,
-    const char* data, size_t len)
+    const char* data, std::size_t len)
 {
     std::size_t off = 0;
     return unpack(result, data, len, off);
@@ -1260,7 +1260,7 @@ inline void unpack(unpacked& result,
 // obsolete
 // pointer version
 inline void unpack(unpacked* result,
-    const char* data, size_t len, size_t* off) {
+    const char* data, std::size_t len, std::size_t* off) {
     if (off) unpack(*result, data, len, *off);
     else unpack(*result, data, len);
 }
@@ -1268,14 +1268,14 @@ inline void unpack(unpacked* result,
 
 // obsolete
 // reference version
-inline unpack_return unpack(const char* data, size_t len, size_t& off,
+inline unpack_return unpack(const char* data, std::size_t len, std::size_t& off,
         zone& z, object& result)
 {
     return detail::unpack_imp(data, len, off, z, result);
 }
 
 // obsolete
-inline unpack_return unpack(const char* data, size_t len,
+inline unpack_return unpack(const char* data, std::size_t len,
         zone& z, object& result)
 {
     std::size_t off = 0;
@@ -1284,7 +1284,7 @@ inline unpack_return unpack(const char* data, size_t len,
 
 // obsolete
 // pointer version
-inline unpack_return unpack(const char* data, size_t len, size_t* off,
+inline unpack_return unpack(const char* data, std::size_t len, std::size_t* off,
         zone* z, object* result)
 {
     if (off) return unpack(data, len, *off, *z, *result);
@@ -1293,7 +1293,7 @@ inline unpack_return unpack(const char* data, size_t len, size_t* off,
 
 // obsolete
 // reference version
-inline object unpack(const char* data, size_t len, zone& z, size_t& off)
+inline object unpack(const char* data, std::size_t len, zone& z, std::size_t& off)
 {
     object result;
 
@@ -1318,7 +1318,7 @@ inline object unpack(const char* data, size_t len, zone& z, size_t& off)
 }
 
 // obsolete
-inline object unpack(const char* data, size_t len, zone& z)
+inline object unpack(const char* data, std::size_t len, zone& z)
 {
     std::size_t off = 0;
     return unpack(data, len, z, off);
@@ -1327,7 +1327,7 @@ inline object unpack(const char* data, size_t len, zone& z)
 
 // obsolete
 // pointer version
-inline object unpack(const char* data, size_t len, zone* z, size_t* off)
+inline object unpack(const char* data, std::size_t len, zone* z, std::size_t* off)
 {
     if (off) return unpack(data, len, *z, *off);
     else return unpack(data, len, *z);
