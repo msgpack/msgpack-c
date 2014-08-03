@@ -786,6 +786,7 @@ public:
 
     /*! 4. repeat next() until it retunrs false */
     bool next(unpacked* result);
+    bool next(unpacked& result);
 
     /*! 5. check if the size of message doesn't exceed assumption. */
     std::size_t message_size() const;
@@ -1058,7 +1059,7 @@ inline void unpacker::buffer_consumed(std::size_t size)
     m_free -= size;
 }
 
-inline bool unpacker::next(unpacked* result)
+inline bool unpacker::next(unpacked& result)
 {
     int ret = execute_imp();
 
@@ -1067,16 +1068,21 @@ inline bool unpacker::next(unpacked* result)
     }
 
     if(ret == 0) {
-        result->zone().reset();
-        result->set(object());
+        result.zone().reset();
+        result.set(object());
         return false;
 
     } else {
-        result->zone().reset( release_zone() );
-        result->set(data());
+        result.zone().reset( release_zone() );
+        result.set(data());
         reset();
         return true;
     }
+}
+
+inline bool unpacker::next(unpacked* result)
+{
+    return next(*result);
 }
 
 

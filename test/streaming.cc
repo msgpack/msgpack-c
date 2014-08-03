@@ -29,6 +29,52 @@ TEST(streaming, basic)
 
         pac.buffer_consumed(len);
 
+        while(pac.next(result)) {
+            msgpack::object obj = result.get();
+            switch(count++) {
+            case 0:
+                EXPECT_EQ(1, obj.as<int>());
+                break;
+            case 1:
+                EXPECT_EQ(2, obj.as<int>());
+                break;
+            case 2:
+                EXPECT_EQ(3, obj.as<int>());
+                return;
+            }
+        }
+
+        EXPECT_TRUE(input < eof);
+    }
+}
+
+TEST(streaming, basic_pointer)
+{
+    msgpack::sbuffer buffer;
+
+    msgpack::packer<msgpack::sbuffer> pk(&buffer);
+    pk.pack(1);
+    pk.pack(2);
+    pk.pack(3);
+
+    const char* input = buffer.data();
+    const char* const eof = input + buffer.size();
+
+    msgpack::unpacker pac;
+    msgpack::unpacked result;
+
+    int count = 0;
+    while(count < 3) {
+        pac.reserve_buffer(32*1024);
+
+        // read buffer into pac.buffer() upto
+        // pac.buffer_capacity() bytes.
+        size_t len = 1;
+        memcpy(pac.buffer(), input, len);
+        input += len;
+
+        pac.buffer_consumed(len);
+
         while(pac.next(&result)) {
             msgpack::object obj = result.get();
             switch(count++) {
