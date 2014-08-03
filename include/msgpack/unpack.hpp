@@ -727,8 +727,13 @@ private:
 
 
 struct unpack_error : public std::runtime_error {
+#if defined(MSGPACK_USE_CPP03)
     unpack_error(const std::string& msg) :
         std::runtime_error(msg) { }
+#else
+    unpack_error(const char* msg) :
+        std::runtime_error(msg) { }
+#endif
 };
 
 
