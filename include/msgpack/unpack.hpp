@@ -400,7 +400,7 @@ public:
                     ++m_current;
                     fixed_trail_again = false;
                 }
-                if((std::size_t)(pe - m_current) < m_trail) {
+                if(static_cast<std::size_t>(pe - m_current) < m_trail) {
                     off = m_current - m_start;
                     return 0;
                 }
