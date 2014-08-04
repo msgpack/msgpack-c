@@ -288,6 +288,7 @@ TEST(MSGPACK_STL, simple_buffer_string)
     msgpack::pack(sbuf, val1);
     msgpack::unpacked ret;
     msgpack::unpack(ret, sbuf.data(), sbuf.size());
+    EXPECT_EQ(ret.get().type, msgpack::type::STR);
     string val2 = ret.get().as<string>();
     EXPECT_EQ(val1.size(), val2.size());
     EXPECT_EQ(val1, val2);
@@ -304,7 +305,25 @@ TEST(MSGPACK_STL, simple_buffer_vector)
     msgpack::pack(sbuf, val1);
     msgpack::unpacked ret;
     msgpack::unpack(ret, sbuf.data(), sbuf.size());
+    EXPECT_EQ(ret.get().type, msgpack::type::ARRAY);
     vector<int> val2 = ret.get().as<vector<int> >();
+    EXPECT_EQ(val1.size(), val2.size());
+    EXPECT_TRUE(equal(val1.begin(), val1.end(), val2.begin()));
+  }
+}
+
+TEST(MSGPACK_STL, simple_buffer_vector_char)
+{
+  for (unsigned int k = 0; k < kLoop; k++) {
+    vector<char> val1;
+    for (unsigned int i = 0; i < kElements; i++)
+      val1.push_back(rand());
+    msgpack::sbuffer sbuf;
+    msgpack::pack(sbuf, val1);
+    msgpack::unpacked ret;
+    msgpack::unpack(ret, sbuf.data(), sbuf.size());
+    EXPECT_EQ(ret.get().type, msgpack::type::BIN);
+    vector<char> val2 = ret.get().as<vector<char> >();
     EXPECT_EQ(val1.size(), val2.size());
     EXPECT_TRUE(equal(val1.begin(), val1.end(), val2.begin()));
   }
