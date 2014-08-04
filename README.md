@@ -141,3 +141,10 @@ Install from package for this branch (poc/0.6) is not supported yet.
         // If the type is mismatched, it throws msgpack::type_error.
         obj.as<int>();  // type is mismatched, msgpack::type_error is thrown
     }
+
+### Documents
+
+You can get addtional information on the wiki:
+
+https://github.com/msgpack/msgpack-c/wiki/cpp_overview
+
