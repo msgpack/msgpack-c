@@ -202,7 +202,7 @@ inline zone* zone::create(size_t chunk_size)
 {
     zone* z = static_cast<zone*>(::malloc(sizeof(zone) + chunk_size));
     if (!z) {
-        return nullptr;
+        throw std::bad_alloc();
     }
     new (z) zone(chunk_size);
     return z;
@@ -248,7 +248,7 @@ inline void* zone::allocate_expand(size_t size)
     }
 
     chunk* c = static_cast<chunk*>(::malloc(sizeof(chunk) + sz));
-    if (!c) return nullptr;
+    if (!c) throw std::bad_alloc();
 
     char* ptr = reinterpret_cast<char*>(c) + sizeof(chunk);
 

@@ -106,12 +106,10 @@ inline void unpack_false(object& o)
 { o.type = type::BOOLEAN; o.via.boolean = false; }
 
 struct unpack_array {
-    bool operator()(unpack_user&u, unsigned int n, object& o) const {
+    void operator()(unpack_user&u, unsigned int n, object& o) const {
         o.type = type::ARRAY;
         o.via.array.size = 0;
         o.via.array.ptr = static_cast<object*>(u.zone().allocate_align(n*sizeof(object)));
-        if(o.via.array.ptr == nullptr) { return false; }
-        return true;
     }
 };
 
@@ -125,12 +123,10 @@ inline void unpack_array_item(object& c, object const& o)
 }
 
 struct unpack_map {
-    bool operator()(unpack_user& u, unsigned int n, object& o) const {
+    void operator()(unpack_user& u, unsigned int n, object& o) const {
         o.type = type::MAP;
         o.via.map.size = 0;
         o.via.map.ptr = static_cast<object_kv*>(u.zone().allocate_align(n*sizeof(object_kv)));
-        if(o.via.map.ptr == nullptr) { return false; }
-        return true;
     }
 };
 
@@ -623,23 +619,18 @@ private:
         if(m_top < MSGPACK_EMBED_STACK_SIZE /* FIXME */) {
             typename value<T>::type tmp;
             load<T>(tmp, load_pos);
-            if (f(m_user, tmp, m_stack[m_top].obj())) {
-                if(tmp == 0) {
-                    obj = m_stack[m_top].obj();
-                    int ret = push_proc(obj, off);
-                    if (ret != 0) return ret;
-                }
-                else {
-                    m_stack[m_top].set_container_type(container_type);
-                    m_stack[m_top].set_count(tmp);
-                    ++m_top;
-                    m_cs = CS_HEADER;
-                    ++m_current;
-                }
+            f(m_user, tmp, m_stack[m_top].obj());
+            if(tmp == 0) {
+                obj = m_stack[m_top].obj();
+                int ret = push_proc(obj, off);
+                if (ret != 0) return ret;
             }
             else {
-                off = m_current - m_start;
-                return -1;
+                m_stack[m_top].set_container_type(container_type);
+                m_stack[m_top].set_count(tmp);
+                ++m_top;
+                m_cs = CS_HEADER;
+                ++m_current;
             }
         }
         else {
