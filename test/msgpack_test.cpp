@@ -274,6 +274,170 @@ TEST(MSGPACK, simple_buffer_false)
   EXPECT_EQ(val1, val2);
 }
 
+TEST(MSGPACK, simple_buffer_fixext1)
+{
+  msgpack::sbuffer sbuf;
+  msgpack::packer<msgpack::sbuffer> packer(sbuf);
+  char const buf [] = { 2 };
+
+  packer.pack_ext(sizeof(buf), 1);
+  packer.pack_ext_body(buf, sizeof(buf));
+  msgpack::unpacked ret;
+  msgpack::unpack(ret, sbuf.data(), sbuf.size());
+  EXPECT_EQ(1, ret.get().via.ext.size);
+  EXPECT_EQ(1, ret.get().via.ext.type());
+  EXPECT_EQ(2, ret.get().via.ext.data()[0]);
+}
+
+TEST(MSGPACK, simple_buffer_fixext2)
+{
+  msgpack::sbuffer sbuf;
+  msgpack::packer<msgpack::sbuffer> packer(sbuf);
+  char const buf [] = { 2, 3 };
+
+  packer.pack_ext(sizeof(buf), 0);
+  packer.pack_ext_body(buf, sizeof(buf));
+  msgpack::unpacked ret;
+  msgpack::unpack(ret, sbuf.data(), sbuf.size());
+  EXPECT_EQ(2, ret.get().via.ext.size);
+  EXPECT_EQ(0, ret.get().via.ext.type());
+  EXPECT_TRUE(
+      std::equal(buf, buf + sizeof(buf), ret.get().via.ext.data()));
+}
+
+TEST(MSGPACK, simple_buffer_fixext4)
+{
+  msgpack::sbuffer sbuf;
+  msgpack::packer<msgpack::sbuffer> packer(sbuf);
+  char const buf [] = { 2, 3, 4, 5 };
+
+  packer.pack_ext(sizeof(buf), 1);
+  packer.pack_ext_body(buf, sizeof(buf));
+  msgpack::unpacked ret;
+  msgpack::unpack(ret, sbuf.data(), sbuf.size());
+  EXPECT_EQ(4, ret.get().via.ext.size);
+  EXPECT_EQ(1, ret.get().via.ext.type());
+  EXPECT_TRUE(
+      std::equal(buf, buf + sizeof(buf), ret.get().via.ext.data()));
+}
+
+TEST(MSGPACK, simple_buffer_fixext8)
+{
+  msgpack::sbuffer sbuf;
+  msgpack::packer<msgpack::sbuffer> packer(sbuf);
+  char const buf [] = { 2, 3, 4, 5, 6, 7, 8, 9 };
+
+  packer.pack_ext(sizeof(buf), 1);
+  packer.pack_ext_body(buf, sizeof(buf));
+  msgpack::unpacked ret;
+  msgpack::unpack(ret, sbuf.data(), sbuf.size());
+  EXPECT_EQ(8, ret.get().via.ext.size);
+  EXPECT_EQ(1, ret.get().via.ext.type());
+  EXPECT_TRUE(
+      std::equal(buf, buf + sizeof(buf), ret.get().via.ext.data()));
+}
+
+TEST(MSGPACK, simple_buffer_fixext16)
+{
+  msgpack::sbuffer sbuf;
+  msgpack::packer<msgpack::sbuffer> packer(sbuf);
+  char const buf [] = { 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17 };
+
+  packer.pack_ext(sizeof(buf), 1);
+  packer.pack_ext_body(buf, sizeof(buf));
+  msgpack::unpacked ret;
+  msgpack::unpack(ret, sbuf.data(), sbuf.size());
+  EXPECT_EQ(16, ret.get().via.ext.size);
+  EXPECT_EQ(1, ret.get().via.ext.type());
+  EXPECT_TRUE(
+      std::equal(buf, buf + sizeof(buf), ret.get().via.ext.data()));
+}
+
+TEST(MSGPACK, simple_buffer_fixext_1byte_0)
+{
+  std::size_t const size = 0;
+  msgpack::sbuffer sbuf;
+  msgpack::packer<msgpack::sbuffer> packer(sbuf);
+
+  packer.pack_ext(size, 77);
+  msgpack::unpacked ret;
+  msgpack::unpack(ret, sbuf.data(), sbuf.size());
+  EXPECT_EQ(size, ret.get().via.ext.size);
+  EXPECT_EQ(77, ret.get().via.ext.type());
+}
+
+TEST(MSGPACK, simple_buffer_fixext_1byte_255)
+{
+  std::size_t const size = 255;
+  msgpack::sbuffer sbuf;
+  msgpack::packer<msgpack::sbuffer> packer(sbuf);
+  char buf[size];
+  for (int i = 0; i != size; ++i) buf[i] = static_cast<char>(i);
+  packer.pack_ext(sizeof(buf), 77);
+  packer.pack_ext_body(buf, sizeof(buf));
+
+  msgpack::unpacked ret;
+  msgpack::unpack(ret, sbuf.data(), sbuf.size());
+  EXPECT_EQ(size, ret.get().via.ext.size);
+  EXPECT_EQ(77, ret.get().via.ext.type());
+  EXPECT_TRUE(
+      std::equal(buf, buf + sizeof(buf), ret.get().via.ext.data()));
+}
+
+TEST(MSGPACK, simple_buffer_fixext_2byte_256)
+{
+  std::size_t const size = 256;
+  msgpack::sbuffer sbuf;
+  msgpack::packer<msgpack::sbuffer> packer(sbuf);
+  char buf[size];
+  for (int i = 0; i != size; ++i) buf[i] = static_cast<char>(i);
+  packer.pack_ext(sizeof(buf), 77);
+  packer.pack_ext_body(buf, sizeof(buf));
+
+  msgpack::unpacked ret;
+  msgpack::unpack(ret, sbuf.data(), sbuf.size());
+  EXPECT_EQ(size, ret.get().via.ext.size);
+  EXPECT_EQ(77, ret.get().via.ext.type());
+  EXPECT_TRUE(
+      std::equal(buf, buf + sizeof(buf), ret.get().via.ext.data()));
+}
+
+TEST(MSGPACK, simple_buffer_fixext_2byte_65535)
+{
+  std::size_t const size = 65535;
+  msgpack::sbuffer sbuf;
+  msgpack::packer<msgpack::sbuffer> packer(sbuf);
+  char buf[size];
+  for (int i = 0; i != size; ++i) buf[i] = static_cast<char>(i);
+  packer.pack_ext(sizeof(buf), 77);
+  packer.pack_ext_body(buf, sizeof(buf));
+
+  msgpack::unpacked ret;
+  msgpack::unpack(ret, sbuf.data(), sbuf.size());
+  EXPECT_EQ(size, ret.get().via.ext.size);
+  EXPECT_EQ(77, ret.get().via.ext.type());
+  EXPECT_TRUE(
+      std::equal(buf, buf + sizeof(buf), ret.get().via.ext.data()));
+}
+
+TEST(MSGPACK, simple_buffer_fixext_4byte_65536)
+{
+  std::size_t const size = 65536;
+  msgpack::sbuffer sbuf;
+  msgpack::packer<msgpack::sbuffer> packer(sbuf);
+  char buf[size];
+  for (int i = 0; i != size; ++i) buf[i] = static_cast<char>(i);
+  packer.pack_ext(sizeof(buf), 77);
+  packer.pack_ext_body(buf, sizeof(buf));
+
+  msgpack::unpacked ret;
+  msgpack::unpack(ret, sbuf.data(), sbuf.size());
+  EXPECT_EQ(size, ret.get().via.ext.size);
+  EXPECT_EQ(77, ret.get().via.ext.type());
+  EXPECT_TRUE(
+      std::equal(buf, buf + sizeof(buf), ret.get().via.ext.data()));
+}
+
 //-----------------------------------------------------------------------------
 
 // STL
@@ -707,16 +871,9 @@ TEST(MSGPACK_USER_DEFINED, simple_buffer_class_old_to_new)
     TestClass val1;
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, val1);
-    msgpack::zone z;
-    msgpack::object obj;
-    msgpack::unpack_return ret =
-      msgpack::unpack(sbuf.data(), sbuf.size(), z, obj);
-    EXPECT_EQ(msgpack::UNPACK_SUCCESS, ret);
-    TestClass2 val2;
-    val2.i = -1;
-    val2.s = "";
-    val2.v = vector<int>();
-    obj.convert(&val2);
+    msgpack::unpacked ret;
+    msgpack::unpack(ret, sbuf.data(), sbuf.size());
+    TestClass2 val2 = ret.get().as<TestClass2>();
     EXPECT_EQ(val1.i, val2.i);
     EXPECT_EQ(val1.s, val2.s);
     EXPECT_FALSE(val2.s.empty());

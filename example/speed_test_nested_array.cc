@@ -51,23 +51,11 @@ void test_array_of_array() {
     buffer.seekg(0);
     std::string str(buffer.str());
 
-    // deserialized object is valid during the msgpack::zone instance alive.
-    msgpack::zone mempool;
-    msgpack::object deserialized;
-    std::cout << "Start unpacking..." << std::endl;
-    {
-        boost::timer::cpu_timer timer;
-        msgpack::unpack(str.data(), str.size(), NULL, &mempool, &deserialized);
-        std::string result = timer.format();
-        std::cout << result << std::endl;
-    }
-    std::cout << "Unpack finished..." << std::endl;
-
     msgpack::unpacked unpacked;
-    std::cout << "Start unpacking...by void unpack(unpacked* result, const char* data, size_t len, size_t* offset = NULL)" << std::endl;
+    std::cout << "Start unpacking...by void unpack(unpacked& result, const char* data, size_t len)" << std::endl;
     {
         boost::timer::cpu_timer timer;
-        msgpack::unpack(&unpacked, str.data(), str.size());
+        msgpack::unpack(unpacked, str.data(), str.size());
         std::string result = timer.format();
         std::cout << result << std::endl;
     }
@@ -76,7 +64,7 @@ void test_array_of_array() {
     std::cout << "Start converting..." << std::endl;
     {
         boost::timer::cpu_timer timer;
-        deserialized.convert(&v2);
+        unpacked.get().convert(&v2);
         std::string result = timer.format();
         std::cout << result << std::endl;
     }

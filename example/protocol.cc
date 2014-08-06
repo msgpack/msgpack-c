@@ -46,12 +46,12 @@ int main(void)
     {
         std::string buffer(stream.str());
 
-        msgpack::zone mempool;
-        msgpack::object o =
-            msgpack::unpack(buffer.data(), buffer.size(), mempool);
+        msgpack::unpacked result;
+        msgpack::unpack(result, buffer.data(), buffer.size());
+        msgpack::object o = result.get();
 
         myprotocol::Get req;
-        msgpack::convert(req, o);
+        o.convert(req);
         std::cout << "received: " << o << std::endl;
     }
 
@@ -74,12 +74,13 @@ int main(void)
     {
         std::string buffer(stream.str());
 
-        msgpack::zone mempool;
-        msgpack::object o =
-            msgpack::unpack(buffer.data(), buffer.size(), mempool);
+        msgpack::unpacked result;
+        msgpack::unpack(result, buffer.data(), buffer.size());
+        msgpack::object o = result.get();
+
 
         myprotocol::MultiGet req;
-        msgpack::convert(req, o);
+        o.convert(req);
         std::cout << "received: " << o << std::endl;
     }
 }

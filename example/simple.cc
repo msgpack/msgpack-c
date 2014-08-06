@@ -18,11 +18,12 @@ int main(void)
     // deserialize the buffer into msgpack::object instance.
     std::string str(buffer.str());
 
-    // deserialized object is valid during the msgpack::zone instance alive.
-    msgpack::zone mempool;
+    msgpack::unpacked result;
 
-    msgpack::object deserialized;
-    msgpack::unpack(str.data(), str.size(), NULL, &mempool, &deserialized);
+    msgpack::unpack(result, str.data(), str.size());
+
+    // deserialized object is valid during the msgpack::unpacked instance alive.
+    msgpack::object deserialized = result.get();
 
     // msgpack::object supports ostream.
     std::cout << deserialized << std::endl;

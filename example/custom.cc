@@ -30,9 +30,9 @@ int main(void)
         msgpack::sbuffer sbuf;
         msgpack::pack(sbuf, oc);
 
-        msgpack::zone zone;
-        msgpack::object obj;
-        msgpack::unpack(sbuf.data(), sbuf.size(), NULL, &zone, &obj);
+        msgpack::unpacked result;
+        msgpack::unpack(result, sbuf.data(), sbuf.size());
+        msgpack::object obj = result.get();
 
         obj.convert(&nc);
 
@@ -46,9 +46,9 @@ int main(void)
         msgpack::sbuffer sbuf;
         msgpack::pack(sbuf, nc);
 
-        msgpack::zone zone;
-        msgpack::object obj;
-        msgpack::unpack(sbuf.data(), sbuf.size(), NULL, &zone, &obj);
+        msgpack::unpacked result;
+        msgpack::unpack(result, sbuf.data(), sbuf.size());
+        msgpack::object obj = result.get();
 
         obj.convert(&oc);
 

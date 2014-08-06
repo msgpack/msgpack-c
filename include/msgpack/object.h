@@ -41,7 +41,8 @@ typedef enum {
     MSGPACK_OBJECT_STR                  = 0x05,
     MSGPACK_OBJECT_ARRAY                = 0x06,
     MSGPACK_OBJECT_MAP                  = 0x07,
-    MSGPACK_OBJECT_BIN                  = 0x08
+    MSGPACK_OBJECT_BIN                  = 0x08,
+    MSGPACK_OBJECT_EXT                  = 0x09
 } msgpack_object_type;
 
 

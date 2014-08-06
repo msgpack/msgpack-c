@@ -43,7 +43,8 @@ namespace type {
         STR                 = MSGPACK_OBJECT_STR,
         BIN                 = MSGPACK_OBJECT_BIN,
         ARRAY               = MSGPACK_OBJECT_ARRAY,
-        MAP                 = MSGPACK_OBJECT_MAP
+        MAP                 = MSGPACK_OBJECT_MAP,
+        EXT                 = MSGPACK_OBJECT_EXT
     };
 }
 
@@ -71,6 +72,13 @@ struct object_bin {
     const char* ptr;
 };
 
+struct object_ext {
+    int8_t type() const { return ptr[0]; }
+    const char* data() const { return &ptr[1]; }
+    uint32_t size;
+    const char* ptr;
+};
+
 struct object {
     union union_type {
         bool boolean;
@@ -81,6 +89,7 @@ struct object {
         object_map map;
         object_str str;
         object_bin bin;
+        object_ext ext;
     };
 
     type::object_type type;
@@ -239,6 +248,10 @@ inline bool operator==(const object& x, const object& y)
             memcmp(x.via.str.ptr, y.via.str.ptr, x.via.str.size) == 0;
 
     case type::BIN:
+        return x.via.bin.size == y.via.bin.size &&
+            memcmp(x.via.bin.ptr, y.via.bin.ptr, x.via.bin.size) == 0;
+
+    case type::EXT:
         return x.via.bin.size == y.via.bin.size &&
             memcmp(x.via.bin.ptr, y.via.bin.ptr, x.via.bin.size) == 0;
 
@@ -442,6 +455,11 @@ packer<Stream>& operator<< (packer<Stream>& o, const object& v)
     case type::BIN:
         o.pack_bin(v.via.bin.size);
         o.pack_bin_body(v.via.bin.ptr, v.via.bin.size);
+        return o;
+
+    case type::EXT:
+        o.pack_ext(v.via.ext.size, v.via.ext.type());
+        o.pack_ext_body(v.via.ext.data(), v.via.ext.size);
         return o;
 
     case type::ARRAY:

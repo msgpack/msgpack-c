@@ -84,6 +84,9 @@ public:
     packer<Stream>& pack_bin(size_t l);
     packer<Stream>& pack_bin_body(const char* b, size_t l);
 
+    packer<Stream>& pack_ext(size_t l, int8_t type);
+    packer<Stream>& pack_ext_body(const char* b, size_t l);
+
 private:
     template <typename T>
     void pack_imp_uint8(T d);
@@ -694,6 +697,72 @@ inline packer<Stream>& packer<Stream>::pack_bin(size_t l)
 
 template <typename Stream>
 inline packer<Stream>& packer<Stream>::pack_bin_body(const char* b, size_t l)
+{
+    append_buffer(b, l);
+    return *this;
+}
+
+template <typename Stream>
+inline packer<Stream>& packer<Stream>::pack_ext(size_t l, int8_t type)
+{
+    switch(l) {
+    case 1: {
+        char buf[2];
+        buf[0] = static_cast<char>(0xd4);
+        buf[1] = static_cast<char>(type);
+        append_buffer(buf, 2);
+    } break;
+    case 2: {
+        char buf[2];
+        buf[0] = static_cast<char>(0xd5);
+        buf[1] = static_cast<char>(type);
+        append_buffer(buf, 2);
+    } break;
+    case 4: {
+        char buf[2];
+        buf[0] = static_cast<char>(0xd6);
+        buf[1] = static_cast<char>(type);
+        append_buffer(buf, 2);
+    } break;
+    case 8: {
+        char buf[2];
+        buf[0] = static_cast<char>(0xd7);
+        buf[1] = static_cast<char>(type);
+        append_buffer(buf, 2);
+    } break;
+    case 16: {
+        char buf[2];
+        buf[0] = static_cast<char>(0xd8);
+        buf[1] = static_cast<char>(type);
+        append_buffer(buf, 2);
+    } break;
+    default:
+        if(l < 256) {
+            char buf[3];
+            buf[0] = static_cast<char>(0xc7);
+            buf[1] = static_cast<char>(l);
+            buf[2] = static_cast<char>(type);
+            append_buffer(buf, 3);
+        } else if(l < 65536) {
+            char buf[4];
+            buf[0] = static_cast<char>(0xc8);
+            _msgpack_store16(&buf[1], static_cast<uint16_t>(l));
+            buf[3] = static_cast<char>(type);
+            append_buffer(buf, 4);
+        } else {
+            char buf[6];
+            buf[0] = static_cast<char>(0xc9);
+            _msgpack_store32(&buf[1], static_cast<uint32_t>(l));
+            buf[5] = static_cast<char>(type);
+            append_buffer(buf, 6);
+        }
+        break;
+    }
+    return *this;
+}
+
+template <typename Stream>
+inline packer<Stream>& packer<Stream>::pack_ext_body(const char* b, size_t l)
 {
     append_buffer(b, l);
     return *this;
