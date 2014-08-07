@@ -91,9 +91,28 @@ private:
 
             ++m_tail;
         }
+#if !defined(MSGPACK_USE_CPP03)
+        finalizer_array(finalizer_array&& other)
+            :m_tail(other.m_tail), m_end(other.m_end), m_array(other.m_array)
+        {
+            other.m_tail = nullptr;
+            other.m_end = nullptr;
+            other.m_array = nullptr;
+        }
+        finalizer_array& operator=(finalizer_array&& other)
+        {
+            this->~finalizer_array();
+            new (this) finalizer_array(std::move(other));
+            return *this;
+        }
+#endif
         finalizer* m_tail;
         finalizer* m_end;
         finalizer* m_array;
+
+    private:
+        finalizer_array(const finalizer_array&);
+        finalizer_array& operator=(const finalizer_array&);
     };
     struct chunk {
         chunk* m_next;
@@ -114,14 +133,10 @@ private:
         ~chunk_list()
         {
             chunk* c = m_head;
-            while(true) {
+            while(c) {
                 chunk* n = c->m_next;
                 ::free(c);
-                if(n) {
-                    c = n;
-                } else {
-                    break;
-                }
+                c = n;
             }
         }
         void clear(size_t chunk_size)
@@ -141,9 +156,25 @@ private:
             m_free = chunk_size;
             m_ptr  = reinterpret_cast<char*>(m_head) + sizeof(chunk);
         }
+#if !defined(MSGPACK_USE_CPP03)
+        chunk_list(chunk_list&& other)
+            :m_free(other.m_free), m_ptr(other.m_ptr), m_head(other.m_head)
+        {
+            other.m_head = nullptr;
+        }
+        chunk_list& operator=(chunk_list&& other)
+        {
+            this->~chunk_list();
+            new (this) chunk_list(std::move(other));
+            return *this;
+        }
+#endif
         size_t m_free;
         char* m_ptr;
         chunk* m_head;
+    private:
+        chunk_list(const chunk_list&);
+        chunk_list& operator=(const chunk_list&);
     };
     size_t m_chunk_size;
     chunk_list m_chunk_list;
@@ -153,8 +184,6 @@ public:
     zone(size_t chunk_size = MSGPACK_ZONE_CHUNK_SIZE) noexcept;
 
 public:
-    static zone* create(size_t chunk_size);
-    static void destroy(zone* zone);
     void* allocate_align(size_t size);
     void* allocate_no_align(size_t size);
 
@@ -189,30 +218,22 @@ public:
     template <typename T, typename... Args>
     T* allocate(Args... args);
 
+    zone(zone&&) = default;
+    zone& operator=(zone&&) = default;
+
 private:
     void undo_allocate(size_t size);
+    zone(const zone&);
+    zone& operator=(const zone&);
 
     template <typename T>
-    static void object_destructor(void* obj);
+    static void object_destruct(void* obj);
+
+    template <typename T>
+    static void object_delete(void* obj);
 
     void* allocate_expand(size_t size);
 };
-
-inline zone* zone::create(size_t chunk_size)
-{
-    zone* z = static_cast<zone*>(::malloc(sizeof(zone) + chunk_size));
-    if (!z) {
-        throw std::bad_alloc();
-    }
-    new (z) zone(chunk_size);
-    return z;
-}
-
-inline void zone::destroy(zone* z)
-{
-    z->~zone();
-    ::free(z);
-}
 
 inline zone::zone(size_t chunk_size) noexcept:m_chunk_size(chunk_size), m_chunk_list(m_chunk_size)
 {
@@ -268,8 +289,7 @@ inline void zone::push_finalizer(void (*func)(void*), void* data)
 template <typename T>
 inline void zone::push_finalizer(msgpack::unique_ptr<T> obj)
 {
-    m_finalizer_array.push(&zone::object_destructor<T>, obj.get());
-    obj.release();
+    m_finalizer_array.push(&zone::object_delete<T>, obj.release());
 }
 
 inline void zone::clear()
@@ -284,9 +304,15 @@ inline void zone::swap(zone& o)
 }
 
 template <typename T>
-void zone::object_destructor(void* obj)
+void zone::object_delete(void* obj)
 {
-    reinterpret_cast<T*>(obj)->~T();
+    delete static_cast<T*>(obj);
+}
+
+template <typename T>
+void zone::object_destruct(void* obj)
+{
+    static_cast<T*>(obj)->~T();
 }
 
 inline void zone::undo_allocate(size_t size)
@@ -301,7 +327,7 @@ T* zone::allocate(Args... args)
 {
     void* x = allocate_align(sizeof(T));
     try {
-        m_finalizer_array.push(&zone::object_destructor<T>, x);
+        m_finalizer_array.push(&zone::object_destruct<T>, x);
     } catch (...) {
         undo_allocate(sizeof(T));
         throw;

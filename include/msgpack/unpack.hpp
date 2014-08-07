@@ -961,7 +961,7 @@ private:
     std::size_t m_free;
     std::size_t m_off;
     std::size_t m_parsed;
-    zone* m_z;
+    msgpack::unique_ptr<zone> m_z;
     std::size_t m_initial_buffer_size;
     detail::context m_ctx;
 
@@ -994,7 +994,7 @@ typedef enum {
 inline unpacker::unpacker(unpack_reference_func f,
                           void* user_data,
                           std::size_t initial_buffer_size)
-    :m_ctx(f, user_data)
+    :m_z(new zone), m_ctx(f, user_data)
 {
     if(initial_buffer_size < COUNTER_SIZE) {
         initial_buffer_size = COUNTER_SIZE;
@@ -1005,19 +1005,12 @@ inline unpacker::unpacker(unpack_reference_func f,
         throw std::bad_alloc();
     }
 
-    zone* z = zone::create(MSGPACK_ZONE_CHUNK_SIZE);
-    if(!z) {
-        ::free(buffer);
-        throw std::bad_alloc();
-    }
-
     m_buffer = buffer;
     m_used = COUNTER_SIZE;
     m_free = initial_buffer_size - m_used;
     m_off = COUNTER_SIZE;
     m_parsed = 0;
     m_initial_buffer_size = initial_buffer_size;
-    m_z = z;
 
     detail::init_count(m_buffer);
 
@@ -1035,11 +1028,10 @@ inline unpacker::unpacker(unpacker&& other)
      m_free(other.m_free),
      m_off(other.m_off),
      m_parsed(other.m_parsed),
-     m_z(other.m_z),
+     m_z(std::move(other.m_z)),
      m_initial_buffer_size(other.m_initial_buffer_size),
      m_ctx(other.m_ctx) {
     other.m_buffer = nullptr;
-    other.m_z = nullptr;
 }
 
 inline unpacker& unpacker::operator=(unpacker&& other) {
@@ -1054,7 +1046,6 @@ inline unpacker& unpacker::operator=(unpacker&& other) {
 inline unpacker::~unpacker()
 {
     // These checks are required for move operations.
-    if (m_z) zone::destroy(m_z);
     if (m_buffer) detail::decl_count(m_buffer);
 }
 
@@ -1204,13 +1195,9 @@ inline zone* unpacker::release_zone()
         return nullptr;
     }
 
-    zone* r =  zone::create(MSGPACK_ZONE_CHUNK_SIZE);
-    if(!r) {
-        return nullptr;
-    }
-
-    zone* old = m_z;
-    m_z = r;
+    zone* r =  new zone;
+    zone* old = m_z.release();
+    m_z.reset(r);
     m_ctx.user().set_zone(*m_z);
 
     return old;
@@ -1324,7 +1311,7 @@ inline void unpack(unpacked& result,
                    unpack_reference_func f, void* user_data)
 {
     object obj;
-    msgpack::unique_ptr<zone> z(new zone());
+    msgpack::unique_ptr<zone> z(new zone);
     bool referenced = false;
     unpack_return ret = detail::unpack_imp(
         data, len, off, *z, obj, referenced);

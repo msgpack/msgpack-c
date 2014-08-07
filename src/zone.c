@@ -195,7 +195,7 @@ bool msgpack_zone_init(msgpack_zone* zone, size_t chunk_size)
 msgpack_zone* msgpack_zone_new(size_t chunk_size)
 {
     msgpack_zone* zone = (msgpack_zone*)malloc(
-            sizeof(msgpack_zone) + chunk_size);
+            sizeof(msgpack_zone));
     if(zone == NULL) {
         return NULL;
     }

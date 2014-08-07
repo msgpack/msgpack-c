@@ -114,14 +114,10 @@ class zone {
         ~chunk_list()
         {
             chunk* c = m_head;
-            while(true) {
+            while(c) {
                 chunk* n = c->m_next;
                 ::free(c);
-                if(n) {
-                    c = n;
-                } else {
-                    break;
-                }
+                c = n;
             }
         }
         void clear(size_t chunk_size)
@@ -152,8 +148,6 @@ public:
     zone(size_t chunk_size = MSGPACK_ZONE_CHUNK_SIZE) /* throw() */;
 
 public:
-    static zone* create(size_t chunk_size);
-    static void destroy(zone* zone);
     void* allocate_align(size_t size);
     void* allocate_no_align(size_t size);
 
@@ -237,27 +231,13 @@ private:
     void undo_allocate(size_t size);
 
     template <typename T>
-    static void object_destructor(void* obj);
+    static void object_destruct(void* obj);
+
+    template <typename T>
+    static void object_delete(void* obj);
 
     void* allocate_expand(size_t size);
 };
-
-
-inline zone* zone::create(size_t chunk_size)
-{
-    zone* z = static_cast<zone*>(::malloc(sizeof(zone) + chunk_size));
-    if (!z) {
-        throw std::bad_alloc();
-    }
-    new (z) zone(chunk_size);
-    return z;
-}
-
-inline void zone::destroy(zone* z)
-{
-    z->~zone();
-    ::free(z);
-}
 
 inline zone::zone(size_t chunk_size) /* throw() */ :m_chunk_size(chunk_size), m_chunk_list(m_chunk_size)
 {
@@ -313,8 +293,7 @@ inline void zone::push_finalizer(void (*func)(void*), void* data)
 template <typename T>
 inline void zone::push_finalizer(msgpack::unique_ptr<T> obj)
 {
-    m_finalizer_array.push(&zone::object_destructor<T>, obj.get());
-    obj.release();
+    m_finalizer_array.push(&zone::object_delete<T>, obj.release());
 }
 
 inline void zone::clear()
@@ -329,9 +308,15 @@ inline void zone::swap(zone& o)
 }
 
 template <typename T>
-void zone::object_destructor(void* obj)
+void zone::object_destruct(void* obj)
 {
-    reinterpret_cast<T*>(obj)->~T();
+    static_cast<T*>(obj)->~T();
+}
+
+template <typename T>
+void zone::object_delete(void* obj)
+{
+    delete static_cast<T*>(obj);
 }
 
 inline void zone::undo_allocate(size_t size)
@@ -346,7 +331,7 @@ T* zone::allocate()
 {
     void* x = allocate_align(sizeof(T));
     try {
-        m_finalizer_array.push(&zone::object_destructor<T>, x);
+        m_finalizer_array.push(&zone::object_destruct<T>, x);
     } catch (...) {
         undo_allocate(sizeof(T));
         throw;
@@ -365,7 +350,7 @@ T* zone::allocate(A1 a1)
 {
     void* x = allocate_align(sizeof(T));
     try {
-        m_finalizer_array.push(&zone::object_destructor<T>, x);
+        m_finalizer_array.push(&zone::object_destruct<T>, x);
     } catch (...) {
         undo_allocate(sizeof(T));
         throw;
@@ -384,7 +369,7 @@ T* zone::allocate(A1 a1, A2 a2)
 {
     void* x = allocate_align(sizeof(T));
     try {
-        m_finalizer_array.push(&zone::object_destructor<T>, x);
+        m_finalizer_array.push(&zone::object_destruct<T>, x);
     } catch (...) {
         undo_allocate(sizeof(T));
         throw;
@@ -403,7 +388,7 @@ T* zone::allocate(A1 a1, A2 a2, A3 a3)
 {
     void* x = allocate_align(sizeof(T));
     try {
-        m_finalizer_array.push(&zone::object_destructor<T>, x);
+        m_finalizer_array.push(&zone::object_destruct<T>, x);
     } catch (...) {
         undo_allocate(sizeof(T));
         throw;
@@ -422,7 +407,7 @@ T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4)
 {
     void* x = allocate_align(sizeof(T));
     try {
-        m_finalizer_array.push(&zone::object_destructor<T>, x);
+        m_finalizer_array.push(&zone::object_destruct<T>, x);
     } catch (...) {
         undo_allocate(sizeof(T));
         throw;
@@ -441,7 +426,7 @@ T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5)
 {
     void* x = allocate_align(sizeof(T));
     try {
-        m_finalizer_array.push(&zone::object_destructor<T>, x);
+        m_finalizer_array.push(&zone::object_destruct<T>, x);
     } catch (...) {
         undo_allocate(sizeof(T));
         throw;
@@ -460,7 +445,7 @@ T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6)
 {
     void* x = allocate_align(sizeof(T));
     try {
-        m_finalizer_array.push(&zone::object_destructor<T>, x);
+        m_finalizer_array.push(&zone::object_destruct<T>, x);
     } catch (...) {
         undo_allocate(sizeof(T));
         throw;
@@ -479,7 +464,7 @@ T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7)
 {
     void* x = allocate_align(sizeof(T));
     try {
-        m_finalizer_array.push(&zone::object_destructor<T>, x);
+        m_finalizer_array.push(&zone::object_destruct<T>, x);
     } catch (...) {
         undo_allocate(sizeof(T));
         throw;
@@ -498,7 +483,7 @@ T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8)
 {
     void* x = allocate_align(sizeof(T));
     try {
-        m_finalizer_array.push(&zone::object_destructor<T>, x);
+        m_finalizer_array.push(&zone::object_destruct<T>, x);
     } catch (...) {
         undo_allocate(sizeof(T));
         throw;
@@ -517,7 +502,7 @@ T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9)
 {
     void* x = allocate_align(sizeof(T));
     try {
-        m_finalizer_array.push(&zone::object_destructor<T>, x);
+        m_finalizer_array.push(&zone::object_destruct<T>, x);
     } catch (...) {
         undo_allocate(sizeof(T));
         throw;
@@ -536,7 +521,7 @@ T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9,
 {
     void* x = allocate_align(sizeof(T));
     try {
-        m_finalizer_array.push(&zone::object_destructor<T>, x);
+        m_finalizer_array.push(&zone::object_destruct<T>, x);
     } catch (...) {
         undo_allocate(sizeof(T));
         throw;
@@ -555,7 +540,7 @@ T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9,
 {
     void* x = allocate_align(sizeof(T));
     try {
-        m_finalizer_array.push(&zone::object_destructor<T>, x);
+        m_finalizer_array.push(&zone::object_destruct<T>, x);
     } catch (...) {
         undo_allocate(sizeof(T));
         throw;
@@ -574,7 +559,7 @@ T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9,
 {
     void* x = allocate_align(sizeof(T));
     try {
-        m_finalizer_array.push(&zone::object_destructor<T>, x);
+        m_finalizer_array.push(&zone::object_destruct<T>, x);
     } catch (...) {
         undo_allocate(sizeof(T));
         throw;
@@ -593,7 +578,7 @@ T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9,
 {
     void* x = allocate_align(sizeof(T));
     try {
-        m_finalizer_array.push(&zone::object_destructor<T>, x);
+        m_finalizer_array.push(&zone::object_destruct<T>, x);
     } catch (...) {
         undo_allocate(sizeof(T));
         throw;
@@ -612,7 +597,7 @@ T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9,
 {
     void* x = allocate_align(sizeof(T));
     try {
-        m_finalizer_array.push(&zone::object_destructor<T>, x);
+        m_finalizer_array.push(&zone::object_destruct<T>, x);
     } catch (...) {
         undo_allocate(sizeof(T));
         throw;
@@ -631,7 +616,7 @@ T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9,
 {
     void* x = allocate_align(sizeof(T));
     try {
-        m_finalizer_array.push(&zone::object_destructor<T>, x);
+        m_finalizer_array.push(&zone::object_destruct<T>, x);
     } catch (...) {
         undo_allocate(sizeof(T));
         throw;
