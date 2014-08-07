@@ -1148,9 +1148,9 @@ inline bool unpacker::next(unpacked& result)
         return false;
 
     } else {
+        result.set_referenced(m_ctx.user().referenced());
         result.zone().reset( release_zone() );
         result.set(data());
-        result.set_referenced(m_ctx.user().referenced());
         reset();
         return true;
     }
@@ -1314,7 +1314,7 @@ inline void unpack(unpacked& result,
     msgpack::unique_ptr<zone> z(new zone);
     bool referenced = false;
     unpack_return ret = detail::unpack_imp(
-        data, len, off, *z, obj, referenced);
+        data, len, off, *z, obj, referenced, f, user_data);
 
     result.set_referenced(referenced);
 

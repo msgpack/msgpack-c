@@ -1,4 +1,3 @@
-
 AM_CPPFLAGS   = -I$(top_srcdir)/include
 AM_C_CPPFLAGS = -I$(top_srcdir)/include
 AM_LDFLAGS = $(top_builddir)/src/libmsgpack.la -lgtest_main -lgtest -pthread
@@ -18,7 +17,8 @@ check_PROGRAMS = \
 		version \
 		msgpack_tuple \
 		msgpackc_test \
-		msgpack_test
+		msgpack_test \
+		reference
 
 TESTS = $(check_PROGRAMS)
 
@@ -53,5 +53,6 @@ msgpackc_test_SOURCES = msgpackc_test.cpp
 
 msgpack_test_SOURCES = msgpack_test.cpp
 
-EXTRA_DIST = cases.mpac cases_compact.mpac
+reference_SOURCES = reference.cc
 
+EXTRA_DIST = cases.mpac cases_compact.mpac
