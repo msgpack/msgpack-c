@@ -325,8 +325,7 @@ public:
             if (m_cs == CS_HEADER) {
                 fixed_trail_again = false;
                 int selector = *reinterpret_cast<const unsigned char*>(m_current);
-                if (0) {
-                } else if(0x00 <= selector && selector <= 0x7f) { // Positive Fixnum
+                if (0x00 <= selector && selector <= 0x7f) { // Positive Fixnum
                     unpack_uint8(*reinterpret_cast<const uint8_t*>(m_current), obj);
                     int ret = push_proc(obj, off);
                     if (ret != 0) return ret;
@@ -334,7 +333,7 @@ public:
                     unpack_int8(*reinterpret_cast<const int8_t*>(m_current), obj);
                     int ret = push_proc(obj, off);
                     if (ret != 0) return ret;
-                } else if(0xc0 <= selector && selector <= 0xdf) { // Variable
+                } else if(0xc0 <= selector && selector <= 0xc3) { // nil, bool
                     switch(selector) {
                     case 0xc0: {    // nil
                         unpack_nil(obj);
@@ -354,74 +353,42 @@ public:
                         int ret = push_proc(obj, off);
                         if (ret != 0) return ret;
                     } break;
-
-                    case 0xc4: // bin 8
-                    case 0xc5: // bin 16
-                    case 0xc6: // bin 32
-                        m_trail = 1 << (static_cast<uint32_t>(*m_current) & 0x03);
-                        m_cs = next_cs(m_current);
-                        fixed_trail_again = true;
-                        break;
-
-                    case 0xc7:  // ext  8
-                    case 0xc8:  // ext 16
-                    case 0xc9:  // ext 32
-                        m_trail = 1 << ((static_cast<uint32_t>(*m_current) + 1) & 0x03);
-                        m_cs = next_cs(m_current);
-                        fixed_trail_again = true;
-                        break;
-
-                    case 0xca:  // float
-                    case 0xcb:  // double
-                    case 0xcc:  // unsigned int      8
-                    case 0xcd:  // unsigned int 16
-                    case 0xce:  // unsigned int 32
-                    case 0xcf:  // unsigned int 64
-                    case 0xd0:  // signed int  8
-                    case 0xd1:  // signed int 16
-                    case 0xd2:  // signed int 32
-                    case 0xd3:  // signed int 64
-                        m_trail = 1 << (static_cast<uint32_t>(*m_current) & 0x03);
-                        m_cs = next_cs(m_current);
-                        fixed_trail_again = true;
-                        break;
-
-                    case 0xd4:  // fixext 1
-                    case 0xd5:  // fixext 2
-                    case 0xd6:  // fixext 4
-                    case 0xd7:  // fixext 8
-                        m_trail = (1 << (static_cast<uint32_t>(*m_current) & 0x03)) + 1;
-                        m_cs = next_cs(m_current);
-                        fixed_trail_again = true;
-                        break;
-
-                    case 0xd8:  // fixext 16
-                        m_trail = 17;
-                        m_cs = next_cs(m_current);
-                        fixed_trail_again = true;
-                        break;
-
-                    case 0xd9:  // str 8
-                    case 0xda:  // str 16
-                    case 0xdb:  // str 32
-                        m_trail = 1 << ((static_cast<uint32_t>(*m_current) & 0x03) - 1);
-                        m_cs = next_cs(m_current);
-                        fixed_trail_again = true;
-                        break;
-
-                    case 0xdc:  // array 16
-                    case 0xdd:  // array 32
-                    case 0xde:  // map 16
-                    case 0xdf:  // map 32
-                        m_trail = 2 << (static_cast<uint32_t>(*m_current) & 0x01);
-                        m_cs = next_cs(m_current);
-                        fixed_trail_again = true;
-                        break;
-
-                    default:
-                        off = m_current - m_start;
-                        return -1;
                     }
+                }
+                else if (0xc4 <= selector && selector <= 0xdf) {
+                    const uint32_t trail[] = {
+                        1, // bin     8  0xc4
+                        2, // bin    16  0xc5
+                        4, // bin    32  0xc6
+                        1, // ext     8  0xc7
+                        2, // ext    16  0xc8
+                        4, // ext    32  0xc9
+                        4, // float  32  0xca
+                        8, // float  64  0xcb
+                        1, // uint    8  0xcc
+                        2, // uint   16  0xcd
+                        4, // uint   32  0xce
+                        8, // uint   64  0xcf
+                        1, // int     8  0xd0
+                        2, // int    16  0xd1
+                        4, // int    32  0xd2
+                        8, // int    64  0xd3
+                        2, // fixext  1  0xd4
+                        3, // fixext  2  0xd5
+                        5, // fixext  4  0xd6
+                        9, // fixext  8  0xd7
+                        17,// fixext 16  0xd8
+                        1, // str     8  0xd9
+                        2, // str    16  0xda
+                        4, // str    32  0xdb
+                        2, // array  16  0xdc
+                        4, // array  32  0xdd
+                        2, // map    16  0xde
+                        4, // map    32  0xdf
+                    };
+                    m_trail = trail[selector - 0xc4];
+                    m_cs = next_cs(m_current);
+                    fixed_trail_again = true;
                 } else if(0xa0 <= selector && selector <= 0xbf) { // FixStr
                     m_trail = static_cast<uint32_t>(*m_current) & 0x1f;
                     if(m_trail == 0) {
