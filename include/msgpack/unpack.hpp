@@ -333,29 +333,7 @@ public:
                     unpack_int8(*reinterpret_cast<const int8_t*>(m_current), obj);
                     int ret = push_proc(obj, off);
                     if (ret != 0) return ret;
-                } else if(0xc0 <= selector && selector <= 0xc3) { // nil, bool
-                    switch(selector) {
-                    case 0xc0: {    // nil
-                        unpack_nil(obj);
-                        int ret = push_proc(obj, off);
-                        if (ret != 0) return ret;
-                    } break;
-
-                    //case 0xc1:  // string
-                    case 0xc2: {    // false
-                        unpack_false(obj);
-                        int ret = push_proc(obj, off);
-                        if (ret != 0) return ret;
-                    } break;
-
-                    case 0xc3: {    // true
-                        unpack_true(obj);
-                        int ret = push_proc(obj, off);
-                        if (ret != 0) return ret;
-                    } break;
-                    }
-                }
-                else if (0xc4 <= selector && selector <= 0xdf) {
+                } else if (0xc4 <= selector && selector <= 0xdf) {
                     const uint32_t trail[] = {
                         1, // bin     8  0xc4
                         2, // bin    16  0xc5
@@ -408,6 +386,18 @@ public:
                 } else if(0x80 <= selector && selector <= 0x8f) { // FixMap
                     int ret = push_aggregate<fix_tag>(
                         unpack_map(), CT_MAP_KEY, obj, m_current, off);
+                    if (ret != 0) return ret;
+                } else if(selector == 0xc2) { // false
+                    unpack_false(obj);
+                    int ret = push_proc(obj, off);
+                    if (ret != 0) return ret;
+                } else if(selector == 0xc3) { // true
+                    unpack_true(obj);
+                    int ret = push_proc(obj, off);
+                    if (ret != 0) return ret;
+                } else if(selector == 0xc0) { // nil
+                    unpack_nil(obj);
+                    int ret = push_proc(obj, off);
                     if (ret != 0) return ret;
                 } else {
                     off = m_current - m_start;
