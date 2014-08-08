@@ -40,8 +40,8 @@ struct iovec {
 namespace msgpack {
 
 namespace detail {
-
-
+    // int64, uint64, double
+    std::size_t const packer_max_buffer_size = 9;
 } // detail
 
 class vrefbuffer {
@@ -57,7 +57,8 @@ private:
 public:
     vrefbuffer(size_t ref_size = MSGPACK_VREFBUFFER_REF_SIZE,
                size_t chunk_size = MSGPACK_VREFBUFFER_CHUNK_SIZE)
-        :m_ref_size(ref_size), m_chunk_size(chunk_size)
+        :m_ref_size(std::max(ref_size, detail::packer_max_buffer_size + 1)),
+         m_chunk_size(chunk_size)
     {
         size_t nfirst = (sizeof(iovec) < 72/2) ?
             72 / sizeof(iovec) : 8;
@@ -277,4 +278,3 @@ private:
 }  // namespace msgpack
 
 #endif /* msgpack/vrefbuffer.hpp */
-

@@ -117,4 +117,3 @@ TEST(buffer, fbuffer_c)
     EXPECT_EQ(EOF, fgetc(file));
     fclose(file);
 }
-

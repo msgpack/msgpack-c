@@ -19,6 +19,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define MSGPACK_PACKER_MAX_BUFFER_SIZE 9
+
 struct msgpack_vrefbuffer_chunk {
     struct msgpack_vrefbuffer_chunk* next;
     /* data ... */
@@ -28,7 +30,9 @@ bool msgpack_vrefbuffer_init(msgpack_vrefbuffer* vbuf,
         size_t ref_size, size_t chunk_size)
 {
     vbuf->chunk_size = chunk_size;
-    vbuf->ref_size = ref_size;
+    vbuf->ref_size =
+        ref_size > MSGPACK_PACKER_MAX_BUFFER_SIZE + 1 ?
+        ref_size : MSGPACK_PACKER_MAX_BUFFER_SIZE + 1 ;
 
     size_t nfirst = (sizeof(struct iovec) < 72/2) ?
             72 / sizeof(struct iovec) : 8;
@@ -217,4 +221,3 @@ int msgpack_vrefbuffer_migrate(msgpack_vrefbuffer* vbuf, msgpack_vrefbuffer* to)
 
     return 0;
 }
-
