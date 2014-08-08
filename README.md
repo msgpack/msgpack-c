@@ -128,7 +128,7 @@ Install from package for this branch (poc/0.6) is not supported yet.
 
         // Deserialize the serialized data.
         msgpack::unpacked msg;    // includes memory pool and deserialized object
-        msgpack::unpack(&msg, sbuf.data(), sbuf.size());
+        msgpack::unpack(msg, sbuf.data(), sbuf.size());
         msgpack::object obj = msg.get();
 
         // Print the deserialized object to stdout.
