@@ -252,8 +252,8 @@ inline bool operator==(const object& x, const object& y)
             memcmp(x.via.bin.ptr, y.via.bin.ptr, x.via.bin.size) == 0;
 
     case type::EXT:
-        return x.via.bin.size == y.via.bin.size &&
-            memcmp(x.via.bin.ptr, y.via.bin.ptr, x.via.bin.size) == 0;
+        return x.via.ext.size == y.via.ext.size &&
+            memcmp(x.via.ext.ptr, y.via.ext.ptr, x.via.ext.size) == 0;
 
     case type::ARRAY:
         if(x.via.array.size != y.via.array.size) {
@@ -517,6 +517,8 @@ inline std::ostream& operator<< (std::ostream& s, const object& o)
         (s << '"').write(o.via.bin.ptr, o.via.bin.size) << '"';
         break;
 
+    case type::EXT:
+        s << "EXT";
 
     case type::ARRAY:
         s << "[";
@@ -558,4 +560,3 @@ inline std::ostream& operator<< (std::ostream& s, const object& o)
 #include "msgpack/type.hpp"
 
 #endif /* msgpack/object.hpp */
-
