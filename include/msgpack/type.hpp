@@ -22,6 +22,7 @@
 
 #include "adaptor/cpp11/array.hpp"
 #include "adaptor/cpp11/array_char.hpp"
+#include "adaptor/cpp11/forward_list.hpp"
 #include "adaptor/cpp11/tuple.hpp"
 
 #endif // !defined(MSGPACK_USE_CPP03)

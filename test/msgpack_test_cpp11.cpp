@@ -63,6 +63,22 @@ TEST(MSGPACK_CPP11, simple_buffer_array_char)
     }
 }
 
+TEST(MSGPACK_STL, simple_buffer_forward_list)
+{
+    for (unsigned int k = 0; k < kLoop; k++) {
+        forward_list<int> val1;
+        for (unsigned int i = 0; i < kElements; i++)
+            val1.push_front(rand());
+        msgpack::sbuffer sbuf;
+        msgpack::pack(sbuf, val1);
+        msgpack::unpacked ret;
+        msgpack::unpack(ret, sbuf.data(), sbuf.size());
+        forward_list<int> val2 = ret.get().as<forward_list<int> >();
+        EXPECT_EQ(val1, val2);
+        EXPECT_FALSE(ret.referenced());
+    }
+}
+
 
 class TestEnumClassMemberClass
 {

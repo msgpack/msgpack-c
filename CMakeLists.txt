@@ -81,6 +81,7 @@ IF (MSGPACK_ENABLE_CXX)
         include/msgpack/adaptor/bool.hpp
         include/msgpack/adaptor/cpp11/array.hpp
         include/msgpack/adaptor/cpp11/array_char.hpp
+        include/msgpack/adaptor/cpp11/forward_list.hpp
         include/msgpack/adaptor/cpp11/tuple.hpp
         include/msgpack/adaptor/define.hpp
         include/msgpack/adaptor/deque.hpp
