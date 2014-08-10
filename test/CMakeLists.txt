@@ -23,6 +23,7 @@ SET (check_PROGRAMS
     msgpack_tuple.cc
     msgpack_test.cpp
     msgpackc_test.cpp
+    msgpackc_test_cpp11.cpp
     reference.cc
 )
 

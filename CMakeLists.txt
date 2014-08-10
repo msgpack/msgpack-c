@@ -79,6 +79,8 @@ IF (MSGPACK_ENABLE_CXX)
     LIST (APPEND msgpack_HEADERS
         include/msgpack.hpp
         include/msgpack/adaptor/bool.hpp
+        include/msgpack/adaptor/cpp11/array.hpp
+        include/msgpack/adaptor/cpp11/array_char.hpp
         include/msgpack/adaptor/cpp11/tuple.hpp
         include/msgpack/adaptor/define.hpp
         include/msgpack/adaptor/deque.hpp

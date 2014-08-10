@@ -862,22 +862,6 @@ TEST(MSGPACK_TR1, simple_buffer_unordered_multiset)
 }
 #endif
 
-#if !defined(MSGPACK_USE_CPP03)
-// C++11
-
-TEST(MSGPACK_CPP11, simple_tuple)
-{
-  msgpack::sbuffer sbuf;
-  std::tuple<bool, std::string, double> val1(true, "kzk", 12.3);
-  msgpack::pack(sbuf, val1);
-  msgpack::unpacked ret;
-  msgpack::unpack(ret, sbuf.data(), sbuf.size());
-  std::tuple<bool, std::string, double> val2 = ret.get().as<std::tuple<bool, std::string, double> >();
-  EXPECT_EQ(val1, val2);
-  EXPECT_FALSE(ret.referenced());
-}
-
-#endif // !defined(MSGPACK_USE_CPP03)
 
 // User-Defined Structures
 
@@ -983,45 +967,6 @@ TEST(MSGPACK_USER_DEFINED, simple_buffer_enum_member)
   EXPECT_EQ(val1.t3, val2.t3);
   EXPECT_FALSE(ret.referenced());
 }
-
-#if !defined(MSGPACK_USE_CPP03)
-
-class TestEnumClassMemberClass
-{
-public:
-  TestEnumClassMemberClass()
-  : t1(TestEnumClassType::STATE_A), t2(TestEnumClassType::STATE_B), t3(TestEnumClassType::STATE_C) {}
-
-  enum class TestEnumClassType:long {
-    STATE_INVALID = 0,
-    STATE_A = 1,
-    STATE_B = 2,
-    STATE_C = 3
-  };
-  TestEnumClassType t1;
-  TestEnumClassType t2;
-  TestEnumClassType t3;
-
-  MSGPACK_DEFINE(t1, t2, t3);
-};
-
-MSGPACK_ADD_ENUM(TestEnumClassMemberClass::TestEnumClassType);
-
-TEST(MSGPACK_USER_DEFINED, simple_buffer_enum_class_member)
-{
-  TestEnumClassMemberClass val1;
-  msgpack::sbuffer sbuf;
-  msgpack::pack(sbuf, val1);
-  msgpack::unpacked ret;
-  msgpack::unpack(ret, sbuf.data(), sbuf.size());
-  TestEnumClassMemberClass val2 = ret.get().as<TestEnumClassMemberClass>();
-  EXPECT_EQ(val1.t1, val2.t1);
-  EXPECT_EQ(val1.t2, val2.t2);
-  EXPECT_EQ(val1.t3, val2.t3);
-  EXPECT_FALSE(ret.referenced());
-}
-
-#endif // !defined(MSGPACK_USE_CPP03)
 
 class TestUnionMemberClass
 {

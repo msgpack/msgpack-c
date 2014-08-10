@@ -18,6 +18,7 @@ check_PROGRAMS = \
 		msgpack_tuple \
 		msgpackc_test \
 		msgpack_test \
+		msgpack_test_cpp11 \
 		reference
 
 TESTS = $(check_PROGRAMS)
@@ -52,6 +53,8 @@ msgpack_tuple_SOURCES = msgpack_tuple.cc
 msgpackc_test_SOURCES = msgpackc_test.cpp
 
 msgpack_test_SOURCES = msgpack_test.cpp
+
+msgpack_test_cpp11_SOURCES = msgpack_test_cpp11.cpp
 
 reference_SOURCES = reference.cc
 
