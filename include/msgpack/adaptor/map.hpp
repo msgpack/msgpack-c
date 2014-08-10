@@ -94,7 +94,7 @@ inline void operator<< (object::with_zone& o, const type::assoc_vector<K,V>& v)
 
 
 template <typename K, typename V>
-inline std::map<K, V> operator>> (object const& o, std::map<K, V>& v)
+inline std::map<K, V>& operator>> (object const& o, std::map<K, V>& v)
 {
     if(o.type != type::MAP) { throw type_error(); }
     object_kv* p(o.via.map.ptr);
@@ -150,7 +150,7 @@ inline void operator<< (object::with_zone& o, const std::map<K,V>& v)
 
 
 template <typename K, typename V>
-inline std::multimap<K, V> operator>> (object const& o, std::multimap<K, V>& v)
+inline std::multimap<K, V>& operator>> (object const& o, std::multimap<K, V>& v)
 {
     if(o.type != type::MAP) { throw type_error(); }
     object_kv* p(o.via.map.ptr);
@@ -202,4 +202,3 @@ inline void operator<< (object::with_zone& o, const std::multimap<K,V>& v)
 }  // namespace msgpack
 
 #endif /* msgpack/type/map.hpp */
-

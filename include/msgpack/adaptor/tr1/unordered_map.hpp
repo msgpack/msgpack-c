@@ -44,7 +44,7 @@ namespace msgpack {
 
 
 template <typename K, typename V>
-inline MSGPACK_STD_TR1::unordered_map<K, V> operator>> (object o, MSGPACK_STD_TR1::unordered_map<K, V>& v)
+inline MSGPACK_STD_TR1::unordered_map<K, V>& operator>> (object o, MSGPACK_STD_TR1::unordered_map<K, V>& v)
 {
     if(o.type != type::MAP) { throw type_error(); }
     object_kv* p(o.via.map.ptr);
@@ -93,7 +93,7 @@ inline void operator<< (object::with_zone& o, const MSGPACK_STD_TR1::unordered_m
 
 
 template <typename K, typename V>
-inline MSGPACK_STD_TR1::unordered_multimap<K, V> operator>> (object o, MSGPACK_STD_TR1::unordered_multimap<K, V>& v)
+inline MSGPACK_STD_TR1::unordered_multimap<K, V>& operator>> (object o, MSGPACK_STD_TR1::unordered_multimap<K, V>& v)
 {
     if(o.type != type::MAP) { throw type_error(); }
     object_kv* p(o.via.map.ptr);
@@ -147,4 +147,3 @@ inline void operator<< (object::with_zone& o, const MSGPACK_STD_TR1::unordered_m
 #undef MSGPACK_STD_TR1
 
 #endif /* msgpack/type/map.hpp */
-
