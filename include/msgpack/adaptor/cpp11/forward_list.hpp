@@ -55,7 +55,8 @@ inline void operator<< (object::with_zone& o, const std::forward_list<T>& v)
         o.via.array.ptr = nullptr;
         o.via.array.size = 0;
     } else {
-        object* p = static_cast<object*>(o.zone->allocate_align(sizeof(object)*v.size()));
+        object* p = static_cast<object*>(
+            o.zone->allocate_align(sizeof(object)*std::distance(v.begin(), v.end())));
         for(auto const& e : v) *p++ = object(e, o.zone);
     }
 }
