@@ -51,7 +51,7 @@ inline packer<Stream>& operator<< (packer<Stream>& o, const std::string& v)
 inline void operator<< (object::with_zone& o, const std::string& v)
 {
     o.type = type::STR;
-    char* ptr = static_cast<char*>(o.zone->allocate_align(v.size()));
+    char* ptr = static_cast<char*>(o.zone.allocate_align(v.size()));
     o.via.str.ptr = ptr;
     o.via.str.size = static_cast<uint32_t>(v.size());
     memcpy(ptr, v.data(), v.size());

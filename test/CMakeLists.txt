@@ -14,6 +14,7 @@ SET (check_PROGRAMS
     streaming.cpp
     streaming_c.cpp
     object.cpp
+    object_with_zone.cpp
     version.cpp
     convert.cpp
     buffer.cpp

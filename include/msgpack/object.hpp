@@ -113,6 +113,10 @@ struct object {
     explicit object(const T& v);
 
     template <typename T>
+    object(const T& v, zone& z);
+
+    // obsolete
+    template <typename T>
     object(const T& v, zone* z);
 
     template <typename T>
@@ -135,8 +139,8 @@ struct object_kv {
 };
 
 struct object::with_zone : object {
-    with_zone(msgpack::zone* zone) : zone(zone) { }
-    msgpack::zone* zone;
+    with_zone(msgpack::zone& zone) : zone(zone) { }
+    msgpack::zone& zone;
 private:
     with_zone();
 };
@@ -367,9 +371,18 @@ inline object& object::operator=(const T& v)
 }
 
 template <typename T>
-object::object(const T& v, zone* z)
+object::object(const T& v, zone& z)
 {
     with_zone oz(z);
+    oz << v;
+    type = oz.type;
+    via = oz.via;
+}
+
+template <typename T>
+object::object(const T& v, zone* z)
+{
+    with_zone oz(*z);
     oz << v;
     type = oz.type;
     via = oz.via;

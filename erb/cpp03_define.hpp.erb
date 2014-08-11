@@ -29,7 +29,7 @@
         msgpack::type::make_define(__VA_ARGS__).msgpack_unpack(o); \
     }\
     template <typename MSGPACK_OBJECT> \
-    void msgpack_object(MSGPACK_OBJECT* o, msgpack::zone* z) const \
+    void msgpack_object(MSGPACK_OBJECT* o, msgpack::zone& z) const \
     { \
         msgpack::type::make_define(__VA_ARGS__).msgpack_object(o, z); \
     }
@@ -82,7 +82,7 @@ struct define<> {
     {
         if(o.type != type::ARRAY) { throw type_error(); }
     }
-    void msgpack_object(msgpack::object* o, msgpack::zone* z) const
+    void msgpack_object(msgpack::object* o, msgpack::zone& z) const
     {
         o->type = type::ARRAY;
         o->via.array.ptr = nullptr;
@@ -115,10 +115,10 @@ struct define<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> {
             }
         }
     }
-    void msgpack_object(msgpack::object* o, msgpack::zone* z) const
+    void msgpack_object(msgpack::object* o, msgpack::zone& z) const
     {
         o->type = type::ARRAY;
-        o->via.array.ptr = static_cast<object*>(z->allocate_align(sizeof(object)*<%=i+1%>));
+        o->via.array.ptr = static_cast<object*>(z.allocate_align(sizeof(object)*<%=i+1%>));
         o->via.array.size = <%=i+1%>;
         <%0.upto(i) {|j|%>
         o->via.array.ptr[<%=j%>] = object(a<%=j%>, z);<%}%>

@@ -9,6 +9,7 @@ check_PROGRAMS = \
 		streaming \
 		streaming_c \
 		object \
+		object_with_zone \
 		convert \
 		buffer \
 		cases \
@@ -34,6 +35,8 @@ streaming_SOURCES = streaming.cpp
 streaming_c_SOURCES = streaming_c.cpp
 
 object_SOURCES = object.cpp
+
+object_with_zone_SOURCES = object_with_zone.cpp
 
 convert_SOURCES = convert.cpp
 

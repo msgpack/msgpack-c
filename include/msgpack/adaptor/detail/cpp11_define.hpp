@@ -31,7 +31,7 @@
         msgpack::type::make_define(__VA_ARGS__).msgpack_unpack(o); \
     }\
     template <typename MSGPACK_OBJECT> \
-    void msgpack_object(MSGPACK_OBJECT* o, msgpack::zone* z) const \
+    void msgpack_object(MSGPACK_OBJECT* o, msgpack::zone& z) const \
     { \
         msgpack::type::make_define(__VA_ARGS__).msgpack_object(o, z); \
     }
@@ -79,7 +79,7 @@ struct define_imp {
         if(size <= N-1) { return; }
         o.via.array.ptr[N-1].convert(std::get<N-1>(t));
     }
-    static void object(msgpack::object* o, msgpack::zone* z, Tuple const& t) {
+    static void object(msgpack::object* o, msgpack::zone& z, Tuple const& t) {
         define_imp<Tuple, N-1>::object(o, z, t);
         o->via.array.ptr[N-1] = msgpack::object(std::get<N-1>(t), z);
     }
@@ -96,7 +96,7 @@ struct define_imp<Tuple, 1> {
         if(size <= 0) { return; }
         o.via.array.ptr[0].convert(std::get<0>(t));
     }
-    static void object(msgpack::object* o, msgpack::zone* z, Tuple const& t) {
+    static void object(msgpack::object* o, msgpack::zone& z, Tuple const& t) {
         o->via.array.ptr[0] = msgpack::object(std::get<0>(t), z);
     }
 };
@@ -120,10 +120,10 @@ struct define {
 
         define_imp<tuple<Args&...>, sizeof...(Args)>::unpack(o, a);
     }
-    void msgpack_object(msgpack::object* o, msgpack::zone* z) const
+    void msgpack_object(msgpack::object* o, msgpack::zone& z) const
     {
         o->type = type::ARRAY;
-        o->via.array.ptr = static_cast<object*>(z->allocate_align(sizeof(object)*sizeof...(Args)));
+        o->via.array.ptr = static_cast<object*>(z.allocate_align(sizeof(object)*sizeof...(Args)));
         o->via.array.size = sizeof...(Args);
 
         define_imp<tuple<Args&...>, sizeof...(Args)>::object(o, z, a);
@@ -145,7 +145,7 @@ struct define<> {
     {
         if(o.type != type::ARRAY) { throw type_error(); }
     }
-    void msgpack_object(msgpack::object* o, msgpack::zone* z) const
+    void msgpack_object(msgpack::object* o, msgpack::zone& z) const
     {
         o->type = type::ARRAY;
         o->via.array.ptr = NULL;

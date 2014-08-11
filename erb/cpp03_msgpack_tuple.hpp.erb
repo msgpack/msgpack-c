@@ -184,7 +184,7 @@ inline void operator<< (
         object::with_zone& o,
         const type::tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>>& v) {
     o.type = type::ARRAY;
-    o.via.array.ptr = static_cast<object*>(o.zone->allocate_align(sizeof(object)*<%=i+1%>));
+    o.via.array.ptr = static_cast<object*>(o.zone.allocate_align(sizeof(object)*<%=i+1%>));
     o.via.array.size = <%=i+1%>;
     <%0.upto(i) {|j|%>
     o.via.array.ptr[<%=j%>] = object(v.template get<<%=j%>>(), o.zone);<%}%>

@@ -60,7 +60,7 @@ inline void operator<< (object& o, const std::vector<char>& v)
 inline void operator<< (object::with_zone& o, const std::vector<char>& v)
 {
     o.type = type::BIN;
-    char* ptr = static_cast<char*>(o.zone->allocate_align(v.size()));
+    char* ptr = static_cast<char*>(o.zone.allocate_align(v.size()));
     o.via.bin.ptr = ptr;
     o.via.bin.size = static_cast<uint32_t>(v.size());
     std::memcpy(ptr, v.data(), v.size());

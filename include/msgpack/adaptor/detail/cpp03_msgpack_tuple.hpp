@@ -12274,7 +12274,7 @@ inline void operator<< (
         object::with_zone& o,
         const type::tuple<A0>& v) {
     o.type = type::ARRAY;
-    o.via.array.ptr = static_cast<object*>(o.zone->allocate_align(sizeof(object)*1));
+    o.via.array.ptr = static_cast<object*>(o.zone.allocate_align(sizeof(object)*1));
     o.via.array.size = 1;
     
     o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
@@ -12285,7 +12285,7 @@ inline void operator<< (
         object::with_zone& o,
         const type::tuple<A0, A1>& v) {
     o.type = type::ARRAY;
-    o.via.array.ptr = static_cast<object*>(o.zone->allocate_align(sizeof(object)*2));
+    o.via.array.ptr = static_cast<object*>(o.zone.allocate_align(sizeof(object)*2));
     o.via.array.size = 2;
     
     o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
@@ -12297,7 +12297,7 @@ inline void operator<< (
         object::with_zone& o,
         const type::tuple<A0, A1, A2>& v) {
     o.type = type::ARRAY;
-    o.via.array.ptr = static_cast<object*>(o.zone->allocate_align(sizeof(object)*3));
+    o.via.array.ptr = static_cast<object*>(o.zone.allocate_align(sizeof(object)*3));
     o.via.array.size = 3;
     
     o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
@@ -12310,7 +12310,7 @@ inline void operator<< (
         object::with_zone& o,
         const type::tuple<A0, A1, A2, A3>& v) {
     o.type = type::ARRAY;
-    o.via.array.ptr = static_cast<object*>(o.zone->allocate_align(sizeof(object)*4));
+    o.via.array.ptr = static_cast<object*>(o.zone.allocate_align(sizeof(object)*4));
     o.via.array.size = 4;
     
     o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
@@ -12324,7 +12324,7 @@ inline void operator<< (
         object::with_zone& o,
         const type::tuple<A0, A1, A2, A3, A4>& v) {
     o.type = type::ARRAY;
-    o.via.array.ptr = static_cast<object*>(o.zone->allocate_align(sizeof(object)*5));
+    o.via.array.ptr = static_cast<object*>(o.zone.allocate_align(sizeof(object)*5));
     o.via.array.size = 5;
     
     o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
@@ -12339,7 +12339,7 @@ inline void operator<< (
         object::with_zone& o,
         const type::tuple<A0, A1, A2, A3, A4, A5>& v) {
     o.type = type::ARRAY;
-    o.via.array.ptr = static_cast<object*>(o.zone->allocate_align(sizeof(object)*6));
+    o.via.array.ptr = static_cast<object*>(o.zone.allocate_align(sizeof(object)*6));
     o.via.array.size = 6;
     
     o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
@@ -12355,7 +12355,7 @@ inline void operator<< (
         object::with_zone& o,
         const type::tuple<A0, A1, A2, A3, A4, A5, A6>& v) {
     o.type = type::ARRAY;
-    o.via.array.ptr = static_cast<object*>(o.zone->allocate_align(sizeof(object)*7));
+    o.via.array.ptr = static_cast<object*>(o.zone.allocate_align(sizeof(object)*7));
     o.via.array.size = 7;
     
     o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
@@ -12372,7 +12372,7 @@ inline void operator<< (
         object::with_zone& o,
         const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7>& v) {
     o.type = type::ARRAY;
-    o.via.array.ptr = static_cast<object*>(o.zone->allocate_align(sizeof(object)*8));
+    o.via.array.ptr = static_cast<object*>(o.zone.allocate_align(sizeof(object)*8));
     o.via.array.size = 8;
     
     o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
@@ -12390,7 +12390,7 @@ inline void operator<< (
         object::with_zone& o,
         const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8>& v) {
     o.type = type::ARRAY;
-    o.via.array.ptr = static_cast<object*>(o.zone->allocate_align(sizeof(object)*9));
+    o.via.array.ptr = static_cast<object*>(o.zone.allocate_align(sizeof(object)*9));
     o.via.array.size = 9;
     
     o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
@@ -12409,7 +12409,7 @@ inline void operator<< (
         object::with_zone& o,
         const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9>& v) {
     o.type = type::ARRAY;
-    o.via.array.ptr = static_cast<object*>(o.zone->allocate_align(sizeof(object)*10));
+    o.via.array.ptr = static_cast<object*>(o.zone.allocate_align(sizeof(object)*10));
     o.via.array.size = 10;
     
     o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
@@ -12429,7 +12429,7 @@ inline void operator<< (
         object::with_zone& o,
         const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10>& v) {
     o.type = type::ARRAY;
-    o.via.array.ptr = static_cast<object*>(o.zone->allocate_align(sizeof(object)*11));
+    o.via.array.ptr = static_cast<object*>(o.zone.allocate_align(sizeof(object)*11));
     o.via.array.size = 11;
     
     o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
@@ -12450,7 +12450,7 @@ inline void operator<< (
         object::with_zone& o,
         const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11>& v) {
     o.type = type::ARRAY;
-    o.via.array.ptr = static_cast<object*>(o.zone->allocate_align(sizeof(object)*12));
+    o.via.array.ptr = static_cast<object*>(o.zone.allocate_align(sizeof(object)*12));
     o.via.array.size = 12;
     
     o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
@@ -12472,7 +12472,7 @@ inline void operator<< (
         object::with_zone& o,
         const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12>& v) {
     o.type = type::ARRAY;
-    o.via.array.ptr = static_cast<object*>(o.zone->allocate_align(sizeof(object)*13));
+    o.via.array.ptr = static_cast<object*>(o.zone.allocate_align(sizeof(object)*13));
     o.via.array.size = 13;
     
     o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
@@ -12495,7 +12495,7 @@ inline void operator<< (
         object::with_zone& o,
         const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13>& v) {
     o.type = type::ARRAY;
-    o.via.array.ptr = static_cast<object*>(o.zone->allocate_align(sizeof(object)*14));
+    o.via.array.ptr = static_cast<object*>(o.zone.allocate_align(sizeof(object)*14));
     o.via.array.size = 14;
     
     o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
@@ -12519,7 +12519,7 @@ inline void operator<< (
         object::with_zone& o,
         const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14>& v) {
     o.type = type::ARRAY;
-    o.via.array.ptr = static_cast<object*>(o.zone->allocate_align(sizeof(object)*15));
+    o.via.array.ptr = static_cast<object*>(o.zone.allocate_align(sizeof(object)*15));
     o.via.array.size = 15;
     
     o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
@@ -12544,7 +12544,7 @@ inline void operator<< (
         object::with_zone& o,
         const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15>& v) {
     o.type = type::ARRAY;
-    o.via.array.ptr = static_cast<object*>(o.zone->allocate_align(sizeof(object)*16));
+    o.via.array.ptr = static_cast<object*>(o.zone.allocate_align(sizeof(object)*16));
     o.via.array.size = 16;
     
     o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
@@ -12570,7 +12570,7 @@ inline void operator<< (
         object::with_zone& o,
         const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16>& v) {
     o.type = type::ARRAY;
-    o.via.array.ptr = static_cast<object*>(o.zone->allocate_align(sizeof(object)*17));
+    o.via.array.ptr = static_cast<object*>(o.zone.allocate_align(sizeof(object)*17));
     o.via.array.size = 17;
     
     o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
@@ -12597,7 +12597,7 @@ inline void operator<< (
         object::with_zone& o,
         const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17>& v) {
     o.type = type::ARRAY;
-    o.via.array.ptr = static_cast<object*>(o.zone->allocate_align(sizeof(object)*18));
+    o.via.array.ptr = static_cast<object*>(o.zone.allocate_align(sizeof(object)*18));
     o.via.array.size = 18;
     
     o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
@@ -12625,7 +12625,7 @@ inline void operator<< (
         object::with_zone& o,
         const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18>& v) {
     o.type = type::ARRAY;
-    o.via.array.ptr = static_cast<object*>(o.zone->allocate_align(sizeof(object)*19));
+    o.via.array.ptr = static_cast<object*>(o.zone.allocate_align(sizeof(object)*19));
     o.via.array.size = 19;
     
     o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
@@ -12654,7 +12654,7 @@ inline void operator<< (
         object::with_zone& o,
         const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19>& v) {
     o.type = type::ARRAY;
-    o.via.array.ptr = static_cast<object*>(o.zone->allocate_align(sizeof(object)*20));
+    o.via.array.ptr = static_cast<object*>(o.zone.allocate_align(sizeof(object)*20));
     o.via.array.size = 20;
     
     o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
@@ -12684,7 +12684,7 @@ inline void operator<< (
         object::with_zone& o,
         const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20>& v) {
     o.type = type::ARRAY;
-    o.via.array.ptr = static_cast<object*>(o.zone->allocate_align(sizeof(object)*21));
+    o.via.array.ptr = static_cast<object*>(o.zone.allocate_align(sizeof(object)*21));
     o.via.array.size = 21;
     
     o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
@@ -12715,7 +12715,7 @@ inline void operator<< (
         object::with_zone& o,
         const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21>& v) {
     o.type = type::ARRAY;
-    o.via.array.ptr = static_cast<object*>(o.zone->allocate_align(sizeof(object)*22));
+    o.via.array.ptr = static_cast<object*>(o.zone.allocate_align(sizeof(object)*22));
     o.via.array.size = 22;
     
     o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
@@ -12747,7 +12747,7 @@ inline void operator<< (
         object::with_zone& o,
         const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22>& v) {
     o.type = type::ARRAY;
-    o.via.array.ptr = static_cast<object*>(o.zone->allocate_align(sizeof(object)*23));
+    o.via.array.ptr = static_cast<object*>(o.zone.allocate_align(sizeof(object)*23));
     o.via.array.size = 23;
     
     o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
@@ -12780,7 +12780,7 @@ inline void operator<< (
         object::with_zone& o,
         const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23>& v) {
     o.type = type::ARRAY;
-    o.via.array.ptr = static_cast<object*>(o.zone->allocate_align(sizeof(object)*24));
+    o.via.array.ptr = static_cast<object*>(o.zone.allocate_align(sizeof(object)*24));
     o.via.array.size = 24;
     
     o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
@@ -12814,7 +12814,7 @@ inline void operator<< (
         object::with_zone& o,
         const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24>& v) {
     o.type = type::ARRAY;
-    o.via.array.ptr = static_cast<object*>(o.zone->allocate_align(sizeof(object)*25));
+    o.via.array.ptr = static_cast<object*>(o.zone.allocate_align(sizeof(object)*25));
     o.via.array.size = 25;
     
     o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
@@ -12849,7 +12849,7 @@ inline void operator<< (
         object::with_zone& o,
         const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25>& v) {
     o.type = type::ARRAY;
-    o.via.array.ptr = static_cast<object*>(o.zone->allocate_align(sizeof(object)*26));
+    o.via.array.ptr = static_cast<object*>(o.zone.allocate_align(sizeof(object)*26));
     o.via.array.size = 26;
     
     o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
@@ -12885,7 +12885,7 @@ inline void operator<< (
         object::with_zone& o,
         const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26>& v) {
     o.type = type::ARRAY;
-    o.via.array.ptr = static_cast<object*>(o.zone->allocate_align(sizeof(object)*27));
+    o.via.array.ptr = static_cast<object*>(o.zone.allocate_align(sizeof(object)*27));
     o.via.array.size = 27;
     
     o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
@@ -12922,7 +12922,7 @@ inline void operator<< (
         object::with_zone& o,
         const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27>& v) {
     o.type = type::ARRAY;
-    o.via.array.ptr = static_cast<object*>(o.zone->allocate_align(sizeof(object)*28));
+    o.via.array.ptr = static_cast<object*>(o.zone.allocate_align(sizeof(object)*28));
     o.via.array.size = 28;
     
     o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
@@ -12960,7 +12960,7 @@ inline void operator<< (
         object::with_zone& o,
         const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28>& v) {
     o.type = type::ARRAY;
-    o.via.array.ptr = static_cast<object*>(o.zone->allocate_align(sizeof(object)*29));
+    o.via.array.ptr = static_cast<object*>(o.zone.allocate_align(sizeof(object)*29));
     o.via.array.size = 29;
     
     o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
@@ -12999,7 +12999,7 @@ inline void operator<< (
         object::with_zone& o,
         const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29>& v) {
     o.type = type::ARRAY;
-    o.via.array.ptr = static_cast<object*>(o.zone->allocate_align(sizeof(object)*30));
+    o.via.array.ptr = static_cast<object*>(o.zone.allocate_align(sizeof(object)*30));
     o.via.array.size = 30;
     
     o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
@@ -13039,7 +13039,7 @@ inline void operator<< (
         object::with_zone& o,
         const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30>& v) {
     o.type = type::ARRAY;
-    o.via.array.ptr = static_cast<object*>(o.zone->allocate_align(sizeof(object)*31));
+    o.via.array.ptr = static_cast<object*>(o.zone.allocate_align(sizeof(object)*31));
     o.via.array.size = 31;
     
     o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
@@ -13080,7 +13080,7 @@ inline void operator<< (
         object::with_zone& o,
         const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30, A31>& v) {
     o.type = type::ARRAY;
-    o.via.array.ptr = static_cast<object*>(o.zone->allocate_align(sizeof(object)*32));
+    o.via.array.ptr = static_cast<object*>(o.zone.allocate_align(sizeof(object)*32));
     o.via.array.size = 32;
     
     o.via.array.ptr[0] = object(v.template get<0>(), o.zone);

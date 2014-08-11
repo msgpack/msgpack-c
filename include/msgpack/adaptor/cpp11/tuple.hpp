@@ -108,9 +108,9 @@ struct StdTupleToObjectWithZone<Tuple, 1> {
 template <typename... Args>
 inline void operator<< (
         object::with_zone& o,
-        std::tuple<Args...>& v) {
+        std::tuple<Args...> const& v) {
     o.type = type::ARRAY;
-    o.via.array.ptr = static_cast<object*>(o.zone->allocate_align(sizeof(object)*sizeof...(Args)));
+    o.via.array.ptr = static_cast<object*>(o.zone.allocate_align(sizeof(object)*sizeof...(Args)));
     o.via.array.size = sizeof...(Args);
     StdTupleToObjectWithZone<decltype(v), sizeof...(Args)>::convert(o, v);
 }
