@@ -23,32 +23,32 @@ check_PROGRAMS = \
 
 TESTS = $(check_PROGRAMS)
 
-zone_SOURCES = zone.cc
+zone_SOURCES = zone.cpp
 
-pack_unpack_SOURCES = pack_unpack.cc
+pack_unpack_SOURCES = pack_unpack.cpp
 
-pack_unpack_c_SOURCES = pack_unpack_c.cc
+pack_unpack_c_SOURCES = pack_unpack_c.cpp
 
-streaming_SOURCES = streaming.cc
+streaming_SOURCES = streaming.cpp
 
-streaming_c_SOURCES = streaming_c.cc
+streaming_c_SOURCES = streaming_c.cpp
 
-object_SOURCES = object.cc
+object_SOURCES = object.cpp
 
-convert_SOURCES = convert.cc
+convert_SOURCES = convert.cpp
 
-buffer_SOURCES = buffer.cc
+buffer_SOURCES = buffer.cpp
 buffer_LDADD = -lz
 
-cases_SOURCES = cases.cc
+cases_SOURCES = cases.cpp
 
-fixint_SOURCES = fixint.cc
+fixint_SOURCES = fixint.cpp
 
-fixint_c_SOURCES = fixint_c.cc
+fixint_c_SOURCES = fixint_c.cpp
 
-version_SOURCES = version.cc
+version_SOURCES = version.cpp
 
-msgpack_tuple_SOURCES = msgpack_tuple.cc
+msgpack_tuple_SOURCES = msgpack_tuple.cpp
 
 msgpackc_test_SOURCES = msgpackc_test.cpp
 
@@ -56,6 +56,6 @@ msgpack_test_SOURCES = msgpack_test.cpp
 
 msgpack_test_cpp11_SOURCES = msgpack_test_cpp11.cpp
 
-reference_SOURCES = reference.cc
+reference_SOURCES = reference.cpp
 
 EXTRA_DIST = cases.mpac cases_compact.mpac

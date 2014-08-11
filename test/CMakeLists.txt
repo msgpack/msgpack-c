@@ -8,23 +8,23 @@ INCLUDE_DIRECTORIES (
 )
 
 SET (check_PROGRAMS
-    zone.cc
-    pack_unpack.cc
-    pack_unpack_c.cc
-    streaming.cc
-    streaming_c.cc
-    object.cc
-    version.cc
-    convert.cc
-    buffer.cc
-    cases.cc
-    fixint.cc
-    fixint_c.cc
-    msgpack_tuple.cc
+    zone.cpp
+    pack_unpack.cpp
+    pack_unpack_c.cpp
+    streaming.cpp
+    streaming_c.cpp
+    object.cpp
+    version.cpp
+    convert.cpp
+    buffer.cpp
+    cases.cpp
+    fixint.cpp
+    fixint_c.cpp
+    msgpack_tuple.cpp
     msgpack_test.cpp
     msgpackc_test.cpp
     msgpack_test_cpp11.cpp
-    reference.cc
+    reference.cpp
 )
 
 FOREACH (source_file ${check_PROGRAMS})
