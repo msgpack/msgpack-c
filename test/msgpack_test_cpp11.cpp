@@ -25,7 +25,6 @@ TEST(MSGPACK_CPP11, simple_tuple)
     msgpack::unpack(ret, sbuf.data(), sbuf.size());
     std::tuple<bool, std::string, double> val2 = ret.get().as<std::tuple<bool, std::string, double> >();
     EXPECT_EQ(val1, val2);
-    EXPECT_FALSE(ret.referenced());
 }
 
 TEST(MSGPACK_CPP11, simple_array)
@@ -42,7 +41,6 @@ TEST(MSGPACK_CPP11, simple_array)
         array<int, kElements> val2 = ret.get().as<array<int, kElements> >();
         EXPECT_EQ(val1.size(), val2.size());
         EXPECT_TRUE(equal(val1.begin(), val1.end(), val2.begin()));
-        EXPECT_FALSE(ret.referenced());
     }
 }
 
@@ -75,7 +73,6 @@ TEST(MSGPACK_STL, simple_buffer_forward_list)
         msgpack::unpack(ret, sbuf.data(), sbuf.size());
         forward_list<int> val2 = ret.get().as<forward_list<int> >();
         EXPECT_EQ(val1, val2);
-        EXPECT_FALSE(ret.referenced());
     }
 }
 
@@ -112,7 +109,6 @@ TEST(MSGPACK_USER_DEFINED, simple_buffer_enum_class_member)
     EXPECT_EQ(val1.t1, val2.t1);
     EXPECT_EQ(val1.t2, val2.t2);
     EXPECT_EQ(val1.t3, val2.t3);
-    EXPECT_FALSE(ret.referenced());
 }
 
 #endif // !defined(MSGPACK_USE_CPP03)

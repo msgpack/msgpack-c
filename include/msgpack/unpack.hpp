@@ -820,7 +820,7 @@ struct unpack_error : public std::runtime_error {
 
 class unpacked {
 public:
-    unpacked():m_referenced(false) { }
+    unpacked() {}
 
     unpacked(object const& obj, msgpack::unique_ptr<msgpack::zone> z) :
         m_obj(obj), m_zone(msgpack::move(z)) { }
@@ -836,12 +836,6 @@ public:
 
     const msgpack::unique_ptr<msgpack::zone>& zone() const
         { return m_zone; }
-
-    void set_referenced(bool r)
-        { m_referenced = r; }
-
-    bool referenced() const
-        { return m_referenced; }
 
 private:
     object m_obj;
@@ -876,6 +870,7 @@ public:
 
     /*! 4. repeat next() until it retunrs false */
     bool next(unpacked* result);
+    bool next(unpacked& result, bool& referenced);
     bool next(unpacked& result);
 
     /*! 5. check if the size of message doesn't exceed assumption. */
@@ -971,7 +966,13 @@ private:
 };
 
 inline void unpack(unpacked& result,
+                   const char* data, std::size_t len, std::size_t& off, bool& referenced,
+                   unpack_reference_func f = nullptr, void* user_data = nullptr);
+inline void unpack(unpacked& result,
                    const char* data, std::size_t len, std::size_t& off,
+                   unpack_reference_func f = nullptr, void* user_data = nullptr);
+inline void unpack(unpacked& result,
+                   const char* data, std::size_t len, bool& referenced,
                    unpack_reference_func f = nullptr, void* user_data = nullptr);
 inline void unpack(unpacked& result,
                    const char* data, std::size_t len,
@@ -979,7 +980,7 @@ inline void unpack(unpacked& result,
 
 // obsolete
 inline void unpack(unpacked* result,
-                   const char* data, std::size_t len, std::size_t* off = nullptr,
+                   const char* data, std::size_t len, std::size_t* off = nullptr, bool* referenced = nullptr,
                    unpack_reference_func f = nullptr, void* user_data = nullptr);
 
 
@@ -1134,10 +1135,10 @@ inline void unpacker::buffer_consumed(std::size_t size)
     m_free -= size;
 }
 
-inline bool unpacker::next(unpacked& result)
+inline bool unpacker::next(unpacked& result, bool& referenced)
 {
+    referenced = false;
     int ret = execute_imp();
-
     if(ret < 0) {
         throw unpack_error("parse error");
     }
@@ -1148,12 +1149,18 @@ inline bool unpacker::next(unpacked& result)
         return false;
 
     } else {
-        result.set_referenced(m_ctx.user().referenced());
+        referenced = m_ctx.user().referenced();
         result.zone().reset( release_zone() );
         result.set(data());
         reset();
         return true;
     }
+}
+
+inline bool unpacker::next(unpacked& result)
+{
+    bool referenced;
+    return next(result, referenced);
 }
 
 inline bool unpacker::next(unpacked* result)
@@ -1307,16 +1314,14 @@ unpack_imp(const char* data, std::size_t len, std::size_t& off,
 
 // reference version
 inline void unpack(unpacked& result,
-                   const char* data, std::size_t len, std::size_t& off,
+                   const char* data, std::size_t len, std::size_t& off, bool& referenced,
                    unpack_reference_func f, void* user_data)
 {
     object obj;
     msgpack::unique_ptr<zone> z(new zone);
-    bool referenced = false;
+    referenced = false;
     unpack_return ret = detail::unpack_imp(
         data, len, off, *z, obj, referenced, f, user_data);
-
-    result.set_referenced(referenced);
 
     switch(ret) {
     case UNPACK_SUCCESS:
@@ -1336,21 +1341,42 @@ inline void unpack(unpacked& result,
 }
 
 inline void unpack(unpacked& result,
-                   const char* data, std::size_t len,
+                   const char* data, std::size_t len, std::size_t& off,
+                   unpack_reference_func f, void* user_data)
+{
+    bool referenced;
+    unpack(result, data, len, off, referenced, f, user_data);
+}
+
+inline void unpack(unpacked& result,
+                   const char* data, std::size_t len, bool& referenced,
                    unpack_reference_func f, void* user_data)
 {
     std::size_t off = 0;
-    unpack(result, data, len, off, f, user_data);
+    unpack(result, data, len, off, referenced, f, user_data);
+}
+
+inline void unpack(unpacked& result,
+                   const char* data, std::size_t len,
+                   unpack_reference_func f, void* user_data)
+{
+    bool referenced;
+    std::size_t off = 0;
+    unpack(result, data, len, off, referenced, f, user_data);
 }
 
 // obsolete
 // pointer version
 inline void unpack(unpacked* result,
-                   const char* data, std::size_t len, std::size_t* off,
+                   const char* data, std::size_t len, std::size_t* off, bool* referenced,
                    unpack_reference_func f, void* user_data)
 {
-    if (off) unpack(*result, data, len, *off);
-    else unpack(*result, data, len, f, user_data);
+    if (off)
+        if (referenced) unpack(*result, data, len, *off, *referenced, f, user_data);
+        else unpack(*result, data, len, *off, f, user_data);
+    else
+        if (referenced) unpack(*result, data, len, *referenced, f, user_data);
+        else unpack(*result, data, len, f, user_data);
 }
 
 bool unpacker::default_reference_func(type::object_type type, uint64_t len, void*)

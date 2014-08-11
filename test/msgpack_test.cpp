@@ -38,7 +38,6 @@ const double kEPS = 1e-10;
       msgpack::unpacked ret;                                          \
       msgpack::unpack(ret, sbuf.data(), sbuf.size());                 \
       EXPECT_EQ(val1, ret.get().as<test_type>());                     \
-      EXPECT_FALSE(ret.referenced());                                 \
     }                                                                 \
 } while(0)
 
@@ -206,7 +205,6 @@ TYPED_TEST_P(IntegerToFloatingPointTest, simple_buffer)
     msgpack::unpack(ret, sbuf.data(), sbuf.size());
     float_type val2 = ret.get().as<float_type>();
     EXPECT_TRUE(fabs(val2 - val1) <= kEPS);
-    EXPECT_FALSE(ret.referenced());
   }
 }
 
@@ -244,7 +242,6 @@ TEST(MSGPACK, simple_buffer_double)
     msgpack::unpacked ret;
     msgpack::unpack(ret, sbuf.data(), sbuf.size());
     double val2 = ret.get().as<double>();
-    EXPECT_FALSE(ret.referenced());
 
     if (std::isnan(val1))
       EXPECT_TRUE(std::isnan(val2));
@@ -264,7 +261,6 @@ TEST(MSGPACK, simple_buffer_true)
   msgpack::unpack(ret, sbuf.data(), sbuf.size());
   bool val2 = ret.get().as<bool>();
   EXPECT_EQ(val1, val2);
-  EXPECT_FALSE(ret.referenced());
 }
 
 TEST(MSGPACK, simple_buffer_false)
@@ -276,7 +272,6 @@ TEST(MSGPACK, simple_buffer_false)
   msgpack::unpack(ret, sbuf.data(), sbuf.size());
   bool val2 = ret.get().as<bool>();
   EXPECT_EQ(val1, val2);
-  EXPECT_FALSE(ret.referenced());
 }
 
 TEST(MSGPACK, simple_buffer_fixext1)
@@ -292,7 +287,6 @@ TEST(MSGPACK, simple_buffer_fixext1)
   EXPECT_EQ(1, ret.get().via.ext.size);
   EXPECT_EQ(1, ret.get().via.ext.type());
   EXPECT_EQ(2, ret.get().via.ext.data()[0]);
-  EXPECT_FALSE(ret.referenced());
 }
 
 TEST(MSGPACK, simple_buffer_fixext2)
@@ -309,7 +303,6 @@ TEST(MSGPACK, simple_buffer_fixext2)
   EXPECT_EQ(0, ret.get().via.ext.type());
   EXPECT_TRUE(
       std::equal(buf, buf + sizeof(buf), ret.get().via.ext.data()));
-  EXPECT_FALSE(ret.referenced());
 }
 
 TEST(MSGPACK, simple_buffer_fixext4)
@@ -326,7 +319,6 @@ TEST(MSGPACK, simple_buffer_fixext4)
   EXPECT_EQ(1, ret.get().via.ext.type());
   EXPECT_TRUE(
       std::equal(buf, buf + sizeof(buf), ret.get().via.ext.data()));
-  EXPECT_FALSE(ret.referenced());
 }
 
 TEST(MSGPACK, simple_buffer_fixext8)
@@ -343,7 +335,6 @@ TEST(MSGPACK, simple_buffer_fixext8)
   EXPECT_EQ(1, ret.get().via.ext.type());
   EXPECT_TRUE(
       std::equal(buf, buf + sizeof(buf), ret.get().via.ext.data()));
-  EXPECT_FALSE(ret.referenced());
 }
 
 TEST(MSGPACK, simple_buffer_fixext16)
@@ -360,7 +351,6 @@ TEST(MSGPACK, simple_buffer_fixext16)
   EXPECT_EQ(1, ret.get().via.ext.type());
   EXPECT_TRUE(
       std::equal(buf, buf + sizeof(buf), ret.get().via.ext.data()));
-  EXPECT_FALSE(ret.referenced());
 }
 
 TEST(MSGPACK, simple_buffer_fixext_1byte_0)
@@ -374,7 +364,6 @@ TEST(MSGPACK, simple_buffer_fixext_1byte_0)
   msgpack::unpack(ret, sbuf.data(), sbuf.size());
   EXPECT_EQ(size, ret.get().via.ext.size);
   EXPECT_EQ(77, ret.get().via.ext.type());
-  EXPECT_FALSE(ret.referenced());
 }
 
 TEST(MSGPACK, simple_buffer_fixext_1byte_255)
@@ -393,7 +382,6 @@ TEST(MSGPACK, simple_buffer_fixext_1byte_255)
   EXPECT_EQ(77, ret.get().via.ext.type());
   EXPECT_TRUE(
       std::equal(buf, buf + sizeof(buf), ret.get().via.ext.data()));
-  EXPECT_FALSE(ret.referenced());
 }
 
 TEST(MSGPACK, simple_buffer_fixext_2byte_256)
@@ -412,7 +400,6 @@ TEST(MSGPACK, simple_buffer_fixext_2byte_256)
   EXPECT_EQ(77, ret.get().via.ext.type());
   EXPECT_TRUE(
       std::equal(buf, buf + sizeof(buf), ret.get().via.ext.data()));
-  EXPECT_FALSE(ret.referenced());
 }
 
 TEST(MSGPACK, simple_buffer_fixext_2byte_65535)
@@ -431,7 +418,6 @@ TEST(MSGPACK, simple_buffer_fixext_2byte_65535)
   EXPECT_EQ(77, ret.get().via.ext.type());
   EXPECT_TRUE(
       std::equal(buf, buf + sizeof(buf), ret.get().via.ext.data()));
-  EXPECT_FALSE(ret.referenced());
 }
 
 TEST(MSGPACK, simple_buffer_fixext_4byte_65536)
@@ -450,7 +436,6 @@ TEST(MSGPACK, simple_buffer_fixext_4byte_65536)
   EXPECT_EQ(77, ret.get().via.ext.type());
   EXPECT_TRUE(
       std::equal(buf, buf + sizeof(buf), ret.get().via.ext.data()));
-  EXPECT_FALSE(ret.referenced());
 }
 
 //-----------------------------------------------------------------------------
@@ -471,7 +456,6 @@ TEST(MSGPACK_STL, simple_buffer_string)
     string val2 = ret.get().as<string>();
     EXPECT_EQ(val1.size(), val2.size());
     EXPECT_EQ(val1, val2);
-    EXPECT_FALSE(ret.referenced());
   }
 }
 
@@ -489,7 +473,6 @@ TEST(MSGPACK_STL, simple_buffer_vector)
     vector<int> val2 = ret.get().as<vector<int> >();
     EXPECT_EQ(val1.size(), val2.size());
     EXPECT_TRUE(equal(val1.begin(), val1.end(), val2.begin()));
-    EXPECT_FALSE(ret.referenced());
   }
 }
 
@@ -523,7 +506,6 @@ TEST(MSGPACK_STL, simple_buffer_map)
     map<int, int> val2 = ret.get().as<map<int, int> >();
     EXPECT_EQ(val1.size(), val2.size());
     EXPECT_TRUE(equal(val1.begin(), val1.end(), val2.begin()));
-    EXPECT_FALSE(ret.referenced());
   }
 }
 
@@ -540,7 +522,6 @@ TEST(MSGPACK_STL, simple_buffer_deque)
     deque<int> val2 = ret.get().as<deque<int> >();
     EXPECT_EQ(val1.size(), val2.size());
     EXPECT_TRUE(equal(val1.begin(), val1.end(), val2.begin()));
-    EXPECT_FALSE(ret.referenced());
   }
 }
 
@@ -557,7 +538,6 @@ TEST(MSGPACK_STL, simple_buffer_list)
     list<int> val2 = ret.get().as<list<int> >();
     EXPECT_EQ(val1.size(), val2.size());
     EXPECT_TRUE(equal(val1.begin(), val1.end(), val2.begin()));
-    EXPECT_FALSE(ret.referenced());
   }
 }
 
@@ -574,7 +554,6 @@ TEST(MSGPACK_STL, simple_buffer_set)
     set<int> val2 = ret.get().as<set<int> >();
     EXPECT_EQ(val1.size(), val2.size());
     EXPECT_TRUE(equal(val1.begin(), val1.end(), val2.begin()));
-    EXPECT_FALSE(ret.referenced());
   }
 }
 
@@ -589,7 +568,6 @@ TEST(MSGPACK_STL, simple_buffer_pair)
     pair<int, int> val2 = ret.get().as<pair<int, int> >();
     EXPECT_EQ(val1.first, val2.first);
     EXPECT_EQ(val1.second, val2.second);
-    EXPECT_FALSE(ret.referenced());
   }
 }
 
@@ -619,7 +597,6 @@ TEST(MSGPACK_STL, simple_buffer_multimap)
     sort(v1.begin(), v1.end());
     sort(v2.begin(), v2.end());
     EXPECT_TRUE(v1 == v2);
-    EXPECT_FALSE(ret.referenced());
   }
 }
 
@@ -646,7 +623,6 @@ TEST(MSGPACK_STL, simple_buffer_multiset)
     sort(v1.begin(), v1.end());
     sort(v2.begin(), v2.end());
     EXPECT_TRUE(v1 == v2);
-    EXPECT_FALSE(ret.referenced());
   }
 }
 
@@ -672,7 +648,6 @@ TEST(MSGPACK_TR1, simple_buffer_tr1_unordered_map)
       EXPECT_TRUE(val2.find(it->first) != val2.end());
       EXPECT_EQ(it->second, val2.find(it->first)->second);
     }
-    EXPECT_FALSE(ret.referenced());
   }
 }
 
@@ -702,7 +677,6 @@ TEST(MSGPACK_TR1, simple_buffer_tr1_unordered_multimap)
     sort(v1.begin(), v1.end());
     sort(v2.begin(), v2.end());
     EXPECT_TRUE(v1 == v2);
-    EXPECT_FALSE(ret.referenced());
   }
 }
 #endif
@@ -725,7 +699,6 @@ TEST(MSGPACK_TR1, simple_buffer_tr1_unordered_set)
     tr1::unordered_set<int>::const_iterator it;
     for (it = val1.begin(); it != val1.end(); ++it)
       EXPECT_TRUE(val2.find(*it) != val2.end());
-    EXPECT_FALSE(ret.referenced());
   }
 }
 
@@ -752,7 +725,6 @@ TEST(MSGPACK_TR1, simple_buffer_tr1_unordered_multiset)
     sort(v1.begin(), v1.end());
     sort(v2.begin(), v2.end());
     EXPECT_TRUE(v1 == v2);
-    EXPECT_FALSE(ret.referenced());
   }
 }
 #endif
@@ -777,7 +749,6 @@ TEST(MSGPACK_TR1, simple_buffer_unordered_map)
       EXPECT_TRUE(val2.find(it->first) != val2.end());
       EXPECT_EQ(it->second, val2.find(it->first)->second);
     }
-    EXPECT_FALSE(ret.referenced());
   }
 }
 
@@ -807,7 +778,6 @@ TEST(MSGPACK_TR1, simple_buffer_unordered_multimap)
     sort(v1.begin(), v1.end());
     sort(v2.begin(), v2.end());
     EXPECT_TRUE(v1 == v2);
-    EXPECT_FALSE(ret.referenced());
   }
 }
 #endif
@@ -830,7 +800,6 @@ TEST(MSGPACK_TR1, simple_buffer_unordered_set)
     unordered_set<int>::const_iterator it;
     for (it = val1.begin(); it != val1.end(); ++it)
       EXPECT_TRUE(val2.find(*it) != val2.end());
-    EXPECT_FALSE(ret.referenced());
   }
 }
 
@@ -857,7 +826,6 @@ TEST(MSGPACK_TR1, simple_buffer_unordered_multiset)
     sort(v1.begin(), v1.end());
     sort(v2.begin(), v2.end());
     EXPECT_TRUE(v1 == v2);
-    EXPECT_FALSE(ret.referenced());
   }
 }
 #endif
@@ -885,7 +853,6 @@ TEST(MSGPACK_USER_DEFINED, simple_buffer_class)
     TestClass val2 = ret.get().as<TestClass>();
     EXPECT_EQ(val1.i, val2.i);
     EXPECT_EQ(val1.s, val2.s);
-    EXPECT_FALSE(ret.referenced());
   }
 }
 
@@ -914,7 +881,6 @@ TEST(MSGPACK_USER_DEFINED, simple_buffer_class_old_to_new)
     EXPECT_EQ(val1.i, val2.i);
     EXPECT_EQ(val1.s, val2.s);
     EXPECT_FALSE(val2.s.empty());
-    EXPECT_FALSE(ret.referenced());
   }
 }
 
@@ -965,7 +931,6 @@ TEST(MSGPACK_USER_DEFINED, simple_buffer_enum_member)
   EXPECT_EQ(val1.t1, val2.t1);
   EXPECT_EQ(val1.t2, val2.t2);
   EXPECT_EQ(val1.t3, val2.t3);
-  EXPECT_FALSE(ret.referenced());
 }
 
 class TestUnionMemberClass
@@ -1021,7 +986,6 @@ TEST(MSGPACK_USER_DEFINED, simple_buffer_union_member)
     TestUnionMemberClass val2 = ret.get().as<TestUnionMemberClass>();
     EXPECT_EQ(val1.is_double, val2.is_double);
     EXPECT_TRUE(fabs(val1.value.f - val2.value.f) < kEPS);
-    EXPECT_FALSE(ret.referenced());
   }
   {
     // int
@@ -1034,7 +998,6 @@ TEST(MSGPACK_USER_DEFINED, simple_buffer_union_member)
     EXPECT_EQ(val1.is_double, val2.is_double);
     EXPECT_EQ(val1.value.i, 1);
     EXPECT_EQ(val1.value.i, val2.value.i);
-    EXPECT_FALSE(ret.referenced());
   }
 }
 
@@ -1056,7 +1019,6 @@ TEST(MSGPACK_USER_DEFINED, simple_buffer_union_member)
       msgpack::unpack(ret, sbuf.data(), sbuf.size());                   \
       test_type val2 = ret.get().as<test_type>();                       \
       EXPECT_EQ(val1, val2);                                            \
-      EXPECT_FALSE(ret.referenced());                                   \
     }                                                                   \
   } while(0);
 
