@@ -124,6 +124,10 @@ INCLUDE_DIRECTORIES (
 	${CMAKE_CURRENT_BINARY_DIR}/src/msgpack/
 )
 
+IF(MSVC)
+    SET_SOURCE_FILES_PROPERTIES(src/unpack.c src/objectc.c src/version.c src/vrefbuffer.c src/zone.c PROPERTIES LANGUAGE CXX )
+ENDIF()
+
 ADD_LIBRARY (msgpack SHARED
 	${msgpack_SOURCES}
 	${msgpack_HEADERS}
@@ -158,7 +162,9 @@ ENDIF ()
 INSTALL (TARGETS msgpack msgpack-static DESTINATION lib)
 INSTALL (DIRECTORY src/msgpack DESTINATION include)
 INSTALL (FILES src/msgpack.h src/msgpack.hpp DESTINATION include)
-INSTALL (FILES msgpack.pc DESTINATION lib/pkgconfig)
+IF(NOT MSVC)
+	INSTALL (FILES msgpack.pc DESTINATION lib/pkgconfig)
+ENDIF()
 
 # Doxygen
 FIND_PACKAGE (Doxygen)
