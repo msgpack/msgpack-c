@@ -20,7 +20,7 @@
 namespace msgpack {
 
 
-std::ostream& operator<< (std::ostream& s, const object o)
+std::ostream& operator<< (std::ostream& s, const object& o)
 {
 	switch(o.type) {
 	case type::NIL:

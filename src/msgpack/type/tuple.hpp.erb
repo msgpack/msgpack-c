@@ -128,7 +128,7 @@ tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> make_tuple(typename tuple_type<A0>::tr
 
 
 inline type::tuple<>& operator>> (
-		object o,
+		const object& o,
 		type::tuple<>& v) {
 	if(o.type != type::ARRAY) { throw type_error(); }
 	return v;
@@ -203,4 +203,3 @@ inline void operator<< (
 //<%}%>
 
 #endif /* msgpack/type/tuple.hpp */
-

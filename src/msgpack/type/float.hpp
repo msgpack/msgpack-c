@@ -27,7 +27,7 @@ namespace msgpack {
 // FIXME check overflow, underflow
 
 
-inline float& operator>> (object o, float& v)
+inline float& operator>> (const object& o, float& v)
 {
 	if(o.type == type::DOUBLE) {
 		v = (float)o.via.dec;
@@ -52,7 +52,7 @@ inline packer<Stream>& operator<< (packer<Stream>& o, const float& v)
 }
 
 
-inline double& operator>> (object o, double& v)
+inline double& operator>> (const object& o, double& v)
 {
 	if(o.type == type::DOUBLE) {
 		v = o.via.dec;
@@ -70,7 +70,7 @@ inline double& operator>> (object o, double& v)
 }
 
 template <typename Stream>
-inline packer<Stream>& operator<< (packer<Stream>& o, const double& v)
+inline packer<Stream>& operator<< (packer<Stream>& o, double v)
 {
 	o.pack_double(v);
 	return o;
@@ -99,4 +99,3 @@ inline void operator<< (object::with_zone& o, double v)
 }  // namespace msgpack
 
 #endif /* msgpack/type/float.hpp */
-

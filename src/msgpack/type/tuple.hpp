@@ -9190,7 +9190,7 @@ struct tuple<A0> {
 		{ return tuple_element<value_type, N>(*this).get(); }
 	template <int N> typename const_tuple_element<value_type, N>::const_reference get() const
 		{ return const_tuple_element<value_type, N>(*this).get(); }
-	
+
 	A0 a0;
 };
 
@@ -9205,7 +9205,7 @@ struct tuple<A0, A1> {
 		{ return tuple_element<value_type, N>(*this).get(); }
 	template <int N> typename const_tuple_element<value_type, N>::const_reference get() const
 		{ return const_tuple_element<value_type, N>(*this).get(); }
-	
+
 	A0 a0;
 	A1 a1;
 };
@@ -9221,7 +9221,7 @@ struct tuple<A0, A1, A2> {
 		{ return tuple_element<value_type, N>(*this).get(); }
 	template <int N> typename const_tuple_element<value_type, N>::const_reference get() const
 		{ return const_tuple_element<value_type, N>(*this).get(); }
-	
+
 	A0 a0;
 	A1 a1;
 	A2 a2;
@@ -9238,7 +9238,7 @@ struct tuple<A0, A1, A2, A3> {
 		{ return tuple_element<value_type, N>(*this).get(); }
 	template <int N> typename const_tuple_element<value_type, N>::const_reference get() const
 		{ return const_tuple_element<value_type, N>(*this).get(); }
-	
+
 	A0 a0;
 	A1 a1;
 	A2 a2;
@@ -9256,7 +9256,7 @@ struct tuple<A0, A1, A2, A3, A4> {
 		{ return tuple_element<value_type, N>(*this).get(); }
 	template <int N> typename const_tuple_element<value_type, N>::const_reference get() const
 		{ return const_tuple_element<value_type, N>(*this).get(); }
-	
+
 	A0 a0;
 	A1 a1;
 	A2 a2;
@@ -9275,7 +9275,7 @@ struct tuple<A0, A1, A2, A3, A4, A5> {
 		{ return tuple_element<value_type, N>(*this).get(); }
 	template <int N> typename const_tuple_element<value_type, N>::const_reference get() const
 		{ return const_tuple_element<value_type, N>(*this).get(); }
-	
+
 	A0 a0;
 	A1 a1;
 	A2 a2;
@@ -9295,7 +9295,7 @@ struct tuple<A0, A1, A2, A3, A4, A5, A6> {
 		{ return tuple_element<value_type, N>(*this).get(); }
 	template <int N> typename const_tuple_element<value_type, N>::const_reference get() const
 		{ return const_tuple_element<value_type, N>(*this).get(); }
-	
+
 	A0 a0;
 	A1 a1;
 	A2 a2;
@@ -9316,7 +9316,7 @@ struct tuple<A0, A1, A2, A3, A4, A5, A6, A7> {
 		{ return tuple_element<value_type, N>(*this).get(); }
 	template <int N> typename const_tuple_element<value_type, N>::const_reference get() const
 		{ return const_tuple_element<value_type, N>(*this).get(); }
-	
+
 	A0 a0;
 	A1 a1;
 	A2 a2;
@@ -9338,7 +9338,7 @@ struct tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8> {
 		{ return tuple_element<value_type, N>(*this).get(); }
 	template <int N> typename const_tuple_element<value_type, N>::const_reference get() const
 		{ return const_tuple_element<value_type, N>(*this).get(); }
-	
+
 	A0 a0;
 	A1 a1;
 	A2 a2;
@@ -9361,7 +9361,7 @@ struct tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9> {
 		{ return tuple_element<value_type, N>(*this).get(); }
 	template <int N> typename const_tuple_element<value_type, N>::const_reference get() const
 		{ return const_tuple_element<value_type, N>(*this).get(); }
-	
+
 	A0 a0;
 	A1 a1;
 	A2 a2;
@@ -9385,7 +9385,7 @@ struct tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10> {
 		{ return tuple_element<value_type, N>(*this).get(); }
 	template <int N> typename const_tuple_element<value_type, N>::const_reference get() const
 		{ return const_tuple_element<value_type, N>(*this).get(); }
-	
+
 	A0 a0;
 	A1 a1;
 	A2 a2;
@@ -9410,7 +9410,7 @@ struct tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11> {
 		{ return tuple_element<value_type, N>(*this).get(); }
 	template <int N> typename const_tuple_element<value_type, N>::const_reference get() const
 		{ return const_tuple_element<value_type, N>(*this).get(); }
-	
+
 	A0 a0;
 	A1 a1;
 	A2 a2;
@@ -9436,7 +9436,7 @@ struct tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12> {
 		{ return tuple_element<value_type, N>(*this).get(); }
 	template <int N> typename const_tuple_element<value_type, N>::const_reference get() const
 		{ return const_tuple_element<value_type, N>(*this).get(); }
-	
+
 	A0 a0;
 	A1 a1;
 	A2 a2;
@@ -9463,7 +9463,7 @@ struct tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13> {
 		{ return tuple_element<value_type, N>(*this).get(); }
 	template <int N> typename const_tuple_element<value_type, N>::const_reference get() const
 		{ return const_tuple_element<value_type, N>(*this).get(); }
-	
+
 	A0 a0;
 	A1 a1;
 	A2 a2;
@@ -9491,7 +9491,7 @@ struct tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14> {
 		{ return tuple_element<value_type, N>(*this).get(); }
 	template <int N> typename const_tuple_element<value_type, N>::const_reference get() const
 		{ return const_tuple_element<value_type, N>(*this).get(); }
-	
+
 	A0 a0;
 	A1 a1;
 	A2 a2;
@@ -9520,7 +9520,7 @@ struct tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A1
 		{ return tuple_element<value_type, N>(*this).get(); }
 	template <int N> typename const_tuple_element<value_type, N>::const_reference get() const
 		{ return const_tuple_element<value_type, N>(*this).get(); }
-	
+
 	A0 a0;
 	A1 a1;
 	A2 a2;
@@ -9550,7 +9550,7 @@ struct tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A1
 		{ return tuple_element<value_type, N>(*this).get(); }
 	template <int N> typename const_tuple_element<value_type, N>::const_reference get() const
 		{ return const_tuple_element<value_type, N>(*this).get(); }
-	
+
 	A0 a0;
 	A1 a1;
 	A2 a2;
@@ -9581,7 +9581,7 @@ struct tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A1
 		{ return tuple_element<value_type, N>(*this).get(); }
 	template <int N> typename const_tuple_element<value_type, N>::const_reference get() const
 		{ return const_tuple_element<value_type, N>(*this).get(); }
-	
+
 	A0 a0;
 	A1 a1;
 	A2 a2;
@@ -9613,7 +9613,7 @@ struct tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A1
 		{ return tuple_element<value_type, N>(*this).get(); }
 	template <int N> typename const_tuple_element<value_type, N>::const_reference get() const
 		{ return const_tuple_element<value_type, N>(*this).get(); }
-	
+
 	A0 a0;
 	A1 a1;
 	A2 a2;
@@ -9646,7 +9646,7 @@ struct tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A1
 		{ return tuple_element<value_type, N>(*this).get(); }
 	template <int N> typename const_tuple_element<value_type, N>::const_reference get() const
 		{ return const_tuple_element<value_type, N>(*this).get(); }
-	
+
 	A0 a0;
 	A1 a1;
 	A2 a2;
@@ -9680,7 +9680,7 @@ struct tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A1
 		{ return tuple_element<value_type, N>(*this).get(); }
 	template <int N> typename const_tuple_element<value_type, N>::const_reference get() const
 		{ return const_tuple_element<value_type, N>(*this).get(); }
-	
+
 	A0 a0;
 	A1 a1;
 	A2 a2;
@@ -9715,7 +9715,7 @@ struct tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A1
 		{ return tuple_element<value_type, N>(*this).get(); }
 	template <int N> typename const_tuple_element<value_type, N>::const_reference get() const
 		{ return const_tuple_element<value_type, N>(*this).get(); }
-	
+
 	A0 a0;
 	A1 a1;
 	A2 a2;
@@ -9751,7 +9751,7 @@ struct tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A1
 		{ return tuple_element<value_type, N>(*this).get(); }
 	template <int N> typename const_tuple_element<value_type, N>::const_reference get() const
 		{ return const_tuple_element<value_type, N>(*this).get(); }
-	
+
 	A0 a0;
 	A1 a1;
 	A2 a2;
@@ -9788,7 +9788,7 @@ struct tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A1
 		{ return tuple_element<value_type, N>(*this).get(); }
 	template <int N> typename const_tuple_element<value_type, N>::const_reference get() const
 		{ return const_tuple_element<value_type, N>(*this).get(); }
-	
+
 	A0 a0;
 	A1 a1;
 	A2 a2;
@@ -9826,7 +9826,7 @@ struct tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A1
 		{ return tuple_element<value_type, N>(*this).get(); }
 	template <int N> typename const_tuple_element<value_type, N>::const_reference get() const
 		{ return const_tuple_element<value_type, N>(*this).get(); }
-	
+
 	A0 a0;
 	A1 a1;
 	A2 a2;
@@ -9865,7 +9865,7 @@ struct tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A1
 		{ return tuple_element<value_type, N>(*this).get(); }
 	template <int N> typename const_tuple_element<value_type, N>::const_reference get() const
 		{ return const_tuple_element<value_type, N>(*this).get(); }
-	
+
 	A0 a0;
 	A1 a1;
 	A2 a2;
@@ -9905,7 +9905,7 @@ struct tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A1
 		{ return tuple_element<value_type, N>(*this).get(); }
 	template <int N> typename const_tuple_element<value_type, N>::const_reference get() const
 		{ return const_tuple_element<value_type, N>(*this).get(); }
-	
+
 	A0 a0;
 	A1 a1;
 	A2 a2;
@@ -9946,7 +9946,7 @@ struct tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A1
 		{ return tuple_element<value_type, N>(*this).get(); }
 	template <int N> typename const_tuple_element<value_type, N>::const_reference get() const
 		{ return const_tuple_element<value_type, N>(*this).get(); }
-	
+
 	A0 a0;
 	A1 a1;
 	A2 a2;
@@ -9988,7 +9988,7 @@ struct tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A1
 		{ return tuple_element<value_type, N>(*this).get(); }
 	template <int N> typename const_tuple_element<value_type, N>::const_reference get() const
 		{ return const_tuple_element<value_type, N>(*this).get(); }
-	
+
 	A0 a0;
 	A1 a1;
 	A2 a2;
@@ -10031,7 +10031,7 @@ struct tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A1
 		{ return tuple_element<value_type, N>(*this).get(); }
 	template <int N> typename const_tuple_element<value_type, N>::const_reference get() const
 		{ return const_tuple_element<value_type, N>(*this).get(); }
-	
+
 	A0 a0;
 	A1 a1;
 	A2 a2;
@@ -10075,7 +10075,7 @@ struct tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A1
 		{ return tuple_element<value_type, N>(*this).get(); }
 	template <int N> typename const_tuple_element<value_type, N>::const_reference get() const
 		{ return const_tuple_element<value_type, N>(*this).get(); }
-	
+
 	A0 a0;
 	A1 a1;
 	A2 a2;
@@ -10120,7 +10120,7 @@ struct tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A1
 		{ return tuple_element<value_type, N>(*this).get(); }
 	template <int N> typename const_tuple_element<value_type, N>::const_reference get() const
 		{ return const_tuple_element<value_type, N>(*this).get(); }
-	
+
 	A0 a0;
 	A1 a1;
 	A2 a2;
@@ -10358,7 +10358,7 @@ tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16,
 
 
 inline type::tuple<>& operator>> (
-		object o,
+		const object& o,
 		type::tuple<>& v) {
 	if(o.type != type::ARRAY) { throw type_error(); }
 	return v;
@@ -10366,22 +10366,22 @@ inline type::tuple<>& operator>> (
 
 template <typename A0>
 type::tuple<A0>& operator>> (
-		object o,
+		const object& o,
 		type::tuple<A0>& v) {
 	if(o.type != type::ARRAY) { throw type_error(); }
 	if(o.via.array.size < 1) { throw type_error(); }
-	
+
 	o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(&v.template get<0>());
 	return v;
 }
 
 template <typename A0, typename A1>
 type::tuple<A0, A1>& operator>> (
-		object o,
+		const object& o,
 		type::tuple<A0, A1>& v) {
 	if(o.type != type::ARRAY) { throw type_error(); }
 	if(o.via.array.size < 2) { throw type_error(); }
-	
+
 	o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(&v.template get<0>());
 	o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(&v.template get<1>());
 	return v;
@@ -10389,11 +10389,11 @@ type::tuple<A0, A1>& operator>> (
 
 template <typename A0, typename A1, typename A2>
 type::tuple<A0, A1, A2>& operator>> (
-		object o,
+		const object& o,
 		type::tuple<A0, A1, A2>& v) {
 	if(o.type != type::ARRAY) { throw type_error(); }
 	if(o.via.array.size < 3) { throw type_error(); }
-	
+
 	o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(&v.template get<0>());
 	o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(&v.template get<1>());
 	o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(&v.template get<2>());
@@ -10402,11 +10402,11 @@ type::tuple<A0, A1, A2>& operator>> (
 
 template <typename A0, typename A1, typename A2, typename A3>
 type::tuple<A0, A1, A2, A3>& operator>> (
-		object o,
+		const object& o,
 		type::tuple<A0, A1, A2, A3>& v) {
 	if(o.type != type::ARRAY) { throw type_error(); }
 	if(o.via.array.size < 4) { throw type_error(); }
-	
+
 	o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(&v.template get<0>());
 	o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(&v.template get<1>());
 	o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(&v.template get<2>());
@@ -10416,11 +10416,11 @@ type::tuple<A0, A1, A2, A3>& operator>> (
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4>
 type::tuple<A0, A1, A2, A3, A4>& operator>> (
-		object o,
+		const object& o,
 		type::tuple<A0, A1, A2, A3, A4>& v) {
 	if(o.type != type::ARRAY) { throw type_error(); }
 	if(o.via.array.size < 5) { throw type_error(); }
-	
+
 	o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(&v.template get<0>());
 	o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(&v.template get<1>());
 	o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(&v.template get<2>());
@@ -10431,11 +10431,11 @@ type::tuple<A0, A1, A2, A3, A4>& operator>> (
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5>
 type::tuple<A0, A1, A2, A3, A4, A5>& operator>> (
-		object o,
+		const object& o,
 		type::tuple<A0, A1, A2, A3, A4, A5>& v) {
 	if(o.type != type::ARRAY) { throw type_error(); }
 	if(o.via.array.size < 6) { throw type_error(); }
-	
+
 	o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(&v.template get<0>());
 	o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(&v.template get<1>());
 	o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(&v.template get<2>());
@@ -10447,11 +10447,11 @@ type::tuple<A0, A1, A2, A3, A4, A5>& operator>> (
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6>
 type::tuple<A0, A1, A2, A3, A4, A5, A6>& operator>> (
-		object o,
+		const object& o,
 		type::tuple<A0, A1, A2, A3, A4, A5, A6>& v) {
 	if(o.type != type::ARRAY) { throw type_error(); }
 	if(o.via.array.size < 7) { throw type_error(); }
-	
+
 	o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(&v.template get<0>());
 	o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(&v.template get<1>());
 	o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(&v.template get<2>());
@@ -10464,11 +10464,11 @@ type::tuple<A0, A1, A2, A3, A4, A5, A6>& operator>> (
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7>
 type::tuple<A0, A1, A2, A3, A4, A5, A6, A7>& operator>> (
-		object o,
+		const object& o,
 		type::tuple<A0, A1, A2, A3, A4, A5, A6, A7>& v) {
 	if(o.type != type::ARRAY) { throw type_error(); }
 	if(o.via.array.size < 8) { throw type_error(); }
-	
+
 	o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(&v.template get<0>());
 	o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(&v.template get<1>());
 	o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(&v.template get<2>());
@@ -10482,11 +10482,11 @@ type::tuple<A0, A1, A2, A3, A4, A5, A6, A7>& operator>> (
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8>
 type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8>& operator>> (
-		object o,
+		const object& o,
 		type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8>& v) {
 	if(o.type != type::ARRAY) { throw type_error(); }
 	if(o.via.array.size < 9) { throw type_error(); }
-	
+
 	o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(&v.template get<0>());
 	o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(&v.template get<1>());
 	o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(&v.template get<2>());
@@ -10501,11 +10501,11 @@ type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8>& operator>> (
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9>
 type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9>& operator>> (
-		object o,
+		const object& o,
 		type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9>& v) {
 	if(o.type != type::ARRAY) { throw type_error(); }
 	if(o.via.array.size < 10) { throw type_error(); }
-	
+
 	o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(&v.template get<0>());
 	o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(&v.template get<1>());
 	o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(&v.template get<2>());
@@ -10521,11 +10521,11 @@ type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9>& operator>> (
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10>
 type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10>& operator>> (
-		object o,
+		const object& o,
 		type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10>& v) {
 	if(o.type != type::ARRAY) { throw type_error(); }
 	if(o.via.array.size < 11) { throw type_error(); }
-	
+
 	o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(&v.template get<0>());
 	o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(&v.template get<1>());
 	o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(&v.template get<2>());
@@ -10542,11 +10542,11 @@ type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10>& operator>> (
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11>
 type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11>& operator>> (
-		object o,
+		const object& o,
 		type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11>& v) {
 	if(o.type != type::ARRAY) { throw type_error(); }
 	if(o.via.array.size < 12) { throw type_error(); }
-	
+
 	o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(&v.template get<0>());
 	o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(&v.template get<1>());
 	o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(&v.template get<2>());
@@ -10564,11 +10564,11 @@ type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11>& operator>> (
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12>
 type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12>& operator>> (
-		object o,
+		const object& o,
 		type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12>& v) {
 	if(o.type != type::ARRAY) { throw type_error(); }
 	if(o.via.array.size < 13) { throw type_error(); }
-	
+
 	o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(&v.template get<0>());
 	o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(&v.template get<1>());
 	o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(&v.template get<2>());
@@ -10587,11 +10587,11 @@ type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12>& operator>> (
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13>
 type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13>& operator>> (
-		object o,
+		const object& o,
 		type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13>& v) {
 	if(o.type != type::ARRAY) { throw type_error(); }
 	if(o.via.array.size < 14) { throw type_error(); }
-	
+
 	o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(&v.template get<0>());
 	o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(&v.template get<1>());
 	o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(&v.template get<2>());
@@ -10611,11 +10611,11 @@ type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13>& operato
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14>
 type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14>& operator>> (
-		object o,
+		const object& o,
 		type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14>& v) {
 	if(o.type != type::ARRAY) { throw type_error(); }
 	if(o.via.array.size < 15) { throw type_error(); }
-	
+
 	o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(&v.template get<0>());
 	o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(&v.template get<1>());
 	o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(&v.template get<2>());
@@ -10636,11 +10636,11 @@ type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14>& op
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15>
 type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15>& operator>> (
-		object o,
+		const object& o,
 		type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15>& v) {
 	if(o.type != type::ARRAY) { throw type_error(); }
 	if(o.via.array.size < 16) { throw type_error(); }
-	
+
 	o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(&v.template get<0>());
 	o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(&v.template get<1>());
 	o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(&v.template get<2>());
@@ -10662,11 +10662,11 @@ type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16>
 type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16>& operator>> (
-		object o,
+		const object& o,
 		type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16>& v) {
 	if(o.type != type::ARRAY) { throw type_error(); }
 	if(o.via.array.size < 17) { throw type_error(); }
-	
+
 	o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(&v.template get<0>());
 	o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(&v.template get<1>());
 	o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(&v.template get<2>());
@@ -10689,11 +10689,11 @@ type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17>
 type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17>& operator>> (
-		object o,
+		const object& o,
 		type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17>& v) {
 	if(o.type != type::ARRAY) { throw type_error(); }
 	if(o.via.array.size < 18) { throw type_error(); }
-	
+
 	o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(&v.template get<0>());
 	o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(&v.template get<1>());
 	o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(&v.template get<2>());
@@ -10717,11 +10717,11 @@ type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18>
 type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18>& operator>> (
-		object o,
+		const object& o,
 		type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18>& v) {
 	if(o.type != type::ARRAY) { throw type_error(); }
 	if(o.via.array.size < 19) { throw type_error(); }
-	
+
 	o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(&v.template get<0>());
 	o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(&v.template get<1>());
 	o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(&v.template get<2>());
@@ -10746,11 +10746,11 @@ type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19>
 type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19>& operator>> (
-		object o,
+		const object& o,
 		type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19>& v) {
 	if(o.type != type::ARRAY) { throw type_error(); }
 	if(o.via.array.size < 20) { throw type_error(); }
-	
+
 	o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(&v.template get<0>());
 	o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(&v.template get<1>());
 	o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(&v.template get<2>());
@@ -10776,11 +10776,11 @@ type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20>
 type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20>& operator>> (
-		object o,
+		const object& o,
 		type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20>& v) {
 	if(o.type != type::ARRAY) { throw type_error(); }
 	if(o.via.array.size < 21) { throw type_error(); }
-	
+
 	o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(&v.template get<0>());
 	o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(&v.template get<1>());
 	o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(&v.template get<2>());
@@ -10807,11 +10807,11 @@ type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21>
 type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21>& operator>> (
-		object o,
+		const object& o,
 		type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21>& v) {
 	if(o.type != type::ARRAY) { throw type_error(); }
 	if(o.via.array.size < 22) { throw type_error(); }
-	
+
 	o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(&v.template get<0>());
 	o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(&v.template get<1>());
 	o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(&v.template get<2>());
@@ -10839,11 +10839,11 @@ type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22>
 type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22>& operator>> (
-		object o,
+		const object& o,
 		type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22>& v) {
 	if(o.type != type::ARRAY) { throw type_error(); }
 	if(o.via.array.size < 23) { throw type_error(); }
-	
+
 	o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(&v.template get<0>());
 	o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(&v.template get<1>());
 	o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(&v.template get<2>());
@@ -10872,11 +10872,11 @@ type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23>
 type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23>& operator>> (
-		object o,
+		const object& o,
 		type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23>& v) {
 	if(o.type != type::ARRAY) { throw type_error(); }
 	if(o.via.array.size < 24) { throw type_error(); }
-	
+
 	o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(&v.template get<0>());
 	o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(&v.template get<1>());
 	o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(&v.template get<2>());
@@ -10906,11 +10906,11 @@ type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24>
 type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24>& operator>> (
-		object o,
+		const object& o,
 		type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24>& v) {
 	if(o.type != type::ARRAY) { throw type_error(); }
 	if(o.via.array.size < 25) { throw type_error(); }
-	
+
 	o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(&v.template get<0>());
 	o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(&v.template get<1>());
 	o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(&v.template get<2>());
@@ -10941,11 +10941,11 @@ type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25>
 type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25>& operator>> (
-		object o,
+		const object& o,
 		type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25>& v) {
 	if(o.type != type::ARRAY) { throw type_error(); }
 	if(o.via.array.size < 26) { throw type_error(); }
-	
+
 	o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(&v.template get<0>());
 	o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(&v.template get<1>());
 	o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(&v.template get<2>());
@@ -10977,11 +10977,11 @@ type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25, typename A26>
 type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26>& operator>> (
-		object o,
+		const object& o,
 		type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26>& v) {
 	if(o.type != type::ARRAY) { throw type_error(); }
 	if(o.via.array.size < 27) { throw type_error(); }
-	
+
 	o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(&v.template get<0>());
 	o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(&v.template get<1>());
 	o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(&v.template get<2>());
@@ -11014,11 +11014,11 @@ type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25, typename A26, typename A27>
 type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27>& operator>> (
-		object o,
+		const object& o,
 		type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27>& v) {
 	if(o.type != type::ARRAY) { throw type_error(); }
 	if(o.via.array.size < 28) { throw type_error(); }
-	
+
 	o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(&v.template get<0>());
 	o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(&v.template get<1>());
 	o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(&v.template get<2>());
@@ -11052,11 +11052,11 @@ type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25, typename A26, typename A27, typename A28>
 type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28>& operator>> (
-		object o,
+		const object& o,
 		type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28>& v) {
 	if(o.type != type::ARRAY) { throw type_error(); }
 	if(o.via.array.size < 29) { throw type_error(); }
-	
+
 	o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(&v.template get<0>());
 	o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(&v.template get<1>());
 	o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(&v.template get<2>());
@@ -11091,11 +11091,11 @@ type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25, typename A26, typename A27, typename A28, typename A29>
 type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29>& operator>> (
-		object o,
+		const object& o,
 		type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29>& v) {
 	if(o.type != type::ARRAY) { throw type_error(); }
 	if(o.via.array.size < 30) { throw type_error(); }
-	
+
 	o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(&v.template get<0>());
 	o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(&v.template get<1>());
 	o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(&v.template get<2>());
@@ -11131,11 +11131,11 @@ type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25, typename A26, typename A27, typename A28, typename A29, typename A30>
 type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30>& operator>> (
-		object o,
+		const object& o,
 		type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30>& v) {
 	if(o.type != type::ARRAY) { throw type_error(); }
 	if(o.via.array.size < 31) { throw type_error(); }
-	
+
 	o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(&v.template get<0>());
 	o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(&v.template get<1>());
 	o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(&v.template get<2>());
@@ -11172,11 +11172,11 @@ type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25, typename A26, typename A27, typename A28, typename A29, typename A30, typename A31>
 type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30, A31>& operator>> (
-		object o,
+		const object& o,
 		type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30, A31>& v) {
 	if(o.type != type::ARRAY) { throw type_error(); }
 	if(o.via.array.size < 32) { throw type_error(); }
-	
+
 	o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(&v.template get<0>());
 	o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(&v.template get<1>());
 	o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(&v.template get<2>());
@@ -11226,7 +11226,7 @@ const packer<Stream>& operator<< (
 		packer<Stream>& o,
 		const type::tuple<A0>& v) {
 	o.pack_array(1);
-	
+
 	o.pack(v.template get<0>());
 	return o;
 }
@@ -11236,7 +11236,7 @@ const packer<Stream>& operator<< (
 		packer<Stream>& o,
 		const type::tuple<A0, A1>& v) {
 	o.pack_array(2);
-	
+
 	o.pack(v.template get<0>());
 	o.pack(v.template get<1>());
 	return o;
@@ -11247,7 +11247,7 @@ const packer<Stream>& operator<< (
 		packer<Stream>& o,
 		const type::tuple<A0, A1, A2>& v) {
 	o.pack_array(3);
-	
+
 	o.pack(v.template get<0>());
 	o.pack(v.template get<1>());
 	o.pack(v.template get<2>());
@@ -11259,7 +11259,7 @@ const packer<Stream>& operator<< (
 		packer<Stream>& o,
 		const type::tuple<A0, A1, A2, A3>& v) {
 	o.pack_array(4);
-	
+
 	o.pack(v.template get<0>());
 	o.pack(v.template get<1>());
 	o.pack(v.template get<2>());
@@ -11272,7 +11272,7 @@ const packer<Stream>& operator<< (
 		packer<Stream>& o,
 		const type::tuple<A0, A1, A2, A3, A4>& v) {
 	o.pack_array(5);
-	
+
 	o.pack(v.template get<0>());
 	o.pack(v.template get<1>());
 	o.pack(v.template get<2>());
@@ -11286,7 +11286,7 @@ const packer<Stream>& operator<< (
 		packer<Stream>& o,
 		const type::tuple<A0, A1, A2, A3, A4, A5>& v) {
 	o.pack_array(6);
-	
+
 	o.pack(v.template get<0>());
 	o.pack(v.template get<1>());
 	o.pack(v.template get<2>());
@@ -11301,7 +11301,7 @@ const packer<Stream>& operator<< (
 		packer<Stream>& o,
 		const type::tuple<A0, A1, A2, A3, A4, A5, A6>& v) {
 	o.pack_array(7);
-	
+
 	o.pack(v.template get<0>());
 	o.pack(v.template get<1>());
 	o.pack(v.template get<2>());
@@ -11317,7 +11317,7 @@ const packer<Stream>& operator<< (
 		packer<Stream>& o,
 		const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7>& v) {
 	o.pack_array(8);
-	
+
 	o.pack(v.template get<0>());
 	o.pack(v.template get<1>());
 	o.pack(v.template get<2>());
@@ -11334,7 +11334,7 @@ const packer<Stream>& operator<< (
 		packer<Stream>& o,
 		const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8>& v) {
 	o.pack_array(9);
-	
+
 	o.pack(v.template get<0>());
 	o.pack(v.template get<1>());
 	o.pack(v.template get<2>());
@@ -11352,7 +11352,7 @@ const packer<Stream>& operator<< (
 		packer<Stream>& o,
 		const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9>& v) {
 	o.pack_array(10);
-	
+
 	o.pack(v.template get<0>());
 	o.pack(v.template get<1>());
 	o.pack(v.template get<2>());
@@ -11371,7 +11371,7 @@ const packer<Stream>& operator<< (
 		packer<Stream>& o,
 		const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10>& v) {
 	o.pack_array(11);
-	
+
 	o.pack(v.template get<0>());
 	o.pack(v.template get<1>());
 	o.pack(v.template get<2>());
@@ -11391,7 +11391,7 @@ const packer<Stream>& operator<< (
 		packer<Stream>& o,
 		const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11>& v) {
 	o.pack_array(12);
-	
+
 	o.pack(v.template get<0>());
 	o.pack(v.template get<1>());
 	o.pack(v.template get<2>());
@@ -11412,7 +11412,7 @@ const packer<Stream>& operator<< (
 		packer<Stream>& o,
 		const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12>& v) {
 	o.pack_array(13);
-	
+
 	o.pack(v.template get<0>());
 	o.pack(v.template get<1>());
 	o.pack(v.template get<2>());
@@ -11434,7 +11434,7 @@ const packer<Stream>& operator<< (
 		packer<Stream>& o,
 		const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13>& v) {
 	o.pack_array(14);
-	
+
 	o.pack(v.template get<0>());
 	o.pack(v.template get<1>());
 	o.pack(v.template get<2>());
@@ -11457,7 +11457,7 @@ const packer<Stream>& operator<< (
 		packer<Stream>& o,
 		const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14>& v) {
 	o.pack_array(15);
-	
+
 	o.pack(v.template get<0>());
 	o.pack(v.template get<1>());
 	o.pack(v.template get<2>());
@@ -11481,7 +11481,7 @@ const packer<Stream>& operator<< (
 		packer<Stream>& o,
 		const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15>& v) {
 	o.pack_array(16);
-	
+
 	o.pack(v.template get<0>());
 	o.pack(v.template get<1>());
 	o.pack(v.template get<2>());
@@ -11506,7 +11506,7 @@ const packer<Stream>& operator<< (
 		packer<Stream>& o,
 		const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16>& v) {
 	o.pack_array(17);
-	
+
 	o.pack(v.template get<0>());
 	o.pack(v.template get<1>());
 	o.pack(v.template get<2>());
@@ -11532,7 +11532,7 @@ const packer<Stream>& operator<< (
 		packer<Stream>& o,
 		const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17>& v) {
 	o.pack_array(18);
-	
+
 	o.pack(v.template get<0>());
 	o.pack(v.template get<1>());
 	o.pack(v.template get<2>());
@@ -11559,7 +11559,7 @@ const packer<Stream>& operator<< (
 		packer<Stream>& o,
 		const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18>& v) {
 	o.pack_array(19);
-	
+
 	o.pack(v.template get<0>());
 	o.pack(v.template get<1>());
 	o.pack(v.template get<2>());
@@ -11587,7 +11587,7 @@ const packer<Stream>& operator<< (
 		packer<Stream>& o,
 		const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19>& v) {
 	o.pack_array(20);
-	
+
 	o.pack(v.template get<0>());
 	o.pack(v.template get<1>());
 	o.pack(v.template get<2>());
@@ -11616,7 +11616,7 @@ const packer<Stream>& operator<< (
 		packer<Stream>& o,
 		const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20>& v) {
 	o.pack_array(21);
-	
+
 	o.pack(v.template get<0>());
 	o.pack(v.template get<1>());
 	o.pack(v.template get<2>());
@@ -11646,7 +11646,7 @@ const packer<Stream>& operator<< (
 		packer<Stream>& o,
 		const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21>& v) {
 	o.pack_array(22);
-	
+
 	o.pack(v.template get<0>());
 	o.pack(v.template get<1>());
 	o.pack(v.template get<2>());
@@ -11677,7 +11677,7 @@ const packer<Stream>& operator<< (
 		packer<Stream>& o,
 		const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22>& v) {
 	o.pack_array(23);
-	
+
 	o.pack(v.template get<0>());
 	o.pack(v.template get<1>());
 	o.pack(v.template get<2>());
@@ -11709,7 +11709,7 @@ const packer<Stream>& operator<< (
 		packer<Stream>& o,
 		const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23>& v) {
 	o.pack_array(24);
-	
+
 	o.pack(v.template get<0>());
 	o.pack(v.template get<1>());
 	o.pack(v.template get<2>());
@@ -11742,7 +11742,7 @@ const packer<Stream>& operator<< (
 		packer<Stream>& o,
 		const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24>& v) {
 	o.pack_array(25);
-	
+
 	o.pack(v.template get<0>());
 	o.pack(v.template get<1>());
 	o.pack(v.template get<2>());
@@ -11776,7 +11776,7 @@ const packer<Stream>& operator<< (
 		packer<Stream>& o,
 		const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25>& v) {
 	o.pack_array(26);
-	
+
 	o.pack(v.template get<0>());
 	o.pack(v.template get<1>());
 	o.pack(v.template get<2>());
@@ -11811,7 +11811,7 @@ const packer<Stream>& operator<< (
 		packer<Stream>& o,
 		const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26>& v) {
 	o.pack_array(27);
-	
+
 	o.pack(v.template get<0>());
 	o.pack(v.template get<1>());
 	o.pack(v.template get<2>());
@@ -11847,7 +11847,7 @@ const packer<Stream>& operator<< (
 		packer<Stream>& o,
 		const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27>& v) {
 	o.pack_array(28);
-	
+
 	o.pack(v.template get<0>());
 	o.pack(v.template get<1>());
 	o.pack(v.template get<2>());
@@ -11884,7 +11884,7 @@ const packer<Stream>& operator<< (
 		packer<Stream>& o,
 		const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28>& v) {
 	o.pack_array(29);
-	
+
 	o.pack(v.template get<0>());
 	o.pack(v.template get<1>());
 	o.pack(v.template get<2>());
@@ -11922,7 +11922,7 @@ const packer<Stream>& operator<< (
 		packer<Stream>& o,
 		const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29>& v) {
 	o.pack_array(30);
-	
+
 	o.pack(v.template get<0>());
 	o.pack(v.template get<1>());
 	o.pack(v.template get<2>());
@@ -11961,7 +11961,7 @@ const packer<Stream>& operator<< (
 		packer<Stream>& o,
 		const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30>& v) {
 	o.pack_array(31);
-	
+
 	o.pack(v.template get<0>());
 	o.pack(v.template get<1>());
 	o.pack(v.template get<2>());
@@ -12001,7 +12001,7 @@ const packer<Stream>& operator<< (
 		packer<Stream>& o,
 		const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30, A31>& v) {
 	o.pack_array(32);
-	
+
 	o.pack(v.template get<0>());
 	o.pack(v.template get<1>());
 	o.pack(v.template get<2>());
@@ -12053,7 +12053,7 @@ inline void operator<< (
 	o.type = type::ARRAY;
 	o.via.array.ptr = (object*)o.zone->malloc(sizeof(object)*1);
 	o.via.array.size = 1;
-	
+
 	o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
 }
 
@@ -12064,7 +12064,7 @@ inline void operator<< (
 	o.type = type::ARRAY;
 	o.via.array.ptr = (object*)o.zone->malloc(sizeof(object)*2);
 	o.via.array.size = 2;
-	
+
 	o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
 	o.via.array.ptr[1] = object(v.template get<1>(), o.zone);
 }
@@ -12076,7 +12076,7 @@ inline void operator<< (
 	o.type = type::ARRAY;
 	o.via.array.ptr = (object*)o.zone->malloc(sizeof(object)*3);
 	o.via.array.size = 3;
-	
+
 	o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
 	o.via.array.ptr[1] = object(v.template get<1>(), o.zone);
 	o.via.array.ptr[2] = object(v.template get<2>(), o.zone);
@@ -12089,7 +12089,7 @@ inline void operator<< (
 	o.type = type::ARRAY;
 	o.via.array.ptr = (object*)o.zone->malloc(sizeof(object)*4);
 	o.via.array.size = 4;
-	
+
 	o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
 	o.via.array.ptr[1] = object(v.template get<1>(), o.zone);
 	o.via.array.ptr[2] = object(v.template get<2>(), o.zone);
@@ -12103,7 +12103,7 @@ inline void operator<< (
 	o.type = type::ARRAY;
 	o.via.array.ptr = (object*)o.zone->malloc(sizeof(object)*5);
 	o.via.array.size = 5;
-	
+
 	o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
 	o.via.array.ptr[1] = object(v.template get<1>(), o.zone);
 	o.via.array.ptr[2] = object(v.template get<2>(), o.zone);
@@ -12118,7 +12118,7 @@ inline void operator<< (
 	o.type = type::ARRAY;
 	o.via.array.ptr = (object*)o.zone->malloc(sizeof(object)*6);
 	o.via.array.size = 6;
-	
+
 	o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
 	o.via.array.ptr[1] = object(v.template get<1>(), o.zone);
 	o.via.array.ptr[2] = object(v.template get<2>(), o.zone);
@@ -12134,7 +12134,7 @@ inline void operator<< (
 	o.type = type::ARRAY;
 	o.via.array.ptr = (object*)o.zone->malloc(sizeof(object)*7);
 	o.via.array.size = 7;
-	
+
 	o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
 	o.via.array.ptr[1] = object(v.template get<1>(), o.zone);
 	o.via.array.ptr[2] = object(v.template get<2>(), o.zone);
@@ -12151,7 +12151,7 @@ inline void operator<< (
 	o.type = type::ARRAY;
 	o.via.array.ptr = (object*)o.zone->malloc(sizeof(object)*8);
 	o.via.array.size = 8;
-	
+
 	o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
 	o.via.array.ptr[1] = object(v.template get<1>(), o.zone);
 	o.via.array.ptr[2] = object(v.template get<2>(), o.zone);
@@ -12169,7 +12169,7 @@ inline void operator<< (
 	o.type = type::ARRAY;
 	o.via.array.ptr = (object*)o.zone->malloc(sizeof(object)*9);
 	o.via.array.size = 9;
-	
+
 	o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
 	o.via.array.ptr[1] = object(v.template get<1>(), o.zone);
 	o.via.array.ptr[2] = object(v.template get<2>(), o.zone);
@@ -12188,7 +12188,7 @@ inline void operator<< (
 	o.type = type::ARRAY;
 	o.via.array.ptr = (object*)o.zone->malloc(sizeof(object)*10);
 	o.via.array.size = 10;
-	
+
 	o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
 	o.via.array.ptr[1] = object(v.template get<1>(), o.zone);
 	o.via.array.ptr[2] = object(v.template get<2>(), o.zone);
@@ -12208,7 +12208,7 @@ inline void operator<< (
 	o.type = type::ARRAY;
 	o.via.array.ptr = (object*)o.zone->malloc(sizeof(object)*11);
 	o.via.array.size = 11;
-	
+
 	o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
 	o.via.array.ptr[1] = object(v.template get<1>(), o.zone);
 	o.via.array.ptr[2] = object(v.template get<2>(), o.zone);
@@ -12229,7 +12229,7 @@ inline void operator<< (
 	o.type = type::ARRAY;
 	o.via.array.ptr = (object*)o.zone->malloc(sizeof(object)*12);
 	o.via.array.size = 12;
-	
+
 	o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
 	o.via.array.ptr[1] = object(v.template get<1>(), o.zone);
 	o.via.array.ptr[2] = object(v.template get<2>(), o.zone);
@@ -12251,7 +12251,7 @@ inline void operator<< (
 	o.type = type::ARRAY;
 	o.via.array.ptr = (object*)o.zone->malloc(sizeof(object)*13);
 	o.via.array.size = 13;
-	
+
 	o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
 	o.via.array.ptr[1] = object(v.template get<1>(), o.zone);
 	o.via.array.ptr[2] = object(v.template get<2>(), o.zone);
@@ -12274,7 +12274,7 @@ inline void operator<< (
 	o.type = type::ARRAY;
 	o.via.array.ptr = (object*)o.zone->malloc(sizeof(object)*14);
 	o.via.array.size = 14;
-	
+
 	o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
 	o.via.array.ptr[1] = object(v.template get<1>(), o.zone);
 	o.via.array.ptr[2] = object(v.template get<2>(), o.zone);
@@ -12298,7 +12298,7 @@ inline void operator<< (
 	o.type = type::ARRAY;
 	o.via.array.ptr = (object*)o.zone->malloc(sizeof(object)*15);
 	o.via.array.size = 15;
-	
+
 	o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
 	o.via.array.ptr[1] = object(v.template get<1>(), o.zone);
 	o.via.array.ptr[2] = object(v.template get<2>(), o.zone);
@@ -12323,7 +12323,7 @@ inline void operator<< (
 	o.type = type::ARRAY;
 	o.via.array.ptr = (object*)o.zone->malloc(sizeof(object)*16);
 	o.via.array.size = 16;
-	
+
 	o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
 	o.via.array.ptr[1] = object(v.template get<1>(), o.zone);
 	o.via.array.ptr[2] = object(v.template get<2>(), o.zone);
@@ -12349,7 +12349,7 @@ inline void operator<< (
 	o.type = type::ARRAY;
 	o.via.array.ptr = (object*)o.zone->malloc(sizeof(object)*17);
 	o.via.array.size = 17;
-	
+
 	o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
 	o.via.array.ptr[1] = object(v.template get<1>(), o.zone);
 	o.via.array.ptr[2] = object(v.template get<2>(), o.zone);
@@ -12376,7 +12376,7 @@ inline void operator<< (
 	o.type = type::ARRAY;
 	o.via.array.ptr = (object*)o.zone->malloc(sizeof(object)*18);
 	o.via.array.size = 18;
-	
+
 	o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
 	o.via.array.ptr[1] = object(v.template get<1>(), o.zone);
 	o.via.array.ptr[2] = object(v.template get<2>(), o.zone);
@@ -12404,7 +12404,7 @@ inline void operator<< (
 	o.type = type::ARRAY;
 	o.via.array.ptr = (object*)o.zone->malloc(sizeof(object)*19);
 	o.via.array.size = 19;
-	
+
 	o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
 	o.via.array.ptr[1] = object(v.template get<1>(), o.zone);
 	o.via.array.ptr[2] = object(v.template get<2>(), o.zone);
@@ -12433,7 +12433,7 @@ inline void operator<< (
 	o.type = type::ARRAY;
 	o.via.array.ptr = (object*)o.zone->malloc(sizeof(object)*20);
 	o.via.array.size = 20;
-	
+
 	o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
 	o.via.array.ptr[1] = object(v.template get<1>(), o.zone);
 	o.via.array.ptr[2] = object(v.template get<2>(), o.zone);
@@ -12463,7 +12463,7 @@ inline void operator<< (
 	o.type = type::ARRAY;
 	o.via.array.ptr = (object*)o.zone->malloc(sizeof(object)*21);
 	o.via.array.size = 21;
-	
+
 	o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
 	o.via.array.ptr[1] = object(v.template get<1>(), o.zone);
 	o.via.array.ptr[2] = object(v.template get<2>(), o.zone);
@@ -12494,7 +12494,7 @@ inline void operator<< (
 	o.type = type::ARRAY;
 	o.via.array.ptr = (object*)o.zone->malloc(sizeof(object)*22);
 	o.via.array.size = 22;
-	
+
 	o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
 	o.via.array.ptr[1] = object(v.template get<1>(), o.zone);
 	o.via.array.ptr[2] = object(v.template get<2>(), o.zone);
@@ -12526,7 +12526,7 @@ inline void operator<< (
 	o.type = type::ARRAY;
 	o.via.array.ptr = (object*)o.zone->malloc(sizeof(object)*23);
 	o.via.array.size = 23;
-	
+
 	o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
 	o.via.array.ptr[1] = object(v.template get<1>(), o.zone);
 	o.via.array.ptr[2] = object(v.template get<2>(), o.zone);
@@ -12559,7 +12559,7 @@ inline void operator<< (
 	o.type = type::ARRAY;
 	o.via.array.ptr = (object*)o.zone->malloc(sizeof(object)*24);
 	o.via.array.size = 24;
-	
+
 	o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
 	o.via.array.ptr[1] = object(v.template get<1>(), o.zone);
 	o.via.array.ptr[2] = object(v.template get<2>(), o.zone);
@@ -12593,7 +12593,7 @@ inline void operator<< (
 	o.type = type::ARRAY;
 	o.via.array.ptr = (object*)o.zone->malloc(sizeof(object)*25);
 	o.via.array.size = 25;
-	
+
 	o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
 	o.via.array.ptr[1] = object(v.template get<1>(), o.zone);
 	o.via.array.ptr[2] = object(v.template get<2>(), o.zone);
@@ -12628,7 +12628,7 @@ inline void operator<< (
 	o.type = type::ARRAY;
 	o.via.array.ptr = (object*)o.zone->malloc(sizeof(object)*26);
 	o.via.array.size = 26;
-	
+
 	o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
 	o.via.array.ptr[1] = object(v.template get<1>(), o.zone);
 	o.via.array.ptr[2] = object(v.template get<2>(), o.zone);
@@ -12664,7 +12664,7 @@ inline void operator<< (
 	o.type = type::ARRAY;
 	o.via.array.ptr = (object*)o.zone->malloc(sizeof(object)*27);
 	o.via.array.size = 27;
-	
+
 	o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
 	o.via.array.ptr[1] = object(v.template get<1>(), o.zone);
 	o.via.array.ptr[2] = object(v.template get<2>(), o.zone);
@@ -12701,7 +12701,7 @@ inline void operator<< (
 	o.type = type::ARRAY;
 	o.via.array.ptr = (object*)o.zone->malloc(sizeof(object)*28);
 	o.via.array.size = 28;
-	
+
 	o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
 	o.via.array.ptr[1] = object(v.template get<1>(), o.zone);
 	o.via.array.ptr[2] = object(v.template get<2>(), o.zone);
@@ -12739,7 +12739,7 @@ inline void operator<< (
 	o.type = type::ARRAY;
 	o.via.array.ptr = (object*)o.zone->malloc(sizeof(object)*29);
 	o.via.array.size = 29;
-	
+
 	o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
 	o.via.array.ptr[1] = object(v.template get<1>(), o.zone);
 	o.via.array.ptr[2] = object(v.template get<2>(), o.zone);
@@ -12778,7 +12778,7 @@ inline void operator<< (
 	o.type = type::ARRAY;
 	o.via.array.ptr = (object*)o.zone->malloc(sizeof(object)*30);
 	o.via.array.size = 30;
-	
+
 	o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
 	o.via.array.ptr[1] = object(v.template get<1>(), o.zone);
 	o.via.array.ptr[2] = object(v.template get<2>(), o.zone);
@@ -12818,7 +12818,7 @@ inline void operator<< (
 	o.type = type::ARRAY;
 	o.via.array.ptr = (object*)o.zone->malloc(sizeof(object)*31);
 	o.via.array.size = 31;
-	
+
 	o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
 	o.via.array.ptr[1] = object(v.template get<1>(), o.zone);
 	o.via.array.ptr[2] = object(v.template get<2>(), o.zone);
@@ -12859,7 +12859,7 @@ inline void operator<< (
 	o.type = type::ARRAY;
 	o.via.array.ptr = (object*)o.zone->malloc(sizeof(object)*32);
 	o.via.array.size = 32;
-	
+
 	o.via.array.ptr[0] = object(v.template get<0>(), o.zone);
 	o.via.array.ptr[1] = object(v.template get<1>(), o.zone);
 	o.via.array.ptr[2] = object(v.template get<2>(), o.zone);
@@ -12906,7 +12906,7 @@ inline void operator<< (
 //inline std::ostream& operator<< (std::ostream& o,
 //		const msgpack::type::tuple<A0>& v) {
 //	return o << "["
-//	
+//
 //	<< v.template get<0>()
 //	<< "]";
 //}
@@ -12915,7 +12915,7 @@ inline void operator<< (
 //inline std::ostream& operator<< (std::ostream& o,
 //		const msgpack::type::tuple<A0, A1>& v) {
 //	return o << "["
-//	
+//
 //	<< v.template get<0>()
 //	<< ", " << v.template get<1>()
 //	<< "]";
@@ -12925,7 +12925,7 @@ inline void operator<< (
 //inline std::ostream& operator<< (std::ostream& o,
 //		const msgpack::type::tuple<A0, A1, A2>& v) {
 //	return o << "["
-//	
+//
 //	<< v.template get<0>()
 //	<< ", " << v.template get<1>()
 //	<< ", " << v.template get<2>()
@@ -12936,7 +12936,7 @@ inline void operator<< (
 //inline std::ostream& operator<< (std::ostream& o,
 //		const msgpack::type::tuple<A0, A1, A2, A3>& v) {
 //	return o << "["
-//	
+//
 //	<< v.template get<0>()
 //	<< ", " << v.template get<1>()
 //	<< ", " << v.template get<2>()
@@ -12948,7 +12948,7 @@ inline void operator<< (
 //inline std::ostream& operator<< (std::ostream& o,
 //		const msgpack::type::tuple<A0, A1, A2, A3, A4>& v) {
 //	return o << "["
-//	
+//
 //	<< v.template get<0>()
 //	<< ", " << v.template get<1>()
 //	<< ", " << v.template get<2>()
@@ -12961,7 +12961,7 @@ inline void operator<< (
 //inline std::ostream& operator<< (std::ostream& o,
 //		const msgpack::type::tuple<A0, A1, A2, A3, A4, A5>& v) {
 //	return o << "["
-//	
+//
 //	<< v.template get<0>()
 //	<< ", " << v.template get<1>()
 //	<< ", " << v.template get<2>()
@@ -12975,7 +12975,7 @@ inline void operator<< (
 //inline std::ostream& operator<< (std::ostream& o,
 //		const msgpack::type::tuple<A0, A1, A2, A3, A4, A5, A6>& v) {
 //	return o << "["
-//	
+//
 //	<< v.template get<0>()
 //	<< ", " << v.template get<1>()
 //	<< ", " << v.template get<2>()
@@ -12990,7 +12990,7 @@ inline void operator<< (
 //inline std::ostream& operator<< (std::ostream& o,
 //		const msgpack::type::tuple<A0, A1, A2, A3, A4, A5, A6, A7>& v) {
 //	return o << "["
-//	
+//
 //	<< v.template get<0>()
 //	<< ", " << v.template get<1>()
 //	<< ", " << v.template get<2>()
@@ -13006,7 +13006,7 @@ inline void operator<< (
 //inline std::ostream& operator<< (std::ostream& o,
 //		const msgpack::type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8>& v) {
 //	return o << "["
-//	
+//
 //	<< v.template get<0>()
 //	<< ", " << v.template get<1>()
 //	<< ", " << v.template get<2>()
@@ -13023,7 +13023,7 @@ inline void operator<< (
 //inline std::ostream& operator<< (std::ostream& o,
 //		const msgpack::type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9>& v) {
 //	return o << "["
-//	
+//
 //	<< v.template get<0>()
 //	<< ", " << v.template get<1>()
 //	<< ", " << v.template get<2>()
@@ -13041,7 +13041,7 @@ inline void operator<< (
 //inline std::ostream& operator<< (std::ostream& o,
 //		const msgpack::type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10>& v) {
 //	return o << "["
-//	
+//
 //	<< v.template get<0>()
 //	<< ", " << v.template get<1>()
 //	<< ", " << v.template get<2>()
@@ -13060,7 +13060,7 @@ inline void operator<< (
 //inline std::ostream& operator<< (std::ostream& o,
 //		const msgpack::type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11>& v) {
 //	return o << "["
-//	
+//
 //	<< v.template get<0>()
 //	<< ", " << v.template get<1>()
 //	<< ", " << v.template get<2>()
@@ -13080,7 +13080,7 @@ inline void operator<< (
 //inline std::ostream& operator<< (std::ostream& o,
 //		const msgpack::type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12>& v) {
 //	return o << "["
-//	
+//
 //	<< v.template get<0>()
 //	<< ", " << v.template get<1>()
 //	<< ", " << v.template get<2>()
@@ -13101,7 +13101,7 @@ inline void operator<< (
 //inline std::ostream& operator<< (std::ostream& o,
 //		const msgpack::type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13>& v) {
 //	return o << "["
-//	
+//
 //	<< v.template get<0>()
 //	<< ", " << v.template get<1>()
 //	<< ", " << v.template get<2>()
@@ -13123,7 +13123,7 @@ inline void operator<< (
 //inline std::ostream& operator<< (std::ostream& o,
 //		const msgpack::type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14>& v) {
 //	return o << "["
-//	
+//
 //	<< v.template get<0>()
 //	<< ", " << v.template get<1>()
 //	<< ", " << v.template get<2>()
@@ -13146,7 +13146,7 @@ inline void operator<< (
 //inline std::ostream& operator<< (std::ostream& o,
 //		const msgpack::type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15>& v) {
 //	return o << "["
-//	
+//
 //	<< v.template get<0>()
 //	<< ", " << v.template get<1>()
 //	<< ", " << v.template get<2>()
@@ -13170,7 +13170,7 @@ inline void operator<< (
 //inline std::ostream& operator<< (std::ostream& o,
 //		const msgpack::type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16>& v) {
 //	return o << "["
-//	
+//
 //	<< v.template get<0>()
 //	<< ", " << v.template get<1>()
 //	<< ", " << v.template get<2>()
@@ -13195,7 +13195,7 @@ inline void operator<< (
 //inline std::ostream& operator<< (std::ostream& o,
 //		const msgpack::type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17>& v) {
 //	return o << "["
-//	
+//
 //	<< v.template get<0>()
 //	<< ", " << v.template get<1>()
 //	<< ", " << v.template get<2>()
@@ -13221,7 +13221,7 @@ inline void operator<< (
 //inline std::ostream& operator<< (std::ostream& o,
 //		const msgpack::type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18>& v) {
 //	return o << "["
-//	
+//
 //	<< v.template get<0>()
 //	<< ", " << v.template get<1>()
 //	<< ", " << v.template get<2>()
@@ -13248,7 +13248,7 @@ inline void operator<< (
 //inline std::ostream& operator<< (std::ostream& o,
 //		const msgpack::type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19>& v) {
 //	return o << "["
-//	
+//
 //	<< v.template get<0>()
 //	<< ", " << v.template get<1>()
 //	<< ", " << v.template get<2>()
@@ -13276,7 +13276,7 @@ inline void operator<< (
 //inline std::ostream& operator<< (std::ostream& o,
 //		const msgpack::type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20>& v) {
 //	return o << "["
-//	
+//
 //	<< v.template get<0>()
 //	<< ", " << v.template get<1>()
 //	<< ", " << v.template get<2>()
@@ -13305,7 +13305,7 @@ inline void operator<< (
 //inline std::ostream& operator<< (std::ostream& o,
 //		const msgpack::type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21>& v) {
 //	return o << "["
-//	
+//
 //	<< v.template get<0>()
 //	<< ", " << v.template get<1>()
 //	<< ", " << v.template get<2>()
@@ -13335,7 +13335,7 @@ inline void operator<< (
 //inline std::ostream& operator<< (std::ostream& o,
 //		const msgpack::type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22>& v) {
 //	return o << "["
-//	
+//
 //	<< v.template get<0>()
 //	<< ", " << v.template get<1>()
 //	<< ", " << v.template get<2>()
@@ -13366,7 +13366,7 @@ inline void operator<< (
 //inline std::ostream& operator<< (std::ostream& o,
 //		const msgpack::type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23>& v) {
 //	return o << "["
-//	
+//
 //	<< v.template get<0>()
 //	<< ", " << v.template get<1>()
 //	<< ", " << v.template get<2>()
@@ -13398,7 +13398,7 @@ inline void operator<< (
 //inline std::ostream& operator<< (std::ostream& o,
 //		const msgpack::type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24>& v) {
 //	return o << "["
-//	
+//
 //	<< v.template get<0>()
 //	<< ", " << v.template get<1>()
 //	<< ", " << v.template get<2>()
@@ -13431,7 +13431,7 @@ inline void operator<< (
 //inline std::ostream& operator<< (std::ostream& o,
 //		const msgpack::type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25>& v) {
 //	return o << "["
-//	
+//
 //	<< v.template get<0>()
 //	<< ", " << v.template get<1>()
 //	<< ", " << v.template get<2>()
@@ -13465,7 +13465,7 @@ inline void operator<< (
 //inline std::ostream& operator<< (std::ostream& o,
 //		const msgpack::type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26>& v) {
 //	return o << "["
-//	
+//
 //	<< v.template get<0>()
 //	<< ", " << v.template get<1>()
 //	<< ", " << v.template get<2>()
@@ -13500,7 +13500,7 @@ inline void operator<< (
 //inline std::ostream& operator<< (std::ostream& o,
 //		const msgpack::type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27>& v) {
 //	return o << "["
-//	
+//
 //	<< v.template get<0>()
 //	<< ", " << v.template get<1>()
 //	<< ", " << v.template get<2>()
@@ -13536,7 +13536,7 @@ inline void operator<< (
 //inline std::ostream& operator<< (std::ostream& o,
 //		const msgpack::type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28>& v) {
 //	return o << "["
-//	
+//
 //	<< v.template get<0>()
 //	<< ", " << v.template get<1>()
 //	<< ", " << v.template get<2>()
@@ -13573,7 +13573,7 @@ inline void operator<< (
 //inline std::ostream& operator<< (std::ostream& o,
 //		const msgpack::type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29>& v) {
 //	return o << "["
-//	
+//
 //	<< v.template get<0>()
 //	<< ", " << v.template get<1>()
 //	<< ", " << v.template get<2>()
@@ -13611,7 +13611,7 @@ inline void operator<< (
 //inline std::ostream& operator<< (std::ostream& o,
 //		const msgpack::type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30>& v) {
 //	return o << "["
-//	
+//
 //	<< v.template get<0>()
 //	<< ", " << v.template get<1>()
 //	<< ", " << v.template get<2>()
@@ -13650,7 +13650,7 @@ inline void operator<< (
 //inline std::ostream& operator<< (std::ostream& o,
 //		const msgpack::type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30, A31>& v) {
 //	return o << "["
-//	
+//
 //	<< v.template get<0>()
 //	<< ", " << v.template get<1>()
 //	<< ", " << v.template get<2>()
@@ -13688,4 +13688,3 @@ inline void operator<< (
 //
 
 #endif /* msgpack/type/tuple.hpp */
-
