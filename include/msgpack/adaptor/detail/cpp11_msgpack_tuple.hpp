@@ -140,13 +140,13 @@ struct MsgpackTupleConverter<Tuple, 1> {
 };
 
 template <typename... Args>
-type::tuple<Args...>& operator>> (
+object const& operator>> (
     object const& o,
     type::tuple<Args...>& v) {
     if(o.type != type::ARRAY) { throw type_error(); }
     if(o.via.array.size < sizeof...(Args)) { throw type_error(); }
     MsgpackTupleConverter<decltype(v), sizeof...(Args)>::convert(o, v);
-    return v;
+    return o;
 }
 
 // --- Convert from tuple to object with zone ---
@@ -182,4 +182,3 @@ inline void operator<< (
 } // msgpack
 
 #endif // MSGPACK_CPP11_MSGPACK_TUPLE_HPP
-

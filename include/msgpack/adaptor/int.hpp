@@ -117,40 +117,40 @@ namespace detail {
 }  // namespace detail
 }  // namespace type
 
-inline char& operator>> (object const& o, char& v)
-    { v = type::detail::convert_integer<char>(o); return v; }
+inline object const& operator>> (object const& o, char& v)
+    { v = type::detail::convert_integer<char>(o); return o; }
 
 
-inline signed char& operator>> (object const& o, signed char& v)
-    { v = type::detail::convert_integer<signed char>(o); return v; }
+inline object const& operator>> (object const& o, signed char& v)
+    { v = type::detail::convert_integer<signed char>(o); return o; }
 
-inline signed short& operator>> (object const& o, signed short& v)
-    { v = type::detail::convert_integer<signed short>(o); return v; }
+inline object const& operator>> (object const& o, signed short& v)
+    { v = type::detail::convert_integer<signed short>(o); return o; }
 
-inline signed int& operator>> (object const& o, signed int& v)
-    { v = type::detail::convert_integer<signed int>(o); return v; }
+inline object const& operator>> (object const& o, signed int& v)
+    { v = type::detail::convert_integer<signed int>(o); return o; }
 
-inline signed long& operator>> (object const& o, signed long& v)
-    { v = type::detail::convert_integer<signed long>(o); return v; }
+inline object const& operator>> (object const& o, signed long& v)
+    { v = type::detail::convert_integer<signed long>(o); return o; }
 
-inline signed long long& operator>> (object const& o, signed long long& v)
-    { v = type::detail::convert_integer<signed long long>(o); return v; }
+inline object const& operator>> (object const& o, signed long long& v)
+    { v = type::detail::convert_integer<signed long long>(o); return o; }
 
 
-inline unsigned char& operator>> (object const& o, unsigned char& v)
-    { v = type::detail::convert_integer<unsigned char>(o); return v; }
+inline object const& operator>> (object const& o, unsigned char& v)
+    { v = type::detail::convert_integer<unsigned char>(o); return o; }
 
-inline unsigned short& operator>> (object const& o, unsigned short& v)
-    { v = type::detail::convert_integer<unsigned short>(o); return v; }
+inline object const& operator>> (object const& o, unsigned short& v)
+    { v = type::detail::convert_integer<unsigned short>(o); return o; }
 
-inline unsigned int& operator>> (object const& o, unsigned int& v)
-    { v = type::detail::convert_integer<unsigned int>(o); return v; }
+inline object const& operator>> (object const& o, unsigned int& v)
+    { v = type::detail::convert_integer<unsigned int>(o); return o; }
 
-inline unsigned long& operator>> (object const& o, unsigned long& v)
-    { v = type::detail::convert_integer<unsigned long>(o); return v; }
+inline object const& operator>> (object const& o, unsigned long& v)
+    { v = type::detail::convert_integer<unsigned long>(o); return o; }
 
-inline unsigned long long& operator>> (object const& o, unsigned long long& v)
-    { v = type::detail::convert_integer<unsigned long long>(o); return v; }
+inline object const& operator>> (object const& o, unsigned long long& v)
+    { v = type::detail::convert_integer<unsigned long long>(o); return o; }
 
 
 template <typename Stream>
@@ -276,4 +276,3 @@ inline void operator<< (object::with_zone& o, const unsigned long long& v)
 }  // namespace msgpack
 
 #endif /* msgpack/type/int.hpp */
-

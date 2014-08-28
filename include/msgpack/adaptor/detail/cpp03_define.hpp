@@ -38,12 +38,12 @@
 #define MSGPACK_ADD_ENUM(enum) \
   namespace msgpack { \
     template <> \
-    inline enum& operator>> (object const& o, enum& v) \
+    inline object const& operator>> (object const& o, enum& v) \
     { \
       int tmp; \
       o >> tmp; \
       v = static_cast<enum>(tmp); \
-      return v; \
+      return o; \
     } \
     template <> \
     inline void operator<< (object::with_zone& o, const enum& v) \
@@ -3462,4 +3462,3 @@ define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16
 
 
 #endif // MSGPACK_CPP03_DEFINE_HPP
-

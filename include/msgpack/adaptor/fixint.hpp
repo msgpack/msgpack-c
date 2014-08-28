@@ -54,30 +54,30 @@ typedef fix_int<int64_t> fix_int64;
 }  // namespace type
 
 
-inline type::fix_int8& operator>> (object const& o, type::fix_int8& v)
-    { v = type::detail::convert_integer<int8_t>(o); return v; }
+inline object const& operator>> (object const& o, type::fix_int8& v)
+    { v = type::detail::convert_integer<int8_t>(o); return o; }
 
-inline type::fix_int16& operator>> (object const& o, type::fix_int16& v)
-    { v = type::detail::convert_integer<int16_t>(o); return v; }
+inline object const& operator>> (object const& o, type::fix_int16& v)
+    { v = type::detail::convert_integer<int16_t>(o); return o; }
 
-inline type::fix_int32& operator>> (object const& o, type::fix_int32& v)
-    { v = type::detail::convert_integer<int32_t>(o); return v; }
+inline object const& operator>> (object const& o, type::fix_int32& v)
+    { v = type::detail::convert_integer<int32_t>(o); return o; }
 
-inline type::fix_int64& operator>> (object const& o, type::fix_int64& v)
-    { v = type::detail::convert_integer<int64_t>(o); return v; }
+inline object const& operator>> (object const& o, type::fix_int64& v)
+    { v = type::detail::convert_integer<int64_t>(o); return o; }
 
 
-inline type::fix_uint8& operator>> (object const& o, type::fix_uint8& v)
-    { v = type::detail::convert_integer<uint8_t>(o); return v; }
+inline object const& operator>> (object const& o, type::fix_uint8& v)
+    { v = type::detail::convert_integer<uint8_t>(o); return o; }
 
-inline type::fix_uint16& operator>> (object const& o, type::fix_uint16& v)
-    { v = type::detail::convert_integer<uint16_t>(o); return v; }
+inline object const& operator>> (object const& o, type::fix_uint16& v)
+    { v = type::detail::convert_integer<uint16_t>(o); return o; }
 
-inline type::fix_uint32& operator>> (object const& o, type::fix_uint32& v)
-    { v = type::detail::convert_integer<uint32_t>(o); return v; }
+inline object const& operator>> (object const& o, type::fix_uint32& v)
+    { v = type::detail::convert_integer<uint32_t>(o); return o; }
 
-inline type::fix_uint64& operator>> (object const& o, type::fix_uint64& v)
-    { v = type::detail::convert_integer<uint64_t>(o); return v; }
+inline object const& operator>> (object const& o, type::fix_uint64& v)
+    { v = type::detail::convert_integer<uint64_t>(o); return o; }
 
 
 template <typename Stream>
@@ -169,4 +169,3 @@ inline void operator<< (object::with_zone& o, type::fix_uint64 v)
 }  // namespace msgpack
 
 #endif /* msgpack/type/fixint.hpp */
-

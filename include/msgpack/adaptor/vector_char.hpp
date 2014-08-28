@@ -23,7 +23,7 @@
 
 namespace msgpack {
 
-inline std::vector<char>& operator>> (object const& o, std::vector<char>& v)
+inline object const& operator>> (object const& o, std::vector<char>& v)
 {
     switch (o.type) {
     case type::BIN:
@@ -38,7 +38,7 @@ inline std::vector<char>& operator>> (object const& o, std::vector<char>& v)
         throw type_error();
         break;
     }
-    return v;
+    return o;
 }
 
 template <typename Stream>
@@ -69,4 +69,3 @@ inline void operator<< (object::with_zone& o, const std::vector<char>& v)
 }  // namespace msgpack
 
 #endif // MSGPACK_TYPE_VECTOR_CHAR_HPP
-

@@ -24,7 +24,7 @@
 namespace msgpack {
 
 template <std::size_t N>
-inline std::array<char, N>& operator>> (object const& o, std::array<char, N>& v)
+inline object const& operator>> (object const& o, std::array<char, N>& v)
 {
     switch (o.type) {
     case type::BIN:
@@ -39,7 +39,7 @@ inline std::array<char, N>& operator>> (object const& o, std::array<char, N>& v)
         throw type_error();
         break;
     }
-    return v;
+    return o;
 }
 
 template <typename Stream, std::size_t N>

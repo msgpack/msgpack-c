@@ -76,13 +76,13 @@ struct StdTupleConverter<Tuple, 1> {
 };
 
 template <typename... Args>
-std::tuple<Args...>& operator>> (
+object const& operator>> (
     object const& o,
     std::tuple<Args...>& v) {
     if(o.type != type::ARRAY) { throw type_error(); }
     if(o.via.array.size < sizeof...(Args)) { throw type_error(); }
     StdTupleConverter<decltype(v), sizeof...(Args)>::convert(o, v);
-    return v;
+    return o;
 }
 
 // --- Convert from tuple to object with zone ---
@@ -118,4 +118,3 @@ inline void operator<< (
 } // msgpack
 
 #endif // MSGPACK_CPP11_TUPLE_HPP
-

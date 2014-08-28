@@ -29,10 +29,10 @@ struct nil { };
 }  // namespace type
 
 
-inline type::nil& operator>> (object const& o, type::nil& v)
+inline object const& operator>> (object const& o, type::nil& v)
 {
     if(o.type != type::NIL) { throw type_error(); }
-    return v;
+    return o;
 }
 
 template <typename Stream>
@@ -62,4 +62,3 @@ inline void object::as<void>() const
 }  // namespace msgpack
 
 #endif /* msgpack/type/nil.hpp */
-

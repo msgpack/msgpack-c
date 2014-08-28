@@ -40,12 +40,12 @@
 #define MSGPACK_ADD_ENUM(enum) \
   namespace msgpack { \
     template <> \
-    inline enum& operator>> (object const& o, enum& v) \
+    inline object const& operator>> (object const& o, enum& v) \
     { \
       int tmp; \
       o >> tmp; \
       v = static_cast<enum>(tmp);   \
-      return v; \
+      return o; \
     } \
     template <> \
     inline void operator<< (object::with_zone& o, const enum& v) \
