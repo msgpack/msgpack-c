@@ -7,7 +7,7 @@ INCLUDE_DIRECTORIES (
     ${ZLIB_INCLUDE_DIRS}
 )
 
-SET (check_PROGRAMS
+LIST (APPEND check_PROGRAMS
     zone.cpp
     pack_unpack.cpp
     pack_unpack_c.cpp
@@ -24,9 +24,14 @@ SET (check_PROGRAMS
     msgpack_tuple.cpp
     msgpack_test.cpp
     msgpackc_test.cpp
-    msgpack_test_cpp11.cpp
     reference.cpp
 )
+
+IF (MSGPACK_CXX11)
+    LIST (APPEND check_PROGRAMS
+        msgpack_test_cpp11.cpp
+    )
+ENDIF ()
 
 FOREACH (source_file ${check_PROGRAMS})
     GET_FILENAME_COMPONENT (source_file_we ${source_file} NAME_WE)
