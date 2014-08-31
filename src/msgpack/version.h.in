@@ -26,6 +26,7 @@ extern "C" {
 const char* msgpack_version(void);
 int msgpack_version_major(void);
 int msgpack_version_minor(void);
+int msgpack_version_micro(void);
 
 #define MSGPACK_VERSION "@VERSION@"
 #define MSGPACK_VERSION_MAJOR @VERSION_MAJOR@
