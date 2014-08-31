@@ -4,6 +4,7 @@ PROJECT (msgpack)
 SET (VERSION 0.5.9)
 SET (VERSION_MAJOR 0)
 SET (VERSION_MINOR 5)
+SET (VERSION_MICRO 9)
 
 SET (prefix ${CMAKE_INSTALL_PREFIX})
 SET (exec_prefix "\${prefix}")
