@@ -30,6 +30,7 @@ int msgpack_version_minor(void);
 #define MSGPACK_VERSION "@VERSION@"
 #define MSGPACK_VERSION_MAJOR @VERSION_MAJOR@
 #define MSGPACK_VERSION_MINOR @VERSION_MINOR@
+#define MSGPACK_VERSION_MICRO @VERSION_MICRO@
 
 
 #ifdef __cplusplus
