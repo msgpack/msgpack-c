@@ -168,7 +168,7 @@ ENDIF ()
 
 INSTALL (TARGETS msgpack msgpack-static DESTINATION lib)
 INSTALL (DIRECTORY include DESTINATION ${CMAKE_INSTALL_PREFIX})
-INSTALL (FILES msgpack.pc DESTINATION lib/pkgconfig)
+INSTALL (FILES ${CMAKE_BINARY_DIR}/msgpack.pc DESTINATION lib/pkgconfig)
 
 # Doxygen
 FIND_PACKAGE (Doxygen)
