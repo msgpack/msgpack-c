@@ -25,7 +25,7 @@ namespace msgpack {
 
 
 template <typename T>
-inline std::vector<T>& operator>> (object const& o, std::vector<T>& v)
+inline object const& operator>> (object const& o, std::vector<T>& v)
 {
     if(o.type != type::ARRAY) { throw type_error(); }
     v.resize(o.via.array.size);
@@ -39,7 +39,7 @@ inline std::vector<T>& operator>> (object const& o, std::vector<T>& v)
             ++it;
         } while(p < pend);
     }
-    return v;
+    return o;
 }
 
 template <typename Stream, typename T>
@@ -78,4 +78,3 @@ inline void operator<< (object::with_zone& o, const std::vector<T>& v)
 }  // namespace msgpack
 
 #endif /* msgpack/type/vector.hpp */
-

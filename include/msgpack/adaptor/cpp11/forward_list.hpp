@@ -27,7 +27,7 @@
 namespace msgpack {
 
 template <typename T>
-inline std::forward_list<T>& operator>> (object const& o, std::forward_list<T>& v)
+inline object const& operator>> (object const& o, std::forward_list<T>& v)
 {
     if(o.type != type::ARRAY) { throw type_error(); }
     v.resize(o.via.array.size);
@@ -36,7 +36,7 @@ inline std::forward_list<T>& operator>> (object const& o, std::forward_list<T>& 
         p->convert(e);
         ++p;
     }
-    return v;
+    return o;
 }
 
 template <typename Stream, typename T>

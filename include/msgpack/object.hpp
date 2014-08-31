@@ -188,18 +188,18 @@ inline packer<Stream>& packer<Stream>::pack(const T& v)
     return *this;
 }
 
-inline object& operator>> (object const& o, object& v)
+inline object const& operator>> (object const& o, object& v)
 {
     v = o;
-    return v;
+    return o;
 }
 
 // convert operator
 template <typename T>
-inline T& operator>> (object const& o, T& v)
+inline object const& operator>> (object const& o, T& v)
 {
     v.msgpack_unpack(o.convert());
-    return v;
+    return o;
 }
 
 namespace detail {

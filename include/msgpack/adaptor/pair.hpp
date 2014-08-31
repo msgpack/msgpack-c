@@ -25,13 +25,13 @@ namespace msgpack {
 
 
 template <typename T1, typename T2>
-inline std::pair<T1, T2>& operator>> (object const& o, std::pair<T1, T2>& v)
+inline object const& operator>> (object const& o, std::pair<T1, T2>& v)
 {
     if(o.type != type::ARRAY) { throw type_error(); }
     if(o.via.array.size != 2) { throw type_error(); }
     o.via.array.ptr[0].convert(v.first);
     o.via.array.ptr[1].convert(v.second);
-    return v;
+    return o;
 }
 
 template <typename Stream, typename T1, typename T2>
@@ -58,4 +58,3 @@ inline void operator<< (object::with_zone& o, const std::pair<T1, T2>& v)
 }  // namespace msgpack
 
 #endif /* msgpack/type/pair.hpp */
-

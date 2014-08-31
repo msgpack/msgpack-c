@@ -61,12 +61,12 @@ struct raw_ref {
 }  // namespace type
 
 
-inline type::raw_ref& operator>> (object const& o, type::raw_ref& v)
+inline object const& operator>> (object const& o, type::raw_ref& v)
 {
     if(o.type != type::BIN) { throw type_error(); }
     v.ptr  = o.via.bin.ptr;
     v.size = o.via.bin.size;
-    return v;
+    return o;
 }
 
 template <typename Stream>
@@ -91,4 +91,3 @@ inline void operator<< (object::with_zone& o, const type::raw_ref& v)
 }  // namespace msgpack
 
 #endif /* msgpack/type/raw.hpp */
-

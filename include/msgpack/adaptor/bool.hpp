@@ -24,11 +24,11 @@
 namespace msgpack {
 
 
-inline bool& operator>> (object const& o, bool& v)
+inline object const& operator>> (object const& o, bool& v)
 {
     if(o.type != type::BOOLEAN) { throw type_error(); }
     v = o.via.boolean;
-    return v;
+    return o;
 }
 
 template <typename Stream>
@@ -52,4 +52,3 @@ inline void operator<< (object::with_zone& o, bool v)
 }  // namespace msgpack
 
 #endif /* msgpack/type/bool.hpp */
-

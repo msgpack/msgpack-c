@@ -25,7 +25,7 @@ namespace msgpack {
 
 
 template <typename T>
-inline std::deque<T>& operator>> (object const& o, std::deque<T>& v)
+inline object const& operator>> (object const& o, std::deque<T>& v)
 {
     if(o.type != type::ARRAY) { throw type_error(); }
     v.resize(o.via.array.size);
@@ -35,7 +35,7 @@ inline std::deque<T>& operator>> (object const& o, std::deque<T>& v)
     for(; p < pend; ++p, ++it) {
         p->convert(*it);
     }
-    return v;
+    return o;
 }
 
 template <typename Stream, typename T>
@@ -74,4 +74,3 @@ inline void operator<< (object::with_zone& o, const std::deque<T>& v)
 }  // namespace msgpack
 
 #endif /* msgpack/type/deque.hpp */
-

@@ -43,7 +43,7 @@ namespace msgpack {
 
 
 template <typename T>
-inline MSGPACK_STD_TR1::unordered_set<T>& operator>> (object o, MSGPACK_STD_TR1::unordered_set<T>& v)
+inline object const& operator>> (object const& o, MSGPACK_STD_TR1::unordered_set<T>& v)
 {
     if(o.type != type::ARRAY) { throw type_error(); }
     object* p = o.via.array.ptr + o.via.array.size;
@@ -52,7 +52,7 @@ inline MSGPACK_STD_TR1::unordered_set<T>& operator>> (object o, MSGPACK_STD_TR1:
         --p;
         v.insert(p->as<T>());
     }
-    return v;
+    return o;
 }
 
 template <typename Stream, typename T>
@@ -89,7 +89,7 @@ inline void operator<< (object::with_zone& o, const MSGPACK_STD_TR1::unordered_s
 
 
 template <typename T>
-inline MSGPACK_STD_TR1::unordered_multiset<T>& operator>> (object o, MSGPACK_STD_TR1::unordered_multiset<T>& v)
+inline object const& operator>> (object const& o, MSGPACK_STD_TR1::unordered_multiset<T>& v)
 {
     if(o.type != type::ARRAY) { throw type_error(); }
     object* p = o.via.array.ptr + o.via.array.size;
@@ -98,7 +98,7 @@ inline MSGPACK_STD_TR1::unordered_multiset<T>& operator>> (object o, MSGPACK_STD
         --p;
         v.insert(p->as<T>());
     }
-    return v;
+    return o;
 }
 
 template <typename Stream, typename T>
@@ -139,4 +139,3 @@ inline void operator<< (object::with_zone& o, const MSGPACK_STD_TR1::unordered_m
 #undef MSGPACK_STD_TR1
 
 #endif /* msgpack/type/set.hpp */
-

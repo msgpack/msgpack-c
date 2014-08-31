@@ -24,7 +24,7 @@
 namespace msgpack {
 
 
-inline std::string& operator>> (object const& o, std::string& v)
+inline object const& operator>> (object const& o, std::string& v)
 {
     switch (o.type) {
     case type::BIN:
@@ -37,7 +37,7 @@ inline std::string& operator>> (object const& o, std::string& v)
         throw type_error();
         break;
     }
-    return v;
+    return o;
 }
 
 template <typename Stream>
@@ -68,4 +68,3 @@ inline void operator<< (object& o, const std::string& v)
 }  // namespace msgpack
 
 #endif /* msgpack/type/string.hpp */
-

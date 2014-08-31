@@ -43,7 +43,7 @@ namespace detail {
 
 
 template <typename K, typename V>
-inline type::assoc_vector<K,V>& operator>> (object const& o, type::assoc_vector<K,V>& v)
+inline object const& operator>> (object const& o, type::assoc_vector<K,V>& v)
 {
     if(o.type != type::MAP) { throw type_error(); }
     v.resize(o.via.map.size);
@@ -55,7 +55,7 @@ inline type::assoc_vector<K,V>& operator>> (object const& o, type::assoc_vector<
         p->val.convert(it->second);
     }
     std::sort(v.begin(), v.end(), type::detail::pair_first_less<K,V>());
-    return v;
+    return o;
 }
 
 template <typename Stream, typename K, typename V>
@@ -94,7 +94,7 @@ inline void operator<< (object::with_zone& o, const type::assoc_vector<K,V>& v)
 
 
 template <typename K, typename V>
-inline std::map<K, V>& operator>> (object const& o, std::map<K, V>& v)
+inline object const& operator>> (object const& o, std::map<K, V>& v)
 {
     if(o.type != type::MAP) { throw type_error(); }
     object_kv* p(o.via.map.ptr);
@@ -111,7 +111,7 @@ inline std::map<K, V>& operator>> (object const& o, std::map<K, V>& v)
             v.insert(it, std::pair<K,V>(key, val));
         }
     }
-    return v;
+    return o;
 }
 
 template <typename Stream, typename K, typename V>
@@ -150,7 +150,7 @@ inline void operator<< (object::with_zone& o, const std::map<K,V>& v)
 
 
 template <typename K, typename V>
-inline std::multimap<K, V>& operator>> (object const& o, std::multimap<K, V>& v)
+inline object const& operator>> (object const& o, std::multimap<K, V>& v)
 {
     if(o.type != type::MAP) { throw type_error(); }
     object_kv* p(o.via.map.ptr);
@@ -161,7 +161,7 @@ inline std::multimap<K, V>& operator>> (object const& o, std::multimap<K, V>& v)
         p->val.convert(value.second);
         v.insert(value);
     }
-    return v;
+    return o;
 }
 
 template <typename Stream, typename K, typename V>

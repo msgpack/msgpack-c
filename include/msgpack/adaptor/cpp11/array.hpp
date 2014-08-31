@@ -27,7 +27,7 @@
 namespace msgpack {
 
 template <typename T, std::size_t N>
-inline std::array<T, N>& operator>> (object const& o, std::array<T, N>& v) {
+inline object const& operator>> (object const& o, std::array<T, N>& v) {
     if(o.type != type::ARRAY) { throw type_error(); }
     if(o.via.array.size != N) { throw type_error(); }
     if(o.via.array.size > 0) {
@@ -40,7 +40,7 @@ inline std::array<T, N>& operator>> (object const& o, std::array<T, N>& v) {
             ++it;
         } while(p < pend);
     }
-    return v;
+    return o;
 }
 
 template <typename Stream, typename T, std::size_t N>
