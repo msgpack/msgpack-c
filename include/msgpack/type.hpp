@@ -1,5 +1,6 @@
 #include "cpp_config.hpp"
 #include "adaptor/bool.hpp"
+#include "adaptor/char_ptr.hpp"
 #include "adaptor/deque.hpp"
 #include "adaptor/fixint.hpp"
 #include "adaptor/float.hpp"

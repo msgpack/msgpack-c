@@ -459,6 +459,23 @@ TEST(MSGPACK_STL, simple_buffer_string)
   }
 }
 
+TEST(MSGPACK_STL, simple_buffer_cstring)
+{
+  for (unsigned int k = 0; k < kLoop; k++) {
+    string val1;
+    for (unsigned int i = 0; i < kElements; i++)
+      val1 += 'a' + rand() % 26;
+    msgpack::sbuffer sbuf;
+    msgpack::pack(sbuf, val1.c_str());
+    msgpack::unpacked ret;
+    msgpack::unpack(ret, sbuf.data(), sbuf.size());
+    EXPECT_EQ(ret.get().type, msgpack::type::STR);
+    string val2 = ret.get().as<string>();
+    EXPECT_EQ(val1.size(), val2.size());
+    EXPECT_EQ(val1, val2);
+  }
+}
+
 TEST(MSGPACK_STL, simple_buffer_vector)
 {
   for (unsigned int k = 0; k < kLoop; k++) {

@@ -259,6 +259,28 @@ TEST(object_without_zone, string)
     EXPECT_EQ(obj.as<string>()[0], 'd');
 }
 
+// char*
+TEST(object_with_zone, char_ptr)
+{
+    char v[] = "abc";
+    msgpack::zone z;
+    msgpack::object obj(v, z);
+    EXPECT_EQ(obj.as<string>(), std::string(v));
+    v[0] = 'd';
+    EXPECT_EQ(obj.as<string>()[0], 'a');
+}
+
+TEST(object_without_zone, char_ptr)
+{
+    char v[] = "abc";
+    msgpack::zone z;
+    msgpack::object obj(v);
+    EXPECT_EQ(obj.as<string>(), std::string(v));
+    v[0] = 'd';
+    EXPECT_EQ(obj.as<string>()[0], 'd');
+}
+
+
 // raw_ref
 TEST(object_with_zone, raw_ref)
 {
@@ -659,4 +681,3 @@ TEST(object_with_zone, tuple)
 }
 
 #endif
-
