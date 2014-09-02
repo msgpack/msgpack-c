@@ -135,7 +135,7 @@ tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> make_tuple(typename tuple_type<A0>::tr
 
 inline object const& operator>> (
         object const& o,
-        type::tuple<>& v) {
+        type::tuple<>&) {
     if(o.type != type::ARRAY) { throw type_error(); }
     return o;
 }
@@ -155,7 +155,7 @@ object const& operator>> (
 template <typename Stream>
 const packer<Stream>& operator<< (
         packer<Stream>& o,
-        const type::tuple<>& v) {
+        const type::tuple<>&) {
     o.pack_array(0);
     return o;
 }
@@ -173,7 +173,7 @@ const packer<Stream>& operator<< (
 
 inline void operator<< (
         object::with_zone& o,
-        const type::tuple<>& v) {
+        const type::tuple<>&) {
     o.type = type::ARRAY;
     o.via.array.ptr = nullptr;
     o.via.array.size = 0;

@@ -207,11 +207,11 @@ public:
     {
         ::free(p);
     }
-    static void* operator new(std::size_t size, void* mem) throw()
+    static void* operator new(std::size_t /*size*/, void* mem) throw()
     {
         return mem;
     }
-    static void operator delete(void *p, void* mem) throw()
+    static void operator delete(void * /*p*/, void* /*mem*/) throw()
     {
     }
 

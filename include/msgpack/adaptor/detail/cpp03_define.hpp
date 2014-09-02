@@ -82,7 +82,7 @@ struct define<> {
     {
         if(o.type != type::ARRAY) { throw type_error(); }
     }
-    void msgpack_object(msgpack::object* o, msgpack::zone& z) const
+    void msgpack_object(msgpack::object* o, msgpack::zone&) const
     {
         o->type = type::ARRAY;
         o->via.array.ptr = nullptr;

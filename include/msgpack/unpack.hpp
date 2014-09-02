@@ -149,7 +149,7 @@ inline void unpack_map_item(object& c, object const& k, object const& v)
     ++c.via.map.size;
 }
 
-inline void unpack_str(unpack_user& u, const char* b, const char* p, uint64_t l, object& o)
+inline void unpack_str(unpack_user& u, const char* p, uint64_t l, object& o)
 {
     o.type = type::STR;
     if (u.reference_func() && u.reference_func()(o.type, l, u.user_data())) {
@@ -164,7 +164,7 @@ inline void unpack_str(unpack_user& u, const char* b, const char* p, uint64_t l,
     o.via.str.size = l;
 }
 
-inline void unpack_bin(unpack_user& u, const char* b, const char* p, uint64_t l, object& o)
+inline void unpack_bin(unpack_user& u, const char* p, uint64_t l, object& o)
 {
     o.type = type::BIN;
     if (u.reference_func() && u.reference_func()(o.type, l, u.user_data())) {
@@ -370,7 +370,7 @@ public:
                 } else if(0xa0 <= selector && selector <= 0xbf) { // FixStr
                     m_trail = static_cast<uint32_t>(*m_current) & 0x1f;
                     if(m_trail == 0) {
-                        unpack_str(m_user, data, n, m_trail, obj);
+                        unpack_str(m_user, n, m_trail, obj);
                         int ret = push_proc(obj, off);
                         if (ret != 0) return ret;
                     }
@@ -523,7 +523,7 @@ public:
                     load<uint8_t>(tmp, n);
                     m_trail = tmp;
                     if(m_trail == 0) {
-                        unpack_str(m_user, data, n, m_trail, obj);
+                        unpack_str(m_user, n, m_trail, obj);
                         int ret = push_proc(obj, off);
                         if (ret != 0) return ret;
                     }
@@ -537,7 +537,7 @@ public:
                     load<uint8_t>(tmp, n);
                     m_trail = tmp;
                     if(m_trail == 0) {
-                        unpack_bin(m_user, data, n, m_trail, obj);
+                        unpack_bin(m_user, n, m_trail, obj);
                         int ret = push_proc(obj, off);
                         if (ret != 0) return ret;
                     }
@@ -565,7 +565,7 @@ public:
                     load<uint16_t>(tmp, n);
                     m_trail = tmp;
                     if(m_trail == 0) {
-                        unpack_str(m_user, data, n, m_trail, obj);
+                        unpack_str(m_user, n, m_trail, obj);
                         int ret = push_proc(obj, off);
                         if (ret != 0) return ret;
                     }
@@ -579,7 +579,7 @@ public:
                     load<uint16_t>(tmp, n);
                     m_trail = tmp;
                     if(m_trail == 0) {
-                        unpack_bin(m_user, data, n, m_trail, obj);
+                        unpack_bin(m_user, n, m_trail, obj);
                         int ret = push_proc(obj, off);
                         if (ret != 0) return ret;
                     }
@@ -607,7 +607,7 @@ public:
                     load<uint32_t>(tmp, n);
                     m_trail = tmp;
                     if(m_trail == 0) {
-                        unpack_str(m_user, data, n, m_trail, obj);
+                        unpack_str(m_user, n, m_trail, obj);
                         int ret = push_proc(obj, off);
                         if (ret != 0) return ret;
                     }
@@ -621,7 +621,7 @@ public:
                     load<uint32_t>(tmp, n);
                     m_trail = tmp;
                     if(m_trail == 0) {
-                        unpack_bin(m_user, data, n, m_trail, obj);
+                        unpack_bin(m_user, n, m_trail, obj);
                         int ret = push_proc(obj, off);
                         if (ret != 0) return ret;
                     }
@@ -645,12 +645,12 @@ public:
                     }
                 } break;
                 case ACS_STR_VALUE: {
-                    unpack_str(m_user, data, n, m_trail, obj);
+                    unpack_str(m_user, n, m_trail, obj);
                     int ret = push_proc(obj, off);
                     if (ret != 0) return ret;
                 } break;
                 case ACS_BIN_VALUE: {
-                    unpack_bin(m_user, data, n, m_trail, obj);
+                    unpack_bin(m_user, n, m_trail, obj);
                     int ret = push_proc(obj, off);
                     if (ret != 0) return ret;
                 } break;
@@ -1379,7 +1379,7 @@ inline void unpack(unpacked* result,
         else unpack(*result, data, len, f, user_data);
 }
 
-bool unpacker::default_reference_func(type::object_type type, uint64_t len, void*)
+bool unpacker::default_reference_func(type::object_type /*type*/, uint64_t /*len*/, void*)
 {
     return true;
 }

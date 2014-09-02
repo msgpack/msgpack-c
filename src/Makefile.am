@@ -36,6 +36,7 @@ nobase_include_HEADERS = \
 		../include/msgpack/pack_template.h \
 		../include/msgpack/unpack_define.h \
 		../include/msgpack/unpack_template.h \
+		../include/msgpack/util.h \
 		../include/msgpack/sysdep.h \
 		../include/msgpack.h \
 		../include/msgpack/sbuffer.h \

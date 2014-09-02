@@ -10582,7 +10582,7 @@ tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16,
 
 inline object const& operator>> (
         object const& o,
-        type::tuple<>& v) {
+        type::tuple<>&) {
     if(o.type != type::ARRAY) { throw type_error(); }
     return o;
 }
@@ -11439,7 +11439,7 @@ object const& operator>> (
 template <typename Stream>
 const packer<Stream>& operator<< (
         packer<Stream>& o,
-        const type::tuple<>& v) {
+        const type::tuple<>&) {
     o.pack_array(0);
     return o;
 }
@@ -12263,7 +12263,7 @@ const packer<Stream>& operator<< (
 
 inline void operator<< (
         object::with_zone& o,
-        const type::tuple<>& v) {
+        const type::tuple<>&) {
     o.type = type::ARRAY;
     o.via.array.ptr = nullptr;
     o.via.array.size = 0;

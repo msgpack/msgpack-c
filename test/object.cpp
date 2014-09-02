@@ -5,7 +5,7 @@ struct myclass {
     myclass() : num(0), str("default") { }
 
     myclass(int num, const std::string& str) :
-        num(0), str("default") { }
+        num(num), str(str) { }
 
     ~myclass() { }
 

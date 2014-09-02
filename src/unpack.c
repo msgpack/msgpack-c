@@ -17,6 +17,7 @@
  */
 #include "msgpack/unpack.h"
 #include "msgpack/unpack_define.h"
+#include "msgpack/util.h"
 #include <stdlib.h>
 
 #ifdef _msgpack_atomic_counter_header
@@ -56,50 +57,143 @@ static int template_execute(
 
 
 static inline msgpack_object template_callback_root(unpack_user* u)
-{ msgpack_object o = { MSGPACK_OBJECT_NIL }; return o; }
+{
+    MSGPACK_UNUSED(u);
+    msgpack_object o;
+    o.type = MSGPACK_OBJECT_NIL;
+    return o;
+}
 
 static inline int template_callback_uint8(unpack_user* u, uint8_t d, msgpack_object* o)
-{ o->type = MSGPACK_OBJECT_POSITIVE_INTEGER; o->via.u64 = d; return 0; }
+{
+    MSGPACK_UNUSED(u);
+    o->type = MSGPACK_OBJECT_POSITIVE_INTEGER;
+    o->via.u64 = d;
+    return 0;
+}
 
 static inline int template_callback_uint16(unpack_user* u, uint16_t d, msgpack_object* o)
-{ o->type = MSGPACK_OBJECT_POSITIVE_INTEGER; o->via.u64 = d; return 0; }
+{
+    MSGPACK_UNUSED(u);
+    o->type = MSGPACK_OBJECT_POSITIVE_INTEGER;
+    o->via.u64 = d;
+    return 0;
+}
 
 static inline int template_callback_uint32(unpack_user* u, uint32_t d, msgpack_object* o)
-{ o->type = MSGPACK_OBJECT_POSITIVE_INTEGER; o->via.u64 = d; return 0; }
+{
+    MSGPACK_UNUSED(u);
+    o->type = MSGPACK_OBJECT_POSITIVE_INTEGER;
+    o->via.u64 = d;
+    return 0;
+}
 
 static inline int template_callback_uint64(unpack_user* u, uint64_t d, msgpack_object* o)
-{ o->type = MSGPACK_OBJECT_POSITIVE_INTEGER; o->via.u64 = d; return 0; }
+{
+    MSGPACK_UNUSED(u);
+    o->type = MSGPACK_OBJECT_POSITIVE_INTEGER;
+    o->via.u64 = d;
+    return 0;
+}
 
 static inline int template_callback_int8(unpack_user* u, int8_t d, msgpack_object* o)
-{ if(d >= 0) { o->type = MSGPACK_OBJECT_POSITIVE_INTEGER; o->via.u64 = (uint64_t)d; return 0; }
-        else { o->type = MSGPACK_OBJECT_NEGATIVE_INTEGER; o->via.i64 = d; return 0; } }
+{
+    MSGPACK_UNUSED(u);
+    if(d >= 0) {
+        o->type = MSGPACK_OBJECT_POSITIVE_INTEGER;
+        o->via.u64 = (uint64_t)d;
+        return 0;
+    }
+    else {
+        o->type = MSGPACK_OBJECT_NEGATIVE_INTEGER;
+        o->via.i64 = d;
+        return 0;
+    }
+}
 
 static inline int template_callback_int16(unpack_user* u, int16_t d, msgpack_object* o)
-{ if(d >= 0) { o->type = MSGPACK_OBJECT_POSITIVE_INTEGER; o->via.u64 = (uint64_t)d; return 0; }
-        else { o->type = MSGPACK_OBJECT_NEGATIVE_INTEGER; o->via.i64 = d; return 0; } }
+{
+    MSGPACK_UNUSED(u);
+    if(d >= 0) {
+        o->type = MSGPACK_OBJECT_POSITIVE_INTEGER;
+        o->via.u64 = (uint64_t)d;
+        return 0;
+    }
+    else {
+        o->type = MSGPACK_OBJECT_NEGATIVE_INTEGER;
+        o->via.i64 = d;
+        return 0;
+    }
+}
 
 static inline int template_callback_int32(unpack_user* u, int32_t d, msgpack_object* o)
-{ if(d >= 0) { o->type = MSGPACK_OBJECT_POSITIVE_INTEGER; o->via.u64 = (uint64_t)d; return 0; }
-        else { o->type = MSGPACK_OBJECT_NEGATIVE_INTEGER; o->via.i64 = d; return 0; } }
+{
+    MSGPACK_UNUSED(u);
+    if(d >= 0) {
+        o->type = MSGPACK_OBJECT_POSITIVE_INTEGER;
+        o->via.u64 = (uint64_t)d;
+        return 0;
+    }
+    else {
+        o->type = MSGPACK_OBJECT_NEGATIVE_INTEGER;
+        o->via.i64 = d;
+        return 0;
+    }
+}
 
 static inline int template_callback_int64(unpack_user* u, int64_t d, msgpack_object* o)
-{ if(d >= 0) { o->type = MSGPACK_OBJECT_POSITIVE_INTEGER; o->via.u64 = (uint64_t)d; return 0; }
-        else { o->type = MSGPACK_OBJECT_NEGATIVE_INTEGER; o->via.i64 = d; return 0; } }
+{
+    MSGPACK_UNUSED(u);
+    if(d >= 0) {
+        o->type = MSGPACK_OBJECT_POSITIVE_INTEGER;
+        o->via.u64 = (uint64_t)d;
+        return 0;
+    }
+    else {
+        o->type = MSGPACK_OBJECT_NEGATIVE_INTEGER;
+        o->via.i64 = d;
+        return 0;
+    }
+}
 
 static inline int template_callback_float(unpack_user* u, float d, msgpack_object* o)
-{ o->type = MSGPACK_OBJECT_DOUBLE; o->via.dec = d; return 0; }
+{
+    MSGPACK_UNUSED(u);
+    o->type = MSGPACK_OBJECT_DOUBLE;
+    o->via.dec = d;
+    return 0;
+}
 
 static inline int template_callback_double(unpack_user* u, double d, msgpack_object* o)
-{ o->type = MSGPACK_OBJECT_DOUBLE; o->via.dec = d; return 0; }
+{
+    MSGPACK_UNUSED(u);
+    o->type = MSGPACK_OBJECT_DOUBLE;
+    o->via.dec = d;
+    return 0;
+}
 
 static inline int template_callback_nil(unpack_user* u, msgpack_object* o)
-{ o->type = MSGPACK_OBJECT_NIL; return 0; }
+{
+    MSGPACK_UNUSED(u);
+    o->type = MSGPACK_OBJECT_NIL;
+    return 0;
+}
 
 static inline int template_callback_true(unpack_user* u, msgpack_object* o)
-{ o->type = MSGPACK_OBJECT_BOOLEAN; o->via.boolean = true; return 0; }
+{
+    MSGPACK_UNUSED(u);
+    o->type = MSGPACK_OBJECT_BOOLEAN;
+    o->via.boolean = true;
+    return 0;
+}
 
 static inline int template_callback_false(unpack_user* u, msgpack_object* o)
-{ o->type = MSGPACK_OBJECT_BOOLEAN; o->via.boolean = false; return 0; }
+{
+    MSGPACK_UNUSED(u);
+    o->type = MSGPACK_OBJECT_BOOLEAN;
+    o->via.boolean = false;
+    return 0;
+}
 
 static inline int template_callback_array(unpack_user* u, unsigned int n, msgpack_object* o)
 {
@@ -112,6 +206,7 @@ static inline int template_callback_array(unpack_user* u, unsigned int n, msgpac
 
 static inline int template_callback_array_item(unpack_user* u, msgpack_object* c, msgpack_object o)
 {
+    MSGPACK_UNUSED(u);
 #if defined(__GNUC__) && !defined(__clang__)
     memcpy(&c->via.array.ptr[c->via.array.size], &o, sizeof(msgpack_object));
 #else  /* __GNUC__ && !__clang__ */
@@ -132,6 +227,7 @@ static inline int template_callback_map(unpack_user* u, unsigned int n, msgpack_
 
 static inline int template_callback_map_item(unpack_user* u, msgpack_object* c, msgpack_object k, msgpack_object v)
 {
+    MSGPACK_UNUSED(u);
 #if defined(__GNUC__) && !defined(__clang__)
     memcpy(&c->via.map.ptr[c->via.map.size].key, &k, sizeof(msgpack_object));
     memcpy(&c->via.map.ptr[c->via.map.size].val, &v, sizeof(msgpack_object));
@@ -145,6 +241,8 @@ static inline int template_callback_map_item(unpack_user* u, msgpack_object* c, 
 
 static inline int template_callback_str(unpack_user* u, const char* b, const char* p, unsigned int l, msgpack_object* o)
 {
+    MSGPACK_UNUSED(u);
+    MSGPACK_UNUSED(b);
     o->type = MSGPACK_OBJECT_STR;
     o->via.str.ptr = p;
     o->via.str.size = l;
@@ -154,6 +252,8 @@ static inline int template_callback_str(unpack_user* u, const char* b, const cha
 
 static inline int template_callback_bin(unpack_user* u, const char* b, const char* p, unsigned int l, msgpack_object* o)
 {
+    MSGPACK_UNUSED(u);
+    MSGPACK_UNUSED(b);
     o->type = MSGPACK_OBJECT_BIN;
     o->via.bin.ptr = p;
     o->via.bin.size = l;

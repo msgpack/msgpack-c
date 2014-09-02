@@ -175,7 +175,7 @@ public:
         }
     }
 
-    void on_message(msgpack::object obj, msgpack::unique_ptr<msgpack::zone> z)
+    void on_message(msgpack::object obj, msgpack::unique_ptr<msgpack::zone>)
     {
         EXPECT_EQ(expect, obj.as<int>());
     }
@@ -283,7 +283,7 @@ public:
         }
     }
 
-    void on_message(msgpack::object obj, msgpack::unique_ptr<msgpack::zone> z)
+    void on_message(msgpack::object obj, msgpack::unique_ptr<msgpack::zone>)
     {
         EXPECT_EQ(expect, obj.as<int>());
     }

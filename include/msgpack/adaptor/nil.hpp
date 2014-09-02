@@ -29,20 +29,20 @@ struct nil { };
 }  // namespace type
 
 
-inline object const& operator>> (object const& o, type::nil& v)
+inline object const& operator>> (object const& o, type::nil&)
 {
     if(o.type != type::NIL) { throw type_error(); }
     return o;
 }
 
 template <typename Stream>
-inline packer<Stream>& operator<< (packer<Stream>& o, const type::nil& v)
+inline packer<Stream>& operator<< (packer<Stream>& o, const type::nil&)
 {
     o.pack_nil();
     return o;
 }
 
-inline void operator<< (object& o, type::nil v)
+inline void operator<< (object& o, type::nil)
 {
     o.type = type::NIL;
 }
