@@ -1379,7 +1379,7 @@ inline void unpack(unpacked* result,
         else unpack(*result, data, len, f, user_data);
 }
 
-bool unpacker::default_reference_func(type::object_type /*type*/, uint64_t /*len*/, void*)
+inline bool unpacker::default_reference_func(type::object_type /*type*/, uint64_t /*len*/, void*)
 {
     return true;
 }
