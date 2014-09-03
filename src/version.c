@@ -15,3 +15,8 @@ int msgpack_version_minor(void)
     return MSGPACK_VERSION_MINOR;
 }
 
+int msgpack_version_revision(void)
+{
+    return MSGPACK_VERSION_REVISION;
+}
+
