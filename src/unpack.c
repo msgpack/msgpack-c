@@ -492,9 +492,7 @@ void msgpack_unpacker_reset(msgpack_unpacker* mpac)
 
 msgpack_unpack_return msgpack_unpacker_next(msgpack_unpacker* mpac, msgpack_unpacked* result)
 {
-    if(result->zone != NULL) {
-        msgpack_zone_free(result->zone);
-    }
+    msgpack_unpacked_destroy(result);
 
     int ret = msgpack_unpacker_execute(mpac);
 

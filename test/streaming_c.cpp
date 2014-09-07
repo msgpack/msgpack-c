@@ -110,5 +110,5 @@ TEST(streaming, basic)
 
     msgpack_unpacker_destroy(&pac);
     msgpack_unpacked_destroy(&result);
+    msgpack_sbuffer_free(buffer);
 }
-
