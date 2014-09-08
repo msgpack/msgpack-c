@@ -1,6 +1,6 @@
 #include "msgpack.hpp"
 
-#include <math.h>
+#include <cmath>
 #include <string>
 #include <vector>
 #include <map>
@@ -35,14 +35,9 @@ const double kEPS = 1e-10;
       msgpack::sbuffer sbuf;                                          \
       test_type val1 = v[i];                                          \
       msgpack::pack(sbuf, val1);                                      \
-      msgpack::zone z;                                                \
-      msgpack::object obj;                                            \
-      msgpack::unpack_return ret =                                    \
-        msgpack::unpack(sbuf.data(), sbuf.size(), NULL, &z, &obj);    \
-      EXPECT_EQ(msgpack::UNPACK_SUCCESS, ret);                        \
-      test_type val2;                                                 \
-      obj.convert(&val2);                                             \
-      EXPECT_EQ(val1, val2);                                          \
+      msgpack::unpacked ret;                                          \
+      msgpack::unpack(ret, sbuf.data(), sbuf.size());                 \
+      EXPECT_EQ(val1, ret.get().as<test_type>());                     \
     }                                                                 \
 } while(0)
 
@@ -162,18 +157,14 @@ TEST(MSGPACK, simple_buffer_float)
     msgpack::sbuffer sbuf;
     float val1 = v[i];
     msgpack::pack(sbuf, val1);
-    msgpack::zone z;
-    msgpack::object obj;
-    msgpack::unpack_return ret =
-      msgpack::unpack(sbuf.data(), sbuf.size(), NULL, &z, &obj);
-    EXPECT_EQ(msgpack::UNPACK_SUCCESS, ret);
-    float val2;
-    obj.convert(&val2);
+    msgpack::unpacked ret;
+    msgpack::unpack(ret, sbuf.data(), sbuf.size());
+    float val2 = ret.get().as<float>();
 
-    if (isnan(val1))
-      EXPECT_TRUE(isnan(val2));
-    else if (isinf(val1))
-      EXPECT_TRUE(isinf(val2));
+    if (std::isnan(val1))
+      EXPECT_TRUE(std::isnan(val2));
+    else if (std::isinf(val1))
+      EXPECT_TRUE(std::isinf(val2));
     else
       EXPECT_TRUE(fabs(val2 - val1) <= kEPS);
   }
@@ -208,13 +199,9 @@ TYPED_TEST_P(IntegerToFloatingPointTest, simple_buffer)
     msgpack::sbuffer sbuf;
     integer_type val1 = v[i];
     msgpack::pack(sbuf, val1);
-    msgpack::zone z;
-    msgpack::object obj;
-    msgpack::unpack_return ret =
-      msgpack::unpack(sbuf.data(), sbuf.size(), NULL, &z, &obj);
-    EXPECT_EQ(msgpack::UNPACK_SUCCESS, ret);
-    float_type val2;
-    obj.convert(&val2);
+    msgpack::unpacked ret;
+    msgpack::unpack(ret, sbuf.data(), sbuf.size());
+    float_type val2 = ret.get().as<float_type>();
     EXPECT_TRUE(fabs(val2 - val1) <= kEPS);
   }
 }
@@ -250,18 +237,14 @@ TEST(MSGPACK, simple_buffer_double)
     msgpack::sbuffer sbuf;
     double val1 = v[i];
     msgpack::pack(sbuf, val1);
-    msgpack::zone z;
-    msgpack::object obj;
-    msgpack::unpack_return ret =
-      msgpack::unpack(sbuf.data(), sbuf.size(), NULL, &z, &obj);
-    EXPECT_EQ(msgpack::UNPACK_SUCCESS, ret);
-    double val2;
-    obj.convert(&val2);
+    msgpack::unpacked ret;
+    msgpack::unpack(ret, sbuf.data(), sbuf.size());
+    double val2 = ret.get().as<double>();
 
-    if (isnan(val1))
-      EXPECT_TRUE(isnan(val2));
-    else if (isinf(val1))
-      EXPECT_TRUE(isinf(val2));
+    if (std::isnan(val1))
+      EXPECT_TRUE(std::isnan(val2));
+    else if (std::isinf(val1))
+      EXPECT_TRUE(std::isinf(val2));
     else
       EXPECT_TRUE(fabs(val2 - val1) <= kEPS);
   }
@@ -272,13 +255,9 @@ TEST(MSGPACK, simple_buffer_true)
   msgpack::sbuffer sbuf;
   bool val1 = true;
   msgpack::pack(sbuf, val1);
-  msgpack::zone z;
-  msgpack::object obj;
-  msgpack::unpack_return ret =
-    msgpack::unpack(sbuf.data(), sbuf.size(), NULL, &z, &obj);
-  EXPECT_EQ(msgpack::UNPACK_SUCCESS, ret);
-  bool val2;
-  obj.convert(&val2);
+  msgpack::unpacked ret;
+  msgpack::unpack(ret, sbuf.data(), sbuf.size());
+  bool val2 = ret.get().as<bool>();
   EXPECT_EQ(val1, val2);
 }
 
@@ -287,14 +266,174 @@ TEST(MSGPACK, simple_buffer_false)
   msgpack::sbuffer sbuf;
   bool val1 = false;
   msgpack::pack(sbuf, val1);
-  msgpack::zone z;
-  msgpack::object obj;
-  msgpack::unpack_return ret =
-    msgpack::unpack(sbuf.data(), sbuf.size(), NULL, &z, &obj);
-  EXPECT_EQ(msgpack::UNPACK_SUCCESS, ret);
-  bool val2;
-  obj.convert(&val2);
+  msgpack::unpacked ret;
+  msgpack::unpack(ret, sbuf.data(), sbuf.size());
+  bool val2 = ret.get().as<bool>();
   EXPECT_EQ(val1, val2);
+}
+
+TEST(MSGPACK, simple_buffer_fixext1)
+{
+  msgpack::sbuffer sbuf;
+  msgpack::packer<msgpack::sbuffer> packer(sbuf);
+  char const buf [] = { 2 };
+
+  packer.pack_ext(sizeof(buf), 1);
+  packer.pack_ext_body(buf, sizeof(buf));
+  msgpack::unpacked ret;
+  msgpack::unpack(ret, sbuf.data(), sbuf.size());
+  EXPECT_EQ(1, ret.get().via.ext.size);
+  EXPECT_EQ(1, ret.get().via.ext.type());
+  EXPECT_EQ(2, ret.get().via.ext.data()[0]);
+}
+
+TEST(MSGPACK, simple_buffer_fixext2)
+{
+  msgpack::sbuffer sbuf;
+  msgpack::packer<msgpack::sbuffer> packer(sbuf);
+  char const buf [] = { 2, 3 };
+
+  packer.pack_ext(sizeof(buf), 0);
+  packer.pack_ext_body(buf, sizeof(buf));
+  msgpack::unpacked ret;
+  msgpack::unpack(ret, sbuf.data(), sbuf.size());
+  EXPECT_EQ(2, ret.get().via.ext.size);
+  EXPECT_EQ(0, ret.get().via.ext.type());
+  EXPECT_TRUE(
+      std::equal(buf, buf + sizeof(buf), ret.get().via.ext.data()));
+}
+
+TEST(MSGPACK, simple_buffer_fixext4)
+{
+  msgpack::sbuffer sbuf;
+  msgpack::packer<msgpack::sbuffer> packer(sbuf);
+  char const buf [] = { 2, 3, 4, 5 };
+
+  packer.pack_ext(sizeof(buf), 1);
+  packer.pack_ext_body(buf, sizeof(buf));
+  msgpack::unpacked ret;
+  msgpack::unpack(ret, sbuf.data(), sbuf.size());
+  EXPECT_EQ(4, ret.get().via.ext.size);
+  EXPECT_EQ(1, ret.get().via.ext.type());
+  EXPECT_TRUE(
+      std::equal(buf, buf + sizeof(buf), ret.get().via.ext.data()));
+}
+
+TEST(MSGPACK, simple_buffer_fixext8)
+{
+  msgpack::sbuffer sbuf;
+  msgpack::packer<msgpack::sbuffer> packer(sbuf);
+  char const buf [] = { 2, 3, 4, 5, 6, 7, 8, 9 };
+
+  packer.pack_ext(sizeof(buf), 1);
+  packer.pack_ext_body(buf, sizeof(buf));
+  msgpack::unpacked ret;
+  msgpack::unpack(ret, sbuf.data(), sbuf.size());
+  EXPECT_EQ(8, ret.get().via.ext.size);
+  EXPECT_EQ(1, ret.get().via.ext.type());
+  EXPECT_TRUE(
+      std::equal(buf, buf + sizeof(buf), ret.get().via.ext.data()));
+}
+
+TEST(MSGPACK, simple_buffer_fixext16)
+{
+  msgpack::sbuffer sbuf;
+  msgpack::packer<msgpack::sbuffer> packer(sbuf);
+  char const buf [] = { 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17 };
+
+  packer.pack_ext(sizeof(buf), 1);
+  packer.pack_ext_body(buf, sizeof(buf));
+  msgpack::unpacked ret;
+  msgpack::unpack(ret, sbuf.data(), sbuf.size());
+  EXPECT_EQ(16, ret.get().via.ext.size);
+  EXPECT_EQ(1, ret.get().via.ext.type());
+  EXPECT_TRUE(
+      std::equal(buf, buf + sizeof(buf), ret.get().via.ext.data()));
+}
+
+TEST(MSGPACK, simple_buffer_fixext_1byte_0)
+{
+  std::size_t const size = 0;
+  msgpack::sbuffer sbuf;
+  msgpack::packer<msgpack::sbuffer> packer(sbuf);
+
+  packer.pack_ext(size, 77);
+  msgpack::unpacked ret;
+  msgpack::unpack(ret, sbuf.data(), sbuf.size());
+  EXPECT_EQ(size, ret.get().via.ext.size);
+  EXPECT_EQ(77, ret.get().via.ext.type());
+}
+
+TEST(MSGPACK, simple_buffer_fixext_1byte_255)
+{
+  std::size_t const size = 255;
+  msgpack::sbuffer sbuf;
+  msgpack::packer<msgpack::sbuffer> packer(sbuf);
+  char buf[size];
+  for (int i = 0; i != size; ++i) buf[i] = static_cast<char>(i);
+  packer.pack_ext(sizeof(buf), 77);
+  packer.pack_ext_body(buf, sizeof(buf));
+
+  msgpack::unpacked ret;
+  msgpack::unpack(ret, sbuf.data(), sbuf.size());
+  EXPECT_EQ(size, ret.get().via.ext.size);
+  EXPECT_EQ(77, ret.get().via.ext.type());
+  EXPECT_TRUE(
+      std::equal(buf, buf + sizeof(buf), ret.get().via.ext.data()));
+}
+
+TEST(MSGPACK, simple_buffer_fixext_2byte_256)
+{
+  std::size_t const size = 256;
+  msgpack::sbuffer sbuf;
+  msgpack::packer<msgpack::sbuffer> packer(sbuf);
+  char buf[size];
+  for (int i = 0; i != size; ++i) buf[i] = static_cast<char>(i);
+  packer.pack_ext(sizeof(buf), 77);
+  packer.pack_ext_body(buf, sizeof(buf));
+
+  msgpack::unpacked ret;
+  msgpack::unpack(ret, sbuf.data(), sbuf.size());
+  EXPECT_EQ(size, ret.get().via.ext.size);
+  EXPECT_EQ(77, ret.get().via.ext.type());
+  EXPECT_TRUE(
+      std::equal(buf, buf + sizeof(buf), ret.get().via.ext.data()));
+}
+
+TEST(MSGPACK, simple_buffer_fixext_2byte_65535)
+{
+  std::size_t const size = 65535;
+  msgpack::sbuffer sbuf;
+  msgpack::packer<msgpack::sbuffer> packer(sbuf);
+  char buf[size];
+  for (int i = 0; i != size; ++i) buf[i] = static_cast<char>(i);
+  packer.pack_ext(sizeof(buf), 77);
+  packer.pack_ext_body(buf, sizeof(buf));
+
+  msgpack::unpacked ret;
+  msgpack::unpack(ret, sbuf.data(), sbuf.size());
+  EXPECT_EQ(size, ret.get().via.ext.size);
+  EXPECT_EQ(77, ret.get().via.ext.type());
+  EXPECT_TRUE(
+      std::equal(buf, buf + sizeof(buf), ret.get().via.ext.data()));
+}
+
+TEST(MSGPACK, simple_buffer_fixext_4byte_65536)
+{
+  std::size_t const size = 65536;
+  msgpack::sbuffer sbuf;
+  msgpack::packer<msgpack::sbuffer> packer(sbuf);
+  char buf[size];
+  for (int i = 0; i != size; ++i) buf[i] = static_cast<char>(i);
+  packer.pack_ext(sizeof(buf), 77);
+  packer.pack_ext_body(buf, sizeof(buf));
+
+  msgpack::unpacked ret;
+  msgpack::unpack(ret, sbuf.data(), sbuf.size());
+  EXPECT_EQ(size, ret.get().via.ext.size);
+  EXPECT_EQ(77, ret.get().via.ext.type());
+  EXPECT_TRUE(
+      std::equal(buf, buf + sizeof(buf), ret.get().via.ext.data()));
 }
 
 //-----------------------------------------------------------------------------
@@ -309,13 +448,27 @@ TEST(MSGPACK_STL, simple_buffer_string)
       val1 += 'a' + rand() % 26;
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, val1);
-    msgpack::zone z;
-    msgpack::object obj;
-    msgpack::unpack_return ret =
-      msgpack::unpack(sbuf.data(), sbuf.size(), NULL, &z, &obj);
-    EXPECT_EQ(msgpack::UNPACK_SUCCESS, ret);
-    string val2;
-    obj.convert(&val2);
+    msgpack::unpacked ret;
+    msgpack::unpack(ret, sbuf.data(), sbuf.size());
+    EXPECT_EQ(ret.get().type, msgpack::type::STR);
+    string val2 = ret.get().as<string>();
+    EXPECT_EQ(val1.size(), val2.size());
+    EXPECT_EQ(val1, val2);
+  }
+}
+
+TEST(MSGPACK_STL, simple_buffer_cstring)
+{
+  for (unsigned int k = 0; k < kLoop; k++) {
+    string val1;
+    for (unsigned int i = 0; i < kElements; i++)
+      val1 += 'a' + rand() % 26;
+    msgpack::sbuffer sbuf;
+    msgpack::pack(sbuf, val1.c_str());
+    msgpack::unpacked ret;
+    msgpack::unpack(ret, sbuf.data(), sbuf.size());
+    EXPECT_EQ(ret.get().type, msgpack::type::STR);
+    string val2 = ret.get().as<string>();
     EXPECT_EQ(val1.size(), val2.size());
     EXPECT_EQ(val1, val2);
   }
@@ -329,13 +482,27 @@ TEST(MSGPACK_STL, simple_buffer_vector)
       val1.push_back(rand());
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, val1);
-    msgpack::zone z;
-    msgpack::object obj;
-    msgpack::unpack_return ret =
-      msgpack::unpack(sbuf.data(), sbuf.size(), NULL, &z, &obj);
-    EXPECT_EQ(msgpack::UNPACK_SUCCESS, ret);
-    vector<int> val2;
-    obj.convert(&val2);
+    msgpack::unpacked ret;
+    msgpack::unpack(ret, sbuf.data(), sbuf.size());
+    EXPECT_EQ(ret.get().type, msgpack::type::ARRAY);
+    vector<int> val2 = ret.get().as<vector<int> >();
+    EXPECT_EQ(val1.size(), val2.size());
+    EXPECT_TRUE(equal(val1.begin(), val1.end(), val2.begin()));
+  }
+}
+
+TEST(MSGPACK_STL, simple_buffer_vector_char)
+{
+  for (unsigned int k = 0; k < kLoop; k++) {
+    vector<char> val1;
+    for (unsigned int i = 0; i < kElements; i++)
+      val1.push_back(rand());
+    msgpack::sbuffer sbuf;
+    msgpack::pack(sbuf, val1);
+    msgpack::unpacked ret;
+    msgpack::unpack(ret, sbuf.data(), sbuf.size());
+    EXPECT_EQ(ret.get().type, msgpack::type::BIN);
+    vector<char> val2 = ret.get().as<vector<char> >();
     EXPECT_EQ(val1.size(), val2.size());
     EXPECT_TRUE(equal(val1.begin(), val1.end(), val2.begin()));
   }
@@ -349,13 +516,9 @@ TEST(MSGPACK_STL, simple_buffer_map)
       val1[rand()] = rand();
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, val1);
-    msgpack::zone z;
-    msgpack::object obj;
-    msgpack::unpack_return ret =
-      msgpack::unpack(sbuf.data(), sbuf.size(), NULL, &z, &obj);
-    EXPECT_EQ(msgpack::UNPACK_SUCCESS, ret);
-    map<int, int> val2;
-    obj.convert(&val2);
+    msgpack::unpacked ret;
+    msgpack::unpack(ret, sbuf.data(), sbuf.size());
+    map<int, int> val2 = ret.get().as<map<int, int> >();
     EXPECT_EQ(val1.size(), val2.size());
     EXPECT_TRUE(equal(val1.begin(), val1.end(), val2.begin()));
   }
@@ -369,13 +532,9 @@ TEST(MSGPACK_STL, simple_buffer_deque)
       val1.push_back(rand());
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, val1);
-    msgpack::zone z;
-    msgpack::object obj;
-    msgpack::unpack_return ret =
-      msgpack::unpack(sbuf.data(), sbuf.size(), NULL, &z, &obj);
-    EXPECT_EQ(msgpack::UNPACK_SUCCESS, ret);
-    deque<int> val2;
-    obj.convert(&val2);
+    msgpack::unpacked ret;
+    msgpack::unpack(ret, sbuf.data(), sbuf.size());
+    deque<int> val2 = ret.get().as<deque<int> >();
     EXPECT_EQ(val1.size(), val2.size());
     EXPECT_TRUE(equal(val1.begin(), val1.end(), val2.begin()));
   }
@@ -389,13 +548,9 @@ TEST(MSGPACK_STL, simple_buffer_list)
       val1.push_back(rand());
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, val1);
-    msgpack::zone z;
-    msgpack::object obj;
-    msgpack::unpack_return ret =
-      msgpack::unpack(sbuf.data(), sbuf.size(), NULL, &z, &obj);
-    EXPECT_EQ(msgpack::UNPACK_SUCCESS, ret);
-    list<int> val2;
-    obj.convert(&val2);
+    msgpack::unpacked ret;
+    msgpack::unpack(ret, sbuf.data(), sbuf.size());
+    list<int> val2 = ret.get().as<list<int> >();
     EXPECT_EQ(val1.size(), val2.size());
     EXPECT_TRUE(equal(val1.begin(), val1.end(), val2.begin()));
   }
@@ -409,13 +564,9 @@ TEST(MSGPACK_STL, simple_buffer_set)
       val1.insert(rand());
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, val1);
-    msgpack::zone z;
-    msgpack::object obj;
-    msgpack::unpack_return ret =
-      msgpack::unpack(sbuf.data(), sbuf.size(), NULL, &z, &obj);
-    EXPECT_EQ(msgpack::UNPACK_SUCCESS, ret);
-    set<int> val2;
-    obj.convert(&val2);
+    msgpack::unpacked ret;
+    msgpack::unpack(ret, sbuf.data(), sbuf.size());
+    set<int> val2 = ret.get().as<set<int> >();
     EXPECT_EQ(val1.size(), val2.size());
     EXPECT_TRUE(equal(val1.begin(), val1.end(), val2.begin()));
   }
@@ -427,13 +578,9 @@ TEST(MSGPACK_STL, simple_buffer_pair)
     pair<int, int> val1 = make_pair(rand(), rand());
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, val1);
-    msgpack::zone z;
-    msgpack::object obj;
-    msgpack::unpack_return ret =
-      msgpack::unpack(sbuf.data(), sbuf.size(), NULL, &z, &obj);
-    EXPECT_EQ(msgpack::UNPACK_SUCCESS, ret);
-    pair<int, int> val2;
-    obj.convert(&val2);
+    msgpack::unpacked ret;
+    msgpack::unpack(ret, sbuf.data(), sbuf.size());
+    pair<int, int> val2 = ret.get().as<pair<int, int> >();
     EXPECT_EQ(val1.first, val2.first);
     EXPECT_EQ(val1.second, val2.second);
   }
@@ -450,13 +597,9 @@ TEST(MSGPACK_STL, simple_buffer_multimap)
     }
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, val1);
-    msgpack::zone z;
-    msgpack::object obj;
-    msgpack::unpack_return ret =
-      msgpack::unpack(sbuf.data(), sbuf.size(), NULL, &z, &obj);
-    EXPECT_EQ(msgpack::UNPACK_SUCCESS, ret);
-    multimap<int, int> val2;
-    obj.convert(&val2);
+    msgpack::unpacked ret;
+    msgpack::unpack(ret, sbuf.data(), sbuf.size());
+    multimap<int, int> val2 = ret.get().as<multimap<int, int> >();
 
     vector<pair<int, int> > v1, v2;
     multimap<int, int>::const_iterator it;
@@ -480,13 +623,9 @@ TEST(MSGPACK_STL, simple_buffer_multiset)
       val1.insert(rand());
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, val1);
-    msgpack::zone z;
-    msgpack::object obj;
-    msgpack::unpack_return ret =
-      msgpack::unpack(sbuf.data(), sbuf.size(), NULL, &z, &obj);
-    EXPECT_EQ(msgpack::UNPACK_SUCCESS, ret);
-    multiset<int> val2;
-    obj.convert(&val2);
+    msgpack::unpacked ret;
+    msgpack::unpack(ret, sbuf.data(), sbuf.size());
+    multiset<int> val2 = ret.get().as<multiset<int> >();
 
     vector<int> v1, v2;
     multiset<int>::const_iterator it;
@@ -506,7 +645,7 @@ TEST(MSGPACK_STL, simple_buffer_multiset)
 
 #ifdef MSGPACK_HAS_STD_TR1_UNOURDERED_MAP
 #include <tr1/unordered_map>
-#include "msgpack/type/tr1/unordered_map.hpp"
+#include "msgpack/adaptor/tr1/unordered_map.hpp"
 TEST(MSGPACK_TR1, simple_buffer_tr1_unordered_map)
 {
   for (unsigned int k = 0; k < kLoop; k++) {
@@ -515,13 +654,9 @@ TEST(MSGPACK_TR1, simple_buffer_tr1_unordered_map)
       val1[rand()] = rand();
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, val1);
-    msgpack::zone z;
-    msgpack::object obj;
-    msgpack::unpack_return ret =
-      msgpack::unpack(sbuf.data(), sbuf.size(), NULL, &z, &obj);
-    EXPECT_EQ(msgpack::UNPACK_SUCCESS, ret);
-    tr1::unordered_map<int, int> val2;
-    obj.convert(&val2);
+    msgpack::unpacked ret;
+    msgpack::unpack(ret, sbuf.data(), sbuf.size());
+    tr1::unordered_map<int, int> val2 = ret.get().as<tr1::unordered_map<int, int> >();
     EXPECT_EQ(val1.size(), val2.size());
     tr1::unordered_map<int, int>::const_iterator it;
     for (it = val1.begin(); it != val1.end(); ++it) {
@@ -542,13 +677,9 @@ TEST(MSGPACK_TR1, simple_buffer_tr1_unordered_multimap)
     }
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, val1);
-    msgpack::zone z;
-    msgpack::object obj;
-    msgpack::unpack_return ret =
-      msgpack::unpack(sbuf.data(), sbuf.size(), NULL, &z, &obj);
-    EXPECT_EQ(msgpack::UNPACK_SUCCESS, ret);
-    tr1::unordered_multimap<int, int> val2;
-    obj.convert(&val2);
+    msgpack::unpacked ret;
+    msgpack::unpack(ret, sbuf.data(), sbuf.size());
+    tr1::unordered_multimap<int, int> val2 = ret.get().as<tr1::unordered_multimap<int, int> >();
 
     vector<pair<int, int> > v1, v2;
     tr1::unordered_multimap<int, int>::const_iterator it;
@@ -567,7 +698,7 @@ TEST(MSGPACK_TR1, simple_buffer_tr1_unordered_multimap)
 
 #ifdef MSGPACK_HAS_STD_TR1_UNOURDERED_SET
 #include <tr1/unordered_set>
-#include "msgpack/type/tr1/unordered_set.hpp"
+#include "msgpack/adaptor/tr1/unordered_set.hpp"
 TEST(MSGPACK_TR1, simple_buffer_tr1_unordered_set)
 {
   for (unsigned int k = 0; k < kLoop; k++) {
@@ -576,13 +707,9 @@ TEST(MSGPACK_TR1, simple_buffer_tr1_unordered_set)
       val1.insert(rand());
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, val1);
-    msgpack::zone z;
-    msgpack::object obj;
-    msgpack::unpack_return ret =
-      msgpack::unpack(sbuf.data(), sbuf.size(), NULL, &z, &obj);
-    EXPECT_EQ(msgpack::UNPACK_SUCCESS, ret);
-    tr1::unordered_set<int> val2;
-    obj.convert(&val2);
+    msgpack::unpacked ret;
+    msgpack::unpack(ret, sbuf.data(), sbuf.size());
+    tr1::unordered_set<int> val2 = ret.get().as<tr1::unordered_set<int> >();
     EXPECT_EQ(val1.size(), val2.size());
     tr1::unordered_set<int>::const_iterator it;
     for (it = val1.begin(); it != val1.end(); ++it)
@@ -598,13 +725,9 @@ TEST(MSGPACK_TR1, simple_buffer_tr1_unordered_multiset)
       val1.insert(rand());
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, val1);
-    msgpack::zone z;
-    msgpack::object obj;
-    msgpack::unpack_return ret =
-      msgpack::unpack(sbuf.data(), sbuf.size(), NULL, &z, &obj);
-    EXPECT_EQ(msgpack::UNPACK_SUCCESS, ret);
-    tr1::unordered_multiset<int> val2;
-    obj.convert(&val2);
+    msgpack::unpacked ret;
+    msgpack::unpack(ret, sbuf.data(), sbuf.size());
+    tr1::unordered_multiset<int> val2 = ret.get().as<tr1::unordered_multiset<int> >();
 
     vector<int> v1, v2;
     tr1::unordered_multiset<int>::const_iterator it;
@@ -623,7 +746,7 @@ TEST(MSGPACK_TR1, simple_buffer_tr1_unordered_multiset)
 
 #ifdef MSGPACK_HAS_STD_UNOURDERED_MAP
 #include <unordered_map>
-#include "msgpack/type/tr1/unordered_map.hpp"
+#include "msgpack/adaptor/tr1/unordered_map.hpp"
 TEST(MSGPACK_TR1, simple_buffer_unordered_map)
 {
   for (unsigned int k = 0; k < kLoop; k++) {
@@ -632,13 +755,9 @@ TEST(MSGPACK_TR1, simple_buffer_unordered_map)
       val1[rand()] = rand();
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, val1);
-    msgpack::zone z;
-    msgpack::object obj;
-    msgpack::unpack_return ret =
-      msgpack::unpack(sbuf.data(), sbuf.size(), NULL, &z, &obj);
-    EXPECT_EQ(msgpack::UNPACK_SUCCESS, ret);
-    unordered_map<int, int> val2;
-    obj.convert(&val2);
+    msgpack::unpacked ret;
+    msgpack::unpack(ret, sbuf.data(), sbuf.size());
+    unordered_map<int, int> val2 = ret.get().as<unordered_map<int, int> >();
     EXPECT_EQ(val1.size(), val2.size());
     unordered_map<int, int>::const_iterator it;
     for (it = val1.begin(); it != val1.end(); ++it) {
@@ -659,13 +778,9 @@ TEST(MSGPACK_TR1, simple_buffer_unordered_multimap)
     }
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, val1);
-    msgpack::zone z;
-    msgpack::object obj;
-    msgpack::unpack_return ret =
-      msgpack::unpack(sbuf.data(), sbuf.size(), NULL, &z, &obj);
-    EXPECT_EQ(msgpack::UNPACK_SUCCESS, ret);
-    unordered_multimap<int, int> val2;
-    obj.convert(&val2);
+    msgpack::unpacked ret;
+    msgpack::unpack(ret, sbuf.data(), sbuf.size());
+    unordered_multimap<int, int> val2 = ret.get().as<unordered_multimap<int, int> >();
 
     vector<pair<int, int> > v1, v2;
     unordered_multimap<int, int>::const_iterator it;
@@ -684,7 +799,7 @@ TEST(MSGPACK_TR1, simple_buffer_unordered_multimap)
 
 #ifdef MSGPACK_HAS_STD_UNOURDERED_SET
 #include <unordered_set>
-#include "msgpack/type/tr1/unordered_set.hpp"
+#include "msgpack/adaptor/tr1/unordered_set.hpp"
 TEST(MSGPACK_TR1, simple_buffer_unordered_set)
 {
   for (unsigned int k = 0; k < kLoop; k++) {
@@ -693,13 +808,9 @@ TEST(MSGPACK_TR1, simple_buffer_unordered_set)
       val1.insert(rand());
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, val1);
-    msgpack::zone z;
-    msgpack::object obj;
-    msgpack::unpack_return ret =
-      msgpack::unpack(sbuf.data(), sbuf.size(), NULL, &z, &obj);
-    EXPECT_EQ(msgpack::UNPACK_SUCCESS, ret);
-    unordered_set<int> val2;
-    obj.convert(&val2);
+    msgpack::unpacked ret;
+    msgpack::unpack(ret, sbuf.data(), sbuf.size());
+    unordered_set<int> val2 = ret.get().as<unordered_set<int> >();
     EXPECT_EQ(val1.size(), val2.size());
     unordered_set<int>::const_iterator it;
     for (it = val1.begin(); it != val1.end(); ++it)
@@ -715,13 +826,9 @@ TEST(MSGPACK_TR1, simple_buffer_unordered_multiset)
       val1.insert(rand());
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, val1);
-    msgpack::zone z;
-    msgpack::object obj;
-    msgpack::unpack_return ret =
-      msgpack::unpack(sbuf.data(), sbuf.size(), NULL, &z, &obj);
-    EXPECT_EQ(msgpack::UNPACK_SUCCESS, ret);
-    unordered_multiset<int> val2;
-    obj.convert(&val2);
+    msgpack::unpacked ret;
+    msgpack::unpack(ret, sbuf.data(), sbuf.size());
+    unordered_multiset<int> val2 = ret.get().as<unordered_multiset<int> >();
 
     vector<int> v1, v2;
     unordered_multiset<int>::const_iterator it;
@@ -737,6 +844,7 @@ TEST(MSGPACK_TR1, simple_buffer_unordered_multiset)
   }
 }
 #endif
+
 
 // User-Defined Structures
 
@@ -755,15 +863,9 @@ TEST(MSGPACK_USER_DEFINED, simple_buffer_class)
     TestClass val1;
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, val1);
-    msgpack::zone z;
-    msgpack::object obj;
-    msgpack::unpack_return ret =
-      msgpack::unpack(sbuf.data(), sbuf.size(), NULL, &z, &obj);
-    EXPECT_EQ(msgpack::UNPACK_SUCCESS, ret);
-    TestClass val2;
-    val2.i = -1;
-    val2.s = "";
-    obj.convert(&val2);
+    msgpack::unpacked ret;
+    msgpack::unpack(ret, sbuf.data(), sbuf.size());
+    TestClass val2 = ret.get().as<TestClass>();
     EXPECT_EQ(val1.i, val2.i);
     EXPECT_EQ(val1.s, val2.s);
   }
@@ -788,16 +890,9 @@ TEST(MSGPACK_USER_DEFINED, simple_buffer_class_old_to_new)
     TestClass val1;
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, val1);
-    msgpack::zone z;
-    msgpack::object obj;
-    msgpack::unpack_return ret =
-      msgpack::unpack(sbuf.data(), sbuf.size(), NULL, &z, &obj);
-    EXPECT_EQ(msgpack::UNPACK_SUCCESS, ret);
-    TestClass2 val2;
-    val2.i = -1;
-    val2.s = "";
-    val2.v = vector<int>();
-    obj.convert(&val2);
+    msgpack::unpacked ret;
+    msgpack::unpack(ret, sbuf.data(), sbuf.size());
+    TestClass2 val2 = ret.get().as<TestClass2>();
     EXPECT_EQ(val1.i, val2.i);
     EXPECT_EQ(val1.s, val2.s);
     EXPECT_FALSE(val2.s.empty());
@@ -810,15 +905,9 @@ TEST(MSGPACK_USER_DEFINED, simple_buffer_class_new_to_old)
     TestClass2 val1;
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, val1);
-    msgpack::zone z;
-    msgpack::object obj;
-    msgpack::unpack_return ret =
-      msgpack::unpack(sbuf.data(), sbuf.size(), NULL, &z, &obj);
-    EXPECT_EQ(msgpack::UNPACK_SUCCESS, ret);
-    TestClass val2;
-    val2.i = -1;
-    val2.s = "";
-    obj.convert(&val2);
+    msgpack::unpacked ret;
+    msgpack::unpack(ret, sbuf.data(), sbuf.size());
+    TestClass val2 = ret.get().as<TestClass>();
     EXPECT_EQ(val1.i, val2.i);
     EXPECT_EQ(val1.s, val2.s);
     EXPECT_FALSE(val2.s.empty());
@@ -851,16 +940,9 @@ TEST(MSGPACK_USER_DEFINED, simple_buffer_enum_member)
   TestEnumMemberClass val1;
   msgpack::sbuffer sbuf;
   msgpack::pack(sbuf, val1);
-  msgpack::zone z;
-  msgpack::object obj;
-  msgpack::unpack_return ret =
-    msgpack::unpack(sbuf.data(), sbuf.size(), NULL, &z, &obj);
-  EXPECT_EQ(msgpack::UNPACK_SUCCESS, ret);
-  TestEnumMemberClass val2;
-  val2.t1 = TestEnumMemberClass::STATE_INVALID;
-  val2.t2 = TestEnumMemberClass::STATE_INVALID;
-  val2.t3 = TestEnumMemberClass::STATE_INVALID;
-  obj.convert(&val2);
+  msgpack::unpacked ret;
+  msgpack::unpack(ret, sbuf.data(), sbuf.size());
+  TestEnumMemberClass val2 = ret.get().as<TestEnumMemberClass>();
   EXPECT_EQ(val1.t1, val2.t1);
   EXPECT_EQ(val1.t2, val2.t2);
   EXPECT_EQ(val1.t3, val2.t3);
@@ -914,13 +996,9 @@ TEST(MSGPACK_USER_DEFINED, simple_buffer_union_member)
     TestUnionMemberClass val1(1.0);
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, val1);
-    msgpack::zone z;
-    msgpack::object obj;
-    msgpack::unpack_return ret =
-      msgpack::unpack(sbuf.data(), sbuf.size(), NULL, &z, &obj);
-    EXPECT_EQ(msgpack::UNPACK_SUCCESS, ret);
-    TestUnionMemberClass val2;
-    obj.convert(&val2);
+    msgpack::unpacked ret;
+    msgpack::unpack(ret, sbuf.data(), sbuf.size());
+    TestUnionMemberClass val2 = ret.get().as<TestUnionMemberClass>();
     EXPECT_EQ(val1.is_double, val2.is_double);
     EXPECT_TRUE(fabs(val1.value.f - val2.value.f) < kEPS);
   }
@@ -929,13 +1007,9 @@ TEST(MSGPACK_USER_DEFINED, simple_buffer_union_member)
     TestUnionMemberClass val1(1);
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, val1);
-    msgpack::zone z;
-    msgpack::object obj;
-    msgpack::unpack_return ret =
-      msgpack::unpack(sbuf.data(), sbuf.size(), NULL, &z, &obj);
-    EXPECT_EQ(msgpack::UNPACK_SUCCESS, ret);
-    TestUnionMemberClass val2;
-    obj.convert(&val2);
+    msgpack::unpacked ret;
+    msgpack::unpack(ret, sbuf.data(), sbuf.size());
+    TestUnionMemberClass val2 = ret.get().as<TestUnionMemberClass>();
     EXPECT_EQ(val1.is_double, val2.is_double);
     EXPECT_EQ(val1.value.i, 1);
     EXPECT_EQ(val1.value.i, val2.value.i);
@@ -944,123 +1018,252 @@ TEST(MSGPACK_USER_DEFINED, simple_buffer_union_member)
 
 //-----------------------------------------------------------------------------
 
-#define GEN_TEST_VREF(test_type)                                        \
+#define GEN_TEST_VREF(test_type, vbuf)                                  \
   do {                                                                  \
     vector<test_type> v;                                                \
     v.push_back(0);                                                     \
     for (unsigned int i = 0; i < v.size(); i++) {                       \
       test_type val1 = v[i];                                            \
-      msgpack::vrefbuffer vbuf;                                         \
       msgpack::pack(vbuf, val1);                                        \
       msgpack::sbuffer sbuf;                                            \
       const struct iovec* cur = vbuf.vector();                          \
       const struct iovec* end = cur + vbuf.vector_size();               \
       for(; cur != end; ++cur)                                          \
         sbuf.write((const char*)cur->iov_base, cur->iov_len);           \
-      msgpack::zone z;                                                  \
-      msgpack::object obj;                                              \
-      msgpack::unpack_return ret =                                      \
-        msgpack::unpack(sbuf.data(), sbuf.size(), NULL, &z, &obj);      \
-      EXPECT_EQ(msgpack::UNPACK_SUCCESS, ret);                          \
-      test_type val2;                                                   \
-      obj.convert(&val2);                                               \
+      msgpack::unpacked ret;                                            \
+      msgpack::unpack(ret, sbuf.data(), sbuf.size());                   \
+      test_type val2 = ret.get().as<test_type>();                       \
       EXPECT_EQ(val1, val2);                                            \
     }                                                                   \
   } while(0);
 
 TEST(MSGPACK, vrefbuffer_char)
 {
-  GEN_TEST_VREF(char);
+  msgpack::vrefbuffer vbuf;
+  GEN_TEST_VREF(char, vbuf);
 }
 
 TEST(MSGPACK, vrefbuffer_signed_char)
 {
-  GEN_TEST_VREF(signed char);
+  msgpack::vrefbuffer vbuf;
+  GEN_TEST_VREF(signed char, vbuf);
 }
 
 TEST(MSGPACK, vrefbuffer_unsigned_char)
 {
-  GEN_TEST_VREF(unsigned char);
+  msgpack::vrefbuffer vbuf;
+  GEN_TEST_VREF(unsigned char, vbuf);
 }
 
 TEST(MSGPACK, vrefbuffer_short)
 {
-  GEN_TEST_VREF(short);
+  msgpack::vrefbuffer vbuf;
+  GEN_TEST_VREF(short, vbuf);
 }
 
 TEST(MSGPACK, vrefbuffer_int)
 {
-  GEN_TEST_VREF(int);
+  msgpack::vrefbuffer vbuf;
+  GEN_TEST_VREF(int, vbuf);
 }
 
 TEST(MSGPACK, vrefbuffer_long)
 {
-  GEN_TEST_VREF(long);
+  msgpack::vrefbuffer vbuf;
+  GEN_TEST_VREF(long, vbuf);
 }
 
 TEST(MSGPACK, vrefbuffer_long_long)
 {
-  GEN_TEST_VREF(long long);
+  msgpack::vrefbuffer vbuf;
+  GEN_TEST_VREF(long long, vbuf);
 }
 
 TEST(MSGPACK, vrefbuffer_unsigned_short)
 {
-  GEN_TEST_VREF(unsigned short);
+  msgpack::vrefbuffer vbuf;
+  GEN_TEST_VREF(unsigned short, vbuf);
 }
 
 TEST(MSGPACK, vrefbuffer_unsigned_int)
 {
-  GEN_TEST_VREF(unsigned int);
+  msgpack::vrefbuffer vbuf;
+  GEN_TEST_VREF(unsigned int, vbuf);
 }
 
 TEST(MSGPACK, vrefbuffer_unsigned_long)
 {
-  GEN_TEST_VREF(unsigned long);
+  msgpack::vrefbuffer vbuf;
+  GEN_TEST_VREF(unsigned long, vbuf);
 }
 
 TEST(MSGPACK, vrefbuffer_unsigned_long_long)
 {
-  GEN_TEST_VREF(unsigned long long);
+  msgpack::vrefbuffer vbuf;
+  GEN_TEST_VREF(unsigned long long, vbuf);
 }
 
 TEST(MSGPACK, vrefbuffer_uint8)
 {
-  GEN_TEST_VREF(uint8_t);
+  msgpack::vrefbuffer vbuf;
+  GEN_TEST_VREF(uint8_t, vbuf);
 }
 
 TEST(MSGPACK, vrefbuffer_uint16)
 {
-  GEN_TEST_VREF(uint16_t);
+  msgpack::vrefbuffer vbuf;
+  GEN_TEST_VREF(uint16_t, vbuf);
 }
 
 TEST(MSGPACK, vrefbuffer_uint32)
 {
-  GEN_TEST_VREF(uint32_t);
+  msgpack::vrefbuffer vbuf;
+  GEN_TEST_VREF(uint32_t, vbuf);
 }
 
 TEST(MSGPACK, vrefbuffer_uint64)
 {
-  GEN_TEST_VREF(uint64_t);
+  msgpack::vrefbuffer vbuf;
+  GEN_TEST_VREF(uint64_t, vbuf);
 }
 
 TEST(MSGPACK, vrefbuffer_int8)
 {
-  GEN_TEST_VREF(int8_t);
+  msgpack::vrefbuffer vbuf;
+  GEN_TEST_VREF(int8_t, vbuf);
 }
 
 TEST(MSGPACK, vrefbuffer_int16)
 {
-  GEN_TEST_VREF(int16_t);
+  msgpack::vrefbuffer vbuf;
+  GEN_TEST_VREF(int16_t, vbuf);
 }
 
 TEST(MSGPACK, vrefbuffer_int32)
 {
-  GEN_TEST_VREF(int32_t);
+  msgpack::vrefbuffer vbuf;
+  GEN_TEST_VREF(int32_t, vbuf);
 }
 
 TEST(MSGPACK, vrefbuffer_int64)
 {
-  GEN_TEST_VREF(int64_t);
+  msgpack::vrefbuffer vbuf;
+  GEN_TEST_VREF(int64_t, vbuf);
+}
+
+// small ref_size and chunk_size
+TEST(MSGPACK, vrefbuffer_small_char)
+{
+  msgpack::vrefbuffer vbuf(0, 0);
+  GEN_TEST_VREF(char, vbuf);
+}
+
+TEST(MSGPACK, vrefbuffer_small_signed_char)
+{
+  msgpack::vrefbuffer vbuf(0, 0);
+  GEN_TEST_VREF(signed char, vbuf);
+}
+
+TEST(MSGPACK, vrefbuffer_small_unsigned_char)
+{
+  msgpack::vrefbuffer vbuf(0, 0);
+  GEN_TEST_VREF(unsigned char, vbuf);
+}
+
+TEST(MSGPACK, vrefbuffer_small_short)
+{
+  msgpack::vrefbuffer vbuf(0, 0);
+  GEN_TEST_VREF(short, vbuf);
+}
+
+TEST(MSGPACK, vrefbuffer_small_int)
+{
+  msgpack::vrefbuffer vbuf(0, 0);
+  GEN_TEST_VREF(int, vbuf);
+}
+
+TEST(MSGPACK, vrefbuffer_small_long)
+{
+  msgpack::vrefbuffer vbuf(0, 0);
+  GEN_TEST_VREF(long, vbuf);
+}
+
+TEST(MSGPACK, vrefbuffer_small_long_long)
+{
+  msgpack::vrefbuffer vbuf(0, 0);
+  GEN_TEST_VREF(long long, vbuf);
+}
+
+TEST(MSGPACK, vrefbuffer_small_unsigned_short)
+{
+  msgpack::vrefbuffer vbuf(0, 0);
+  GEN_TEST_VREF(unsigned short, vbuf);
+}
+
+TEST(MSGPACK, vrefbuffer_small_unsigned_int)
+{
+  msgpack::vrefbuffer vbuf(0, 0);
+  GEN_TEST_VREF(unsigned int, vbuf);
+}
+
+TEST(MSGPACK, vrefbuffer_small_unsigned_long)
+{
+  msgpack::vrefbuffer vbuf(0, 0);
+  GEN_TEST_VREF(unsigned long, vbuf);
+}
+
+TEST(MSGPACK, vrefbuffer_small_unsigned_long_long)
+{
+  msgpack::vrefbuffer vbuf(0, 0);
+  GEN_TEST_VREF(unsigned long long, vbuf);
+}
+
+TEST(MSGPACK, vrefbuffer_small_uint8)
+{
+  msgpack::vrefbuffer vbuf(0, 0);
+  GEN_TEST_VREF(uint8_t, vbuf);
+}
+
+TEST(MSGPACK, vrefbuffer_small_uint16)
+{
+  msgpack::vrefbuffer vbuf(0, 0);
+  GEN_TEST_VREF(uint16_t, vbuf);
+}
+
+TEST(MSGPACK, vrefbuffer_small_uint32)
+{
+  msgpack::vrefbuffer vbuf(0, 0);
+  GEN_TEST_VREF(uint32_t, vbuf);
+}
+
+TEST(MSGPACK, vrefbuffer_small_uint64)
+{
+  msgpack::vrefbuffer vbuf(0, 0);
+  GEN_TEST_VREF(uint64_t, vbuf);
+}
+
+TEST(MSGPACK, vrefbuffer_small_int8)
+{
+  msgpack::vrefbuffer vbuf(0, 0);
+  GEN_TEST_VREF(int8_t, vbuf);
+}
+
+TEST(MSGPACK, vrefbuffer_small_int16)
+{
+  msgpack::vrefbuffer vbuf(0, 0);
+  GEN_TEST_VREF(int16_t, vbuf);
+}
+
+TEST(MSGPACK, vrefbuffer_small_int32)
+{
+  msgpack::vrefbuffer vbuf(0, 0);
+  GEN_TEST_VREF(int32_t, vbuf);
+}
+
+TEST(MSGPACK, vrefbuffer_small_int64)
+{
+  msgpack::vrefbuffer vbuf(0, 0);
+  GEN_TEST_VREF(int64_t, vbuf);
 }
 
 //-----------------------------------------------------------------------------
@@ -1085,17 +1288,14 @@ TEST(MSGPACK, vrefbuffer_int64)
       pac.reserve_buffer(sz);                                           \
       memcpy(pac.buffer(), p, sz);                                      \
       pac.buffer_consumed(sz);                                          \
-      while (pac.execute()) {                                           \
+      msgpack::unpacked result;                                         \
+      while (pac.next(result)) {                                        \
         if (it == vec.end()) goto out;                                  \
-        msgpack::object obj = pac.data();                               \
-        msgpack::zone *life = pac.release_zone();                       \
-        EXPECT_TRUE(life != NULL);                                      \
-        pac.reset();                                                    \
+        msgpack::object obj = result.get();                             \
         vec_type::value_type val;                                       \
         obj.convert(&val);                                              \
         EXPECT_EQ(*it, val);                                            \
         ++it;                                                           \
-        msgpack_zone_free(life);                                        \
       }                                                                 \
       p += sz;                                                          \
     }                                                                   \
