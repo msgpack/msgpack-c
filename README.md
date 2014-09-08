@@ -19,6 +19,8 @@ The source for msgpack-c is held at [msgpack-c](https://github.com/msgpack/msgpa
 
 To report an issue, use the [msgpack-c issue tracker](https://github.com/msgpack/msgpack-c/issues) at github.com.
 
+## Version
+0.6.0 [![Build Status](https://travis-ci.org/msgpack/msgpack-c.svg?branch=poc/0.6)](https://travis-ci.org/msgpack/msgpack-c)
 
 ## Using Msgpack
 
