@@ -840,7 +840,6 @@ public:
 private:
     object m_obj;
     msgpack::unique_ptr<msgpack::zone> m_zone;
-    bool m_referenced;
 };
 
 
