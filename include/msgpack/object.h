@@ -69,6 +69,12 @@ typedef struct {
     const char* ptr;
 } msgpack_object_bin;
 
+typedef struct {
+    int8_t type;
+    uint32_t size;
+    const char* ptr;
+} msgpack_object_ext;
+
 typedef union {
     bool boolean;
     uint64_t u64;
@@ -78,6 +84,7 @@ typedef union {
     msgpack_object_map map;
     msgpack_object_str str;
     msgpack_object_bin bin;
+    msgpack_object_ext ext;
 } msgpack_object_union;
 
 typedef struct msgpack_object {
