@@ -18,8 +18,6 @@
 using namespace std;
 
 const unsigned int kLoop = 1000;
-const unsigned int kElements = 100;
-const double kEPS = 1e-10;
 
 
 #define GEN_TEST_STREAM(test_type)                                      \

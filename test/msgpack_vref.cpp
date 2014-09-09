@@ -17,10 +17,6 @@
 
 using namespace std;
 
-const unsigned int kLoop = 10000;
-const unsigned int kElements = 100;
-const double kEPS = 1e-10;
-
 #define GEN_TEST_VREF(test_type, vbuf)                                  \
   do {                                                                  \
     vector<test_type> v;                                                \
