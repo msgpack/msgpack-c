@@ -205,9 +205,10 @@ msgpack_unpack_func(int, _execute)(msgpack_unpack_struct(_context)* ctx, const c
                 case 0xc5: // bin 16
                 case 0xc6: // bin 32
                     again_fixed_trail(NEXT_CS(p), 1 << (((unsigned int)*p) & 0x03));
-                //case 0xc7:
-                //case 0xc8:
-                //case 0xc9:
+                case 0xc7: // ext 8
+                case 0xc8: // ext 16
+                case 0xc9: // ext 32
+                    again_fixed_trail(NEXT_CS(p), 1 << ((((unsigned int)*p) + 1) & 0x03));
                 case 0xca:  // float
                 case 0xcb:  // double
                 case 0xcc:  // unsigned int  8
@@ -219,11 +220,15 @@ msgpack_unpack_func(int, _execute)(msgpack_unpack_struct(_context)* ctx, const c
                 case 0xd2:  // signed int 32
                 case 0xd3:  // signed int 64
                     again_fixed_trail(NEXT_CS(p), 1 << (((unsigned int)*p) & 0x03));
-                //case 0xd4:
-                //case 0xd5:
-                //case 0xd6:  // big integer 16
-                //case 0xd7:  // big integer 32
-                //case 0xd8:  // big float 16
+                case 0xd4:  // fixext 1
+                case 0xd5:  // fixext 2
+                case 0xd6:  // fixext 4
+                case 0xd7:  // fixext 8
+                    again_fixed_trail_if_zero(ACS_EXT_VALUE,
+                        (1 << (((unsigned int)*p) & 0x03)) + 1, _ext_zero);
+                case 0xd8:  // fixext 16
+                    again_fixed_trail_if_zero(ACS_EXT_VALUE, 16+1, _ext_zero);
+
                 case 0xd9:  // str 8
                 case 0xda:  // str 16
                 case 0xdb:  // str 32
@@ -304,31 +309,22 @@ msgpack_unpack_func(int, _execute)(msgpack_unpack_struct(_context)* ctx, const c
                 _msgpack_load64(int64_t,n,&tmp);
                 push_fixed_value(_int64, tmp);
             }
-
-            //case CS_
-            //case CS_
-            //case CS_BIG_INT_16:
-            //  again_fixed_trail_if_zero(ACS_BIG_INT_VALUE, _msgpack_load16(uint16_t,n), _big_int_zero);
-            //case CS_BIG_INT_32:
-            //  again_fixed_trail_if_zero(ACS_BIG_INT_VALUE, _msgpack_load32(uint32_t,n), _big_int_zero);
-            //case ACS_BIG_INT_VALUE:
-            //_big_int_zero:
-            //  // FIXME
-            //  push_variable_value(_big_int, data, n, trail);
-
-            //case CS_BIG_FLOAT_16:
-            //  again_fixed_trail_if_zero(ACS_BIG_FLOAT_VALUE, _msgpack_load16(uint16_t,n), _big_float_zero);
-            //case CS_BIG_FLOAT_32:
-            //  again_fixed_trail_if_zero(ACS_BIG_FLOAT_VALUE, _msgpack_load32(uint32_t,n), _big_float_zero);
-            //case ACS_BIG_FLOAT_VALUE:
-            //_big_float_zero:
-            //  // FIXME
-            //  push_variable_value(_big_float, data, n, trail);
-
+            case CS_FIXEXT_1:
+                again_fixed_trail_if_zero(ACS_EXT_VALUE, 1+1, _ext_zero);
+            case CS_FIXEXT_2:
+                again_fixed_trail_if_zero(ACS_EXT_VALUE, 2+1, _ext_zero);
+            case CS_FIXEXT_4:
+                again_fixed_trail_if_zero(ACS_EXT_VALUE, 4+1, _ext_zero);
+            case CS_FIXEXT_8:
+                again_fixed_trail_if_zero(ACS_EXT_VALUE, 8+1, _ext_zero);
+            case CS_FIXEXT_16:
+                again_fixed_trail_if_zero(ACS_EXT_VALUE, 16+1, _ext_zero);
             case CS_STR_8:
                 again_fixed_trail_if_zero(ACS_STR_VALUE, *(uint8_t*)n, _str_zero);
             case CS_BIN_8:
                 again_fixed_trail_if_zero(ACS_BIN_VALUE, *(uint8_t*)n, _bin_zero);
+            case CS_EXT_8:
+                again_fixed_trail_if_zero(ACS_EXT_VALUE, *(uint8_t*)n, _ext_zero);
             case CS_STR_16:{
                 uint16_t tmp;
                 _msgpack_load16(uint16_t,n,&tmp);
@@ -338,6 +334,11 @@ msgpack_unpack_func(int, _execute)(msgpack_unpack_struct(_context)* ctx, const c
                 uint16_t tmp;
                 _msgpack_load16(uint16_t,n,&tmp);
                 again_fixed_trail_if_zero(ACS_BIN_VALUE, tmp, _bin_zero);
+            }
+            case CS_EXT_16:{
+                uint16_t tmp;
+                _msgpack_load16(uint16_t,n,&tmp);
+                again_fixed_trail_if_zero(ACS_EXT_VALUE, tmp, _ext_zero);
             }
             case CS_STR_32:{
                 uint32_t tmp;
@@ -349,12 +350,20 @@ msgpack_unpack_func(int, _execute)(msgpack_unpack_struct(_context)* ctx, const c
                 _msgpack_load32(uint32_t,n,&tmp);
                 again_fixed_trail_if_zero(ACS_BIN_VALUE, tmp, _bin_zero);
             }
+            case CS_EXT_32:{
+                uint32_t tmp;
+                _msgpack_load32(uint32_t,n,&tmp);
+                again_fixed_trail_if_zero(ACS_EXT_VALUE, tmp, _ext_zero);
+            }
             case ACS_STR_VALUE:
             _str_zero:
                 push_variable_value(_str, data, n, trail);
             case ACS_BIN_VALUE:
             _bin_zero:
                 push_variable_value(_bin, data, n, trail);
+            case ACS_EXT_VALUE:
+            _ext_zero:
+                push_variable_value(_ext, data, n, trail);
 
             case CS_ARRAY_16:{
                 uint16_t tmp;

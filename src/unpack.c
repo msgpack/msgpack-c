@@ -261,6 +261,18 @@ static inline int template_callback_bin(unpack_user* u, const char* b, const cha
     return 0;
 }
 
+static inline int template_callback_ext(unpack_user* u, const char* b, const char* p, unsigned int l, msgpack_object* o)
+{
+    MSGPACK_UNUSED(u);
+    MSGPACK_UNUSED(b);
+    o->type = MSGPACK_OBJECT_EXT;
+    o->via.ext.type = *p;
+    o->via.ext.ptr = p + 1;
+    o->via.ext.size = l - 1;
+    u->referenced = true;
+    return 0;
+}
+
 #include "msgpack/unpack_template.h"
 
 
