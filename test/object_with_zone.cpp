@@ -8,7 +8,7 @@
 
 using namespace std;
 
-const unsigned int kLoop = 10000;
+const unsigned int kLoop = 1000;
 const unsigned int kElements = 100;
 const double kEPS = 1e-10;
 

@@ -17,9 +17,12 @@ check_PROGRAMS = \
 		fixint_c \
 		version \
 		msgpack_tuple \
-		msgpackc_test \
-		msgpack_test \
-		msgpack_test_cpp11 \
+		msgpack_c \
+		msgpack_basic \
+		msgpack_container \
+		msgpack_stream \
+		msgpack_vref \
+		msgpack_cpp11 \
 		reference
 
 TESTS = $(check_PROGRAMS)
@@ -53,11 +56,17 @@ version_SOURCES = version.cpp
 
 msgpack_tuple_SOURCES = msgpack_tuple.cpp
 
-msgpackc_test_SOURCES = msgpackc_test.cpp
+msgpack_c_SOURCES = msgpack_c.cpp
 
-msgpack_test_SOURCES = msgpack_test.cpp
+msgpack_basic_SOURCES = msgpack_basic.cpp
 
-msgpack_test_cpp11_SOURCES = msgpack_test_cpp11.cpp
+msgpack_container_SOURCES = msgpack_container.cpp
+
+msgpack_stream_SOURCES = msgpack_stream.cpp
+
+msgpack_vref_SOURCES = msgpack_vref.cpp
+
+msgpack_cpp11_SOURCES = msgpack_cpp11.cpp
 
 reference_SOURCES = reference.cpp
 
