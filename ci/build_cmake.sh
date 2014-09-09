@@ -45,4 +45,12 @@ then
     exit $ret
 fi
 
+make install DESTDIR=`pwd`/install
+
+ret=$?
+if [ $ret -ne 0 ]
+then
+    exit $ret
+fi
+
 exit 0
