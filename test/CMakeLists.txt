@@ -22,14 +22,17 @@ LIST (APPEND check_PROGRAMS
     fixint.cpp
     fixint_c.cpp
     msgpack_tuple.cpp
-    msgpack_test.cpp
-    msgpackc_test.cpp
+    msgpack_basic.cpp
+    msgpack_container.cpp
+    msgpack_stream.cpp
+    msgpack_vref.cpp
+    msgpack_c.cpp
     reference.cpp
 )
 
 IF (MSGPACK_CXX11)
     LIST (APPEND check_PROGRAMS
-        msgpack_test_cpp11.cpp
+        msgpack_cpp11.cpp
     )
 ENDIF ()
 
