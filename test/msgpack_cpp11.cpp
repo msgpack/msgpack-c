@@ -26,6 +26,17 @@ TEST(MSGPACK_CPP11, simple_tuple)
     EXPECT_EQ(val1, val2);
 }
 
+TEST(MSGPACK_CPP11, simple_tuple_empty)
+{
+    msgpack::sbuffer sbuf;
+    std::tuple<> val1;
+    msgpack::pack(sbuf, val1);
+    msgpack::unpacked ret;
+    msgpack::unpack(ret, sbuf.data(), sbuf.size());
+    std::tuple<> val2 = ret.get().as<std::tuple<> >();
+    EXPECT_EQ(val1, val2);
+}
+
 TEST(MSGPACK_CPP11, simple_array)
 {
     for (unsigned int k = 0; k < kLoop; k++) {

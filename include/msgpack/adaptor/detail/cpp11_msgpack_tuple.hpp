@@ -109,6 +109,14 @@ struct MsgpackTuplePacker<Stream, Tuple, 1> {
     }
 };
 
+template <typename Stream, typename Tuple>
+struct MsgpackTuplePacker<Stream, Tuple, 0> {
+    static void pack (
+        packer<Stream>&,
+        const Tuple&) {
+    }
+};
+
 template <typename Stream, typename... Args>
 const packer<Stream>& operator<< (
     packer<Stream>& o,
@@ -139,6 +147,14 @@ struct MsgpackTupleConverter<Tuple, 1> {
     }
 };
 
+template <typename Tuple>
+struct MsgpackTupleConverter<Tuple, 0> {
+    static void convert (
+        object const&,
+        Tuple&) {
+    }
+};
+
 template <typename... Args>
 object const& operator>> (
     object const& o,
@@ -166,6 +182,14 @@ struct MsgpackTupleToObjectWithZone<Tuple, 1> {
         object::with_zone& o,
         const Tuple& v) {
         o.via.array.ptr[0] = object(type::get<0>(v), o.zone);
+    }
+};
+
+template <typename Tuple>
+struct MsgpackTupleToObjectWithZone<Tuple, 0> {
+    static void convert (
+        object::with_zone&,
+        const Tuple&) {
     }
 };
 
