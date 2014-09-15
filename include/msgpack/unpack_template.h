@@ -324,7 +324,7 @@ msgpack_unpack_func(int, _execute)(msgpack_unpack_struct(_context)* ctx, const c
             case CS_BIN_8:
                 again_fixed_trail_if_zero(ACS_BIN_VALUE, *(uint8_t*)n, _bin_zero);
             case CS_EXT_8:
-                again_fixed_trail_if_zero(ACS_EXT_VALUE, *(uint8_t*)n, _ext_zero);
+                again_fixed_trail_if_zero(ACS_EXT_VALUE, (*(uint8_t*)n) + 1, _ext_zero);
             case CS_STR_16:{
                 uint16_t tmp;
                 _msgpack_load16(uint16_t,n,&tmp);
@@ -338,7 +338,7 @@ msgpack_unpack_func(int, _execute)(msgpack_unpack_struct(_context)* ctx, const c
             case CS_EXT_16:{
                 uint16_t tmp;
                 _msgpack_load16(uint16_t,n,&tmp);
-                again_fixed_trail_if_zero(ACS_EXT_VALUE, tmp, _ext_zero);
+                again_fixed_trail_if_zero(ACS_EXT_VALUE, tmp + 1, _ext_zero);
             }
             case CS_STR_32:{
                 uint32_t tmp;
@@ -353,7 +353,7 @@ msgpack_unpack_func(int, _execute)(msgpack_unpack_struct(_context)* ctx, const c
             case CS_EXT_32:{
                 uint32_t tmp;
                 _msgpack_load32(uint32_t,n,&tmp);
-                again_fixed_trail_if_zero(ACS_EXT_VALUE, tmp, _ext_zero);
+                again_fixed_trail_if_zero(ACS_EXT_VALUE, tmp + 1, _ext_zero);
             }
             case ACS_STR_VALUE:
             _str_zero:
