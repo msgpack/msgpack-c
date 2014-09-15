@@ -841,7 +841,6 @@ msgpack_pack_inline_func(_ext)(msgpack_pack_user x, size_t l, int8_t type)
         msgpack_pack_append_buffer(x, buf, 2);
     } break;
     default:
-        l += 1;
         if(l < 256) {
             char buf[3];
             buf[0] = 0xc7;
