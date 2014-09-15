@@ -30,10 +30,12 @@ inline object const& operator>> (object const& o, std::set<T>& v)
     if(o.type != type::ARRAY) { throw type_error(); }
     object* p = o.via.array.ptr + o.via.array.size;
     object* const pbegin = o.via.array.ptr;
+    std::set<T> tmp;
     while(p > pbegin) {
         --p;
-        v.insert(p->as<T>());
+        tmp.insert(p->as<T>());
     }
+    tmp.swap(v);
     return o;
 }
 
@@ -76,10 +78,12 @@ inline object const& operator>> (object const& o, std::multiset<T>& v)
     if(o.type != type::ARRAY) { throw type_error(); }
     object* p = o.via.array.ptr + o.via.array.size;
     object* const pbegin = o.via.array.ptr;
+    std::multiset<T> tmp;
     while(p > pbegin) {
         --p;
-        v.insert(p->as<T>());
+        tmp.insert(p->as<T>());
     }
+    tmp.swap(v);
     return o;
 }
 
