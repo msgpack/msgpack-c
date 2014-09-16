@@ -964,6 +964,24 @@ private:
     unpacker& operator=(const unpacker&);
 };
 
+#if !defined(MSGPACK_USE_CPP03)
+
+inline unpacked unpack(
+    const char* data, std::size_t len, std::size_t& off, bool& referenced,
+    unpack_reference_func f = nullptr, void* user_data = nullptr);
+inline unpacked unpack(
+    const char* data, std::size_t len, std::size_t& off,
+    unpack_reference_func f = nullptr, void* user_data = nullptr);
+inline unpacked unpack(
+    const char* data, std::size_t len, bool& referenced,
+    unpack_reference_func f = nullptr, void* user_data = nullptr);
+inline unpacked unpack(
+    const char* data, std::size_t len,
+    unpack_reference_func f = nullptr, void* user_data = nullptr);
+
+#endif // !defined(MSGPACK_USE_CPP03)
+
+
 inline void unpack(unpacked& result,
                    const char* data, std::size_t len, std::size_t& off, bool& referenced,
                    unpack_reference_func f = nullptr, void* user_data = nullptr);
@@ -1312,6 +1330,61 @@ unpack_imp(const char* data, std::size_t len, std::size_t& off,
 } // detail
 
 // reference version
+
+#if !defined(MSGPACK_USE_CPP03)
+
+inline unpacked unpack(
+    const char* data, std::size_t len, std::size_t& off, bool& referenced,
+    unpack_reference_func f, void* user_data)
+{
+    object obj;
+    msgpack::unique_ptr<zone> z(new zone);
+    referenced = false;
+    unpack_return ret = detail::unpack_imp(
+        data, len, off, *z, obj, referenced, f, user_data);
+
+    switch(ret) {
+    case UNPACK_SUCCESS:
+        return unpacked(obj, msgpack::move(z));
+    case UNPACK_EXTRA_BYTES:
+        return unpacked(obj, msgpack::move(z));
+    case UNPACK_CONTINUE:
+        throw unpack_error("insufficient bytes");
+    case UNPACK_PARSE_ERROR:
+    default:
+        throw unpack_error("parse error");
+    }
+    return unpacked();
+}
+
+inline unpacked unpack(
+    const char* data, std::size_t len, std::size_t& off,
+    unpack_reference_func f, void* user_data)
+{
+    bool referenced;
+    return unpack(data, len, off, referenced, f, user_data);
+}
+
+inline unpacked unpack(
+    const char* data, std::size_t len, bool& referenced,
+    unpack_reference_func f, void* user_data)
+{
+    std::size_t off = 0;
+    return unpack(data, len, off, referenced, f, user_data);
+}
+
+inline unpacked unpack(
+    const char* data, std::size_t len,
+    unpack_reference_func f, void* user_data)
+{
+    bool referenced;
+    std::size_t off = 0;
+    return unpack(data, len, off, referenced, f, user_data);
+}
+
+#endif // !defined(MSGPACK_USE_CPP03)
+
+
 inline void unpack(unpacked& result,
                    const char* data, std::size_t len, std::size_t& off, bool& referenced,
                    unpack_reference_func f, void* user_data)

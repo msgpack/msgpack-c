@@ -23,6 +23,7 @@ check_PROGRAMS = \
 		msgpack_stream \
 		msgpack_vref \
 		msgpack_cpp11 \
+		reference_cpp11 \
 		reference
 
 TESTS = $(check_PROGRAMS)
@@ -69,5 +70,7 @@ msgpack_vref_SOURCES = msgpack_vref.cpp
 msgpack_cpp11_SOURCES = msgpack_cpp11.cpp
 
 reference_SOURCES = reference.cpp
+
+reference_cpp11_SOURCES = reference_cpp11.cpp
 
 EXTRA_DIST = cases.mpac cases_compact.mpac
