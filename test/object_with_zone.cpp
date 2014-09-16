@@ -387,6 +387,15 @@ TEST(object_with_zone, msgpack_tuple)
     EXPECT_EQ(msgpack::type::get<0>(obj.as<test_t>()), 1);
 }
 
+TEST(object_with_zone, msgpack_tuple_empty)
+{
+    typedef msgpack::type::tuple<> test_t;
+    test_t v;
+    msgpack::zone z;
+    msgpack::object obj(v, z);
+    EXPECT_EQ(obj.via.array.size, 0);
+}
+
 // TR1
 
 #ifdef MSGPACK_HAS_STD_TR1_UNOURDERED_MAP
@@ -675,6 +684,15 @@ TEST(object_with_zone, tuple)
 {
     typedef tuple<int, string, bool> test_t;
     test_t v(1, "abc", true);
+    msgpack::zone z;
+    msgpack::object obj(v, z);
+    EXPECT_EQ(obj.as<test_t>(), v);
+}
+
+TEST(object_with_zone, tuple_empty)
+{
+    typedef tuple<> test_t;
+    test_t v;
     msgpack::zone z;
     msgpack::object obj(v, z);
     EXPECT_EQ(obj.as<test_t>(), v);
