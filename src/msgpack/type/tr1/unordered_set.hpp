@@ -20,13 +20,16 @@
 
 #include "msgpack/object.hpp"
 
-#if defined(_LIBCPP_VERSION) || (_MSC_VER >= 1700)
+#define LIBSTDCXX_HAS_STD_UNORDERED_SET defined(__GLIBCXX__) && __GLIBCXX__ >= 20090421 \
+    && (__cplusplus >= 201103L || __GXX_EXPERIMENTAL_CXX0X__)
+
+#if LIBSTDCXX_HAS_STD_UNORDERED_SET || defined(_LIBCPP_VERSION) || (_MSC_VER >= 1700)
 
 #define MSGPACK_HAS_STD_UNOURDERED_SET
 #include <unordered_set>
 #define MSGPACK_STD_TR1 std
 
-#else   // defined(_LIBCPP_VERSION) || (_MSC_VER >= 1700)
+#else   // LIBSTDCXX_HAS_STD_UNORDERED_SET || defined(_LIBCPP_VERSION) || (_MSC_VER >= 1700)
 
 #if __GNUC__ >= 4
 
@@ -37,7 +40,7 @@
 
 #endif // __GNUC__ >= 4
 
-#endif  // defined(_LIBCPP_VERSION) || (_MSC_VER >= 1700)
+#endif  // LIBSTDCXX_HAS_STD_UNORDERED_SET || defined(_LIBCPP_VERSION) || (_MSC_VER >= 1700)
 
 namespace msgpack {
 
