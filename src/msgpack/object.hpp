@@ -234,6 +234,59 @@ void operator<< (object::with_zone& o, const T& v)
 	v.msgpack_object(static_cast<object*>(&o), o.zone);
 }
 
+template <>
+inline void operator<< (object::with_zone& o, const object& v)
+{
+	o.type = v.type;
+
+	switch(v.type) {
+	case type::NIL:
+	case type::BOOLEAN:
+	case type::POSITIVE_INTEGER:
+	case type::NEGATIVE_INTEGER:
+	case type::DOUBLE:
+		::memcpy(&o.via, &v.via, sizeof(v.via));
+		return;
+
+	case type::RAW:
+		o.via.raw.ptr = (const char*)o.zone->malloc(v.via.raw.size);
+		o.via.raw.size = v.via.raw.size;
+		::memcpy((void*)o.via.raw.ptr, v.via.raw.ptr, v.via.raw.size);
+		return;
+
+	case type::ARRAY:
+		o.via.array.ptr = (object*)o.zone->malloc(sizeof(object) * v.via.array.size);
+		o.via.array.size = v.via.array.size;
+		for(object* po(o.via.array.ptr), * pv(v.via.array.ptr),
+				* const pvend(v.via.array.ptr + v.via.array.size);
+				pv < pvend; ++po, ++pv) {
+			new (po) object(*pv, o.zone);
+		}
+		return;
+
+	case type::MAP:
+		o.via.map.ptr = (object_kv*)o.zone->malloc(sizeof(object_kv) * v.via.map.size);
+		o.via.map.size = v.via.map.size;
+		for(object_kv* po(o.via.map.ptr), * pv(v.via.map.ptr),
+				* const pvend(v.via.map.ptr + v.via.map.size);
+				pv < pvend; ++po, ++pv) {
+			object_kv* kv = new (po) object_kv;
+			new (&kv->key) object(pv->key, o.zone);
+			new (&kv->val) object(pv->val, o.zone);
+		}
+		return;
+
+	default:
+		throw type_error();
+	}
+}
+
+template <>
+inline void operator<< (object::with_zone& o, const object::with_zone& v)
+{
+	return o << static_cast<object>(v);
+}
+
 
 inline bool operator==(const object x, const object y)
 {
