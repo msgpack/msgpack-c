@@ -412,6 +412,12 @@ packer<Stream>& operator<< (packer<Stream>& o, const object& v)
 	}
 }
 
+template <typename Stream>
+packer<Stream>& operator<< (packer<Stream>& o, const object::with_zone& v)
+{
+	return o << static_cast<object>(v);
+}
+
 
 }  // namespace msgpack
 
