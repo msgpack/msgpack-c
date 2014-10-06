@@ -46,7 +46,7 @@ namespace msgpack {
 
 
 template <typename T>
-inline MSGPACK_STD_TR1::unordered_set<T>& operator>> (object o, MSGPACK_STD_TR1::unordered_set<T>& v)
+inline MSGPACK_STD_TR1::unordered_set<T>& operator>> (const object& o, MSGPACK_STD_TR1::unordered_set<T>& v)
 {
 	if(o.type != type::ARRAY) { throw type_error(); }
 	object* p = o.via.array.ptr + o.via.array.size;
@@ -92,7 +92,7 @@ inline void operator<< (object::with_zone& o, const MSGPACK_STD_TR1::unordered_s
 
 
 template <typename T>
-inline MSGPACK_STD_TR1::unordered_multiset<T>& operator>> (object o, MSGPACK_STD_TR1::unordered_multiset<T>& v)
+inline MSGPACK_STD_TR1::unordered_multiset<T>& operator>> (const object& o, MSGPACK_STD_TR1::unordered_multiset<T>& v)
 {
 	if(o.type != type::ARRAY) { throw type_error(); }
 	object* p = o.via.array.ptr + o.via.array.size;
@@ -142,4 +142,3 @@ inline void operator<< (object::with_zone& o, const MSGPACK_STD_TR1::unordered_m
 #undef MSGPACK_STD_TR1
 
 #endif /* msgpack/type/set.hpp */
-

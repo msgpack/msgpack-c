@@ -90,7 +90,7 @@ struct object {
 
 	object();
 
-	object(msgpack_object o);
+	object(const msgpack_object& o);
 
 	template <typename T>
 	explicit object(const T& v);
@@ -125,22 +125,22 @@ private:
 };
 
 
-bool operator==(const object x, const object y);
-bool operator!=(const object x, const object y);
+bool operator==(const object& x, const object& y);
+bool operator!=(const object& x, const object& y);
 
 template <typename T>
-bool operator==(const object x, const T& y);
+bool operator==(const object& x, const T& y);
 
 template <typename T>
-bool operator==(const T& y, const object x);
+bool operator==(const T& y, const object& x);
 
 template <typename T>
-bool operator!=(const object x, const T& y);
+bool operator!=(const object& x, const T& y);
 
 template <typename T>
-bool operator!=(const T& y, const object x);
+bool operator!=(const T& y, const object& x);
 
-std::ostream& operator<< (std::ostream& s, const object o);
+std::ostream& operator<< (std::ostream& s, const object& o);
 
 
 // serialize operator
@@ -149,7 +149,7 @@ packer<Stream>& operator<< (packer<Stream>& o, const T& v);
 
 // convert operator
 template <typename T>
-T& operator>> (object o, T& v);
+T& operator>> (const object& o, T& v);
 
 // deconvert operator
 template <typename T>
@@ -199,14 +199,14 @@ inline packer<Stream>& packer<Stream>::pack(const T& v)
 	return *this;
 }
 
-inline object& operator>> (object o, object& v)
+inline object& operator>> (const object& o, object& v)
 {
 	v = o;
 	return v;
 }
 
 template <typename T>
-inline T& operator>> (object o, T& v)
+inline T& operator>> (const object& o, T& v)
 {
 	v.msgpack_unpack(o.convert());
 	return v;
@@ -288,32 +288,32 @@ inline void operator<< (object::with_zone& o, const object::with_zone& v)
 }
 
 
-inline bool operator==(const object x, const object y)
+inline bool operator==(const object& x, const object& y)
 {
 	return msgpack_object_equal(x, y);
 }
 
 template <typename T>
-inline bool operator==(const object x, const T& y)
+inline bool operator==(const object& x, const T& y)
 try {
 	return x == object(y);
 } catch (msgpack::type_error&) {
 	return false;
 }
 
-inline bool operator!=(const object x, const object y)
+inline bool operator!=(const object& x, const object& y)
 { return !(x == y); }
 
 template <typename T>
-inline bool operator==(const T& y, const object x)
+inline bool operator==(const T& y, const object& x)
 { return x == y; }
 
 template <typename T>
-inline bool operator!=(const object x, const T& y)
+inline bool operator!=(const object& x, const T& y)
 { return !(x == y); }
 
 template <typename T>
-inline bool operator!=(const T& y, const object x)
+inline bool operator!=(const T& y, const object& x)
 { return x != y; }
 
 
@@ -365,13 +365,13 @@ object::object(const T& v, zone* z)
 }
 
 
-inline object::object(msgpack_object o)
+inline object::object(const msgpack_object& o)
 {
 	// FIXME beter way?
 	::memcpy(this, &o, sizeof(o));
 }
 
-inline void operator<< (object& o, msgpack_object v)
+inline void operator<< (object& o, const msgpack_object& v)
 {
 	// FIXME beter way?
 	::memcpy(&o, &v, sizeof(v));
@@ -388,7 +388,7 @@ inline object::operator msgpack_object() const
 
 // obsolete
 template <typename T>
-inline void convert(T& v, object o)
+inline void convert(T& v, object& o)
 {
 	o.convert(&v);
 }
