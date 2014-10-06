@@ -1,22 +1,27 @@
 #include <msgpack.hpp>
+#include <msgpack/type.hpp>
+#include <vector>
+#include <map>
 #include <gtest/gtest.h>
 
 struct myclass {
 	myclass() : num(0), str("default") { }
 
-	myclass(int num, const std::string& str) :
-		num(0), str("default") { }
+	myclass(int n, const std::string& s) :
+		num(n), str(s) { }
 
 	~myclass() { }
 
 	int num;
 	std::string str;
+	std::vector<double> vec;
+	std::map<std::string, std::string> map;
 
-	MSGPACK_DEFINE(num, str);
+	MSGPACK_DEFINE(num, str, vec, map);
 
 	bool operator==(const myclass& o) const
 	{
-		return num == o.num && str == o.str;
+		return num == o.num && str == o.str && vec == o.vec && map == o.map;
 	}
 };
 
@@ -28,7 +33,7 @@ std::ostream& operator<<(std::ostream& o, const myclass& m)
 
 TEST(object, convert)
 {
-	myclass m1;
+	myclass m1(1, "custom");
 
 	msgpack::sbuffer sbuf;
 	msgpack::pack(sbuf, m1);
@@ -49,7 +54,7 @@ TEST(object, convert)
 
 TEST(object, as)
 {
-	myclass m1;
+	myclass m1(1, "custom");
 
 	msgpack::sbuffer sbuf;
 	msgpack::pack(sbuf, m1);
@@ -62,6 +67,37 @@ TEST(object, as)
 	EXPECT_EQ(ret, msgpack::UNPACK_SUCCESS);
 
 	EXPECT_EQ(m1, obj.as<myclass>());
+}
+
+
+TEST(object, cross_zone_copy)
+{
+	myclass m1(1, "custom");
+	m1.vec.push_back(1.0);
+	m1.vec.push_back(0.1);
+	m1.map["one"] = "two";
+
+	msgpack::zone z1;
+	msgpack::object::with_zone obj1(&z1);
+
+	{
+		msgpack::zone z2;
+		msgpack::object::with_zone obj2(&z2);
+		obj2 << m1;
+
+		obj1 << obj2;
+
+		EXPECT_EQ(obj1.via.array.ptr[2].via.array.ptr[0].via.dec, 1.0);
+		EXPECT_EQ(obj1.via.array.ptr[3].via.map.ptr[0].val.via.raw.ptr[0], 't');
+		EXPECT_NE(
+			obj1.via.array.ptr[2].via.array.ptr,
+			obj2.via.array.ptr[2].via.array.ptr);
+		EXPECT_NE(
+			obj1.via.array.ptr[3].via.map.ptr[0].val.via.raw.ptr,
+			obj2.via.array.ptr[3].via.map.ptr[0].val.via.raw.ptr);
+	}
+
+	EXPECT_EQ(m1, obj1.as<myclass>());
 }
 
 
