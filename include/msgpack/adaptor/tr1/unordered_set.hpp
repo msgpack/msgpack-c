@@ -48,10 +48,12 @@ inline object const& operator>> (object const& o, MSGPACK_STD_TR1::unordered_set
     if(o.type != type::ARRAY) { throw type_error(); }
     object* p = o.via.array.ptr + o.via.array.size;
     object* const pbegin = o.via.array.ptr;
+    MSGPACK_STD_TR1::unordered_set<T> tmp;
     while(p > pbegin) {
         --p;
-        v.insert(p->as<T>());
+        tmp.insert(p->as<T>());
     }
+    tmp.swap(v);
     return o;
 }
 
@@ -94,10 +96,12 @@ inline object const& operator>> (object const& o, MSGPACK_STD_TR1::unordered_mul
     if(o.type != type::ARRAY) { throw type_error(); }
     object* p = o.via.array.ptr + o.via.array.size;
     object* const pbegin = o.via.array.ptr;
+    MSGPACK_STD_TR1::unordered_multiset<T> tmp;
     while(p > pbegin) {
         --p;
-        v.insert(p->as<T>());
+        tmp.insert(p->as<T>());
     }
+    tmp.swap(v);
     return o;
 }
 
