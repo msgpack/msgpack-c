@@ -249,13 +249,13 @@ inline void operator<< (object::with_zone& o, const object& v)
 		return;
 
 	case type::RAW:
-		o.via.raw.ptr = (const char*)o.zone->malloc(v.via.raw.size);
+		o.via.raw.ptr = static_cast<const char*>(o.zone->malloc(v.via.raw.size));
 		o.via.raw.size = v.via.raw.size;
-		::memcpy((void*)o.via.raw.ptr, v.via.raw.ptr, v.via.raw.size);
+		::memcpy(const_cast<char*>(o.via.raw.ptr), v.via.raw.ptr, v.via.raw.size);
 		return;
 
 	case type::ARRAY:
-		o.via.array.ptr = (object*)o.zone->malloc(sizeof(object) * v.via.array.size);
+		o.via.array.ptr = static_cast<object*>(o.zone->malloc(sizeof(object) * v.via.array.size));
 		o.via.array.size = v.via.array.size;
 		for(object* po(o.via.array.ptr), * pv(v.via.array.ptr),
 				* const pvend(v.via.array.ptr + v.via.array.size);
@@ -265,7 +265,7 @@ inline void operator<< (object::with_zone& o, const object& v)
 		return;
 
 	case type::MAP:
-		o.via.map.ptr = (object_kv*)o.zone->malloc(sizeof(object_kv) * v.via.map.size);
+		o.via.map.ptr = static_cast<object_kv*>(o.zone->malloc(sizeof(object_kv) * v.via.map.size));
 		o.via.map.size = v.via.map.size;
 		for(object_kv* po(o.via.map.ptr), * pv(v.via.map.ptr),
 				* const pvend(v.via.map.ptr + v.via.map.size);
