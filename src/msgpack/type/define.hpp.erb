@@ -22,16 +22,16 @@
 	template <typename Packer> \
 	void msgpack_pack(Packer& pk) const \
 	{ \
-		msgpack::type::make_define(__VA_ARGS__).msgpack_pack(pk); \
+		::msgpack::type::make_define(__VA_ARGS__).msgpack_pack(pk); \
 	} \
 	void msgpack_unpack(msgpack::object o) \
 	{ \
-		msgpack::type::make_define(__VA_ARGS__).msgpack_unpack(o); \
+		::msgpack::type::make_define(__VA_ARGS__).msgpack_unpack(o); \
 	}\
 	template <typename MSGPACK_OBJECT> \
-	void msgpack_object(MSGPACK_OBJECT* o, msgpack::zone* z) const \
+	void msgpack_object(MSGPACK_OBJECT* o, ::msgpack::zone* z) const \
 	{ \
-		msgpack::type::make_define(__VA_ARGS__).msgpack_object(o, z); \
+		::msgpack::type::make_define(__VA_ARGS__).msgpack_object(o, z); \
 	}
 
 // MSGPACK_ADD_ENUM must be used in the global namespace.
