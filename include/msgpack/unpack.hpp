@@ -21,10 +21,10 @@
 #include "zone.hpp"
 #include "unpack_define.h"
 #include "cpp_config.hpp"
+#include "sysdep.h"
 
 #include <memory>
 #include <stdexcept>
-#include <byteswap.h>
 
 
 
