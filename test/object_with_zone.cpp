@@ -533,7 +533,7 @@ TEST(object_with_zone, unordered_multimap)
         msgpack::object obj(v1, z);
         test_t v2 = obj.as<test_t>();
         vector<pair<int, int> > vec1, vec2;
-        tr1::unordered_multimap<int, int>::const_iterator it;
+        unordered_multimap<int, int>::const_iterator it;
         for (it = v1.begin(); it != v1.end(); ++it)
             vec1.push_back(make_pair(it->first, it->second));
         for (it = v2.begin(); it != v2.end(); ++it)
@@ -561,7 +561,7 @@ TEST(object_with_zone, unordered_set)
         msgpack::object obj(v1, z);
         test_t v2 = obj.as<test_t>();
         EXPECT_EQ(v1.size(), v2.size());
-        tr1::unordered_set<int>::const_iterator it;
+        unordered_set<int>::const_iterator it;
         for (it = v1.begin(); it != v1.end(); ++it)
             EXPECT_TRUE(v2.find(*it) != v2.end());
     }
@@ -581,7 +581,7 @@ TEST(object_with_zone, unordered_multiset)
         msgpack::object obj(v1, z);
         test_t v2 = obj.as<test_t>();
         vector<int> vec1, vec2;
-        tr1::unordered_multiset<int>::const_iterator it;
+        unordered_multiset<int>::const_iterator it;
         for (it = v1.begin(); it != v1.end(); ++it)
             vec1.push_back(*it);
         for (it = v2.begin(); it != v2.end(); ++it)
