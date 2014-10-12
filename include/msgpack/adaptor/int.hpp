@@ -18,11 +18,13 @@
 #ifndef MSGPACK_TYPE_INT_HPP
 #define MSGPACK_TYPE_INT_HPP
 
+#include "msgpack/versioning.hpp"
 #include "msgpack/object.hpp"
 #include <limits>
 
 namespace msgpack {
 
+MSGPACK_API_VERSION_NAMESPACE(v1){
 
 namespace type {
 namespace detail {
@@ -322,6 +324,8 @@ inline void operator<< (object::with_zone& o, unsigned long v)
 inline void operator<< (object::with_zone& o, const unsigned long long& v)
     { static_cast<object&>(o) << v; }
 
+
+}  // MSGPACK_API_VERSION_NAMESPACE(v1)
 
 }  // namespace msgpack
 

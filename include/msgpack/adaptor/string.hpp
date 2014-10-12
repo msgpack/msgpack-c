@@ -18,11 +18,13 @@
 #ifndef MSGPACK_TYPE_STRING_HPP
 #define MSGPACK_TYPE_STRING_HPP
 
+#include "msgpack/versioning.hpp"
 #include "msgpack/object.hpp"
 #include <string>
 
 namespace msgpack {
 
+MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 inline object const& operator>> (object const& o, std::string& v)
 {
@@ -64,6 +66,7 @@ inline void operator<< (object& o, const std::string& v)
     o.via.str.size = static_cast<uint32_t>(v.size());
 }
 
+}  // MSGPACK_API_VERSION_NAMESPACE(v1)
 
 }  // namespace msgpack
 

@@ -18,6 +18,7 @@
 #ifndef MSGPACK_OBJECT_HPP
 #define MSGPACK_OBJECT_HPP
 
+#include "msgpack/versioning.hpp"
 #include "object.h"
 #include "pack.hpp"
 #include "zone.hpp"
@@ -29,6 +30,7 @@
 
 namespace msgpack {
 
+MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 class type_error : public std::bad_cast { };
 
@@ -567,6 +569,8 @@ inline std::ostream& operator<< (std::ostream& s, const object& o)
     }
     return s;
 }
+
+}  // MSGPACK_API_VERSION_NAMESPACE(v1)
 
 }  // namespace msgpack
 

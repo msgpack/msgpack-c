@@ -18,11 +18,13 @@
 #ifndef MSGPACK_TYPE_FLOAT_HPP
 #define MSGPACK_TYPE_FLOAT_HPP
 
+#include "msgpack/versioning.hpp"
 #include "msgpack/object.hpp"
 #include <vector>
 
 namespace msgpack {
 
+MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 // FIXME check overflow, underflow
 
@@ -95,6 +97,8 @@ inline void operator<< (object::with_zone& o, float v)
 inline void operator<< (object::with_zone& o, double v)
     { static_cast<object&>(o) << v; }
 
+
+}  // MSGPACK_API_VERSION_NAMESPACE(v1)
 
 }  // namespace msgpack
 

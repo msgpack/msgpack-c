@@ -22,6 +22,7 @@
 #include <memory>
 #include <vector>
 
+#include "msgpack/versioning.hpp"
 #include "msgpack/cpp_config.hpp"
 
 #ifndef MSGPACK_ZONE_CHUNK_SIZE
@@ -34,6 +35,8 @@
 
 
 namespace msgpack {
+
+MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 class zone {
     struct finalizer {
@@ -630,6 +633,8 @@ T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9,
     }
 }
 
+
+}  // MSGPACK_API_VERSION_NAMESPACE(v1)
 
 }  // namespace msgpack
 

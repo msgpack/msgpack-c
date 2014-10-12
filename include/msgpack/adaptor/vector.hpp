@@ -18,11 +18,13 @@
 #ifndef MSGPACK_TYPE_VECTOR_HPP
 #define MSGPACK_TYPE_VECTOR_HPP
 
+#include "msgpack/versioning.hpp"
 #include "msgpack/object.hpp"
 #include <vector>
 
 namespace msgpack {
 
+MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 template <typename T>
 inline object const& operator>> (object const& o, std::vector<T>& v)
@@ -74,6 +76,7 @@ inline void operator<< (object::with_zone& o, const std::vector<T>& v)
     }
 }
 
+}  // MSGPACK_API_VERSION_NAMESPACE(v1)
 
 }  // namespace msgpack
 

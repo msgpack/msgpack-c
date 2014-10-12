@@ -18,12 +18,16 @@
 #ifndef MSGPACK_CPP11_TUPLE_HPP
 #define MSGPACK_CPP11_TUPLE_HPP
 
+#include "msgpack/versioning.hpp"
+
 #include <tuple>
 
 #include "msgpack/object.hpp"
 #include "msgpack/cpp_config.hpp"
 
 namespace msgpack {
+
+MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 // --- Pack ( from tuple to packer stream ---
 template <typename Stream, typename Tuple, std::size_t N>
@@ -140,6 +144,8 @@ inline void operator<< (
     StdTupleToObjectWithZone<decltype(v), sizeof...(Args)>::convert(o, v);
 }
 
-} // msgpack
+} // MSGPACK_API_VERSION_NAMESPACE(v1)
+
+} // namespace msgpack
 
 #endif // MSGPACK_CPP11_TUPLE_HPP

@@ -120,6 +120,7 @@ IF (MSGPACK_ENABLE_CXX)
         include/msgpack/type.hpp
         include/msgpack/unpack.hpp
         include/msgpack/version.hpp
+        include/msgpack/versioning.hpp
         include/msgpack/vrefbuffer.hpp
         include/msgpack/zbuffer.hpp
         include/msgpack/zone.hpp

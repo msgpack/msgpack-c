@@ -18,6 +18,8 @@
 #ifndef MSGPACK_CPP_CONFIG_HPP
 #define MSGPACK_CPP_CONFIG_HPP
 
+#include "msgpack/versioning.hpp"
+
 #if !defined(MSGPACK_USE_CPP03)
   // If MSVC would support C++11 completely,
   // then 'defined(_MSC_VER)' would replace with
@@ -39,6 +41,8 @@
 #include <memory>
 
 namespace msgpack {
+
+MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 template <typename T>
 struct unique_ptr : std::auto_ptr<T> {
@@ -69,7 +73,9 @@ template <typename T>
 struct enable_if<false, T> {
 };
 
-} // msgpack
+}  // MSGPACK_API_VERSION_NAMESPACE(v1)
+
+}  // namespace msgpack
 
 
 #else  // __cplusplus < 201103
@@ -78,6 +84,8 @@ struct enable_if<false, T> {
 #include <tuple>
 
 namespace msgpack {
+MSGPACK_API_VERSION_NAMESPACE(v1) {
+
     // unique_ptr
     using std::unique_ptr;
     // using std::make_unique; // since C++14
@@ -88,7 +96,8 @@ namespace msgpack {
     using std::swap;
     using std::enable_if;
 
-} // msgpack
+}  // MSGPACK_API_VERSION_NAMESPACE(v1)
+}  // namespace msgpack
 
 
 #endif // __cplusplus < 201103

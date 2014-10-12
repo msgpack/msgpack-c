@@ -18,9 +18,12 @@
 #ifndef MSGPACK_TYPE_NIL_HPP
 #define MSGPACK_TYPE_NIL_HPP
 
+#include "msgpack/versioning.hpp"
 #include "msgpack/object.hpp"
 
 namespace msgpack {
+
+MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 namespace type {
 
@@ -58,6 +61,7 @@ inline void object::as<void>() const
     convert(v);
 }
 
+}  // MSGPACK_API_VERSION_NAMESPACE(v1)
 
 }  // namespace msgpack
 

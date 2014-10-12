@@ -18,9 +18,12 @@
 #ifndef MSGPACK_CPP03_MSGPACK_TUPLE_HPP
 #define MSGPACK_CPP03_MSGPACK_TUPLE_HPP
 
+#include "msgpack/versioning.hpp"
 #include "msgpack/object.hpp"
 
 namespace msgpack {
+
+MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 namespace type {
 
@@ -13117,6 +13120,8 @@ inline void operator<< (
     o.via.array.ptr[31] = object(v.template get<31>(), o.zone);
 }
 
+
+}  // MSGPACK_API_VERSION_NAMESPACE(v1)
 
 }  // namespace msgpack
 

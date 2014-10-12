@@ -18,11 +18,14 @@
 #ifndef MSGPACK_TYPE_RAW_HPP
 #define MSGPACK_TYPE_RAW_HPP
 
+#include "msgpack/versioning.hpp"
 #include "msgpack/object.hpp"
 #include <string.h>
 #include <string>
 
 namespace msgpack {
+
+MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 namespace type {
 
@@ -87,6 +90,8 @@ inline void operator<< (object& o, const type::raw_ref& v)
 inline void operator<< (object::with_zone& o, const type::raw_ref& v)
     { static_cast<object&>(o) << v; }
 
+
+}  // MSGPACK_API_VERSION_NAMESPACE(v1)
 
 }  // namespace msgpack
 
