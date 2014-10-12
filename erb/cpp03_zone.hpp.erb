@@ -23,7 +23,7 @@
 #include <vector>
 
 #include "msgpack/versioning.hpp"
-#include "msgpack/cpp_config.hpp"
+#include "msgpack_forward.hpp"
 
 #ifndef MSGPACK_ZONE_CHUNK_SIZE
 #define MSGPACK_ZONE_CHUNK_SIZE 8192

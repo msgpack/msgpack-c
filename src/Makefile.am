@@ -53,6 +53,7 @@ nobase_include_HEADERS = \
 if ENABLE_CXX
 nobase_include_HEADERS += \
 		../include/msgpack.hpp \
+		../include/msgpack_forward.hpp \
 		../include/msgpack/adaptor/bool.hpp \
 		../include/msgpack/adaptor/char_ptr.hpp \
 		../include/msgpack/adaptor/cpp11/array.hpp \
@@ -84,6 +85,7 @@ nobase_include_HEADERS += \
 		../include/msgpack/detail/cpp11_zone.hpp \
 		../include/msgpack/fbuffer.hpp \
 		../include/msgpack/object.hpp \
+		../include/msgpack/object_forward.hpp \
 		../include/msgpack/pack.hpp \
 		../include/msgpack/sbuffer.hpp \
 		../include/msgpack/type.hpp \

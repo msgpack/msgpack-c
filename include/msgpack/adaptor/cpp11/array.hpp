@@ -20,11 +20,9 @@
 #define MSGPACK_CPP11_ARRAY_HPP
 
 #include "msgpack/versioning.hpp"
+#include "msgpack_forward.hpp"
 
 #include <array>
-
-#include "msgpack/object.hpp"
-#include "msgpack/cpp_config.hpp"
 
 namespace msgpack {
 

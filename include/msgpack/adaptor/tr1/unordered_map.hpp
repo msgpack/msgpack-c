@@ -19,7 +19,7 @@
 #define MSGPACK_TYPE_TR1_UNORDERED_MAP_HPP
 
 #include "msgpack/versioning.hpp"
-#include "msgpack/object.hpp"
+#include "msgpack_forward.hpp"
 
 #if defined(_LIBCPP_VERSION) || (_MSC_VER >= 1700)
 

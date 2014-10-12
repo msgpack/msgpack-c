@@ -19,11 +19,9 @@
 #define MSGPACK_CPP11_TUPLE_HPP
 
 #include "msgpack/versioning.hpp"
+#include "msgpack_forward.hpp"
 
 #include <tuple>
-
-#include "msgpack/object.hpp"
-#include "msgpack/cpp_config.hpp"
 
 namespace msgpack {
 

@@ -84,6 +84,7 @@ LIST (APPEND msgpack_HEADERS
 IF (MSGPACK_ENABLE_CXX)
     LIST (APPEND msgpack_HEADERS
         include/msgpack.hpp
+        include/msgpack_forward.hpp
         include/msgpack/adaptor/bool.hpp
         include/msgpack/adaptor/char_ptr.hpp
         include/msgpack/adaptor/cpp11/array.hpp
@@ -115,6 +116,7 @@ IF (MSGPACK_ENABLE_CXX)
         include/msgpack/detail/cpp11_zone.hpp
         include/msgpack/fbuffer.hpp
         include/msgpack/object.hpp
+        include/msgpack/object_forward.hpp
         include/msgpack/pack.hpp
         include/msgpack/sbuffer.hpp
         include/msgpack/type.hpp
