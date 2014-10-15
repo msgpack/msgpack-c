@@ -16,8 +16,8 @@
 //    limitations under the License.
 //
 
-#ifndef MSGPACK_OBJECT_FORWARD_HPP
-#define MSGPACK_OBJECT_FORWARD_HPP
+#ifndef MSGPACK_OBJECT_FWD_HPP
+#define MSGPACK_OBJECT_FWD_HPP
 
 #include "msgpack/versioning.hpp"
 #include "msgpack/zone.hpp"
@@ -137,8 +137,29 @@ struct object_kv {
     object val;
 };
 
+object const& operator>> (object const& o, object& v);
+
+template <typename T>
+object const& operator>> (object const& o, T& v);
+
+template <typename T>
+void operator<< (object::with_zone& o, const T& v);
+
+
+template <typename Stream>
+class packer;
+
+template <typename Stream>
+packer<Stream>& operator<< (packer<Stream>& o, const object& v);
+
+template <typename Stream, typename T>
+packer<Stream>& operator<< (packer<Stream>& o, const T& v);
+
+template <typename T>
+void operator<< (object::with_zone& o, const T& v);
+
 } // MSGPACK_API_VERSION_NAMESPACE(v1)
 
 } // namespace msgpack
 
-#endif // MSGPACK_OBJECT_FORWARD_HPP
+#endif // MSGPACK_OBJECT_FWD_HPP

@@ -19,7 +19,7 @@
 #define MSGPACK_TYPE_PAIR_HPP
 
 #include "msgpack/versioning.hpp"
-#include "msgpack_forward.hpp"
+#include "msgpack_fwd.hpp"
 #include <utility>
 
 namespace msgpack {
@@ -60,4 +60,4 @@ inline void operator<< (object::with_zone& o, const std::pair<T1, T2>& v)
 
 }  // namespace msgpack
 
-#endif /* msgpack/type/pair.hpp */
+#endif // MSGPACK_TYPE_PAIR_HPP

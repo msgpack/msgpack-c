@@ -15,12 +15,12 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-#ifndef MSGPACK_FORWARD_HPP
-#define MSGPACK_FORWARD_HPP
+#ifndef MSGPACK_FWD_HPP
+#define MSGPACK_FWD_HPP
 
 #include "msgpack/versioning.hpp"
 #include "msgpack/zone.hpp"
-#include "msgpack/object_forward.hpp"
+#include "msgpack/object_fwd.hpp"
 #include "msgpack/pack.hpp"
 
-#endif // MSGPACK_FORWARD_HPP
+#endif // MSGPACK_FWD_HPP

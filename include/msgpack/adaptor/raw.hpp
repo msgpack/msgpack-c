@@ -19,7 +19,7 @@
 #define MSGPACK_TYPE_RAW_HPP
 
 #include "msgpack/versioning.hpp"
-#include "msgpack_forward.hpp"
+#include "msgpack_fwd.hpp"
 #include <string.h>
 #include <string>
 
@@ -95,4 +95,4 @@ inline void operator<< (object::with_zone& o, const type::raw_ref& v)
 
 }  // namespace msgpack
 
-#endif /* msgpack/type/raw.hpp */
+#endif // MSGPACK_TYPE_RAW_HPP

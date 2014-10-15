@@ -19,7 +19,7 @@
 #define MSGPACK_TYPE_FLOAT_HPP
 
 #include "msgpack/versioning.hpp"
-#include "msgpack_forward.hpp"
+#include "msgpack_fwd.hpp"
 #include <vector>
 
 namespace msgpack {
@@ -102,4 +102,4 @@ inline void operator<< (object::with_zone& o, double v)
 
 }  // namespace msgpack
 
-#endif /* msgpack/type/float.hpp */
+#endif // MSGPACK_TYPE_FLOAT_HPP

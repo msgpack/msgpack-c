@@ -19,7 +19,7 @@
 #define MSGPACK_TYPE_SET_HPP
 
 #include "msgpack/versioning.hpp"
-#include "msgpack_forward.hpp"
+#include "msgpack_fwd.hpp"
 
 #include <set>
 
@@ -122,4 +122,4 @@ inline void operator<< (object::with_zone& o, const std::multiset<T>& v)
 
 }  // namespace msgpack
 
-#endif /* msgpack/type/set.hpp */
+#endif // MSGPACK_TYPE_SET_HPP

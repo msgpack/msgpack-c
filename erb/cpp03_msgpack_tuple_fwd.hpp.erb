@@ -1,0 +1,125 @@
+//
+// MessagePack for C++ static resolution routine
+//
+// Copyright (C) 2008-2013 FURUHASHI Sadayuki and KONDO Takatoshi
+//
+//    Licensed under the Apache License, Version 2.0 (the "License");
+//    you may not use this file except in compliance with the License.
+//    You may obtain a copy of the License at
+//
+//        http://www.apache.org/licenses/LICENSE-2.0
+//
+//    Unless required by applicable law or agreed to in writing, software
+//    distributed under the License is distributed on an "AS IS" BASIS,
+//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//    See the License for the specific language governing permissions and
+//    limitations under the License.
+//
+#ifndef MSGPACK_CPP03_MSGPACK_TUPLE_FWD_HPP
+#define MSGPACK_CPP03_MSGPACK_TUPLE_FWD_HPP
+
+#include "msgpack/versioning.hpp"
+#include "msgpack/object_fwd.hpp"
+
+namespace msgpack {
+
+MSGPACK_API_VERSION_NAMESPACE(v1) {
+
+namespace type {
+
+// FIXME operator==
+// FIXME operator!=
+<% GENERATION_LIMIT = 31 %>
+
+template <typename A0 = void<%1.upto(GENERATION_LIMIT+1) {|i|%>, typename A<%=i%> = void<%}%>>
+struct tuple;
+
+template <typename Tuple, int N>
+struct tuple_element;
+
+template <typename Tuple, int N>
+struct const_tuple_element;
+
+template <typename T>
+struct tuple_type;
+
+<%0.upto(GENERATION_LIMIT) {|i|%>
+<%0.upto(i) {|j|%>
+template <typename A0<%1.upto(i) {|k|%>, typename A<%=k%><%}%>>
+struct tuple_element<tuple<A0<%1.upto(i) {|k|%>, A<%=k%><%}%>>, <%=j%>>;
+<%}%>
+<%}%>
+
+<%0.upto(GENERATION_LIMIT) {|i|%>
+<%0.upto(i) {|j|%>
+template <typename A0<%1.upto(i) {|k|%>, typename A<%=k%><%}%>>
+struct const_tuple_element<tuple<A0<%1.upto(i) {|k|%>, A<%=k%><%}%>>, <%=j%>>;
+<%}%>
+<%}%>
+
+template <>
+struct tuple<>;
+<%0.upto(GENERATION_LIMIT) {|i|%>
+template <typename A0<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
+struct tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>>;
+
+template <int N, typename A0<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
+typename type::tuple_element<type::tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>>, N>::reference get(type::tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>>& t);
+template <int N, typename A0<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
+typename type::const_tuple_element<type::tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>>, N>::const_reference get(type::tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> const& t);
+<%}%>
+
+tuple<> make_tuple();
+<%0.upto(GENERATION_LIMIT) {|i|%>
+template <typename A0<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
+tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> make_tuple(typename tuple_type<A0>::transparent_reference a0<%1.upto(i) {|j|%>, typename tuple_type<A<%=j%>>::transparent_reference a<%=j%><%}%>);
+<%}%>
+
+}  // namespace type
+
+object const& operator>> (
+    object const& o,
+    type::tuple<>&);
+
+<%0.upto(GENERATION_LIMIT) {|i|%>
+template <typename A0<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
+object const& operator>> (
+    object const& o,
+    type::tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>>& v);
+<%}%>
+
+template <typename Stream>
+const packer<Stream>& operator<< (
+    packer<Stream>& o,
+    const type::tuple<>&);
+
+<%0.upto(GENERATION_LIMIT) {|i|%>
+template <typename Stream, typename A0<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
+const packer<Stream>& operator<< (
+    packer<Stream>& o,
+    const type::tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>>& v);
+<%}%>
+
+void operator<< (
+    object::with_zone& o,
+    const type::tuple<>&);
+<%0.upto(GENERATION_LIMIT) {|i|%>
+template <typename A0<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
+void operator<< (
+    object::with_zone& o,
+    const type::tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>>& v);
+<%}%>
+
+}  // MSGPACK_API_VERSION_NAMESPACE(v1)
+
+}  // namespace msgpack
+
+
+//std::ostream& operator<< (std::ostream& o, const msgpack::type::tuple<>& v);
+//<%0.upto(GENERATION_LIMIT) {|i|%>
+//template <typename A0<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
+//std::ostream& operator<< (std::ostream& o,
+//      const msgpack::type::tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>>& v);
+//<%}%>
+
+#endif // MSGPACK_CPP03_MSGPACK_TUPLE_FWD_HPP

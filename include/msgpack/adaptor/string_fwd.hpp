@@ -1,7 +1,7 @@
 //
 // MessagePack for C++ static resolution routine
 //
-// Copyright (C) 2008-2009 FURUHASHI Sadayuki
+// Copyright (C) 2008-2014 FURUHASHI Sadayuki and KONDO Takatoshi
 //
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -15,54 +15,28 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 //
-#ifndef MSGPACK_TYPE_NIL_HPP
-#define MSGPACK_TYPE_NIL_HPP
+#ifndef MSGPACK_TYPE_STRING_FWD_HPP
+#define MSGPACK_TYPE_STRING_FWD_HPP
 
 #include "msgpack/versioning.hpp"
-#include "msgpack_fwd.hpp"
+#include "msgpack/object_fwd.hpp"
+#include <string>
 
 namespace msgpack {
 
 MSGPACK_API_VERSION_NAMESPACE(v1) {
 
-namespace type {
-
-struct nil { };
-
-}  // namespace type
-
-
-inline object const& operator>> (object const& o, type::nil&)
-{
-    if(o.type != type::NIL) { throw type_error(); }
-    return o;
-}
+object const& operator>> (object const& o, std::string& v);
 
 template <typename Stream>
-inline packer<Stream>& operator<< (packer<Stream>& o, const type::nil&)
-{
-    o.pack_nil();
-    return o;
-}
+packer<Stream>& operator<< (packer<Stream>& o, const std::string& v);
 
-inline void operator<< (object& o, type::nil)
-{
-    o.type = type::NIL;
-}
+void operator<< (object::with_zone& o, const std::string& v);
 
-inline void operator<< (object::with_zone& o, type::nil v)
-    { static_cast<object&>(o) << v; }
-
-
-template <>
-inline void object::as<void>() const
-{
-    msgpack::type::nil v;
-    convert(v);
-}
+void operator<< (object& o, const std::string& v);
 
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 
 }  // namespace msgpack
 
-#endif // MSGPACK_TYPE_NIL_HPP
+#endif // MSGPACK_TYPE_STRING_FWD_HPP

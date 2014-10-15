@@ -19,7 +19,7 @@
 #define MSGPACK_CPP11_DEFINE_HPP
 
 #include "msgpack/versioning.hpp"
-#include "msgpack_forward.hpp"
+#include "msgpack_fwd.hpp"
 
 #include <type_traits>
 

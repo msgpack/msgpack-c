@@ -19,7 +19,7 @@
 #define MSGPACK_CPP11_TUPLE_HPP
 
 #include "msgpack/versioning.hpp"
-#include "msgpack_forward.hpp"
+#include "msgpack_fwd.hpp"
 
 #include <tuple>
 
@@ -57,7 +57,7 @@ struct StdTuplePacker<Stream, Tuple, 0> {
 
 
 template <typename Stream, typename... Args>
-const packer<Stream>& operator<< (
+inline const packer<Stream>& operator<< (
     packer<Stream>& o,
     const std::tuple<Args...>& v) {
     o.pack_array(sizeof...(Args));
@@ -95,7 +95,7 @@ struct StdTupleConverter<Tuple, 0> {
 };
 
 template <typename... Args>
-object const& operator>> (
+inline object const& operator>> (
     object const& o,
     std::tuple<Args...>& v) {
     if(o.type != type::ARRAY) { throw type_error(); }

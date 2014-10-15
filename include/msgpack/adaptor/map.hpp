@@ -19,7 +19,7 @@
 #define MSGPACK_TYPE_MAP_HPP
 
 #include "msgpack/versioning.hpp"
-#include "msgpack_forward.hpp"
+#include "msgpack_fwd.hpp"
 #include <map>
 #include <vector>
 #include <algorithm>
@@ -204,4 +204,4 @@ inline void operator<< (object::with_zone& o, const std::multimap<K,V>& v)
 
 }  // namespace msgpack
 
-#endif /* msgpack/type/map.hpp */
+#endif // MSGPACK_TYPE_MAP_HPP

@@ -19,7 +19,7 @@
 #define MSGPACK_CPP03_MSGPACK_TUPLE_HPP
 
 #include "msgpack/versioning.hpp"
-#include "msgpack_forward.hpp"
+#include "msgpack_fwd.hpp"
 
 namespace msgpack {
 
@@ -31,7 +31,7 @@ namespace type {
 // FIXME operator!=
 <% GENERATION_LIMIT = 31 %>
 
-template <typename A0 = void<%1.upto(GENERATION_LIMIT+1) {|i|%>, typename A<%=i%> = void<%}%>>
+template <typename A0<%1.upto(GENERATION_LIMIT+1) {|i|%>, typename A<%=i%><%}%>>
 struct tuple;
 
 template <typename Tuple, int N>
@@ -128,7 +128,7 @@ inline tuple<> make_tuple()
 }
 <%0.upto(GENERATION_LIMIT) {|i|%>
 template <typename A0<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
-tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> make_tuple(typename tuple_type<A0>::transparent_reference a0<%1.upto(i) {|j|%>, typename tuple_type<A<%=j%>>::transparent_reference a<%=j%><%}%>)
+inline tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> make_tuple(typename tuple_type<A0>::transparent_reference a0<%1.upto(i) {|j|%>, typename tuple_type<A<%=j%>>::transparent_reference a<%=j%><%}%>)
 {
     return tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>>(a0<%1.upto(i) {|j|%>, a<%=j%><%}%>);
 }
@@ -144,7 +144,7 @@ inline object const& operator>> (
 }
 <%0.upto(GENERATION_LIMIT) {|i|%>
 template <typename A0<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
-object const& operator>> (
+inline object const& operator>> (
         object const& o,
         type::tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>>& v) {
     if(o.type != type::ARRAY) { throw type_error(); }
@@ -156,7 +156,7 @@ object const& operator>> (
 <%}%>
 
 template <typename Stream>
-const packer<Stream>& operator<< (
+inline const packer<Stream>& operator<< (
         packer<Stream>& o,
         const type::tuple<>&) {
     o.pack_array(0);
@@ -164,7 +164,7 @@ const packer<Stream>& operator<< (
 }
 <%0.upto(GENERATION_LIMIT) {|i|%>
 template <typename Stream, typename A0<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
-const packer<Stream>& operator<< (
+inline const packer<Stream>& operator<< (
         packer<Stream>& o,
         const type::tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>>& v) {
     o.pack_array(<%=i+1%>);

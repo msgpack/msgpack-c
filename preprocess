@@ -13,5 +13,6 @@ preprocess() {
 }
 
 preprocess erb/cpp03_msgpack_tuple.hpp include/msgpack/adaptor/detail/cpp03_msgpack_tuple.hpp
+preprocess erb/cpp03_msgpack_tuple_fwd.hpp include/msgpack/adaptor/detail/cpp03_msgpack_tuple_fwd.hpp
 preprocess erb/cpp03_define.hpp include/msgpack/adaptor/detail/cpp03_define.hpp
 preprocess erb/cpp03_zone.hpp include/msgpack/detail/cpp03_zone.hpp

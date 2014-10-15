@@ -19,7 +19,7 @@
 #define MSGPACK_TYPE_BOOL_HPP
 
 #include "msgpack/versioning.hpp"
-#include "msgpack_forward.hpp"
+#include "msgpack_fwd.hpp"
 #include <vector>
 
 namespace msgpack {
@@ -55,4 +55,4 @@ inline void operator<< (object::with_zone& o, bool v)
 
 }  // namespace msgpack
 
-#endif /* msgpack/type/bool.hpp */
+#endif // MSGPACK_TYPE_BOOL_HPP

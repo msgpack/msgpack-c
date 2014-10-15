@@ -19,7 +19,7 @@
 #define MSGPACK_TYPE_VECTOR_HPP
 
 #include "msgpack/versioning.hpp"
-#include "msgpack_forward.hpp"
+#include "msgpack_fwd.hpp"
 #include <vector>
 
 namespace msgpack {
@@ -80,4 +80,4 @@ inline void operator<< (object::with_zone& o, const std::vector<T>& v)
 
 }  // namespace msgpack
 
-#endif /* msgpack/type/vector.hpp */
+#endif // MSGPACK_TYPE_VECTOR_HPP

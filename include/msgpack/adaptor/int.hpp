@@ -19,7 +19,7 @@
 #define MSGPACK_TYPE_INT_HPP
 
 #include "msgpack/versioning.hpp"
-#include "msgpack_forward.hpp"
+#include "msgpack_fwd.hpp"
 #include <limits>
 
 namespace msgpack {

@@ -19,7 +19,7 @@
 #define MSGPACK_TYPE_LIST_HPP
 
 #include "msgpack/versioning.hpp"
-#include "msgpack_forward.hpp"
+#include "msgpack_fwd.hpp"
 #include <list>
 
 namespace msgpack {
@@ -76,4 +76,4 @@ inline void operator<< (object::with_zone& o, const std::list<T>& v)
 
 }  // namespace msgpack
 
-#endif /* msgpack/type/list.hpp */
+#endif // MSGPACK_TYPE_LIST_HPP

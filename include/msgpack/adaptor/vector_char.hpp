@@ -19,7 +19,7 @@
 #define MSGPACK_TYPE_VECTOR_CHAR_HPP
 
 #include "msgpack/versioning.hpp"
-#include "msgpack_forward.hpp"
+#include "msgpack_fwd.hpp"
 #include <vector>
 
 namespace msgpack {

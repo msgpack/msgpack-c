@@ -19,7 +19,7 @@
 #define MSGPACK_CPP03_DEFINE_HPP
 
 #include "msgpack/versioning.hpp"
-#include "msgpack_forward.hpp"
+#include "msgpack_fwd.hpp"
 
 #define MSGPACK_DEFINE(...) \
     template <typename Packer> \

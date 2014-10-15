@@ -15,11 +15,13 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 //
-#ifndef MSGPACK_TYPE_NIL_HPP
-#define MSGPACK_TYPE_NIL_HPP
+#ifndef MSGPACK_TYPE_RAW_FWD_HPP
+#define MSGPACK_TYPE_RAW_FWD_HPP
 
 #include "msgpack/versioning.hpp"
-#include "msgpack_fwd.hpp"
+#include "msgpack/object_fwd.hpp"
+#include <string.h>
+#include <string>
 
 namespace msgpack {
 
@@ -27,42 +29,22 @@ MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 namespace type {
 
-struct nil { };
+struct raw_ref;
 
 }  // namespace type
 
 
-inline object const& operator>> (object const& o, type::nil&)
-{
-    if(o.type != type::NIL) { throw type_error(); }
-    return o;
-}
+object const& operator>> (object const& o, type::raw_ref& v);
 
 template <typename Stream>
-inline packer<Stream>& operator<< (packer<Stream>& o, const type::nil&)
-{
-    o.pack_nil();
-    return o;
-}
+packer<Stream>& operator<< (packer<Stream>& o, const type::raw_ref& v);
 
-inline void operator<< (object& o, type::nil)
-{
-    o.type = type::NIL;
-}
+void operator<< (object& o, const type::raw_ref& v);
 
-inline void operator<< (object::with_zone& o, type::nil v)
-    { static_cast<object&>(o) << v; }
-
-
-template <>
-inline void object::as<void>() const
-{
-    msgpack::type::nil v;
-    convert(v);
-}
+void operator<< (object::with_zone& o, const type::raw_ref& v);
 
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 
 }  // namespace msgpack
 
-#endif // MSGPACK_TYPE_NIL_HPP
+#endif // MSGPACK_TYPE_RAW_FWD_HPP

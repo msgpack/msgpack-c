@@ -19,7 +19,7 @@
 #define MSGPACK_TYPE_STRING_HPP
 
 #include "msgpack/versioning.hpp"
-#include "msgpack_forward.hpp"
+#include "msgpack_fwd.hpp"
 #include <string>
 
 namespace msgpack {
@@ -70,4 +70,4 @@ inline void operator<< (object& o, const std::string& v)
 
 }  // namespace msgpack
 
-#endif /* msgpack/type/string.hpp */
+#endif // MSGPACK_TYPE_STRING_HPP

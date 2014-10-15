@@ -19,7 +19,7 @@
 #define MSGPACK_TYPE_DEQUE_HPP
 
 #include "msgpack/versioning.hpp"
-#include "msgpack_forward.hpp"
+#include "msgpack_fwd.hpp"
 #include <deque>
 
 namespace msgpack {
