@@ -137,6 +137,11 @@ struct object_kv {
     object val;
 };
 
+namespace detail {
+template <typename Stream, typename T>
+struct packer_serializer;
+} // namespace detail
+
 object const& operator>> (object const& o, object& v);
 
 template <typename T>
