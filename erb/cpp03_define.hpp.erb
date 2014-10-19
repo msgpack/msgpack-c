@@ -19,7 +19,8 @@
 #define MSGPACK_CPP03_DEFINE_HPP
 
 #include "msgpack/versioning.hpp"
-#include "msgpack_fwd.hpp"
+#include "msgpack/adaptor/msgpack_tuple_fwd.hpp"
+#include "msgpack/object_fwd.hpp"
 
 #define MSGPACK_DEFINE(...) \
     template <typename Packer> \

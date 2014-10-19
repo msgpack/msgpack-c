@@ -19,7 +19,7 @@
 #define MSGPACK_TYPE_PAIR_HPP
 
 #include "msgpack/versioning.hpp"
-#include "msgpack_fwd.hpp"
+#include "msgpack/object_fwd.hpp"
 #include <utility>
 
 namespace msgpack {

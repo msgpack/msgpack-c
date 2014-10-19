@@ -19,7 +19,7 @@
 #define MSGPACK_CPP11_TUPLE_HPP
 
 #include "msgpack/versioning.hpp"
-#include "msgpack_fwd.hpp"
+#include "msgpack/object_fwd.hpp"
 
 #include <tuple>
 

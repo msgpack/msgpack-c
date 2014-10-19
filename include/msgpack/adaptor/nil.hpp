@@ -19,7 +19,7 @@
 #define MSGPACK_TYPE_NIL_HPP
 
 #include "msgpack/versioning.hpp"
-#include "msgpack_fwd.hpp"
+#include "msgpack/object_fwd.hpp"
 
 namespace msgpack {
 

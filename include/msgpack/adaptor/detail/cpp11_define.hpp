@@ -19,7 +19,7 @@
 #define MSGPACK_CPP11_DEFINE_HPP
 
 #include "msgpack/versioning.hpp"
-#include "msgpack_fwd.hpp"
+#include "msgpack/object_fwd.hpp"
 
 // for MSGPACK_ADD_ENUM
 #include "msgpack/adaptor/int_fwd.hpp"

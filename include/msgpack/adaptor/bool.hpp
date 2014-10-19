@@ -19,7 +19,7 @@
 #define MSGPACK_TYPE_BOOL_HPP
 
 #include "msgpack/versioning.hpp"
-#include "msgpack_fwd.hpp"
+#include "msgpack/object_fwd.hpp"
 #include <vector>
 
 namespace msgpack {

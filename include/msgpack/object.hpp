@@ -86,6 +86,36 @@ inline object const& operator>> (object const& o, object& v)
 template <typename T>
 inline object const& operator>> (object const& o, T& v)
 {
+    // If you get a error 'class your_class has no member named 'msgpack_unpack',
+    // check the following:
+    // 1. The class your_class should have MSGPACK_DEFINE macro or
+    //
+    // 2. The class your_class should have the following operator declaration and
+    //    definition:
+    //    inline object const& operator>> (object const& o, std::string& v)
+    //
+    //    See 3.
+    //
+    // 3. #include "msgpack.hpp" too early.
+    //    Replace msgpack.hpp with msgpack_fwd.hpp, then,
+    //    place operator declarations as follows:
+    //
+    //    namespace msgpack {
+    //    MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS) {
+    //    object const& operator>> (object const& o, std::string& v);
+    //    }
+    //    }
+    //
+    //    then, #include "msgpack.hpp", finally place the operator definitions as follows:
+    //
+    //    namespace msgpack {
+    //    MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS) {
+    //    object const& operator>> (object const& o, std::string& v) {
+    //        // converting operations here
+    //    }
+    //    } // MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS)
+    //    } // namespace msgpack
+    //
     v.msgpack_unpack(o.convert());
     return o;
 }
@@ -116,6 +146,42 @@ namespace detail {
 template <typename Stream, typename T>
 struct packer_serializer {
     static packer<Stream>& pack(packer<Stream>& o, const T& v) {
+        // If you get a error 'const class your_class has no member named 'msgpack_pack',
+        // check the following:
+        // 1. The class your_class should have MSGPACK_DEFINE macro or
+        //
+        // 2. The class your_class should have the following operator declaration and
+        //    definition:
+        //
+        //    namespace msgpack {
+        //    MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS) {
+        //    template <typename Stream>
+        //    inline packer<Stream>& operator<< (packer<Stream>& o, const your_class& v)
+        //    } // MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS)
+        //    } // namespace msgpack
+        //
+        //    See 3.
+        //
+        // 3. #include "msgpack.hpp" too early.
+        //    Replace msgpack.hpp with msgpack_fwd.hpp, then,
+        //    place operator declarations as follows:
+        //
+        //    namespace msgpack {
+        //    MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS) {
+        //    template <typename Stream>
+        //    packer<Stream>& operator<< (packer<Stream>& o, const your_class& v);
+        //    } // MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS)
+        //    } // namespace msgpack
+        //
+        //    then, #include "msgpack.hpp", finally place the operator definitions as follows:
+        //
+        //    template <typename Stream>
+        //    inline packer<Stream>& operator<< (packer<Stream>& o, const your_class& v) {
+        //         // packing operation
+        //    }
+        //    } // MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS)
+        //    } // namespace msgpack
+        //
         v.msgpack_pack(o);
         return o;
     }

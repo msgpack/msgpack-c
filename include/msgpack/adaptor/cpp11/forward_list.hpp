@@ -20,7 +20,7 @@
 #define MSGPACK_CPP11_FORWARD_LIST_HPP
 
 #include "msgpack/versioning.hpp"
-#include "msgpack_fwd.hpp"
+#include "msgpack/object_fwd.hpp"
 
 #include <forward_list>
 
