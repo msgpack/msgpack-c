@@ -47,7 +47,7 @@
 
 namespace msgpack {
 
-typedef bool (*unpack_reference_func)(type::object_type, uint64_t, void*);
+typedef bool (*unpack_reference_func)(type::object_type, std::size_t, void*);
 
 namespace detail {
 
@@ -149,7 +149,7 @@ inline void unpack_map_item(object& c, object const& k, object const& v)
     ++c.via.map.size;
 }
 
-inline void unpack_str(unpack_user& u, const char* p, uint64_t l, object& o)
+inline void unpack_str(unpack_user& u, const char* p, uint32_t l, object& o)
 {
     o.type = type::STR;
     if (u.reference_func() && u.reference_func()(o.type, l, u.user_data())) {
@@ -164,7 +164,7 @@ inline void unpack_str(unpack_user& u, const char* p, uint64_t l, object& o)
     o.via.str.size = l;
 }
 
-inline void unpack_bin(unpack_user& u, const char* p, uint64_t l, object& o)
+inline void unpack_bin(unpack_user& u, const char* p, uint32_t l, object& o)
 {
     o.type = type::BIN;
     if (u.reference_func() && u.reference_func()(o.type, l, u.user_data())) {
@@ -179,7 +179,7 @@ inline void unpack_bin(unpack_user& u, const char* p, uint64_t l, object& o)
     o.via.bin.size = l;
 }
 
-inline void unpack_ext(unpack_user& u, const char* p, uint64_t l, object& o)
+inline void unpack_ext(unpack_user& u, const char* p, uint32_t l, object& o)
 {
     o.type = type::EXT;
     if (u.reference_func() && u.reference_func()(o.type, l, u.user_data())) {
@@ -796,7 +796,7 @@ private:
     char const* m_start;
     char const* m_current;
 
-    uint64_t m_trail;
+    uint32_t m_trail;
     unpack_user m_user;
     uint32_t m_cs;
     uint32_t m_top;
@@ -947,7 +947,7 @@ private:
     void expand_buffer(std::size_t size);
     int execute_imp();
     bool flush_zone();
-    static bool default_reference_func(type::object_type type, uint64_t len, void*);
+    static bool default_reference_func(type::object_type type, std::size_t len, void*);
 
 private:
     char* m_buffer;
@@ -1451,7 +1451,7 @@ inline void unpack(unpacked* result,
         else unpack(*result, data, len, f, user_data);
 }
 
-inline bool unpacker::default_reference_func(type::object_type /*type*/, uint64_t /*len*/, void*)
+inline bool unpacker::default_reference_func(type::object_type /*type*/, std::size_t /*len*/, void*)
 {
     return true;
 }
