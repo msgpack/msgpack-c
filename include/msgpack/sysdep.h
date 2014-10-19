@@ -68,7 +68,12 @@ typedef unsigned int _msgpack_atomic_counter_t;
 #endif
 
 #else
+
 #include <arpa/inet.h>  /* __BYTE_ORDER */
+#  if !defined(__APPLE__)
+#    include <byteswap.h>
+#  endif
+
 #endif
 
 #if !defined(__LITTLE_ENDIAN__) && !defined(__BIG_ENDIAN__)
@@ -185,4 +190,3 @@ typedef unsigned int _msgpack_atomic_counter_t;
 #endif
 
 #endif /* msgpack/sysdep.h */
-
