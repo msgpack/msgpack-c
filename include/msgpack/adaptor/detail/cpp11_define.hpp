@@ -18,7 +18,14 @@
 #ifndef MSGPACK_CPP11_DEFINE_HPP
 #define MSGPACK_CPP11_DEFINE_HPP
 
+#include "msgpack/versioning.hpp"
+#include "msgpack/object_fwd.hpp"
+
+// for MSGPACK_ADD_ENUM
+#include "msgpack/adaptor/int_fwd.hpp"
+
 #include <type_traits>
+#include <tuple>
 
 #define MSGPACK_DEFINE(...) \
     template <typename Packer> \
@@ -39,6 +46,7 @@
 // MSGPACK_ADD_ENUM must be used in the global namespace.
 #define MSGPACK_ADD_ENUM(enum) \
   namespace msgpack { \
+  MSGPACK_API_VERSION_NAMESPACE(v1) { \
     template <> \
     inline object const& operator>> (object const& o, enum& v) \
     { \
@@ -61,9 +69,11 @@
         } \
       }; \
     } \
+  } \
   }
 
 namespace msgpack {
+MSGPACK_API_VERSION_NAMESPACE(v1) {
 namespace type {
 
 template <typename Tuple, std::size_t N>
@@ -104,7 +114,7 @@ struct define_imp<Tuple, 1> {
 template <typename... Args>
 struct define {
     typedef define<Args...> value_type;
-    typedef tuple<Args...> tuple_type;
+    typedef std::tuple<Args...> tuple_type;
     define(Args&... args) :
         a(args...) {}
     template <typename Packer>
@@ -112,13 +122,13 @@ struct define {
     {
         pk.pack_array(sizeof...(Args));
 
-        define_imp<tuple<Args&...>, sizeof...(Args)>::pack(pk, a);
+        define_imp<std::tuple<Args&...>, sizeof...(Args)>::pack(pk, a);
     }
     void msgpack_unpack(msgpack::object const& o)
     {
         if(o.type != type::ARRAY) { throw type_error(); }
 
-        define_imp<tuple<Args&...>, sizeof...(Args)>::unpack(o, a);
+        define_imp<std::tuple<Args&...>, sizeof...(Args)>::unpack(o, a);
     }
     void msgpack_object(msgpack::object* o, msgpack::zone& z) const
     {
@@ -126,16 +136,16 @@ struct define {
         o->via.array.ptr = static_cast<object*>(z.allocate_align(sizeof(object)*sizeof...(Args)));
         o->via.array.size = sizeof...(Args);
 
-        define_imp<tuple<Args&...>, sizeof...(Args)>::object(o, z, a);
+        define_imp<std::tuple<Args&...>, sizeof...(Args)>::object(o, z, a);
     }
 
-    tuple<Args&...> a;
+    std::tuple<Args&...> a;
 };
 
 template <>
 struct define<> {
     typedef define<> value_type;
-    typedef tuple<> tuple_type;
+    typedef std::tuple<> tuple_type;
     template <typename Packer>
     void msgpack_pack(Packer& pk) const
     {
@@ -165,6 +175,7 @@ define<Args...> make_define(Args&... args)
 }
 
 }  // namespace type
+}  // MSGPACK_API_VERSION_NAMESPACE(v1)
 }  // namespace msgpack
 
 #endif // MSGPACK_CPP11_DEFINE_HPP

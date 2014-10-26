@@ -18,7 +18,8 @@
 #ifndef MSGPACK_TYPE_TR1_UNORDERED_MAP_HPP
 #define MSGPACK_TYPE_TR1_UNORDERED_MAP_HPP
 
-#include "msgpack/object.hpp"
+#include "msgpack/versioning.hpp"
+#include "msgpack/object_fwd.hpp"
 
 #if defined(_LIBCPP_VERSION) || (_MSC_VER >= 1700)
 
@@ -42,6 +43,7 @@
 
 namespace msgpack {
 
+MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 template <typename K, typename V>
 inline object const& operator>> (object const& o, MSGPACK_STD_TR1::unordered_map<K, V>& v)
@@ -145,9 +147,10 @@ inline void operator<< (object::with_zone& o, const MSGPACK_STD_TR1::unordered_m
     }
 }
 
+}  // MSGPACK_API_VERSION_NAMESPACE(v1)
 
 }  // namespace msgpack
 
 #undef MSGPACK_STD_TR1
 
-#endif /* msgpack/type/map.hpp */
+#endif // MSGPACK_TYPE_TR1_UNORDERED_MAP_HPP

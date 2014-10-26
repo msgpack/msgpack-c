@@ -18,11 +18,13 @@
 #ifndef MSGPACK_TYPE_PAIR_HPP
 #define MSGPACK_TYPE_PAIR_HPP
 
-#include "msgpack/object.hpp"
+#include "msgpack/versioning.hpp"
+#include "msgpack/object_fwd.hpp"
 #include <utility>
 
 namespace msgpack {
 
+MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 template <typename T1, typename T2>
 inline object const& operator>> (object const& o, std::pair<T1, T2>& v)
@@ -54,7 +56,8 @@ inline void operator<< (object::with_zone& o, const std::pair<T1, T2>& v)
     p[1] = object(v.second, o.zone);
 }
 
+}  // MSGPACK_API_VERSION_NAMESPACE(v1)
 
 }  // namespace msgpack
 
-#endif /* msgpack/type/pair.hpp */
+#endif // MSGPACK_TYPE_PAIR_HPP

@@ -18,11 +18,13 @@
 #ifndef MSGPACK_TYPE_BOOL_HPP
 #define MSGPACK_TYPE_BOOL_HPP
 
-#include "msgpack/object.hpp"
+#include "msgpack/versioning.hpp"
+#include "msgpack/object_fwd.hpp"
 #include <vector>
 
 namespace msgpack {
 
+MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 inline object const& operator>> (object const& o, bool& v)
 {
@@ -49,6 +51,8 @@ inline void operator<< (object::with_zone& o, bool v)
     { static_cast<object&>(o) << v; }
 
 
+}  // MSGPACK_API_VERSION_NAMESPACE(v1)
+
 }  // namespace msgpack
 
-#endif /* msgpack/type/bool.hpp */
+#endif // MSGPACK_TYPE_BOOL_HPP

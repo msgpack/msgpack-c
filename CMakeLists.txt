@@ -97,42 +97,70 @@ LIST (APPEND msgpack_HEADERS
 IF (MSGPACK_ENABLE_CXX)
     LIST (APPEND msgpack_HEADERS
         include/msgpack.hpp
+        include/msgpack_fwd.hpp
         include/msgpack/adaptor/bool.hpp
+        include/msgpack/adaptor/bool_fwd.hpp
         include/msgpack/adaptor/char_ptr.hpp
+        include/msgpack/adaptor/char_ptr_fwd.hpp
         include/msgpack/adaptor/cpp11/array.hpp
+        include/msgpack/adaptor/cpp11/array_fwd.hpp
         include/msgpack/adaptor/cpp11/array_char.hpp
+        include/msgpack/adaptor/cpp11/array_char_fwd.hpp
         include/msgpack/adaptor/cpp11/forward_list.hpp
+        include/msgpack/adaptor/cpp11/forward_list_fwd.hpp
         include/msgpack/adaptor/cpp11/tuple.hpp
+        include/msgpack/adaptor/cpp11/tuple_fwd.hpp
         include/msgpack/adaptor/define.hpp
         include/msgpack/adaptor/deque.hpp
+        include/msgpack/adaptor/deque_fwd.hpp
         include/msgpack/adaptor/detail/cpp03_define.hpp
         include/msgpack/adaptor/detail/cpp03_msgpack_tuple.hpp
+        include/msgpack/adaptor/detail/cpp03_msgpack_tuple_fwd.hpp
         include/msgpack/adaptor/detail/cpp11_define.hpp
         include/msgpack/adaptor/detail/cpp11_msgpack_tuple.hpp
+        include/msgpack/adaptor/detail/cpp11_msgpack_tuple_fwd.hpp
         include/msgpack/adaptor/fixint.hpp
+        include/msgpack/adaptor/fixint_fwd.hpp
         include/msgpack/adaptor/float.hpp
+        include/msgpack/adaptor/float_fwd.hpp
         include/msgpack/adaptor/int.hpp
+        include/msgpack/adaptor/int_fwd.hpp
         include/msgpack/adaptor/list.hpp
+        include/msgpack/adaptor/list_fwd.hpp
         include/msgpack/adaptor/map.hpp
+        include/msgpack/adaptor/map_fwd.hpp
         include/msgpack/adaptor/msgpack_tuple.hpp
+        include/msgpack/adaptor/msgpack_tuple_fwd.hpp
         include/msgpack/adaptor/nil.hpp
+        include/msgpack/adaptor/nil_fwd.hpp
         include/msgpack/adaptor/pair.hpp
+        include/msgpack/adaptor/pair_fwd.hpp
         include/msgpack/adaptor/raw.hpp
+        include/msgpack/adaptor/raw_fwd.hpp
         include/msgpack/adaptor/set.hpp
+        include/msgpack/adaptor/set_fwd.hpp
         include/msgpack/adaptor/string.hpp
+        include/msgpack/adaptor/string_fwd.hpp
         include/msgpack/adaptor/tr1/unordered_map.hpp
+        include/msgpack/adaptor/tr1/unordered_map_fwd.hpp
         include/msgpack/adaptor/tr1/unordered_set.hpp
+        include/msgpack/adaptor/tr1/unordered_set_fwd.hpp
         include/msgpack/adaptor/vector.hpp
+        include/msgpack/adaptor/vector_fwd.hpp
+        include/msgpack/adaptor/vector_char.hpp
+        include/msgpack/adaptor/vector_char_fwd.hpp
         include/msgpack/cpp_config.hpp
         include/msgpack/detail/cpp03_zone.hpp
         include/msgpack/detail/cpp11_zone.hpp
         include/msgpack/fbuffer.hpp
         include/msgpack/object.hpp
+        include/msgpack/object_fwd.hpp
         include/msgpack/pack.hpp
         include/msgpack/sbuffer.hpp
         include/msgpack/type.hpp
         include/msgpack/unpack.hpp
         include/msgpack/version.hpp
+        include/msgpack/versioning.hpp
         include/msgpack/vrefbuffer.hpp
         include/msgpack/zbuffer.hpp
         include/msgpack/zone.hpp

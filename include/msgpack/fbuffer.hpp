@@ -18,11 +18,14 @@
 #ifndef MSGPACK_FBUFFER_HPP__
 #define MSGPACK_FBUFFER_HPP__
 
+#include "msgpack/versioning.hpp"
+
 #include <cstdio>
 #include <stdexcept>
 
 namespace msgpack {
 
+MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 class fbuffer {
 public:
@@ -49,8 +52,8 @@ private:
     FILE* m_file;
 };
 
+}  // MSGPACK_API_VERSION_NAMESPACE(v1)
 
 }  // namespace msgpack
 
 #endif /* msgpack/fbuffer.hpp */
-

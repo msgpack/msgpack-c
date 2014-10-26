@@ -18,11 +18,13 @@
 #ifndef MSGPACK_TYPE_DEQUE_HPP
 #define MSGPACK_TYPE_DEQUE_HPP
 
-#include "msgpack/object.hpp"
+#include "msgpack/versioning.hpp"
+#include "msgpack/object_fwd.hpp"
 #include <deque>
 
 namespace msgpack {
 
+MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 template <typename T>
 inline object const& operator>> (object const& o, std::deque<T>& v)
@@ -70,6 +72,7 @@ inline void operator<< (object::with_zone& o, const std::deque<T>& v)
     }
 }
 
+}  // MSGPACK_API_VERSION_NAMESPACE(v1)
 
 }  // namespace msgpack
 

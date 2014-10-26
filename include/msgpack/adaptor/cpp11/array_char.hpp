@@ -18,10 +18,13 @@
 #ifndef MSGPACK_TYPE_ARRAY_CHAR_HPP
 #define MSGPACK_TYPE_ARRAY_CHAR_HPP
 
-#include "msgpack/object.hpp"
+#include "msgpack/versioning.hpp"
+#include "msgpack_fwd.hpp"
 #include <array>
 
 namespace msgpack {
+
+MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 template <std::size_t N>
 inline object const& operator>> (object const& o, std::array<char, N>& v)
@@ -68,6 +71,8 @@ inline void operator<< (object::with_zone& o, const std::array<char, N>& v)
     o.via.bin.size = static_cast<uint32_t>(v.size());
     std::memcpy(ptr, v.data(), v.size());
 }
+
+}  // MSGPACK_API_VERSION_NAMESPACE(v1)
 
 }  // namespace msgpack
 

@@ -18,10 +18,13 @@
 #ifndef MSGPACK_TYPE_FIXINT_HPP
 #define MSGPACK_TYPE_FIXINT_HPP
 
-#include "msgpack/object.hpp"
+#include "msgpack/versioning.hpp"
+#include "msgpack/object_fwd.hpp"
 #include "msgpack/adaptor/int.hpp"
 
 namespace msgpack {
+
+MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 namespace type {
 
@@ -201,6 +204,8 @@ inline void operator<< (object::with_zone& o, type::fix_uint32 v)
 inline void operator<< (object::with_zone& o, type::fix_uint64 v)
     { static_cast<object&>(o) << v; }
 
+
+}  // MSGPACK_API_VERSION_NAMESPACE(v1)
 
 }  // namespace msgpack
 

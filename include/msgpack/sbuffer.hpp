@@ -18,6 +18,8 @@
 #ifndef MSGPACK_SBUFFER_HPP
 #define MSGPACK_SBUFFER_HPP
 
+#include "msgpack/versioning.hpp"
+
 #include <stdexcept>
 
 #ifndef MSGPACK_SBUFFER_INIT_SIZE
@@ -26,6 +28,7 @@
 
 namespace msgpack {
 
+MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 class sbuffer {
 public:
@@ -90,14 +93,14 @@ private:
     {
         size_t nsize = (m_alloc > 0) ?
                 m_alloc * 2 : MSGPACK_SBUFFER_INIT_SIZE;
-    
+
         while(nsize < m_size + len) { nsize *= 2; }
-    
+
         void* tmp = ::realloc(m_data, nsize);
         if(!tmp) {
             throw std::bad_alloc();
         }
-    
+
         m_data = static_cast<char*>(tmp);
         m_alloc = nsize;
     }
@@ -110,8 +113,8 @@ private:
     size_t m_alloc;
 };
 
+}  // MSGPACK_API_VERSION_NAMESPACE(v1)
 
 }  // namespace msgpack
 
 #endif /* msgpack/sbuffer.hpp */
-

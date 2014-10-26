@@ -18,10 +18,13 @@
 #ifndef MSGPACK_TYPE_CHAR_PTR_HPP
 #define MSGPACK_TYPE_CHAR_PTR_HPP
 
-#include "msgpack/object.hpp"
+#include "msgpack/versioning.hpp"
+#include "msgpack/object_fwd.hpp"
 #include <cstring>
 
 namespace msgpack {
+
+MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 template <typename Stream>
 inline packer<Stream>& operator<< (packer<Stream>& o, const char* v)
@@ -50,6 +53,7 @@ inline void operator<< (object& o, const char* v)
     o.via.str.size = static_cast<uint32_t>(size);
 }
 
+}  // MSGPACK_API_VERSION_NAMESPACE(v1)
 
 }  // namespace msgpack
 

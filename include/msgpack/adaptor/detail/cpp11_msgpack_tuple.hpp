@@ -18,12 +18,14 @@
 #ifndef MSGPACK_CPP11_MSGPACK_TUPLE_HPP
 #define MSGPACK_CPP11_MSGPACK_TUPLE_HPP
 
+#include "msgpack/versioning.hpp"
+#include "msgpack/object_fwd.hpp"
+
 #include <tuple>
 
-#include "msgpack/object.hpp"
-#include "msgpack/cpp_config.hpp"
-
 namespace msgpack {
+
+MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 namespace type {
     // tuple
@@ -203,6 +205,8 @@ inline void operator<< (
     MsgpackTupleToObjectWithZone<decltype(v), sizeof...(Args)>::convert(o, v);
 }
 
-} // msgpack
+}  // MSGPACK_API_VERSION_NAMESPACE(v1)
+
+}  // namespace msgpack
 
 #endif // MSGPACK_CPP11_MSGPACK_TUPLE_HPP

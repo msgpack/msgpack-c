@@ -18,10 +18,13 @@
 #ifndef MSGPACK_TYPE_VECTOR_CHAR_HPP
 #define MSGPACK_TYPE_VECTOR_CHAR_HPP
 
-#include "msgpack/object.hpp"
+#include "msgpack/versioning.hpp"
+#include "msgpack/object_fwd.hpp"
 #include <vector>
 
 namespace msgpack {
+
+MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 inline object const& operator>> (object const& o, std::vector<char>& v)
 {
@@ -65,6 +68,8 @@ inline void operator<< (object::with_zone& o, const std::vector<char>& v)
     o.via.bin.size = static_cast<uint32_t>(v.size());
     std::memcpy(ptr, v.data(), v.size());
 }
+
+}  // MSGPACK_API_VERSION_NAMESPACE(v1)
 
 }  // namespace msgpack
 
