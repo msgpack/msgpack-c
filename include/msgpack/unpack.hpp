@@ -17,6 +17,8 @@
 //
 #ifndef MSGPACK_UNPACK_HPP
 #define MSGPACK_UNPACK_HPP
+
+#include "msgpack/versioning.hpp"
 #include "object.hpp"
 #include "zone.hpp"
 #include "unpack_define.h"
@@ -46,6 +48,8 @@
 
 
 namespace msgpack {
+
+MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 typedef bool (*unpack_reference_func)(type::object_type, std::size_t, void*);
 
@@ -1455,6 +1459,8 @@ inline bool unpacker::default_reference_func(type::object_type /*type*/, std::si
 {
     return true;
 }
+
+}  // MSGPACK_API_VERSION_NAMESPACE(v1)
 
 }  // namespace msgpack
 

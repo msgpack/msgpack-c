@@ -18,6 +18,8 @@
 #ifndef MSGPACK_CPP11_ZONE_HPP
 #define MSGPACK_CPP11_ZONE_HPP
 
+#include "msgpack/versioning.hpp"
+
 #include <cstdlib>
 #include <memory>
 #include <vector>
@@ -33,6 +35,8 @@
 #endif
 
 namespace msgpack {
+
+MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 class zone {
 private:
@@ -340,6 +344,8 @@ T* zone::allocate(Args... args)
         throw;
     }
 }
+
+}  // MSGPACK_API_VERSION_NAMESPACE(v1)
 
 }  // namespace msgpack
 

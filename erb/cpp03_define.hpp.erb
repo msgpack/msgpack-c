@@ -18,6 +18,10 @@
 #ifndef MSGPACK_CPP03_DEFINE_HPP
 #define MSGPACK_CPP03_DEFINE_HPP
 
+#include "msgpack/versioning.hpp"
+#include "msgpack/adaptor/msgpack_tuple_fwd.hpp"
+#include "msgpack/object_fwd.hpp"
+
 #define MSGPACK_DEFINE(...) \
     template <typename Packer> \
     void msgpack_pack(Packer& pk) const \
@@ -37,6 +41,7 @@
 // MSGPACK_ADD_ENUM must be used in the global namespace.
 #define MSGPACK_ADD_ENUM(enum) \
   namespace msgpack { \
+  MSGPACK_API_VERSION_NAMESPACE(v1) { \
     template <> \
     inline object const& operator>> (object const& o, enum& v) \
     { \
@@ -58,9 +63,11 @@
         } \
       }; \
     } \
+  } \
   }
 
 namespace msgpack {
+MSGPACK_API_VERSION_NAMESPACE(v1) {
 namespace type {
 
 
@@ -141,6 +148,7 @@ define<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> make_define(A0& a0<%1.upto(i) {|j|%>,
 <%}%>
 
 }  // namespace type
+}  // MSGPACK_API_VERSION_NAMESPACE(v1)
 }  // namespace msgpack
 
 

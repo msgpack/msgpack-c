@@ -22,7 +22,7 @@
 #include <memory>
 #include <vector>
 
-#include "msgpack/cpp_config.hpp"
+#include "msgpack/versioning.hpp"
 
 #ifndef MSGPACK_ZONE_CHUNK_SIZE
 #define MSGPACK_ZONE_CHUNK_SIZE 8192
@@ -34,6 +34,8 @@
 
 <% GENERATION_LIMIT = 15 %>
 namespace msgpack {
+
+MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 class zone {
     struct finalizer {
@@ -300,6 +302,8 @@ T* zone::allocate(<%=(1..i).map{|j|"A#{j} a#{j}"}.join(', ')%>)
     }
 }
 <%}%>
+
+}  // MSGPACK_API_VERSION_NAMESPACE(v1)
 
 }  // namespace msgpack
 

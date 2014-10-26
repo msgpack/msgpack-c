@@ -18,13 +18,15 @@
 #ifndef MSGPACK_TYPE_MAP_HPP
 #define MSGPACK_TYPE_MAP_HPP
 
-#include "msgpack/object.hpp"
+#include "msgpack/versioning.hpp"
+#include "msgpack/object_fwd.hpp"
 #include <map>
 #include <vector>
 #include <algorithm>
 
 namespace msgpack {
 
+MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 namespace type {
 
@@ -202,7 +204,8 @@ inline void operator<< (object::with_zone& o, const std::multimap<K,V>& v)
     }
 }
 
+}  // MSGPACK_API_VERSION_NAMESPACE(v1)
 
 }  // namespace msgpack
 
-#endif /* msgpack/type/map.hpp */
+#endif // MSGPACK_TYPE_MAP_HPP

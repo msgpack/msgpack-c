@@ -19,12 +19,14 @@
 #ifndef MSGPACK_CPP11_ARRAY_HPP
 #define MSGPACK_CPP11_ARRAY_HPP
 
+#include "msgpack/versioning.hpp"
+#include "msgpack/object_fwd.hpp"
+
 #include <array>
 
-#include "msgpack/object.hpp"
-#include "msgpack/cpp_config.hpp"
-
 namespace msgpack {
+
+MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 template <typename T, std::size_t N>
 inline object const& operator>> (object const& o, std::array<T, N>& v) {
@@ -64,6 +66,7 @@ inline void operator<< (object::with_zone& o, const std::array<T, N>& v) {
     }
 }
 
+}  // MSGPACK_API_VERSION_NAMESPACE(v1)
 
 } // namespace msgpack
 

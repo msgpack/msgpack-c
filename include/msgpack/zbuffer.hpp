@@ -18,6 +18,8 @@
 #ifndef MSGPACK_ZBUFFER_HPP
 #define MSGPACK_ZBUFFER_HPP
 
+#include "msgpack/versioning.hpp"
+
 #include <stdexcept>
 #include <zlib.h>
 
@@ -31,6 +33,7 @@
 
 namespace msgpack {
 
+MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 class zbuffer {
 public:
@@ -155,8 +158,8 @@ private:
     size_t m_init_size;
 };
 
+}  // MSGPACK_API_VERSION_NAMESPACE(v1)
 
 }  // namespace msgpack
 
 #endif /* msgpack/zbuffer.hpp */
-

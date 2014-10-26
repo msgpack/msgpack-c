@@ -18,6 +18,8 @@
 #ifndef MSGPACK_VREFBUFFER_HPP
 #define MSGPACK_VREFBUFFER_HPP
 
+#include "msgpack/versioning.hpp"
+
 #include <stdexcept>
 
 #ifndef MSGPACK_VREFBUFFER_REF_SIZE
@@ -38,6 +40,8 @@ struct iovec {
 #endif
 
 namespace msgpack {
+
+MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 namespace detail {
     // int64, uint64, double
@@ -274,6 +278,7 @@ private:
 
 };
 
+}  // MSGPACK_API_VERSION_NAMESPACE(v1)
 
 }  // namespace msgpack
 

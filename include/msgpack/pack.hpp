@@ -18,6 +18,8 @@
 #ifndef MSGPACK_PACK_HPP
 #define MSGPACK_PACK_HPP
 
+#include "msgpack/versioning.hpp"
+
 #include <stdexcept>
 #include <limits>
 #include <cstring>
@@ -26,6 +28,7 @@
 
 namespace msgpack {
 
+MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 template <typename Stream>
 class packer {
@@ -1018,7 +1021,8 @@ inline void packer<Stream>::pack_imp_int64(T d)
     }
 }
 
+}  // MSGPACK_API_VERSION_NAMESPACE(v1)
+
 }  // namespace msgpack
 
 #endif /* msgpack/pack.hpp */
-

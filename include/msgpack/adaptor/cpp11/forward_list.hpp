@@ -19,12 +19,14 @@
 #ifndef MSGPACK_CPP11_FORWARD_LIST_HPP
 #define MSGPACK_CPP11_FORWARD_LIST_HPP
 
+#include "msgpack/versioning.hpp"
+#include "msgpack/object_fwd.hpp"
+
 #include <forward_list>
 
-#include "msgpack/object.hpp"
-#include "msgpack/cpp_config.hpp"
-
 namespace msgpack {
+
+MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 template <typename T>
 inline object const& operator>> (object const& o, std::forward_list<T>& v)
@@ -64,6 +66,7 @@ inline void operator<< (object::with_zone& o, const std::forward_list<T>& v)
     }
 }
 
+}  // MSGPACK_API_VERSION_NAMESPACE(v1)
 
 } // namespace msgpack
 

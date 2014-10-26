@@ -18,11 +18,13 @@
 #ifndef MSGPACK_TYPE_LIST_HPP
 #define MSGPACK_TYPE_LIST_HPP
 
-#include "msgpack/object.hpp"
+#include "msgpack/versioning.hpp"
+#include "msgpack/object_fwd.hpp"
 #include <list>
 
 namespace msgpack {
 
+MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 template <typename T>
 inline object const& operator>> (object const& o, std::list<T>& v)
@@ -70,7 +72,8 @@ inline void operator<< (object::with_zone& o, const std::list<T>& v)
     }
 }
 
+}  // MSGPACK_API_VERSION_NAMESPACE(v1)
 
 }  // namespace msgpack
 
-#endif /* msgpack/type/list.hpp */
+#endif // MSGPACK_TYPE_LIST_HPP
