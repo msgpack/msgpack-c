@@ -9,9 +9,19 @@ fi
 
 if [ $1 = "cpp11" ]
 then
-    ./configure CXXFLAGS="-std=c++11"
+    if [ $2 = "32" ]
+    then
+        ./configure CFLAGS="-m32" CXXFLAGS="-std=c++11 -m32"
+    else
+        ./configure CXXFLAGS="-std=c++11"
+    fi
 else
-    ./configure
+    if [ $2 = "32" ]
+    then
+        ./configure CFLAGS="-m32" CXXFLAGS="-m32"
+    else
+        ./configure
+    fi
 fi
 
 ret=$?
