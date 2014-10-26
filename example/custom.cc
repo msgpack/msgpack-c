@@ -4,55 +4,55 @@
 
 class old_class {
 public:
-	old_class() : value("default") { }
+    old_class() : value("default") { }
 
-	std::string value;
+    std::string value;
 
-	MSGPACK_DEFINE(value);
+    MSGPACK_DEFINE(value);
 };
 
 class new_class {
 public:
-	new_class() : value("default"), flag(-1) { }
+    new_class() : value("default"), flag(-1) { }
 
-	std::string value;
-	int flag;
+    std::string value;
+    int flag;
 
-	MSGPACK_DEFINE(value, flag);
+    MSGPACK_DEFINE(value, flag);
 };
 
 int main(void)
 {
-	{
-		old_class oc;
-		new_class nc;
+    {
+        old_class oc;
+        new_class nc;
 
-		msgpack::sbuffer sbuf;
-		msgpack::pack(sbuf, oc);
+        msgpack::sbuffer sbuf;
+        msgpack::pack(sbuf, oc);
 
-		msgpack::zone zone;
-		msgpack::object obj;
-		msgpack::unpack(sbuf.data(), sbuf.size(), NULL, &zone, &obj);
+        msgpack::unpacked result;
+        msgpack::unpack(result, sbuf.data(), sbuf.size());
+        msgpack::object obj = result.get();
 
-		obj.convert(&nc);
+        obj.convert(&nc);
 
-		std::cout << obj << " value=" << nc.value << " flag=" << nc.flag << std::endl;
-	}
+        std::cout << obj << " value=" << nc.value << " flag=" << nc.flag << std::endl;
+    }
 
-	{
-		new_class nc;
-		old_class oc;
+    {
+        new_class nc;
+        old_class oc;
 
-		msgpack::sbuffer sbuf;
-		msgpack::pack(sbuf, nc);
+        msgpack::sbuffer sbuf;
+        msgpack::pack(sbuf, nc);
 
-		msgpack::zone zone;
-		msgpack::object obj;
-		msgpack::unpack(sbuf.data(), sbuf.size(), NULL, &zone, &obj);
+        msgpack::unpacked result;
+        msgpack::unpack(result, sbuf.data(), sbuf.size());
+        msgpack::object obj = result.get();
 
-		obj.convert(&oc);
+        obj.convert(&oc);
 
-		std::cout << obj << " value=" << oc.value << std::endl;
-	}
+        std::cout << obj << " value=" << oc.value << std::endl;
+    }
 }
 

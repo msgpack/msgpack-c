@@ -19,6 +19,7 @@ Makefile.in
 /libtool
 /msgpack.pc
 /src/msgpack/version.h
+/src/msgpack/version.hpp
 /stamp-h1
 Makefile
 .deps

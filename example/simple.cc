@@ -5,33 +5,34 @@
 
 int main(void)
 {
-	msgpack::type::tuple<int, bool, std::string> src(1, true, "example");
+    msgpack::type::tuple<int, bool, std::string> src(1, true, "example");
 
-	// serialize the object into the buffer.
-	// any classes that implements write(const char*,size_t) can be a buffer.
-	std::stringstream buffer;
-	msgpack::pack(buffer, src);
+    // serialize the object into the buffer.
+    // any classes that implements write(const char*,size_t) can be a buffer.
+    std::stringstream buffer;
+    msgpack::pack(buffer, src);
 
-	// send the buffer ...
-	buffer.seekg(0);
+    // send the buffer ...
+    buffer.seekg(0);
 
-	// deserialize the buffer into msgpack::object instance.
-	std::string str(buffer.str());
+    // deserialize the buffer into msgpack::object instance.
+    std::string str(buffer.str());
 
-	// deserialized object is valid during the msgpack::zone instance alive.
-	msgpack::zone mempool;
+    msgpack::unpacked result;
 
-	msgpack::object deserialized;
-	msgpack::unpack(str.data(), str.size(), NULL, &mempool, &deserialized);
+    msgpack::unpack(result, str.data(), str.size());
 
-	// msgpack::object supports ostream.
-	std::cout << deserialized << std::endl;
+    // deserialized object is valid during the msgpack::unpacked instance alive.
+    msgpack::object deserialized = result.get();
 
-	// convert msgpack::object instance into the original type.
-	// if the type is mismatched, it throws msgpack::type_error exception.
-	msgpack::type::tuple<int, bool, std::string> dst;
-	deserialized.convert(&dst);
+    // msgpack::object supports ostream.
+    std::cout << deserialized << std::endl;
 
-	return 0;
+    // convert msgpack::object instance into the original type.
+    // if the type is mismatched, it throws msgpack::type_error exception.
+    msgpack::type::tuple<int, bool, std::string> dst;
+    deserialized.convert(&dst);
+
+    return 0;
 }
 
