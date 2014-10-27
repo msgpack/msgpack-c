@@ -20,11 +20,7 @@ The source for msgpack-c is held at [msgpack-c](https://github.com/msgpack/msgpa
 To report an issue, use the [msgpack-c issue tracker](https://github.com/msgpack/msgpack-c/issues) at github.com.
 
 ## Version
-<<<<<<< HEAD
 0.5.9 [![Build Status](https://travis-ci.org/msgpack/msgpack-c.svg?branch=master)](https://travis-ci.org/msgpack/msgpack-c)
-=======
-0.6.0 [![Build Status](https://travis-ci.org/msgpack/msgpack-c.svg?branch=poc/0.6)](https://travis-ci.org/msgpack/msgpack-c)
->>>>>>> 466986b5190ae8e03065e7b614702ec2f43dce1c
 
 ## Using Msgpack
 
@@ -109,15 +105,6 @@ e.g.) tortoise git https://code.google.com/p/tortoisegit/
 1. Open the created msgpack.sln on Visual Studio.
 
 1. Build all.
-
-
-<<<<<<< HEAD
-or using GUI git client.
-=======
-#### Install from package
->>>>>>> 466986b5190ae8e03065e7b614702ec2f43dce1c
-
-Install from package for this branch (poc/0.6) is not supported yet.
 
 ### Code Example
 
