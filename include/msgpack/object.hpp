@@ -199,6 +199,39 @@ inline packer<Stream>& operator<< (packer<Stream>& o, const T& v)
 template <typename T>
 inline void operator<< (object::with_zone& o, const T& v)
 {
+    // If you get a error 'const class your_class has no member named 'msgpack_object',
+    // check the following:
+    // 1. The class your_class should have MSGPACK_DEFINE macro or
+    //
+    // 2. The class your_class should have the following operator declaration and
+    //    definition:
+    //
+    //    namespace msgpack {
+    //    MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS) {
+    //    void operator<< (object::with_zone& o, const your_class& v);
+    //    } // MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS)
+    //    } // namespace msgpack
+    //
+    //    See 3.
+    //
+    // 3. #include "msgpack.hpp" too early.
+    //    Replace msgpack.hpp with msgpack_fwd.hpp, then,
+    //    place operator declarations as follows:
+    //
+    //    namespace msgpack {
+    //    MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS) {
+    //    void operator<< (object::with_zone& o, const your_class& v);
+    //    } // MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS)
+    //    } // namespace msgpack
+    //
+    //    then, #include "msgpack.hpp", finally place the operator definitions as follows:
+    //
+    //    void operator<< (object::with_zone& o, const your_class& v) {
+    //         // set object attributes using v.
+    //    }
+    //    } // MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS)
+    //    } // namespace msgpack
+    //
     v.msgpack_object(static_cast<object*>(&o), o.zone);
 }
 
@@ -343,6 +376,42 @@ inline object::object()
 template <typename T>
 inline object::object(const T& v)
 {
+    // If you get a error 'no matching function call to
+    // operator<<(msgpack::v?::object::object(const T&)
+    // [with T = your_class]'
+    //
+    // check the following:
+    // 1. The class your_class should have MSGPACK_DEFINE macro or
+    //
+    // 2. The class your_class should have the following operator declaration and
+    //    definition:
+    //
+    //    namespace msgpack {
+    //    MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS) {
+    //    void operator<< (object& o, const your_class& v);
+    //    } // MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS)
+    //    } // namespace msgpack
+    //
+    //    See 3.
+    //
+    // 3. #include "msgpack.hpp" too early.
+    //    Replace msgpack.hpp with msgpack_fwd.hpp, then,
+    //    place operator declarations as follows:
+    //
+    //    namespace msgpack {
+    //    MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS) {
+    //    void operator<< (object& o, const your_class& v);
+    //    } // MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS)
+    //    } // namespace msgpack
+    //
+    //    then, #include "msgpack.hpp", finally place the operator definitions as follows:
+    //
+    //    void operator<< (object& o, const your_class& v) {
+    //         // set object attributes using v.
+    //    }
+    //    } // MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS)
+    //    } // namespace msgpack
+    //
     msgpack::operator<<(*this, v);
 }
 
