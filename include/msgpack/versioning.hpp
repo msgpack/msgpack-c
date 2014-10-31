@@ -41,7 +41,7 @@
 
 #define MSGPACK_PP_PROBE(x) x, 1
 
-#if defined(__MSC_VER)
+#if defined(_MSC_VER)
 
 #define MSGPACK_PP_MSVC_VA_ARGS_WORKAROUND(define, args) define args
 #define MSGPACK_PP_CHECK(...) MSGPACK_PP_MSVC_VA_ARGS_WORKAROUND(MSGPACK_PP_CHECK_N, (__VA_ARGS__, 0))

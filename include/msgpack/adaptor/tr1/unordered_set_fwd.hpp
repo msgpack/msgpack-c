@@ -40,6 +40,8 @@
 
 #endif  // defined(_LIBCPP_VERSION) || (_MSC_VER >= 1700)
 
+#if defined(MSGPACK_STD_TR1)
+
 namespace msgpack {
 
 MSGPACK_API_VERSION_NAMESPACE(v1) {
@@ -67,5 +69,7 @@ void operator<< (object::with_zone& o, const MSGPACK_STD_TR1::unordered_multiset
 }  // namespace msgpack
 
 #undef MSGPACK_STD_TR1
+
+#endif // MSGPACK_STD_TR1
 
 #endif // MSGPACK_TYPE_TR1_UNORDERED_SET_FWD_HPP

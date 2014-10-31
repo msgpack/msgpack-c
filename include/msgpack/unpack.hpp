@@ -28,6 +28,14 @@
 #include <memory>
 #include <stdexcept>
 
+#if defined(_MSC_VER)
+// avoiding confliction std::max, std::min, and macro in windows.h
+#define NOMINMAX
+#endif // defined(_MSC_VER)
+
+#ifdef _msgpack_atomic_counter_header
+#include _msgpack_atomic_counter_header
+#endif
 
 
 #define COUNTER_SIZE (sizeof(_msgpack_atomic_counter_t))

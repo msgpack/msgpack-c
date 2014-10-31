@@ -35,7 +35,9 @@
 #if __cplusplus < 201103
 
 #if !defined(nullptr)
-#define nullptr (0)
+#  if _MSC_VER < 1600 
+#    define nullptr (0)
+#  endif
 #endif
 
 #include <memory>
