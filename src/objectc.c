@@ -20,15 +20,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#ifndef _MSC_VER
+#if !defined(_MSC_VER) || _MSC_VER >= 1600
 #include <inttypes.h>
-#else
-#ifndef PRIu64
-#define PRIu64 "I64u"
-#endif
-#ifndef PRIi64
-#define PRIi64 "I64d"
-#endif
 #endif
 
 
@@ -125,11 +118,27 @@ void msgpack_object_print(FILE* out, msgpack_object o)
         break;
 
     case MSGPACK_OBJECT_POSITIVE_INTEGER:
+#if defined(PRIu64)
         fprintf(out, "%" PRIu64, o.via.u64);
+#else
+        if (o.via.u64 > ULONG_MAX)
+            fprintf(out, "over 4294967295");
+        else
+            fprintf(out, "%lu", (unsigned long)o.via.u64);
+#endif
         break;
 
     case MSGPACK_OBJECT_NEGATIVE_INTEGER:
+#if defined(PRIi64)
         fprintf(out, "%" PRIi64, o.via.i64);
+#else
+        if (o.via.i64 > LONG_MAX)
+            fprintf(out, "over +2147483647");
+        else if (o.via.i64 < LONG_MIN)
+            fprintf(out, "under -2147483648");
+        else
+            fprintf(out, "%ld", (signed long)o.via.i64);
+#endif
         break;
 
     case MSGPACK_OBJECT_DOUBLE:
@@ -149,7 +158,11 @@ void msgpack_object_print(FILE* out, msgpack_object o)
         break;
 
     case MSGPACK_OBJECT_EXT:
+#if defined(PRIi8)
         fprintf(out, "(ext: %" PRIi8 ")", o.via.ext.type);
+#else
+        fprintf(out, "(ext: %d)", (int)o.via.ext.type);
+#endif
         fprintf(out, "\"");
         fwrite(o.via.ext.ptr, o.via.ext.size, 1, out);
         fprintf(out, "\"");
@@ -191,7 +204,15 @@ void msgpack_object_print(FILE* out, msgpack_object o)
 
     default:
         // FIXME
+#if defined(PRIu64)
         fprintf(out, "#<UNKNOWN %i %" PRIu64 ">", o.type, o.via.u64);
+#else
+        if (o.via.u64 > ULONG_MAX)
+            fprintf(out, "#<UNKNOWN %i over 4294967295>", o.type);
+        else
+            fprintf(out, "#<UNKNOWN %i %lu>", o.type, (unsigned long)o.via.u64);
+#endif
+
     }
 }
 
@@ -270,4 +291,3 @@ bool msgpack_object_equal(const msgpack_object x, const msgpack_object y)
         return false;
     }
 }
-
