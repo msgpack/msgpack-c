@@ -71,30 +71,6 @@ namespace detail {
     }
 
     template <bool Signed>
-    struct pack_char_sign;
-
-    template <>
-    struct pack_char_sign<true> {
-        template <typename Stream>
-        static inline packer<Stream>& pack(packer<Stream>& o, char v) {
-            o.pack_int8(v); return o;
-        }
-    };
-
-    template <>
-    struct pack_char_sign<false> {
-        template <typename Stream>
-        static inline packer<Stream>& pack(packer<Stream>& o, char v) {
-            o.pack_uint8(v); return o;
-        }
-    };
-
-    template <typename Stream>
-    static inline packer<Stream>& pack_char(packer<Stream>& o, char v) {
-        return pack_char_sign<is_signed<char>::value>::pack(o, v);
-    }
-
-    template <bool Signed>
     struct object_char_sign;
 
     template <>
@@ -163,12 +139,12 @@ inline object const& operator>> (object const& o, unsigned long long& v)
 
 template <typename Stream>
 inline packer<Stream>& operator<< (packer<Stream>& o, char v)
-    { return type::detail::pack_char(o, v); }
+    { o.pack_char(v); return o; }
 
 
 template <typename Stream>
 inline packer<Stream>& operator<< (packer<Stream>& o, signed char v)
-    { o.pack_int8(v); return o; }
+    { o.pack_signed_char(v); return o; }
 
 template <typename Stream>
 inline packer<Stream>& operator<< (packer<Stream>& o, signed short v)
@@ -189,7 +165,7 @@ inline packer<Stream>& operator<< (packer<Stream>& o, signed long long v)
 
 template <typename Stream>
 inline packer<Stream>& operator<< (packer<Stream>& o, unsigned char v)
-    { o.pack_uint8(v); return o; }
+    { o.pack_unsigned_char(v); return o; }
 
 template <typename Stream>
 inline packer<Stream>& operator<< (packer<Stream>& o, unsigned short v)

@@ -23,6 +23,7 @@
 #include <stdexcept>
 #include <limits>
 #include <cstring>
+#include <climits>
 
 #include "sysdep.h"
 
@@ -283,11 +284,25 @@ inline packer<Stream>& packer<Stream>::pack_fix_int64(int64_t d)
 
 template <typename Stream>
 inline packer<Stream>& packer<Stream>::pack_char(char d)
-{ _pack_char(m_stream, d); return *this; }
+{
+#if defined(CHAR_MIN)
+#if CHAR_MIN < 0
+    pack_imp_int8(d);
+#else
+    pack_imp_uint8(d);
+#endif
+#else
+#error CHAR_MIN is not defined
+#endif
+    return *this;
+}
 
 template <typename Stream>
 inline packer<Stream>& packer<Stream>::pack_signed_char(signed char d)
-{ _pack_signed_char(m_stream, d); return *this; }
+{
+    pack_imp_int8(d);
+    return *this;
+}
 
 template <typename Stream>
 inline packer<Stream>& packer<Stream>::pack_short(short d)
@@ -424,7 +439,10 @@ inline packer<Stream>& packer<Stream>::pack_long_long(long long d)
 
 template <typename Stream>
 inline packer<Stream>& packer<Stream>::pack_unsigned_char(unsigned char d)
-{ _pack_unsigned_char(m_stream, d); return *this; }
+{
+    pack_imp_uint8(d);
+    return *this;
+}
 
 template <typename Stream>
 inline packer<Stream>& packer<Stream>::pack_unsigned_short(unsigned short d)
