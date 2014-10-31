@@ -40,6 +40,7 @@
 
 #endif  // defined(_LIBCPP_VERSION) || (_MSC_VER >= 1700)
 
+#if defined(MSGPACK_STD_TR1)
 
 namespace msgpack {
 
@@ -68,5 +69,7 @@ void operator<< (object::with_zone& o, const MSGPACK_STD_TR1::unordered_multimap
 }  // namespace msgpack
 
 #undef MSGPACK_STD_TR1
+
+#endif // MSGPACK_STD_TR1
 
 #endif // MSGPACK_TYPE_TR1_UNORDERED_MAP_FWD_HPP

@@ -31,11 +31,11 @@ inline object const& operator>> (object const& o, std::vector<char>& v)
     switch (o.type) {
     case type::BIN:
         v.resize(o.via.bin.size);
-        std::memcpy(v.data(), o.via.bin.ptr, o.via.bin.size);
+        std::memcpy(&v.front(), o.via.bin.ptr, o.via.bin.size);
         break;
     case type::STR:
         v.resize(o.via.str.size);
-        std::memcpy(v.data(), o.via.str.ptr, o.via.str.size);
+        std::memcpy(&v.front(), o.via.str.ptr, o.via.str.size);
         break;
     default:
         throw type_error();
@@ -48,7 +48,7 @@ template <typename Stream>
 inline packer<Stream>& operator<< (packer<Stream>& o, const std::vector<char>& v)
 {
     o.pack_bin(v.size());
-    o.pack_bin_body(v.data(), v.size());
+    o.pack_bin_body(&v.front(), v.size());
 
     return o;
 }
@@ -56,7 +56,7 @@ inline packer<Stream>& operator<< (packer<Stream>& o, const std::vector<char>& v
 inline void operator<< (object& o, const std::vector<char>& v)
 {
     o.type = type::BIN;
-    o.via.bin.ptr = v.data();
+    o.via.bin.ptr = &v.front();
     o.via.bin.size = static_cast<uint32_t>(v.size());
 }
 
@@ -66,7 +66,7 @@ inline void operator<< (object::with_zone& o, const std::vector<char>& v)
     char* ptr = static_cast<char*>(o.zone.allocate_align(v.size()));
     o.via.bin.ptr = ptr;
     o.via.bin.size = static_cast<uint32_t>(v.size());
-    std::memcpy(ptr, v.data(), v.size());
+    std::memcpy(ptr, &v.front(), v.size());
 }
 
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
