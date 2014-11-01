@@ -67,7 +67,7 @@ void unpack(receiver* r) {
     int recv_count = 0;
     while (recv_len > 0) {
         int i = 0;
-        printf("receive count: %d %d bytes received.:\n", recv_count++, recv_len);
+        printf("receive count: %d %zd bytes received.:\n", recv_count++, recv_len);
         ret = msgpack_unpacker_next(unp, &result);
         while (ret == MSGPACK_UNPACK_SUCCESS) {
             msgpack_object obj = result.data;
