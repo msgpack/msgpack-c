@@ -10,7 +10,7 @@ typedef struct receiver {
 
 receiver r;
 
-size_t receiver_init(receiver *r) {
+void receiver_init(receiver *r) {
     msgpack_packer pk;
 
     msgpack_sbuffer_init(&r->sbuf);
