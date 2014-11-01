@@ -1101,7 +1101,12 @@ inline void unpacker::expand_buffer(std::size_t size)
     if(m_off == COUNTER_SIZE) {
         std::size_t next_size = (m_used + m_free) * 2;    // include COUNTER_SIZE
         while(next_size < size + m_used) {
-            next_size *= 2;
+            std::size_t tmp_next_size = next_size * 2;
+            if (tmp_next_size <= next_size) {
+                next_size = size + m_used;
+                break;
+            }
+            next_size = tmp_next_size;
         }
 
         char* tmp = static_cast<char*>(::realloc(m_buffer, next_size));

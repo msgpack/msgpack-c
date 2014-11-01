@@ -202,7 +202,12 @@ public:
             const size_t reqsize = nused + tosize;
             size_t nnext = (to->m_end - to->m_array) * 2;
             while(nnext < reqsize) {
-                nnext *= 2;
+                size_t tmp_nnext = nnext * 2;
+                if (tmp_nnext <= nnext) {
+                    nnext = reqsize;
+                    break;
+                }
+                nnext = tmp_nnext;
             }
 
             iovec* nvec = static_cast<iovec*>(::realloc(

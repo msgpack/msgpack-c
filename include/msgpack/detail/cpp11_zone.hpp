@@ -269,7 +269,12 @@ inline void* zone::allocate_expand(size_t size)
     size_t sz = m_chunk_size;
 
     while(sz < size) {
-        sz *= 2;
+        size_t tmp_sz = sz * 2;
+        if (tmp_sz <= sz) {
+            sz = size;
+            break;
+        }
+        sz = tmp_sz;
     }
 
     chunk* c = static_cast<chunk*>(::malloc(sizeof(chunk) + sz));

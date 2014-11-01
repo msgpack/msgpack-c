@@ -79,7 +79,12 @@ void* msgpack_zone_malloc_expand(msgpack_zone* zone, size_t size)
     size_t sz = zone->chunk_size;
 
     while(sz < size) {
-        sz *= 2;
+        size_t tmp_sz = sz * 2;
+        if (tmp_sz <= sz) {
+            tmp_sz = size;
+            break;
+        }
+        sz = tmp_sz;
     }
 
     msgpack_zone_chunk* chunk = (msgpack_zone_chunk*)malloc(
@@ -218,4 +223,3 @@ void msgpack_zone_free(msgpack_zone* zone)
     msgpack_zone_destroy(zone);
     free(zone);
 }
-
