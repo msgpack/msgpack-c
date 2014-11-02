@@ -36,6 +36,12 @@ typedef unsigned __int64 uint64_t;
 #include <stdbool.h>
 #endif
 
+#if defined(_MSC_VER)
+#define MSGPACK_DLLEXPORT __declspec(dllexport)
+#else  /* _MSC_VER */
+#define MSGPACK_DLLEXPORT
+#endif /* _MSC_VER */
+
 #ifdef _WIN32
 #define _msgpack_atomic_counter_header <windows.h>
 typedef long _msgpack_atomic_counter_t;

@@ -97,9 +97,10 @@ typedef struct msgpack_object_kv {
     msgpack_object val;
 } msgpack_object_kv;
 
-
+MSGPACK_DLLEXPORT
 void msgpack_object_print(FILE* out, msgpack_object o);
 
+MSGPACK_DLLEXPORT
 bool msgpack_object_equal(const msgpack_object x, const msgpack_object y);
 
 /** @} */
