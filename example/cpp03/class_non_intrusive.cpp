@@ -31,7 +31,7 @@ public:
     my_class(std::string const& name, int age):name_(name), age_(age) {}
 
     // my_class should provide getters for the data members you want to pack.
-    std::string get_name() const { return name_; }
+    std::string const& get_name() const { return name_; }
     int get_age() const { return age_; }
 
     friend bool operator==(my_class const& lhs, my_class const& rhs) {
