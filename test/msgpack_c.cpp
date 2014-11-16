@@ -6,6 +6,12 @@
 
 #include <gtest/gtest.h>
 
+#if defined(_MSC_VER)
+#define msgpack_rand() ((double)rand() / RAND_MAX)
+#else  // _MSC_VER
+#define msgpack_rand() drand48()
+#endif // _MSC_VER
+
 using namespace std;
 
 const unsigned int kLoop = 10000;
@@ -188,11 +194,20 @@ TEST(MSGPACKC, simple_buffer_float)
   v.push_back(numeric_limits<float>::min());
   v.push_back(numeric_limits<float>::max());
   v.push_back(nanf("tag"));
-  v.push_back(1.0/0.0); // inf
-  v.push_back(-(1.0/0.0)); // -inf
+  if (numeric_limits<float>::has_infinity) {
+    v.push_back(numeric_limits<float>::infinity());
+    v.push_back(-numeric_limits<float>::infinity());
+  }
+  if (numeric_limits<float>::has_quiet_NaN) {
+    v.push_back(numeric_limits<float>::quiet_NaN());
+  }
+  if (numeric_limits<float>::has_signaling_NaN) {
+    v.push_back(numeric_limits<float>::signaling_NaN());
+  }
+
   for (unsigned int i = 0; i < kLoop; i++) {
-    v.push_back(drand48());
-    v.push_back(-drand48());
+    v.push_back(static_cast<float>(msgpack_rand()));
+    v.push_back(static_cast<float>(-msgpack_rand()));
   }
 
   for (unsigned int i = 0; i < v.size() ; i++) {
@@ -230,11 +245,19 @@ TEST(MSGPACKC, simple_buffer_double)
   v.push_back(numeric_limits<double>::min());
   v.push_back(numeric_limits<double>::max());
   v.push_back(nan("tag"));
-  v.push_back(1.0/0.0); // inf
-  v.push_back(-(1.0/0.0)); // -inf
+  if (numeric_limits<double>::has_infinity) {
+    v.push_back(numeric_limits<double>::infinity());
+    v.push_back(-numeric_limits<double>::infinity());
+  }
+  if (numeric_limits<double>::has_quiet_NaN) {
+    v.push_back(numeric_limits<double>::quiet_NaN());
+  }
+  if (numeric_limits<double>::has_signaling_NaN) {
+    v.push_back(numeric_limits<double>::signaling_NaN());
+  }
   for (unsigned int i = 0; i < kLoop; i++) {
-    v.push_back(drand48());
-    v.push_back(-drand48());
+    v.push_back(msgpack_rand());
+    v.push_back(-msgpack_rand());
   }
 
   for (unsigned int i = 0; i < v.size() ; i++) {

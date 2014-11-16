@@ -22,9 +22,11 @@
 extern "C" {
 #endif
 
-
+MSGPACK_DLLEXPORT
 const char* msgpack_version(void);
+MSGPACK_DLLEXPORT
 int msgpack_version_major(void);
+MSGPACK_DLLEXPORT
 int msgpack_version_minor(void);
 
 #include "version_master.h"
