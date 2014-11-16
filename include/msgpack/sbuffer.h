@@ -73,7 +73,14 @@ static inline int msgpack_sbuffer_write(void* data, const char* buf, size_t len)
         size_t nsize = (sbuf->alloc) ?
                 sbuf->alloc * 2 : MSGPACK_SBUFFER_INIT_SIZE;
 
-        while(nsize < sbuf->size + len) { nsize *= 2; }
+        while(nsize < sbuf->size + len) {
+            size_t tmp_nsize = nsize * 2;
+            if (tmp_nsize <= nsize) {
+                nsize = sbuf->size + len;
+                break;
+            }
+            nsize = tmp_nsize;
+        }
 
         tmp = realloc(sbuf->data, nsize);
         if(!tmp) { return -1; }
@@ -109,4 +116,3 @@ static inline void msgpack_sbuffer_clear(msgpack_sbuffer* sbuf)
 #endif
 
 #endif /* msgpack/sbuffer.h */
-

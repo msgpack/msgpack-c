@@ -179,7 +179,12 @@ int msgpack_vrefbuffer_migrate(msgpack_vrefbuffer* vbuf, msgpack_vrefbuffer* to)
         const size_t reqsize = nused + tosize;
         size_t nnext = (size_t)(to->end - to->array) * 2;
         while(nnext < reqsize) {
-            nnext *= 2;
+            size_t tmp_nnext = nnext * 2;
+            if (tmp_nnext <= nnext) {
+                nnext = reqsize;
+                break;
+            }
+            nnext = tmp_nnext;
         }
 
         struct iovec* nvec = (struct iovec*)realloc(

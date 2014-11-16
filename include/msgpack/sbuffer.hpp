@@ -94,7 +94,14 @@ private:
         size_t nsize = (m_alloc > 0) ?
                 m_alloc * 2 : MSGPACK_SBUFFER_INIT_SIZE;
 
-        while(nsize < m_size + len) { nsize *= 2; }
+        while(nsize < m_size + len) {
+            size_t tmp_nsize = nsize * 2;
+            if (tmp_nsize <= nsize) {
+                nsize = m_size + len;
+                break;
+            }
+            nsize = tmp_nsize;
+        }
 
         void* tmp = ::realloc(m_data, nsize);
         if(!tmp) {
