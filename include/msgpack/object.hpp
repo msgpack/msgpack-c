@@ -195,6 +195,81 @@ inline packer<Stream>& operator<< (packer<Stream>& o, const T& v)
     return detail::packer_serializer<Stream, T>::pack(o, v);
 }
 
+inline void operator<< (object::with_zone& o, const object& v)
+{
+    o.type = v.type;
+
+    switch(v.type) {
+    case type::NIL:
+    case type::BOOLEAN:
+    case type::POSITIVE_INTEGER:
+    case type::NEGATIVE_INTEGER:
+    case type::DOUBLE:
+        ::memcpy(&o.via, &v.via, sizeof(v.via));
+        return;
+
+    case type::STR: {
+        char* ptr = static_cast<char*>(o.zone.allocate_align(v.via.str.size));
+        o.via.str.ptr = ptr;
+        o.via.str.size = v.via.str.size;
+        ::memcpy(ptr, v.via.str.ptr, v.via.str.size);
+        return;
+    }
+
+    case type::BIN: {
+        char* ptr = static_cast<char*>(o.zone.allocate_align(v.via.bin.size));
+        o.via.bin.ptr = ptr;
+        o.via.bin.size = v.via.bin.size;
+        ::memcpy(ptr, v.via.bin.ptr, v.via.bin.size);
+        return;
+    }
+
+    case type::EXT: {
+        char* ptr = static_cast<char*>(o.zone.allocate_align(v.via.ext.size + 1));
+        o.via.ext.ptr = ptr;
+        o.via.ext.size = v.via.ext.size;
+        ::memcpy(ptr, v.via.ext.ptr, v.via.ext.size + 1);
+        return;
+    }
+
+    case type::ARRAY:
+        o.via.array.ptr = static_cast<object*>(o.zone.allocate_align(sizeof(object) * v.via.array.size));
+        o.via.array.size = v.via.array.size;
+        for (object
+                * po(o.via.array.ptr),
+                * pv(v.via.array.ptr),
+                * const pvend(v.via.array.ptr + v.via.array.size);
+            pv < pvend;
+            ++po, ++pv) {
+            new (po) object(*pv, o.zone);
+        }
+        return;
+
+    case type::MAP:
+        o.via.map.ptr = (object_kv*)o.zone.allocate_align(sizeof(object_kv) * v.via.map.size);
+        o.via.map.size = v.via.map.size;
+        for(object_kv
+                * po(o.via.map.ptr),
+                * pv(v.via.map.ptr),
+                * const pvend(v.via.map.ptr + v.via.map.size);
+            pv < pvend;
+            ++po, ++pv) {
+            object_kv* kv = new (po) object_kv;
+            new (&kv->key) object(pv->key, o.zone);
+            new (&kv->val) object(pv->val, o.zone);
+        }
+        return;
+
+    default:
+        throw type_error();
+    }
+}
+
+inline void operator<< (object::with_zone& o, const object::with_zone& v)
+{
+    return o << static_cast<object const&>(v);
+}
+
 // deconvert operator
 template <typename T>
 inline void operator<< (object::with_zone& o, const T& v)
@@ -549,6 +624,12 @@ inline packer<Stream>& operator<< (packer<Stream>& o, const object& v)
     default:
         throw type_error();
     }
+}
+
+template <typename Stream>
+packer<Stream>& operator<< (packer<Stream>& o, const object::with_zone& v)
+{
+    return o << static_cast<object>(v);
 }
 
 inline std::ostream& operator<< (std::ostream& s, const object& o)

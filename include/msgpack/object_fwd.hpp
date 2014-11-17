@@ -150,12 +150,18 @@ object const& operator>> (object const& o, T& v);
 template <typename T>
 void operator<< (object::with_zone& o, const T& v);
 
+void operator<< (object::with_zone& o, const object& v);
+
+void operator<< (object::with_zone& o, const object::with_zone& v);
 
 template <typename Stream>
 class packer;
 
 template <typename Stream>
 packer<Stream>& operator<< (packer<Stream>& o, const object& v);
+
+template <typename Stream>
+packer<Stream>& operator<< (packer<Stream>& o, const object::with_zone& v);
 
 template <typename Stream, typename T>
 packer<Stream>& operator<< (packer<Stream>& o, const T& v);
