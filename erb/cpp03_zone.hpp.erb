@@ -194,6 +194,9 @@ private:
     static void object_delete(void* obj);
 
     void* allocate_expand(size_t size);
+private:
+    zone(const zone&);
+    zone& operator=(const zone&);
 };
 
 inline zone::zone(size_t chunk_size) /* throw() */ :m_chunk_size(chunk_size), m_chunk_list(m_chunk_size)
@@ -266,7 +269,10 @@ inline void zone::clear()
 
 inline void zone::swap(zone& o)
 {
-    std::swap(*this, o);
+    using std::swap;
+    swap(m_chunk_size, o.m_chunk_size);
+    swap(m_chunk_list, o.m_chunk_list);
+    swap(m_finalizer_array, o.m_finalizer_array);
 }
 
 template <typename T>

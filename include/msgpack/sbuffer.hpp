@@ -112,8 +112,15 @@ private:
         m_alloc = nsize;
     }
 
+#if defined(MSGPACK_USE_CPP03)
 private:
     sbuffer(const sbuffer&);
+    sbuffer& operator=(const sbuffer&);
+#else  // defined(MSGPACK_USE_CPP03)
+    sbuffer(const sbuffer&) = delete;
+    sbuffer& operator=(const sbuffer&) = delete;
+#endif // defined(MSGPACK_USE_CPP03)
+
 private:
     size_t m_size;
     char* m_data;

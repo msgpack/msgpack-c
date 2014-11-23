@@ -971,9 +971,14 @@ private:
     std::size_t m_initial_buffer_size;
     detail::context m_ctx;
 
+#if defined(MSGPACK_USE_CPP03)
 private:
     unpacker(const unpacker&);
     unpacker& operator=(const unpacker&);
+#else  // defined(MSGPACK_USE_CPP03)
+    unpacker(const unpacker&) = delete;
+    unpacker& operator=(const unpacker&) = delete;
+#endif // defined(MSGPACK_USE_CPP03)
 };
 
 #if !defined(MSGPACK_USE_CPP03)
