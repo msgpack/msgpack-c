@@ -224,11 +224,11 @@ public:
 
     zone(zone&&) = default;
     zone& operator=(zone&&) = default;
+    zone(const zone&) = delete;
+    zone& operator=(const zone&) = delete;
 
 private:
     void undo_allocate(size_t size);
-    zone(const zone&);
-    zone& operator=(const zone&);
 
     template <typename T>
     static void object_destruct(void* obj);

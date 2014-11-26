@@ -115,7 +115,14 @@ private:
 private:
     Stream& m_stream;
 
+#if defined(MSGPACK_USE_CPP03)
 private:
+    packer(const packer&);
+    packer& operator=(const packer&);
+#else  // defined(MSGPACK_USE_CPP03)
+    packer(const packer&) = delete;
+    packer& operator=(const packer&) = delete;
+#endif // defined(MSGPACK_USE_CPP03)
     packer();
 };
 
