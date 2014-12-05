@@ -16,14 +16,19 @@
 #include "adaptor/vector_char.hpp"
 #include "adaptor/msgpack_tuple.hpp"
 #include "adaptor/define.hpp"
+
+#if defined(MSGPACK_USE_CPP03)
+
 #include "adaptor/tr1/unordered_map.hpp"
 #include "adaptor/tr1/unordered_set.hpp"
 
-#if !defined(MSGPACK_USE_CPP03)
+#else  // defined(MSGPACK_USE_CPP03)
 
 #include "adaptor/cpp11/array.hpp"
 #include "adaptor/cpp11/array_char.hpp"
 #include "adaptor/cpp11/forward_list.hpp"
 #include "adaptor/cpp11/tuple.hpp"
+#include "adaptor/cpp11/unordered_map.hpp"
+#include "adaptor/cpp11/unordered_set.hpp"
 
-#endif // !defined(MSGPACK_USE_CPP03)
+#endif // defined(MSGPACK_USE_CPP03)

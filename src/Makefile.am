@@ -66,6 +66,10 @@ nobase_include_HEADERS += \
 		../include/msgpack/adaptor/cpp11/forward_list_fwd.hpp \
 		../include/msgpack/adaptor/cpp11/tuple.hpp \
 		../include/msgpack/adaptor/cpp11/tuple_fwd.hpp \
+		../include/msgpack/adaptor/cpp11/unordered_map.hpp \
+		../include/msgpack/adaptor/cpp11/unordered_map_fwd.hpp \
+		../include/msgpack/adaptor/cpp11/unordered_set.hpp \
+		../include/msgpack/adaptor/cpp11/unordered_set_fwd.hpp \
 		../include/msgpack/adaptor/define.hpp \
 		../include/msgpack/adaptor/deque.hpp \
 		../include/msgpack/adaptor/deque_fwd.hpp \
