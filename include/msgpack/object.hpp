@@ -39,15 +39,22 @@
 #include "msgpack/adaptor/string_fwd.hpp"
 #include "msgpack/adaptor/vector_fwd.hpp"
 #include "msgpack/adaptor/vector_char_fwd.hpp"
+
+#if defined(MSGPACK_USE_CPP03)
+
 #include "msgpack/adaptor/tr1/unordered_map_fwd.hpp"
 #include "msgpack/adaptor/tr1/unordered_set_fwd.hpp"
 
-#if !defined(MSGPACK_USE_CPP03)
+#else  // defined(MSGPACK_USE_CPP03)
+
 #include "adaptor/cpp11/array_fwd.hpp"
 #include "adaptor/cpp11/array_char_fwd.hpp"
 #include "adaptor/cpp11/forward_list_fwd.hpp"
 #include "adaptor/cpp11/tuple_fwd.hpp"
-#endif // !defined(MSGPACK_USE_CPP03)
+#include "adaptor/cpp11/unordered_map_fwd.hpp"
+#include "adaptor/cpp11/unordered_set_fwd.hpp"
+
+#endif // defined(MSGPACK_USE_CPP03)
 
 #include <string.h>
 #include <stdexcept>

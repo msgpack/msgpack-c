@@ -86,6 +86,71 @@ TEST(MSGPACK_STL, simple_buffer_forward_list)
     }
 }
 
+TEST(MSGPACK_STL, simple_buffer_unordered_map)
+{
+  for (unsigned int k = 0; k < kLoop; k++) {
+    unordered_map<int, int> val1;
+    for (unsigned int i = 0; i < kElements; i++)
+      val1[rand()] = rand();
+    msgpack::sbuffer sbuf;
+    msgpack::pack(sbuf, val1);
+    msgpack::unpacked ret;
+    msgpack::unpack(ret, sbuf.data(), sbuf.size());
+    unordered_map<int, int> val2 = ret.get().as<unordered_map<int, int> >();
+    EXPECT_EQ(val1, val2);
+  }
+}
+
+TEST(MSGPACK_STL, simple_buffer_unordered_multimap)
+{
+  for (unsigned int k = 0; k < kLoop; k++) {
+    unordered_multimap<int, int> val1;
+    for (unsigned int i = 0; i < kElements; i++) {
+      int i1 = rand();
+      val1.insert(make_pair(i1, rand()));
+      val1.insert(make_pair(i1, rand()));
+    }
+    msgpack::sbuffer sbuf;
+    msgpack::pack(sbuf, val1);
+    msgpack::unpacked ret;
+    msgpack::unpack(ret, sbuf.data(), sbuf.size());
+    unordered_multimap<int, int> val2 = ret.get().as<unordered_multimap<int, int> >();
+
+    EXPECT_EQ(val1, val2);
+  }
+}
+
+TEST(MSGPACK_STL, simple_buffer_unordered_set)
+{
+  for (unsigned int k = 0; k < kLoop; k++) {
+    unordered_set<int> val1;
+    for (unsigned int i = 0; i < kElements; i++)
+      val1.insert(rand());
+    msgpack::sbuffer sbuf;
+    msgpack::pack(sbuf, val1);
+    msgpack::unpacked ret;
+    msgpack::unpack(ret, sbuf.data(), sbuf.size());
+    unordered_set<int> val2 = ret.get().as<unordered_set<int> >();
+    EXPECT_EQ(val1, val2);
+  }
+}
+
+TEST(MSGPACK_STL, simple_buffer_unordered_multiset)
+{
+  for (unsigned int k = 0; k < kLoop; k++) {
+    unordered_multiset<int> val1;
+    for (unsigned int i = 0; i < kElements; i++)
+      val1.insert(rand());
+    msgpack::sbuffer sbuf;
+    msgpack::pack(sbuf, val1);
+    msgpack::unpacked ret;
+    msgpack::unpack(ret, sbuf.data(), sbuf.size());
+    unordered_multiset<int> val2 = ret.get().as<unordered_multiset<int> >();
+    EXPECT_EQ(val1, val2);
+  }
+}
+
+
 
 class TestEnumClassMemberClass
 {
