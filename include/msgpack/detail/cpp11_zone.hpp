@@ -188,7 +188,7 @@ public:
     zone(size_t chunk_size = MSGPACK_ZONE_CHUNK_SIZE) noexcept;
 
 public:
-    void* allocate_align(size_t size);
+    void* allocate_align(size_t size, size_t align = MSGPACK_ZONE_ALIGN);
     void* allocate_no_align(size_t size);
 
     void push_finalizer(void (*func)(void*), void* data);
@@ -243,10 +243,21 @@ inline zone::zone(size_t chunk_size) noexcept:m_chunk_size(chunk_size), m_chunk_
 {
 }
 
-inline void* zone::allocate_align(size_t size)
+inline void* zone::allocate_align(size_t size, size_t align)
 {
-    return allocate_no_align(
-        ((size)+((MSGPACK_ZONE_ALIGN)-1)) & ~((MSGPACK_ZONE_ALIGN)-1));
+    char* aligned =
+        reinterpret_cast<char*>(
+            reinterpret_cast<size_t>(
+                (m_chunk_list.m_ptr + (align - 1))) / align * align);
+    size_t adjusted_size = size + (aligned - m_chunk_list.m_ptr);
+    if(m_chunk_list.m_free >= adjusted_size) {
+        m_chunk_list.m_free -= adjusted_size;
+        m_chunk_list.m_ptr  += adjusted_size;
+        return aligned;
+    }
+    return reinterpret_cast<char*>(
+        reinterpret_cast<size_t>(
+            allocate_expand(size + (align - 1))) / align * align);
 }
 
 inline void* zone::allocate_no_align(size_t size)
