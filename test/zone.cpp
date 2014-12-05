@@ -4,12 +4,28 @@
 TEST(zone, allocate_align)
 {
     msgpack::zone z;
-    char* buf1 = (char*)z.allocate_align(4);
-    memcpy(buf1, "test", 4);
-    char* buf2 = (char*)z.allocate_align(4);
-    memcpy(buf2, "test", 4);
+    char* start = (char*)z.allocate_align(1);
+    EXPECT_EQ(reinterpret_cast<std::size_t>(start) % sizeof(int), 0);
+    for (std::size_t s = 1; s < sizeof(int); ++s) {
+        z.allocate_no_align(s);
+        char* buf_a = (char*)z.allocate_align(1);
+        EXPECT_EQ(0, reinterpret_cast<std::size_t>(buf_a) % sizeof(int));
+    }
 }
 
+TEST(zone, allocate_align_custom)
+{
+    msgpack::zone z;
+    for (std::size_t align = 1; align < 64; ++align) {
+        char* start = (char*)z.allocate_align(1, align);
+        EXPECT_EQ(reinterpret_cast<std::size_t>(start) % align, 0);
+        for (std::size_t s = 1; s < align; ++s) {
+            (char*)z.allocate_no_align(s);
+            char* buf_a = (char*)z.allocate_align(1, align);
+            EXPECT_EQ(0, reinterpret_cast<std::size_t>(buf_a) % align);
+        }
+    }
+}
 
 class myclass {
 public:
@@ -75,4 +91,3 @@ TEST(zone, allocate_no_align)
     char* buf2 = (char*)z.allocate_no_align(4);
     EXPECT_EQ(buf1+4, buf2);
 }
-
