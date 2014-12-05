@@ -217,7 +217,7 @@ TEST(MSGPACK_TUPLE, simple_tuple_empty)
 
 // TR1
 
-#ifdef MSGPACK_HAS_STD_TR1_UNOURDERED_MAP
+#ifdef MSGPACK_HAS_STD_TR1_UNORDERED_MAP
 #include <tr1/unordered_map>
 #include "msgpack/adaptor/tr1/unordered_map.hpp"
 TEST(MSGPACK_TR1, simple_buffer_tr1_unordered_map)
@@ -270,7 +270,7 @@ TEST(MSGPACK_TR1, simple_buffer_tr1_unordered_multimap)
 }
 #endif
 
-#ifdef MSGPACK_HAS_STD_TR1_UNOURDERED_SET
+#ifdef MSGPACK_HAS_STD_TR1_UNORDERED_SET
 #include <tr1/unordered_set>
 #include "msgpack/adaptor/tr1/unordered_set.hpp"
 TEST(MSGPACK_TR1, simple_buffer_tr1_unordered_set)
@@ -318,7 +318,7 @@ TEST(MSGPACK_TR1, simple_buffer_tr1_unordered_multiset)
 }
 #endif
 
-#ifdef MSGPACK_HAS_STD_UNOURDERED_MAP
+#ifdef MSGPACK_HAS_STD_UNORDERED_MAP
 #include <unordered_map>
 #include "msgpack/adaptor/tr1/unordered_map.hpp"
 TEST(MSGPACK_TR1, simple_buffer_unordered_map)
@@ -371,7 +371,7 @@ TEST(MSGPACK_TR1, simple_buffer_unordered_multimap)
 }
 #endif
 
-#ifdef MSGPACK_HAS_STD_UNOURDERED_SET
+#ifdef MSGPACK_HAS_STD_UNORDERED_SET
 #include <unordered_set>
 #include "msgpack/adaptor/tr1/unordered_set.hpp"
 TEST(MSGPACK_TR1, simple_buffer_unordered_set)

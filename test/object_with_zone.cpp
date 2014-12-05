@@ -398,7 +398,7 @@ TEST(object_with_zone, msgpack_tuple_empty)
 
 // TR1
 
-#ifdef MSGPACK_HAS_STD_TR1_UNOURDERED_MAP
+#ifdef MSGPACK_HAS_STD_TR1_UNORDERED_MAP
 #include <tr1/unordered_map>
 #include "msgpack/adaptor/tr1/unordered_map.hpp"
 TEST(object_with_zone, tr1_unordered_map)
@@ -449,7 +449,7 @@ TEST(object_with_zone, tr1_unordered_multimap)
 }
 #endif
 
-#ifdef MSGPACK_HAS_STD_TR1_UNOURDERED_SET
+#ifdef MSGPACK_HAS_STD_TR1_UNORDERED_SET
 #include <tr1/unordered_set>
 #include "msgpack/adaptor/tr1/unordered_set.hpp"
 TEST(object_with_zone, tr1_unordered_set)
@@ -497,7 +497,7 @@ TEST(object_with_zone, tr1_unordered_multiset)
 }
 #endif
 
-#ifdef MSGPACK_HAS_STD_UNOURDERED_MAP
+#ifdef MSGPACK_HAS_STD_UNORDERED_MAP
 #include <unordered_map>
 #include "msgpack/adaptor/tr1/unordered_map.hpp"
 TEST(object_with_zone, unordered_map)
@@ -547,7 +547,7 @@ TEST(object_with_zone, unordered_multimap)
 }
 #endif
 
-#ifdef MSGPACK_HAS_STD_UNOURDERED_SET
+#ifdef MSGPACK_HAS_STD_UNORDERED_SET
 #include <unordered_set>
 #include "msgpack/adaptor/tr1/unordered_set.hpp"
 TEST(object_with_zone, unordered_set)
