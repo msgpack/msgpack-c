@@ -30,7 +30,9 @@
 
 #if defined(_MSC_VER)
 // avoiding confliction std::max, std::min, and macro in windows.h
+#ifndef NOMINMAX
 #define NOMINMAX
+#endif
 #endif // defined(_MSC_VER)
 
 #ifdef _msgpack_atomic_counter_header
