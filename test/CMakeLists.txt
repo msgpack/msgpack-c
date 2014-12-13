@@ -28,6 +28,7 @@ LIST (APPEND check_PROGRAMS
     msgpack_vref.cpp
     msgpack_c.cpp
     reference.cpp
+    limit.cpp
 )
 
 IF (MSGPACK_CXX11)
