@@ -64,49 +64,84 @@ MSGPACK_API_VERSION_NAMESPACE(v1) {
 typedef bool (*unpack_reference_func)(type::object_type, std::size_t, void*);
 
 struct unpack_error : public std::runtime_error {
-#if defined(MSGPACK_USE_CPP03)
-    unpack_error(const std::string& msg) :
-        std::runtime_error(msg) { }
-#else
-    unpack_error(const char* msg) :
-        std::runtime_error(msg) { }
-#endif
+    explicit unpack_error(const std::string& msg)
+        :std::runtime_error(msg) {}
+#if !defined(MSGPACK_USE_CPP03)
+    explicit unpack_error(const char* msg):
+        std::runtime_error(msg) {}
+#endif // !defined(MSGPACK_USE_CPP03)
 };
 
 struct parse_error : public unpack_error {
-    parse_error():unpack_error("parse error") {}
+    explicit parse_error(const std::string& msg)
+        :unpack_error(msg) {}
+#if !defined(MSGPACK_USE_CPP03)
+    explicit parse_error(const char* msg)
+        :unpack_error(msg) {}
+#endif // !defined(MSGPACK_USE_CPP03)
 };
 
 struct insufficient_bytes : public unpack_error {
-    insufficient_bytes():unpack_error("insufficient bytes") {}
+    explicit insufficient_bytes(const std::string& msg)
+        :unpack_error(msg) {}
+#if !defined(MSGPACK_USE_CPP03)
+    explicit insufficient_bytes(const char* msg)
+        :unpack_error(msg) {}
+#endif // !defined(MSGPACK_USE_CPP03)
 };
 
 struct size_overflow : public unpack_error {
-#if defined(MSGPACK_USE_CPP03)
-    size_overflow(const std::string& msg):unpack_error(msg) {}
-#else
-    size_overflow(const char* msg):unpack_error(msg) {}
+    explicit size_overflow(const std::string& msg)
+        :unpack_error(msg) {}
+#if !defined(MSGPACK_USE_CPP03)
+    explicit size_overflow(const char* msg)
+        :unpack_error(msg) {}
 #endif
 };
 
 struct array_size_overflow : public size_overflow {
-    array_size_overflow():size_overflow("array size overflow") {}
+    array_size_overflow(const std::string& msg)
+        :size_overflow(msg) {}
+#if !defined(MSGPACK_USE_CPP03)
+    array_size_overflow(const char* msg)
+        :size_overflow(msg) {}
+#endif
 };
 
 struct map_size_overflow : public size_overflow {
-    map_size_overflow():size_overflow("map size overflow") {}
+    map_size_overflow(const std::string& msg)
+        :size_overflow(msg) {}
+#if !defined(MSGPACK_USE_CPP03)
+    map_size_overflow(const char* msg)
+        :size_overflow(msg) {}
+#endif
 };
 
 struct str_size_overflow : public size_overflow {
-    str_size_overflow():size_overflow("str size overflow") {}
+    str_size_overflow(const std::string& msg)
+        :size_overflow(msg) {}
+#if !defined(MSGPACK_USE_CPP03)
+    str_size_overflow(const char* msg)
+        :size_overflow(msg) {}
+#endif
 };
 
 struct bin_size_overflow : public size_overflow {
-    bin_size_overflow():size_overflow("bin size overflow") {}
+    bin_size_overflow(const std::string& msg)
+        :size_overflow(msg) {}
+#if !defined(MSGPACK_USE_CPP03)
+    bin_size_overflow(const char* msg)
+        :size_overflow(msg) {}
+#endif
 };
 
 struct ext_size_overflow : public size_overflow {
-    ext_size_overflow():size_overflow("ext size overflow") {}
+    ext_size_overflow(const std::string& msg)
+        :size_overflow(msg) {}
+#if !defined(MSGPACK_USE_CPP03)
+    ext_size_overflow(const char* msg)
+        :size_overflow(msg) {}
+#endif
 };
 
 class unpack_limit {
@@ -207,7 +242,7 @@ inline void unpack_false(object& o)
 
 struct unpack_array {
     void operator()(unpack_user& u, uint32_t n, object& o) const {
-        if (n > u.limit().array()) throw array_size_overflow();
+        if (n > u.limit().array()) throw array_size_overflow("array size overflow");
         o.type = type::ARRAY;
         o.via.array.size = 0;
         o.via.array.ptr = static_cast<object*>(u.zone().allocate_align(n*sizeof(object)));
@@ -225,7 +260,7 @@ inline void unpack_array_item(object& c, object const& o)
 
 struct unpack_map {
     void operator()(unpack_user& u, uint32_t n, object& o) const {
-        if (n > u.limit().map()) throw map_size_overflow();
+        if (n > u.limit().map()) throw map_size_overflow("map size overflow");
         o.type = type::MAP;
         o.via.map.size = 0;
         o.via.map.ptr = static_cast<object_kv*>(u.zone().allocate_align(n*sizeof(object_kv)));
@@ -252,7 +287,7 @@ inline void unpack_str(unpack_user& u, const char* p, uint32_t l, object& o)
         u.set_referenced(true);
     }
     else {
-        if (l > u.limit().str()) throw str_size_overflow();
+        if (l > u.limit().str()) throw str_size_overflow("str size overflow");
         char* tmp = static_cast<char*>(u.zone().allocate_align(l));
         std::memcpy(tmp, p, l);
         o.via.str.ptr = tmp;
@@ -268,7 +303,7 @@ inline void unpack_bin(unpack_user& u, const char* p, uint32_t l, object& o)
         u.set_referenced(true);
     }
     else {
-        if (l > u.limit().bin()) throw bin_size_overflow();
+        if (l > u.limit().bin()) throw bin_size_overflow("bin size overflow");
         char* tmp = static_cast<char*>(u.zone().allocate_align(l));
         std::memcpy(tmp, p, l);
         o.via.bin.ptr = tmp;
@@ -284,7 +319,7 @@ inline void unpack_ext(unpack_user& u, const char* p, std::size_t l, object& o)
         u.set_referenced(true);
     }
     else {
-        if (l > u.limit().ext()) throw ext_size_overflow();
+        if (l > u.limit().ext()) throw ext_size_overflow("ext size overflow");
         char* tmp = static_cast<char*>(u.zone().allocate_align(l));
         std::memcpy(tmp, p, l);
         o.via.ext.ptr = tmp;
@@ -523,7 +558,7 @@ private:
 
 template <>
 inline void context::check_ext_size<4>(std::size_t size) {
-    if (size == 0xffffffff) throw ext_size_overflow();
+    if (size == 0xffffffff) throw ext_size_overflow("ext size overflow");
 }
 
 inline int context::execute(const char* data, std::size_t len, std::size_t& off)
@@ -1280,7 +1315,7 @@ inline bool unpacker::next(unpacked& result, bool& referenced)
     referenced = false;
     int ret = execute_imp();
     if(ret < 0) {
-        throw parse_error();
+        throw parse_error("parse error");
     }
 
     if(ret == 0) {
@@ -1313,7 +1348,7 @@ inline bool unpacker::execute()
 {
     int ret = execute_imp();
     if(ret < 0) {
-        throw parse_error();
+        throw parse_error("parse error");
     } else if(ret == 0) {
         return false;
     } else {
@@ -1473,10 +1508,10 @@ inline unpacked unpack(
     case UNPACK_EXTRA_BYTES:
         return unpacked(obj, msgpack::move(z));
     case UNPACK_CONTINUE:
-        throw insufficient_bytes();
+        throw insufficient_bytes("insufficient bytes");
     case UNPACK_PARSE_ERROR:
     default:
-        throw parse_error();
+        throw parse_error("parse error");
     }
     return unpacked();
 }
@@ -1529,10 +1564,10 @@ inline void unpack(unpacked& result,
         result.zone() = msgpack::move(z);
         return;
     case UNPACK_CONTINUE:
-        throw insufficient_bytes();
+        throw insufficient_bytes("insufficient bytes");
     case UNPACK_PARSE_ERROR:
     default:
-        throw parse_error();
+        throw parse_error("parse error");
     }
 }
 
