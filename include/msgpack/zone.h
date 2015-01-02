@@ -113,8 +113,25 @@ void* msgpack_zone_malloc_no_align(msgpack_zone* zone, size_t size)
 
 static inline void* msgpack_zone_malloc(msgpack_zone* zone, size_t size)
 {
-    return msgpack_zone_malloc_no_align(zone,
-            ((size)+((MSGPACK_ZONE_ALIGN)-1)) & ~((MSGPACK_ZONE_ALIGN)-1));
+    char* aligned =
+        (char*)(
+            (size_t)(
+                zone->chunk_list.ptr + (MSGPACK_ZONE_ALIGN - 1)
+            ) / MSGPACK_ZONE_ALIGN * MSGPACK_ZONE_ALIGN
+        );
+    size_t adjusted_size = size + (aligned - zone->chunk_list.ptr);
+    if(zone->chunk_list.free >= adjusted_size) {
+        zone->chunk_list.free -= adjusted_size;
+        zone->chunk_list.ptr  += adjusted_size;
+        return aligned;
+    }
+    {
+        void* ptr = msgpack_zone_malloc_expand(zone, size + (MSGPACK_ZONE_ALIGN - 1));
+        if (ptr) {
+            return (char*)((size_t)(ptr) / MSGPACK_ZONE_ALIGN * MSGPACK_ZONE_ALIGN);
+        }
+    }
+    return NULL;
 }
 
 
@@ -152,4 +169,3 @@ static inline void msgpack_zone_swap(msgpack_zone* a, msgpack_zone* b)
 #endif
 
 #endif /* msgpack/zone.h */
-
