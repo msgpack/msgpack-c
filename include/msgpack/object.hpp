@@ -672,6 +672,7 @@ inline std::ostream& operator<< (std::ostream& s, const object& o)
 
     case type::EXT:
         s << "EXT";
+        break;
 
     case type::ARRAY:
         s << "[";
