@@ -96,14 +96,14 @@ private:
             ++m_tail;
         }
 #if !defined(MSGPACK_USE_CPP03)
-        finalizer_array(finalizer_array&& other)
+        finalizer_array(finalizer_array&& other) noexcept
             :m_tail(other.m_tail), m_end(other.m_end), m_array(other.m_array)
         {
             other.m_tail = nullptr;
             other.m_end = nullptr;
             other.m_array = nullptr;
         }
-        finalizer_array& operator=(finalizer_array&& other)
+        finalizer_array& operator=(finalizer_array&& other) noexcept
         {
             this->~finalizer_array();
             new (this) finalizer_array(std::move(other));
@@ -161,12 +161,12 @@ private:
             m_ptr  = reinterpret_cast<char*>(m_head) + sizeof(chunk);
         }
 #if !defined(MSGPACK_USE_CPP03)
-        chunk_list(chunk_list&& other)
+        chunk_list(chunk_list&& other) noexcept
             :m_free(other.m_free), m_ptr(other.m_ptr), m_head(other.m_head)
         {
             other.m_head = nullptr;
         }
-        chunk_list& operator=(chunk_list&& other)
+        chunk_list& operator=(chunk_list&& other) noexcept
         {
             this->~chunk_list();
             new (this) chunk_list(std::move(other));
