@@ -23,7 +23,7 @@
 
 #if defined(_LIBCPP_VERSION) || (_MSC_VER >= 1700)
 
-#define MSGPACK_HAS_STD_UNOURDERED_MAP
+#define MSGPACK_HAS_STD_UNORDERED_MAP
 #include <unordered_map>
 #define MSGPACK_STD_TR1 std
 
@@ -31,7 +31,7 @@
 
 #if __GNUC__ >= 4
 
-#define MSGPACK_HAS_STD_TR1_UNOURDERED_MAP
+#define MSGPACK_HAS_STD_TR1_UNORDERED_MAP
 
 #include <tr1/unordered_map>
 #define MSGPACK_STD_TR1 std::tr1
