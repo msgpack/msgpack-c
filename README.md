@@ -58,6 +58,8 @@ int main(void)
 }
 ```
 
+See [`QUICKSTART-C.md`](./QUICKSTART-C.md) for more details.
+
 In C++:
 
 ```c++
@@ -99,6 +101,8 @@ int main(void)
     return 0;
 }
 ```
+
+See [`QUICKSTART-CPP.md`](./QUICKSTART-CPP.md) for more details.
 
 Usage
 -----
@@ -210,4 +214,4 @@ License
 -------
 
 `msgpack-c` is licensed under the Apache License Version 2.0. See
-the [LICENSE](./LICENSE) file for details.
+the [`LICENSE`](./LICENSE) file for details.
