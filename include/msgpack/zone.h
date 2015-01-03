@@ -89,7 +89,7 @@ void msgpack_zone_clear(msgpack_zone* zone);
 
 
 #ifndef MSGPACK_ZONE_ALIGN
-#define MSGPACK_ZONE_ALIGN sizeof(int)
+#define MSGPACK_ZONE_ALIGN sizeof(void*)
 #endif
 
 MSGPACK_DLLEXPORT
