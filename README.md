@@ -206,7 +206,7 @@ You can get addtional information on the
 Contributing
 ------------
 
-`msgpack-c` is developed on GitHub at [https://github.com/msgpack/msgpack-c].
+`msgpack-c` is developed on GitHub at [msgpack/msgpack-c](https://github.com/msgpack/msgpack-c).
 To report an issue or send a pull request, use the
 [issue tracker](https://github.com/msgpack/msgpack-c/issues).
 
