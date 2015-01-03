@@ -1,71 +1,159 @@
-# Msgpack for C/C++
+`msgpack` for C/C++
+===================
+
+Version 0.5.9 [![Build Status](https://travis-ci.org/msgpack/msgpack-c.svg?branch=master)](https://travis-ci.org/msgpack/msgpack-c)
 
 It's like JSON but small and fast.
 
+Overview
+--------
 
-## Overview
+[MessagePack](http://msgpack.org/) is an efficient binary serialization
+format, which lets you exchange data among multiple languages like JSON,
+except that it's faster and smaller. Small integers are encoded into a
+single byte while typical short strings require only one extra byte in
+addition to the strings themselves.
 
-MessagePack is an efficient binary serialization format. It lets you exchange data among multiple languages like JSON. But it's faster and smaller. Small integers are encoded into a single byte, and typical short strings require only one extra byte in addition to the strings themselves.
+Example
+-------
 
+In C:
 
-## License
+```c
+#include <msgpack.h>
+#include <stdio.h>
 
-Msgpack is Copyright (C) 2008-2014 FURUHASHI Sadayuki and licensed under the Apache License, Version 2.0 (the "License"). For details see the `COPYING` file in this directory.
+int main(void)
+{
+    /* msgpack::sbuffer is a simple buffer implementation. */
+    msgpack_sbuffer sbuf;
+    msgpack_sbuffer_init(&sbuf);
 
+    /* serialize values into the buffer using msgpack_sbuffer_write callback function. */
+    msgpack_packer pk;
+    msgpack_packer_init(&pk, &sbuf, msgpack_sbuffer_write);
 
-## Contributing
+    msgpack_pack_array(&pk, 3);
+    msgpack_pack_int(&pk, 1);
+    msgpack_pack_true(&pk);
+    msgpack_pack_str(&pk, 7);
+    msgpack_pack_str_body(&pk, "example", 7);
 
-The source for msgpack-c is held at [msgpack-c](https://github.com/msgpack/msgpack-c) github.com site.
+    /* deserialize the buffer into msgpack_object instance. */
+    /* deserialized object is valid during the msgpack_zone instance alive. */
+    msgpack_zone mempool;
+    msgpack_zone_init(&mempool, 2048);
 
-To report an issue, use the [msgpack-c issue tracker](https://github.com/msgpack/msgpack-c/issues) at github.com.
+    msgpack_object deserialized;
+    msgpack_unpack(sbuf.data, sbuf.size, NULL, &mempool, &deserialized);
 
-## Version
-0.5.9 [![Build Status](https://travis-ci.org/msgpack/msgpack-c.svg?branch=master)](https://travis-ci.org/msgpack/msgpack-c)
+    /* print the deserialized object. */
+    msgpack_object_print(stdout, deserialized);
+    puts("");
 
-## Using Msgpack
+    msgpack_zone_destroy(&mempool);
+    msgpack_sbuffer_destroy(&sbuf);
 
-### Header only library for C++
-When you use msgpack on C++03 and C++11, you just add msgpack-c/include to your include path. You don't need to link any msgpack libraries.
+    return 0;
+}
+```
 
-e.g.)
+In C++:
+
+```c++
+#include <msgpack.hpp>
+#include <string>
+#include <iostream>
+#include <sstream>
+
+int main(void)
+{
+    msgpack::type::tuple<int, bool, std::string> src(1, true, "example");
+
+    // serialize the object into the buffer.
+    // any classes that implements write(const char*,size_t) can be a buffer.
+    std::stringstream buffer;
+    msgpack::pack(buffer, src);
+
+    // send the buffer ...
+    buffer.seekg(0);
+
+    // deserialize the buffer into msgpack::object instance.
+    std::string str(buffer.str());
+
+    msgpack::unpacked result;
+
+    msgpack::unpack(result, str.data(), str.size());
+
+    // deserialized object is valid during the msgpack::unpacked instance alive.
+    msgpack::object deserialized = result.get();
+
+    // msgpack::object supports ostream.
+    std::cout << deserialized << std::endl;
+
+    // convert msgpack::object instance into the original type.
+    // if the type is mismatched, it throws msgpack::type_error exception.
+    msgpack::type::tuple<int, bool, std::string> dst;
+    deserialized.convert(&dst);
+
+    return 0;
+}
+```
+
+Usage
+-----
+
+### C++ Header Only Library
+
+When you use msgpack on C++03 and C++11, you can just add
+msgpack-c/include to your include path:
 
     g++ -I msgpack-c/include your_source_file.cpp
 
-If you want to use C version of msgpack, you need to build it. You can also install C and C++ version of msgpack.
+If you want to use C version of msgpack, you need to build it. You can
+also install the C and C++ versions of msgpack.
 
 ### Building and Installing
 
 #### Install from git repository
 
 ##### Using autotools
-You will need gcc (4.1.0 or higher), autotools.
 
-For C:
-C++03 and C:
+You will need:
 
-    $ git clone https://github.com/redboltz/msgpack-c/tree/cxx_separate
-    $ cd msgpack-c
-    $ ./bootstrap
-    $ ./configure
-    $ make
-    $ sudo make install
+ - `gcc >= 4.1.0` or `clang >= 3.3.0`
+ - `autoconf >= 2.60`
+ - `automake >= 1.10`
+ - `libtool >= 2.2.4`
 
-For C++11:
+The build steps below are for C and C++03. If compiling for C++11,
+add `-std=c++11` to the environmental variable `CXXFLAGS` with
+`export CXXFLAGS="$CXXFLAGS -std=c++11"` prior to following the
+directions below.
 
-    $ git clone https://github.com/msgpack/msgpack-c.git
-    $ cd msgpack-c
-    $ ./bootstrap
-    $ ./configure CXXFLAGS="-std=c++11"
-    $ make
-    $ sudo make install
+```bash
+$ git clone https://github.com/msgpack/msgpack-c
+$ cd msgpack-c
+$ ./bootstrap
+$ ./configure
+$ make
+```
 
-You need the compiler that fully supports C++11.
+You can install the resulting library like this:
 
+```bash
+$ sudo make install
+```
 ##### Using cmake
 
-###### CUI
+###### Using the Terminal (CLI)
 
-You will need gcc (4.1.0 or higher), cmake.
+You will need:
+
+ - `gcc >= 4.1.0`
+ - `cmake >= 2.8.0`
+
+C and C++03:
 
     $ git clone https://github.com/msgpack/msgpack-c.git
     $ cd msgpack-c
@@ -73,14 +161,13 @@ You will need gcc (4.1.0 or higher), cmake.
     $ make
     $ sudo make install
 
-If you want to setup C++11 version of msgpack, execute the following command:
+If you want to setup C++11 version of msgpack instead,
+execute the following commands:
 
     $ git clone https://github.com/msgpack/msgpack-c.git
     $ cd msgpack-c
     $ cmake -DMSGPACK_CXX11=ON .
     $ sudo make install
-
-You need the compiler that fully supports C++11.
 
 ##### GUI on Windows
 
@@ -92,56 +179,35 @@ or using GUI git client.
 
 e.g.) tortoise git https://code.google.com/p/tortoisegit/
 
-1. Launch cmake GUI client. http://www.cmake.org/cmake/resources/software.html
+1. Launch [cmake GUI client](http://www.cmake.org/cmake/resources/software.html).
 
-1. Set 'Where is the source code:' text box and 'Where to build the binaries:' text box.
+2. Set 'Where is the source code:' text box and 'Where to build
+the binaries:' text box.
 
-1. Click 'Configure' button.
+3. Click 'Configure' button.
 
-1. Choose your Visual Studio version.
+4. Choose your Visual Studio version.
 
-1. Click 'Generate' button.
+5. Click 'Generate' button.
 
-1. Open the created msgpack.sln on Visual Studio.
+6. Open the created msgpack.sln on Visual Studio.
 
-1. Build all.
+7. Build all.
 
-### Code Example
+### Documentation
 
-    #include <msgpack.hpp>
-    #include <vector>
-    #include <string>
-    #include <iostream>
+You can get addtional information on the
+[wiki](https://github.com/msgpack/msgpack-c/wiki/cpp_overview).
 
-    int main() {
-        // This is target object.
-        std::vector<std::string> target;
-        target.push_back("Hello,");
-        target.push_back("World!");
+Contributing
+------------
 
-        // Serialize it.
-        msgpack::sbuffer sbuf;  // simple buffer
-        msgpack::pack(&sbuf, target);
+`msgpack-c` is developed on GitHub at [https://github.com/msgpack/msgpack-c].
+To report an issue or send a pull request, use the
+[issue tracker](https://github.com/msgpack/msgpack-c/issues).
 
-        // Deserialize the serialized data.
-        msgpack::unpacked msg;    // includes memory pool and deserialized object
-        msgpack::unpack(msg, sbuf.data(), sbuf.size());
-        msgpack::object obj = msg.get();
+License
+-------
 
-        // Print the deserialized object to stdout.
-        std::cout << obj << std::endl;    // ["Hello," "World!"]
-
-        // Convert the deserialized object to staticaly typed object.
-        std::vector<std::string> result;
-        obj.convert(&result);
-
-        // If the type is mismatched, it throws msgpack::type_error.
-        obj.as<int>();  // type is mismatched, msgpack::type_error is thrown
-    }
-
-### Documents
-
-You can get addtional information on the wiki:
-
-https://github.com/msgpack/msgpack-c/wiki/cpp_overview
-
+`msgpack-c` is licensed under the Apache License Version 2.0. See
+the [LICENSE](./LICENSE) file for details.
