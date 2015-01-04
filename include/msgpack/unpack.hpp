@@ -541,7 +541,7 @@ private:
     }
 
     template <std::size_t N>
-    static void check_ext_size(std::size_t size) {
+    static void check_ext_size(std::size_t /*size*/) {
     }
 
 private:
