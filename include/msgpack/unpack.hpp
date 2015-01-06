@@ -1262,7 +1262,12 @@ inline void unpacker::expand_buffer(std::size_t size)
         std::size_t next_size = m_initial_buffer_size;  // include COUNTER_SIZE
         std::size_t not_parsed = m_used - m_off;
         while(next_size < size + not_parsed + COUNTER_SIZE) {
-            next_size *= 2;
+            std::size_t tmp_next_size = next_size * 2;
+            if (tmp_next_size <= next_size) {
+                next_size = size + not_parsed + COUNTER_SIZE;
+                break;
+            }
+            next_size = tmp_next_size;
         }
 
         char* tmp = static_cast<char*>(::malloc(next_size));
