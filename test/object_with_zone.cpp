@@ -139,11 +139,11 @@ TEST(object_with_zone, unsigned_long_long)
 // float
 TEST(object_with_zone, float)
 {
-    float v = 1.23;
+    float v = 1.23f;
     msgpack::zone z;
     msgpack::object obj(v, z);
     EXPECT_TRUE(fabs(obj.as<float>() - v) <= kEPS);
-    v = 4.56;
+    v = 4.56f;
     EXPECT_TRUE(fabs(obj.as<float>() - static_cast<float>(1.23)) <= kEPS);
 }
 

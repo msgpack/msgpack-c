@@ -161,21 +161,21 @@ public:
     void clear();
 
     void swap(zone& o);
-    static void* operator new(std::size_t size) throw(std::bad_alloc)
+    static void* operator new(std::size_t size)
     {
         void* p = ::malloc(size);
         if (!p) throw std::bad_alloc();
         return p;
     }
-    static void operator delete(void *p) throw()
+    static void operator delete(void *p) /* throw() */
     {
         ::free(p);
     }
-    static void* operator new(std::size_t size, void* place) throw()
+    static void* operator new(std::size_t size, void* place) /* throw() */
     {
         return ::operator new(size, place);
     }
-    static void operator delete(void* p, void* place) throw()
+    static void operator delete(void* p, void* place) /* throw() */
     {
         ::operator delete(p, place);
     }

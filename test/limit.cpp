@@ -218,12 +218,12 @@ TEST(limit, unpack_ext_over_32_bit)
 {
     if (sizeof(std::size_t) == 4) {
         char const buf [] = {
-            static_cast<char>(0xc9),
-            static_cast<char>(0xff),
-            static_cast<char>(0xff),
-            static_cast<char>(0xff),
-            static_cast<char>(0xff),
-            static_cast<char>(0x01),
+            static_cast<char>(0xc9u),
+            static_cast<char>(0xffu),
+            static_cast<char>(0xffu),
+            static_cast<char>(0xffu),
+            static_cast<char>(0xffu),
+            static_cast<char>(0x01u),
         };
         try {
             msgpack::unpacked unp;
@@ -244,12 +244,12 @@ TEST(limit, unpack_ext_no_over_64_bit)
 {
     if (sizeof(std::size_t) == 8) {
         char const buf [] = {
-            static_cast<char>(0xc9),
-            static_cast<char>(0xff),
-            static_cast<char>(0xff),
-            static_cast<char>(0xff),
-            static_cast<char>(0xff),
-            static_cast<char>(0x01),
+            static_cast<char>(0xc9u),
+            static_cast<char>(0xffu),
+            static_cast<char>(0xffu),
+            static_cast<char>(0xffu),
+            static_cast<char>(0xffu),
+            static_cast<char>(0x01u),
         };
         try {
             msgpack::unpacked unp;

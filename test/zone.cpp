@@ -20,7 +20,7 @@ TEST(zone, allocate_align_custom)
         char* start = (char*)z.allocate_align(1, align);
         EXPECT_EQ(reinterpret_cast<std::size_t>(start) % align, 0);
         for (std::size_t s = 1; s < align; ++s) {
-            (char*)z.allocate_no_align(s);
+            z.allocate_no_align(s);
             char* buf_a = (char*)z.allocate_align(1, align);
             EXPECT_EQ(0, reinterpret_cast<std::size_t>(buf_a) % align);
         }
