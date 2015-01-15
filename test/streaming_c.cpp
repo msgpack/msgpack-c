@@ -97,11 +97,19 @@ TEST(streaming, basic)
                     EXPECT_EQ(MSGPACK_OBJECT_MAP, obj.type);
                     EXPECT_EQ(1, obj.via.map.size);
                     e = obj.via.map.ptr[0].key;
+                    EXPECT_EQ(MSGPACK_OBJECT_FLOAT, e.type);
+                    ASSERT_FLOAT_EQ(0.4, static_cast<float>(e.via.f64));
+#if defined(MSGPACK_USE_LEGACY_NAME_AS_FLOAT)
                     EXPECT_EQ(MSGPACK_OBJECT_DOUBLE, e.type);
-                    ASSERT_FLOAT_EQ(0.4, (float)e.via.dec);
+                    ASSERT_FLOAT_EQ(0.4, static_cast<float>(e.via.dec));
+#endif // MSGPACK_USE_LEGACY_NAME_AS_FLOAT
                     e = obj.via.map.ptr[0].val;
+                    EXPECT_EQ(MSGPACK_OBJECT_FLOAT, e.type);
+                    ASSERT_DOUBLE_EQ(0.8, e.via.f64);
+#if defined(MSGPACK_USE_LEGACY_NAME_AS_FLOAT)
                     EXPECT_EQ(MSGPACK_OBJECT_DOUBLE, e.type);
                     ASSERT_DOUBLE_EQ(0.8, e.via.dec);
+#endif // MSGPACK_USE_LEGACY_NAME_AS_FLOAT
                     break;
                 }
             }

@@ -44,8 +44,8 @@ int msgpack_pack_object(msgpack_packer* pk, msgpack_object d)
     case MSGPACK_OBJECT_NEGATIVE_INTEGER:
         return msgpack_pack_int64(pk, d.via.i64);
 
-    case MSGPACK_OBJECT_DOUBLE:
-        return msgpack_pack_double(pk, d.via.dec);
+    case MSGPACK_OBJECT_FLOAT:
+        return msgpack_pack_double(pk, d.via.f64);
 
     case MSGPACK_OBJECT_STR:
         {
@@ -141,8 +141,8 @@ void msgpack_object_print(FILE* out, msgpack_object o)
 #endif
         break;
 
-    case MSGPACK_OBJECT_DOUBLE:
-        fprintf(out, "%f", o.via.dec);
+    case MSGPACK_OBJECT_FLOAT:
+        fprintf(out, "%f", o.via.f64);
         break;
 
     case MSGPACK_OBJECT_STR:
@@ -233,8 +233,8 @@ bool msgpack_object_equal(const msgpack_object x, const msgpack_object y)
     case MSGPACK_OBJECT_NEGATIVE_INTEGER:
         return x.via.i64 == y.via.i64;
 
-    case MSGPACK_OBJECT_DOUBLE:
-        return x.via.dec == y.via.dec;
+    case MSGPACK_OBJECT_FLOAT:
+        return x.via.f64 == y.via.f64;
 
     case MSGPACK_OBJECT_STR:
         return x.via.str.size == y.via.str.size &&

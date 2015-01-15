@@ -79,7 +79,10 @@ TEST(object, cross_zone_copy)
 
         obj1 << obj2;
 
+        EXPECT_EQ(obj1.via.array.ptr[2].via.array.ptr[0].via.f64, 1.0);
+#if defined(MSGPACK_USE_LEGACY_NAME_AS_FLOAT)
         EXPECT_EQ(obj1.via.array.ptr[2].via.array.ptr[0].via.dec, 1.0);
+#endif // MSGPACK_USE_LEGACY_NAME_AS_FLOAT
         EXPECT_EQ(obj1.via.array.ptr[3].via.map.ptr[0].key.via.str.ptr[0], 'o');
         EXPECT_EQ(obj1.via.array.ptr[3].via.map.ptr[0].val.via.bin.ptr[0], 't');
         EXPECT_NE(
@@ -117,7 +120,10 @@ TEST(object, cross_zone_copy_construct)
 
     msgpack::object obj1(obj2, z1);
 
+    EXPECT_EQ(obj1.via.array.ptr[2].via.array.ptr[0].via.f64, 1.0);
+#if defined(MSGPACK_USE_LEGACY_NAME_AS_FLOAT)
     EXPECT_EQ(obj1.via.array.ptr[2].via.array.ptr[0].via.dec, 1.0);
+#endif // MSGPACK_USE_LEGACY_NAME_AS_FLOAT
     EXPECT_EQ(obj1.via.array.ptr[3].via.map.ptr[0].key.via.str.ptr[0], 'o');
     EXPECT_EQ(obj1.via.array.ptr[3].via.map.ptr[0].val.via.bin.ptr[0], 't');
     EXPECT_NE(
@@ -215,9 +221,9 @@ TEST(object, equal_primitive)
     EXPECT_EQ(obj_int, msgpack::object(1));
     EXPECT_EQ(obj_int, 1);
 
-    msgpack::object obj_double(1.2);
-    EXPECT_EQ(obj_double, msgpack::object(1.2));
-    EXPECT_EQ(obj_double, 1.2);
+    msgpack::object obj_float(1.2);
+    EXPECT_EQ(obj_float, msgpack::object(1.2));
+    EXPECT_EQ(obj_float, 1.2);
 
     msgpack::object obj_bool(true);
     EXPECT_EQ(obj_bool, msgpack::object(true));
@@ -238,9 +244,13 @@ TEST(object, construct_primitive)
     EXPECT_EQ(msgpack::type::NEGATIVE_INTEGER, obj_int.type);
     EXPECT_EQ(-1, obj_int.via.i64);
 
-    msgpack::object obj_double(1.2);
-    EXPECT_EQ(msgpack::type::DOUBLE, obj_double.type);
-    EXPECT_EQ(1.2, obj_double.via.dec);
+    msgpack::object obj_float(1.2);
+    EXPECT_EQ(msgpack::type::FLOAT, obj_float.type);
+    EXPECT_EQ(1.2, obj_float.via.f64);
+#if defined(MSGPACK_USE_LEGACY_NAME_AS_FLOAT)
+    EXPECT_EQ(msgpack::type::DOUBLE, obj_float.type);
+    EXPECT_EQ(1.2, obj_float.via.dec);
+#endif // MSGPACK_USE_LEGACY_NAME_AS_FLOAT
 
     msgpack::object obj_bool(true);
     EXPECT_EQ(msgpack::type::BOOLEAN, obj_bool.type);
