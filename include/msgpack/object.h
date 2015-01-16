@@ -37,7 +37,10 @@ typedef enum {
     MSGPACK_OBJECT_BOOLEAN              = 0x01,
     MSGPACK_OBJECT_POSITIVE_INTEGER     = 0x02,
     MSGPACK_OBJECT_NEGATIVE_INTEGER     = 0x03,
-    MSGPACK_OBJECT_DOUBLE               = 0x04,
+    MSGPACK_OBJECT_FLOAT                = 0x04,
+#if defined(MSGPACK_USE_LEGACY_NAME_AS_FLOAT)
+    MSGPACK_OBJECT_DOUBLE               = MSGPACK_OBJECT_FLOAT, /* obsolete */
+#endif /* MSGPACK_USE_LEGACY_NAME_AS_FLOAT */
     MSGPACK_OBJECT_STR                  = 0x05,
     MSGPACK_OBJECT_ARRAY                = 0x06,
     MSGPACK_OBJECT_MAP                  = 0x07,
@@ -79,7 +82,10 @@ typedef union {
     bool boolean;
     uint64_t u64;
     int64_t  i64;
-    double   dec;
+#if defined(MSGPACK_USE_LEGACY_NAME_AS_FLOAT)
+    double   dec; /* obsolete*/
+#endif /* MSGPACK_USE_LEGACY_NAME_AS_FLOAT */
+    double   f64;
     msgpack_object_array array;
     msgpack_object_map map;
     msgpack_object_str str;
@@ -111,4 +117,3 @@ bool msgpack_object_equal(const msgpack_object x, const msgpack_object y);
 #endif
 
 #endif /* msgpack/object.h */
-

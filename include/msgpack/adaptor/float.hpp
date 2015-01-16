@@ -31,8 +31,8 @@ MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 inline object const& operator>> (object const& o, float& v)
 {
-    if(o.type == type::DOUBLE) {
-        v = static_cast<float>(o.via.dec);
+    if(o.type == type::FLOAT) {
+        v = static_cast<float>(o.via.f64);
     }
     else if (o.type == type::POSITIVE_INTEGER) {
         v = static_cast<float>(o.via.u64);
@@ -56,8 +56,8 @@ inline packer<Stream>& operator<< (packer<Stream>& o, const float& v)
 
 inline object const& operator>> (object const& o, double& v)
 {
-    if(o.type == type::DOUBLE) {
-        v = o.via.dec;
+    if(o.type == type::FLOAT) {
+        v = o.via.f64;
     }
     else if (o.type == type::POSITIVE_INTEGER) {
         v = static_cast<double>(o.via.u64);
@@ -81,14 +81,14 @@ inline packer<Stream>& operator<< (packer<Stream>& o, const double& v)
 
 inline void operator<< (object& o, float v)
 {
-    o.type = type::DOUBLE;
-    o.via.dec = static_cast<double>(v);
+    o.type = type::FLOAT;
+    o.via.f64 = static_cast<double>(v);
 }
 
 inline void operator<< (object& o, double v)
 {
-    o.type = type::DOUBLE;
-    o.via.dec = v;
+    o.type = type::FLOAT;
+    o.via.f64 = v;
 }
 
 inline void operator<< (object::with_zone& o, float v)

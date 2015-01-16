@@ -211,7 +211,7 @@ inline void operator<< (object::with_zone& o, const object& v)
     case type::BOOLEAN:
     case type::POSITIVE_INTEGER:
     case type::NEGATIVE_INTEGER:
-    case type::DOUBLE:
+    case type::FLOAT:
         ::memcpy(&o.via, &v.via, sizeof(v.via));
         return;
 
@@ -342,8 +342,8 @@ inline bool operator==(const object& x, const object& y)
     case type::NEGATIVE_INTEGER:
         return x.via.i64 == y.via.i64;
 
-    case type::DOUBLE:
-        return x.via.dec == y.via.dec;
+    case type::FLOAT:
+        return x.via.f64 == y.via.f64;
 
     case type::STR:
         return x.via.str.size == y.via.str.size &&
@@ -590,8 +590,8 @@ inline packer<Stream>& operator<< (packer<Stream>& o, const object& v)
         o.pack_int64(v.via.i64);
         return o;
 
-    case type::DOUBLE:
-        o.pack_double(v.via.dec);
+    case type::FLOAT:
+        o.pack_double(v.via.f64);
         return o;
 
     case type::STR:
@@ -658,8 +658,8 @@ inline std::ostream& operator<< (std::ostream& s, const object& o)
         s << o.via.i64;
         break;
 
-    case type::DOUBLE:
-        s << o.via.dec;
+    case type::FLOAT:
+        s << o.via.f64;
         break;
 
     case type::STR:

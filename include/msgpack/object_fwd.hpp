@@ -36,7 +36,10 @@ namespace type {
         BOOLEAN             = MSGPACK_OBJECT_BOOLEAN,
         POSITIVE_INTEGER    = MSGPACK_OBJECT_POSITIVE_INTEGER,
         NEGATIVE_INTEGER    = MSGPACK_OBJECT_NEGATIVE_INTEGER,
-        DOUBLE              = MSGPACK_OBJECT_DOUBLE,
+        FLOAT               = MSGPACK_OBJECT_FLOAT,
+#if defined(MSGPACK_USE_LEGACY_NAME_AS_FLOAT)
+        DOUBLE              = MSGPACK_OBJECT_DOUBLE, // obsolete
+#endif // MSGPACK_USE_LEGACY_NAME_AS_FLOAT
         STR                 = MSGPACK_OBJECT_STR,
         BIN                 = MSGPACK_OBJECT_BIN,
         ARRAY               = MSGPACK_OBJECT_ARRAY,
@@ -81,7 +84,10 @@ struct object {
         bool boolean;
         uint64_t u64;
         int64_t  i64;
-        double   dec;
+#if defined(MSGPACK_USE_LEGACY_NAME_AS_FLOAT)
+        double   dec; // obsolete
+#endif // MSGPACK_USE_LEGACY_NAME_AS_FLOAT
+        double   f64;
         object_array array;
         object_map map;
         object_str str;

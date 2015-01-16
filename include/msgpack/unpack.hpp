@@ -226,10 +226,10 @@ inline void unpack_int64(int64_t d, object& o)
         else { o.type = type::NEGATIVE_INTEGER; o.via.i64 = d; } }
 
 inline void unpack_float(float d, object& o)
-{ o.type = type::DOUBLE; o.via.dec = d; }
+{ o.type = type::FLOAT; o.via.f64 = d; }
 
 inline void unpack_double(double d, object& o)
-{ o.type = type::DOUBLE; o.via.dec = d; }
+{ o.type = type::FLOAT; o.via.f64 = d; }
 
 inline void unpack_nil(object& o)
 { o.type = type::NIL; }

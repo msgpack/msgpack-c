@@ -223,13 +223,28 @@ TEST(MSGPACKC, simple_buffer_float)
     msgpack_unpack_return ret =
       msgpack_unpack(sbuf.data, sbuf.size, NULL, &z, &obj);
     EXPECT_EQ(MSGPACK_UNPACK_SUCCESS, ret);
+    EXPECT_EQ(MSGPACK_OBJECT_FLOAT, obj.type);
+#if defined(MSGPACK_USE_LEGACY_NAME_AS_FLOAT)
     EXPECT_EQ(MSGPACK_OBJECT_DOUBLE, obj.type);
-    if (isnan(val))
+#endif // MSGPACK_USE_LEGACY_NAME_AS_FLOAT
+    if (isnan(val)) {
+      EXPECT_TRUE(isnan(obj.via.f64));
+#if defined(MSGPACK_USE_LEGACY_NAME_AS_FLOAT)
       EXPECT_TRUE(isnan(obj.via.dec));
-    else if (isinf(val))
+#endif // MSGPACK_USE_LEGACY_NAME_AS_FLOAT
+    }
+    else if (isinf(val)) {
+      EXPECT_TRUE(isinf(obj.via.f64));
+#if defined(MSGPACK_USE_LEGACY_NAME_AS_FLOAT)
       EXPECT_TRUE(isinf(obj.via.dec));
-    else
+#endif // MSGPACK_USE_LEGACY_NAME_AS_FLOAT
+    }
+    else {
+      EXPECT_TRUE(fabs(obj.via.f64 - val) <= kEPS);
+#if defined(MSGPACK_USE_LEGACY_NAME_AS_FLOAT)
       EXPECT_TRUE(fabs(obj.via.dec - val) <= kEPS);
+#endif // MSGPACK_USE_LEGACY_NAME_AS_FLOAT
+    }
     msgpack_zone_destroy(&z);
     msgpack_sbuffer_destroy(&sbuf);
   }
@@ -273,13 +288,28 @@ TEST(MSGPACKC, simple_buffer_double)
     msgpack_unpack_return ret =
       msgpack_unpack(sbuf.data, sbuf.size, NULL, &z, &obj);
     EXPECT_EQ(MSGPACK_UNPACK_SUCCESS, ret);
+    EXPECT_EQ(MSGPACK_OBJECT_FLOAT, obj.type);
+#if defined(MSGPACK_USE_LEGACY_NAME_AS_FLOAT)
     EXPECT_EQ(MSGPACK_OBJECT_DOUBLE, obj.type);
-    if (isnan(val))
+#endif // MSGPACK_USE_LEGACY_NAME_AS_FLOAT
+    if (isnan(val)) {
+      EXPECT_TRUE(isnan(obj.via.f64));
+#if defined(MSGPACK_USE_LEGACY_NAME_AS_FLOAT)
       EXPECT_TRUE(isnan(obj.via.dec));
-    else if (isinf(val))
+#endif // MSGPACK_USE_LEGACY_NAME_AS_FLOAT
+    }
+    else if (isinf(val)) {
+      EXPECT_TRUE(isinf(obj.via.f64));
+#if defined(MSGPACK_USE_LEGACY_NAME_AS_FLOAT)
       EXPECT_TRUE(isinf(obj.via.dec));
-    else
+#endif // MSGPACK_USE_LEGACY_NAME_AS_FLOAT
+    }
+    else {
+      EXPECT_TRUE(fabs(obj.via.f64 - val) <= kEPS);
+#if defined(MSGPACK_USE_LEGACY_NAME_AS_FLOAT)
       EXPECT_TRUE(fabs(obj.via.dec - val) <= kEPS);
+#endif // MSGPACK_USE_LEGACY_NAME_AS_FLOAT
+    }
     msgpack_zone_destroy(&z);
     msgpack_sbuffer_destroy(&sbuf);
   }
