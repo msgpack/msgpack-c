@@ -31,7 +31,7 @@
 #endif
 
 #ifndef MSGPACK_ZONE_ALIGN
-#define MSGPACK_ZONE_ALIGN sizeof(int)
+#define MSGPACK_ZONE_ALIGN sizeof(void*)
 #endif
 
 namespace msgpack {
