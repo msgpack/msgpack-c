@@ -23,7 +23,7 @@ TEST(streaming, basic)
     EXPECT_EQ(0, msgpack_pack_bin(pk, 8));
     EXPECT_EQ(0, msgpack_pack_bin_body(pk, "bin_data", 8));
     EXPECT_EQ(0, msgpack_pack_map(pk, 1));
-    EXPECT_EQ(0, msgpack_pack_float(pk, 0.4));
+    EXPECT_EQ(0, msgpack_pack_float(pk, 0.4f));
     EXPECT_EQ(0, msgpack_pack_double(pk, 0.8));
     int max_count = 6;
 
@@ -98,7 +98,7 @@ TEST(streaming, basic)
                     EXPECT_EQ(1, obj.via.map.size);
                     e = obj.via.map.ptr[0].key;
                     EXPECT_EQ(MSGPACK_OBJECT_DOUBLE, e.type);
-                    ASSERT_FLOAT_EQ(0.4, (float)e.via.dec);
+                    ASSERT_FLOAT_EQ(0.4f, (float)e.via.dec);
                     e = obj.via.map.ptr[0].val;
                     EXPECT_EQ(MSGPACK_OBJECT_DOUBLE, e.type);
                     ASSERT_DOUBLE_EQ(0.8, e.via.dec);

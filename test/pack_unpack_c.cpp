@@ -40,29 +40,29 @@ TEST(unpack, sequence)
 
     msgpack_packer_free(pk);
 
-    bool success;
+    msgpack_unpack_return success;
     size_t offset = 0;
 
     msgpack_unpacked msg;
     msgpack_unpacked_init(&msg);
 
     success = msgpack_unpack_next(&msg, sbuf->data, sbuf->size, &offset);
-    EXPECT_TRUE(success);
+    EXPECT_EQ(MSGPACK_UNPACK_SUCCESS, success);
     EXPECT_EQ(MSGPACK_OBJECT_POSITIVE_INTEGER, msg.data.type);
     EXPECT_EQ(1, msg.data.via.u64);
 
     success = msgpack_unpack_next(&msg, sbuf->data, sbuf->size, &offset);
-    EXPECT_TRUE(success);
+    EXPECT_EQ(MSGPACK_UNPACK_SUCCESS, success);
     EXPECT_EQ(MSGPACK_OBJECT_POSITIVE_INTEGER, msg.data.type);
     EXPECT_EQ(2, msg.data.via.u64);
 
     success = msgpack_unpack_next(&msg, sbuf->data, sbuf->size, &offset);
-    EXPECT_TRUE(success);
+    EXPECT_EQ(MSGPACK_UNPACK_SUCCESS, success);
     EXPECT_EQ(MSGPACK_OBJECT_POSITIVE_INTEGER, msg.data.type);
     EXPECT_EQ(3, msg.data.via.u64);
 
     success = msgpack_unpack_next(&msg, sbuf->data, sbuf->size, &offset);
-    EXPECT_FALSE(success);
+    EXPECT_EQ(MSGPACK_UNPACK_CONTINUE, success);
 
     msgpack_sbuffer_free(sbuf);
     msgpack_unpacked_destroy(&msg);
