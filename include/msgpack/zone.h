@@ -95,7 +95,7 @@ void msgpack_zone_clear(msgpack_zone* zone);
 MSGPACK_DLLEXPORT
 void* msgpack_zone_malloc_expand(msgpack_zone* zone, size_t size);
 
-void* msgpack_zone_malloc_no_align(msgpack_zone* zone, size_t size)
+static inline void* msgpack_zone_malloc_no_align(msgpack_zone* zone, size_t size)
 {
     char* ptr;
     msgpack_zone_chunk_list* cl = &zone->chunk_list;
