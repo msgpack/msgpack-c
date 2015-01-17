@@ -27,6 +27,11 @@
 
 #include "sysdep.h"
 
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable: 4309)
+#endif
+
 namespace msgpack {
 
 MSGPACK_API_VERSION_NAMESPACE(v1) {
@@ -1049,5 +1054,9 @@ inline void packer<Stream>::pack_imp_int64(T d)
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 
 }  // namespace msgpack
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
 
 #endif /* msgpack/pack.hpp */
