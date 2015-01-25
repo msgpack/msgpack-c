@@ -55,6 +55,22 @@ TEST(MSGPACK_STL, simple_buffer_vector_char)
   }
 }
 
+TEST(MSGPACK_STL, simple_buffer_vector_bool)
+{
+  vector<bool> val1;
+  for (unsigned int i = 0; i < kElements; i++)
+    val1.push_back(i % 2);
+  msgpack::sbuffer sbuf;
+  msgpack::pack(sbuf, val1);
+  msgpack::unpacked ret;
+  msgpack::unpack(ret, sbuf.data(), sbuf.size());
+  EXPECT_EQ(ret.get().type, msgpack::type::ARRAY);
+  vector<bool> val2 = ret.get().as<vector<bool> >();
+  EXPECT_EQ(val1.size(), val2.size());
+  EXPECT_TRUE(equal(val1.begin(), val1.end(), val2.begin()));
+}
+
+
 TEST(MSGPACK_STL, simple_buffer_map)
 {
   for (unsigned int k = 0; k < kLoop; k++) {

@@ -38,6 +38,7 @@
 #include "msgpack/adaptor/set_fwd.hpp"
 #include "msgpack/adaptor/string_fwd.hpp"
 #include "msgpack/adaptor/vector_fwd.hpp"
+#include "msgpack/adaptor/vector_bool_fwd.hpp"
 #include "msgpack/adaptor/vector_char_fwd.hpp"
 
 #if defined(MSGPACK_USE_CPP03)

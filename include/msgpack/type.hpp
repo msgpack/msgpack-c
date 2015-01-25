@@ -13,6 +13,7 @@
 #include "adaptor/set.hpp"
 #include "adaptor/string.hpp"
 #include "adaptor/vector.hpp"
+#include "adaptor/vector_bool.hpp"
 #include "adaptor/vector_char.hpp"
 #include "adaptor/msgpack_tuple.hpp"
 #include "adaptor/define.hpp"
