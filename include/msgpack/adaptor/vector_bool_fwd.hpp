@@ -20,6 +20,7 @@
 
 #include "msgpack/versioning.hpp"
 #include "msgpack/object_fwd.hpp"
+#include <vector>
 
 namespace msgpack {
 
