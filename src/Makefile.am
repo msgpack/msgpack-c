@@ -113,6 +113,7 @@ nobase_include_HEADERS += \
 		../include/msgpack/detail/cpp03_zone.hpp \
 		../include/msgpack/detail/cpp11_zone.hpp \
 		../include/msgpack/fbuffer.hpp \
+		../include/msgpack/iterator.hpp \
 		../include/msgpack/object.hpp \
 		../include/msgpack/object_fwd.hpp \
 		../include/msgpack/pack.hpp \
