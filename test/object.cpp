@@ -1,5 +1,42 @@
-#include <msgpack.hpp>
+#include <msgpack_fwd.hpp>
 #include <gtest/gtest.h>
+
+
+enum enum_test {
+    elem
+};
+
+MSGPACK_ADD_ENUM(enum_test);
+
+struct outer_enum {
+    enum enum_test {
+        elem
+    };
+};
+
+MSGPACK_ADD_ENUM(outer_enum::enum_test);
+
+#if !defined(MSGPACK_USE_CPP03)
+
+enum class enum_class_test {
+    elem
+};
+
+MSGPACK_ADD_ENUM(enum_class_test);
+
+struct outer_enum_class {
+    enum class enum_class_test {
+        elem
+    };
+};
+
+MSGPACK_ADD_ENUM(outer_enum_class::enum_class_test);
+
+#endif // !defined(MSGPACK_USE_CPP03)
+
+
+
+#include <msgpack.hpp>
 
 struct myclass {
     myclass() : num(0), str("default") { }
@@ -256,3 +293,54 @@ TEST(object, construct_primitive)
     EXPECT_EQ(msgpack::type::BOOLEAN, obj_bool.type);
     EXPECT_EQ(true, obj_bool.via.boolean);
 }
+
+TEST(object, construct_enum)
+{
+    msgpack::object obj(elem);
+    EXPECT_EQ(msgpack::type::POSITIVE_INTEGER, obj.type);
+    EXPECT_EQ(elem, obj.via.u64);
+}
+
+#if !defined(MSGPACK_USE_CPP03)
+
+TEST(object, construct_enum_newstyle)
+{
+    msgpack::object obj(enum_test::elem);
+    EXPECT_EQ(msgpack::type::POSITIVE_INTEGER, obj.type);
+    EXPECT_EQ(elem, obj.via.u64);
+}
+
+#endif // !defined(MSGPACK_USE_CPP03)
+
+TEST(object, construct_enum_outer)
+{
+    msgpack::object obj(outer_enum::elem);
+    EXPECT_EQ(msgpack::type::POSITIVE_INTEGER, obj.type);
+    EXPECT_EQ(elem, obj.via.u64);
+}
+
+#if !defined(MSGPACK_USE_CPP03)
+
+TEST(object, construct_enum_outer_newstyle)
+{
+    msgpack::object obj(outer_enum::enum_test::elem);
+    EXPECT_EQ(msgpack::type::POSITIVE_INTEGER, obj.type);
+    EXPECT_EQ(elem, obj.via.u64);
+}
+
+TEST(object, construct_class_enum)
+{
+    msgpack::object obj(enum_class_test::elem);
+    EXPECT_EQ(msgpack::type::POSITIVE_INTEGER, obj.type);
+    EXPECT_EQ(elem, obj.via.u64);
+}
+
+
+TEST(object, construct_class_enum_outer)
+{
+    msgpack::object obj(outer_enum_class::enum_class_test::elem);
+    EXPECT_EQ(msgpack::type::POSITIVE_INTEGER, obj.type);
+    EXPECT_EQ(elem, obj.via.u64);
+}
+
+#endif // !defined(MSGPACK_USE_CPP03)

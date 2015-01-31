@@ -20,6 +20,7 @@
 
 #include "msgpack/versioning.hpp"
 #include "msgpack/adaptor/msgpack_tuple_fwd.hpp"
+#include "msgpack/adaptor/int_fwd.hpp"
 #include "msgpack/object_fwd.hpp"
 
 #define MSGPACK_DEFINE(...) \
@@ -42,7 +43,6 @@
 #define MSGPACK_ADD_ENUM(enum) \
   namespace msgpack { \
   MSGPACK_API_VERSION_NAMESPACE(v1) { \
-    template <> \
     inline object const& operator>> (object const& o, enum& v) \
     { \
       int tmp; \
@@ -50,7 +50,10 @@
       v = static_cast<enum>(tmp); \
       return o; \
     } \
-    template <> \
+    inline void operator<< (object& o, const enum& v) \
+    { \
+      o << static_cast<int>(v); \
+    } \
     inline void operator<< (object::with_zone& o, const enum& v) \
     { \
       o << static_cast<int>(v); \
