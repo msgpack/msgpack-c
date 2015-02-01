@@ -37,6 +37,8 @@ object const& operator>> (msgpack::object const& o, my_class& v);
 template <typename Stream>
 packer<Stream>& operator<< (msgpack::packer<Stream>& o, my_class const& v);
 
+void operator<< (msgpack::object::with_zone& o, my_class const& v);
+
 } // MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS)
 } // namespace msgpack
 
@@ -87,6 +89,14 @@ inline packer<Stream>& operator<< (msgpack::packer<Stream>& o, my_class const& v
     return o;
 }
 
+inline void operator<< (msgpack::object::with_zone& o, my_class const& v) {
+    o.type = type::ARRAY;
+    o.via.array.size = 2;
+    o.via.array.ptr = static_cast<object*>(o.zone.allocate_align(sizeof(object) * o.via.array.size));
+    o.via.array.ptr[0] = msgpack::object(v.get_name(), o.zone);
+    o.via.array.ptr[1] = msgpack::object(v.get_age(), o.zone);
+}
+
 } // MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS)
 } // namespace msgpack
 
@@ -102,18 +112,28 @@ void print(std::string const& buf) {
             << (static_cast<int>(*it) & 0xff)
             << ' ';
     }
-    std::cout << std::endl;
+    std::cout << std::dec << std::endl;
 }
 
 int main() {
-    my_class my("John Smith", 42);
-    std::stringstream ss;
-    msgpack::pack(ss, my);
+    {   // pack, unpack
+        my_class my("John Smith", 42);
+        std::stringstream ss;
+        msgpack::pack(ss, my);
 
-    print(ss.str());
+        print(ss.str());
 
-    msgpack::unpacked unp;
-    msgpack::unpack(unp, ss.str().data(), ss.str().size());
-    msgpack::object obj = unp.get();
-    assert(obj.as<my_class>() == my);
+        msgpack::unpacked unp;
+        msgpack::unpack(unp, ss.str().data(), ss.str().size());
+        msgpack::object obj = unp.get();
+        std::cout << obj << std::endl;
+        assert(obj.as<my_class>() == my);
+    }
+    {   // create object with zone
+        my_class my("John Smith", 42);
+        msgpack::zone z;
+        msgpack::object obj(my, z);
+        std::cout << obj << std::endl;
+        assert(obj.as<my_class>() == my);
+    }
 }

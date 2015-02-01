@@ -54,20 +54,30 @@ void print(std::string const& buf) {
             << (static_cast<int>(*it) & 0xff)
             << ' ';
     }
-    std::cout << std::endl;
+    std::cout << std::dec << std::endl;
 }
 
 #include <msgpack.hpp>
 
 int main() {
-    my_class my("John Smith", 42);
-    std::stringstream ss;
-    msgpack::pack(ss, my);
+    {   // pack, unpack
+        my_class my("John Smith", 42);
+        std::stringstream ss;
+        msgpack::pack(ss, my);
 
-    print(ss.str());
+        print(ss.str());
 
-    msgpack::unpacked unp;
-    msgpack::unpack(unp, ss.str().data(), ss.str().size());
-    msgpack::object obj = unp.get();
-    assert(obj.as<my_class>() == my);
+        msgpack::unpacked unp;
+        msgpack::unpack(unp, ss.str().data(), ss.str().size());
+        msgpack::object obj = unp.get();
+        std::cout << obj << std::endl;
+        assert(obj.as<my_class>() == my);
+    }
+    {   // create object with zone
+        my_class my("John Smith", 42);
+        msgpack::zone z;
+        msgpack::object obj(my, z);
+        std::cout << obj << std::endl;
+        assert(obj.as<my_class>() == my);
+    }
 }
