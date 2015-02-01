@@ -1,5 +1,23 @@
-#include <msgpack.hpp>
+#include <msgpack_fwd.hpp>
 #include <gtest/gtest.h>
+
+class enum_member {
+public:
+    enum_member() : flag(A) { }
+
+    enum flags_t {
+        A = 0,
+        B = 1
+    };
+
+    flags_t flag;
+
+    MSGPACK_DEFINE(flag);
+};
+
+MSGPACK_ADD_ENUM(enum_member::flags_t);
+
+#include <msgpack.hpp>
 
 class compatibility {
 public:
@@ -43,23 +61,6 @@ TEST(convert, compatibility_more)
     EXPECT_EQ("mpio",   to.str2);
 }
 
-
-class enum_member {
-public:
-    enum_member() : flag(A) { }
-
-    enum flags_t {
-        A = 0,
-        B = 1
-    };
-
-    flags_t flag;
-
-    MSGPACK_DEFINE(flag);
-};
-
-MSGPACK_ADD_ENUM(enum_member::flags_t);
-
 TEST(convert, enum_member)
 {
     enum_member src;
@@ -73,4 +74,3 @@ TEST(convert, enum_member)
 
     EXPECT_EQ(enum_member::B, to.flag);
 }
-

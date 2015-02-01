@@ -1,10 +1,47 @@
-#include <msgpack.hpp>
+#include <msgpack_fwd.hpp>
 #include <gtest/gtest.h>
 #include <cmath>
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
+
+enum enum_test {
+    elem
+};
+
+MSGPACK_ADD_ENUM(enum_test);
+
+struct outer_enum {
+    enum enum_test {
+        elem
+    };
+};
+
+MSGPACK_ADD_ENUM(outer_enum::enum_test);
+
+#if !defined(MSGPACK_USE_CPP03)
+
+enum class enum_class_test {
+    elem
+};
+
+MSGPACK_ADD_ENUM(enum_class_test);
+
+struct outer_enum_class {
+    enum class enum_class_test {
+        elem
+    };
+};
+
+MSGPACK_ADD_ENUM(outer_enum_class::enum_class_test);
+
+#endif // !defined(MSGPACK_USE_CPP03)
+
+
+
+#include <msgpack.hpp>
+
 
 using namespace std;
 
@@ -615,7 +652,61 @@ TEST(object_with_zone, user_defined)
     EXPECT_EQ(v1.s, v2.s);
 }
 
+TEST(object_with_zone, construct_enum)
+{
+    msgpack::zone z;
+    msgpack::object obj(elem, z);
+    EXPECT_EQ(msgpack::type::POSITIVE_INTEGER, obj.type);
+    EXPECT_EQ(elem, obj.via.u64);
+}
+
 #if !defined(MSGPACK_USE_CPP03)
+
+TEST(object_with_zone, construct_enum_newstyle)
+{
+    msgpack::zone z;
+    msgpack::object obj(enum_test::elem, z);
+    EXPECT_EQ(msgpack::type::POSITIVE_INTEGER, obj.type);
+    EXPECT_EQ(elem, obj.via.u64);
+}
+
+#endif // !defined(MSGPACK_USE_CPP03)
+
+TEST(object_with_zone, construct_enum_outer)
+{
+    msgpack::zone z;
+    msgpack::object obj(outer_enum::elem, z);
+    EXPECT_EQ(msgpack::type::POSITIVE_INTEGER, obj.type);
+    EXPECT_EQ(elem, obj.via.u64);
+}
+
+#if !defined(MSGPACK_USE_CPP03)
+
+TEST(object_with_zone, construct_enum_outer_newstyle)
+{
+    msgpack::zone z;
+    msgpack::object obj(outer_enum::enum_test::elem, z);
+    EXPECT_EQ(msgpack::type::POSITIVE_INTEGER, obj.type);
+    EXPECT_EQ(elem, obj.via.u64);
+}
+
+TEST(object_with_zone, construct_class_enum)
+{
+    msgpack::zone z;
+    msgpack::object obj(enum_class_test::elem, z);
+    EXPECT_EQ(msgpack::type::POSITIVE_INTEGER, obj.type);
+    EXPECT_EQ(elem, obj.via.u64);
+}
+
+
+TEST(object_with_zone, construct_class_enum_outer)
+{
+    msgpack::zone z;
+    msgpack::object obj(outer_enum_class::enum_class_test::elem, z);
+    EXPECT_EQ(msgpack::type::POSITIVE_INTEGER, obj.type);
+    EXPECT_EQ(elem, obj.via.u64);
+}
+
 
 TEST(object_with_zone, array)
 {

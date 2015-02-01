@@ -47,18 +47,21 @@
 #define MSGPACK_ADD_ENUM(enum) \
   namespace msgpack { \
   MSGPACK_API_VERSION_NAMESPACE(v1) { \
-    template <> \
     inline object const& operator>> (object const& o, enum& v) \
     { \
-      int tmp; \
+      std::underlying_type<enum>::type tmp; \
       o >> tmp; \
       v = static_cast<enum>(tmp);   \
       return o; \
     } \
-    template <> \
+    inline void operator<< (object& o, const enum& v) \
+    { \
+      auto tmp = static_cast<std::underlying_type<enum>::type>(v); \
+      o << tmp; \
+    } \
     inline void operator<< (object::with_zone& o, const enum& v) \
     { \
-      int tmp = static_cast<std::underlying_type<enum>::type>(v); \
+      auto tmp = static_cast<std::underlying_type<enum>::type>(v); \
       o << tmp; \
     } \
     namespace detail { \

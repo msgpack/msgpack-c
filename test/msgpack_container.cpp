@@ -1,4 +1,4 @@
-#include "msgpack.hpp"
+#include <msgpack_fwd.hpp>
 
 #include <cmath>
 #include <string>
@@ -14,6 +14,31 @@
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
+
+
+
+class TestEnumMemberClass
+{
+public:
+  TestEnumMemberClass()
+    : t1(STATE_A), t2(STATE_B), t3(STATE_C) {}
+
+  enum TestEnumType {
+    STATE_INVALID = 0,
+    STATE_A = 1,
+    STATE_B = 2,
+    STATE_C = 3
+  };
+  TestEnumType t1;
+  TestEnumType t2;
+  TestEnumType t3;
+
+  MSGPACK_DEFINE(t1, t2, t3);
+};
+
+MSGPACK_ADD_ENUM(TestEnumMemberClass::TestEnumType);
+
+#include <msgpack.hpp>
 
 using namespace std;
 
@@ -487,27 +512,6 @@ TEST(MSGPACK_USER_DEFINED, simple_buffer_class_new_to_old)
     EXPECT_FALSE(val2.s.empty());
   }
 }
-
-class TestEnumMemberClass
-{
-public:
-  TestEnumMemberClass()
-    : t1(STATE_A), t2(STATE_B), t3(STATE_C) {}
-
-  enum TestEnumType {
-    STATE_INVALID = 0,
-    STATE_A = 1,
-    STATE_B = 2,
-    STATE_C = 3
-  };
-  TestEnumType t1;
-  TestEnumType t2;
-  TestEnumType t3;
-
-  MSGPACK_DEFINE(t1, t2, t3);
-};
-
-MSGPACK_ADD_ENUM(TestEnumMemberClass::TestEnumType);
 
 TEST(MSGPACK_USER_DEFINED, simple_buffer_enum_member)
 {

@@ -1,4 +1,4 @@
-#include "msgpack.hpp"
+#include <msgpack_fwd.hpp>
 
 #include <gtest/gtest.h>
 
@@ -6,12 +6,36 @@
 #include "config.h"
 #endif
 
+#if !defined(MSGPACK_USE_CPP03)
+
+class TestEnumClassMemberClass
+{
+public:
+    TestEnumClassMemberClass()
+        : t1(TestEnumClassType::STATE_A), t2(TestEnumClassType::STATE_B), t3(TestEnumClassType::STATE_C) {}
+
+    enum class TestEnumClassType:long {
+        STATE_INVALID = 0,
+            STATE_A = 1,
+            STATE_B = 2,
+            STATE_C = 3
+        };
+    TestEnumClassType t1;
+    TestEnumClassType t2;
+    TestEnumClassType t3;
+
+    MSGPACK_DEFINE(t1, t2, t3);
+};
+
+MSGPACK_ADD_ENUM(TestEnumClassMemberClass::TestEnumClassType);
+
+#include <msgpack.hpp>
+
 using namespace std;
 
 const unsigned int kLoop = 10000;
 const unsigned int kElements = 100;
 
-#if !defined(MSGPACK_USE_CPP03)
 
 // C++11
 
@@ -149,29 +173,6 @@ TEST(MSGPACK_STL, simple_buffer_unordered_multiset)
     EXPECT_EQ(val1, val2);
   }
 }
-
-
-
-class TestEnumClassMemberClass
-{
-public:
-    TestEnumClassMemberClass()
-        : t1(TestEnumClassType::STATE_A), t2(TestEnumClassType::STATE_B), t3(TestEnumClassType::STATE_C) {}
-
-    enum class TestEnumClassType:long {
-        STATE_INVALID = 0,
-            STATE_A = 1,
-            STATE_B = 2,
-            STATE_C = 3
-        };
-    TestEnumClassType t1;
-    TestEnumClassType t2;
-    TestEnumClassType t3;
-
-    MSGPACK_DEFINE(t1, t2, t3);
-};
-
-MSGPACK_ADD_ENUM(TestEnumClassMemberClass::TestEnumClassType);
 
 TEST(MSGPACK_USER_DEFINED, simple_buffer_enum_class_member)
 {
