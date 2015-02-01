@@ -53,6 +53,22 @@ inline void operator<< (object& o, const char* v)
     o.via.str.size = static_cast<uint32_t>(size);
 }
 
+template <typename Stream>
+inline packer<Stream>& operator<< (packer<Stream>& o, char* v)
+{
+    return msgpack::operator<<(o, static_cast<const char*>(v));
+}
+
+inline void operator<< (object::with_zone& o, char* v)
+{
+    msgpack::operator<<(o, static_cast<const char*>(v));
+}
+
+inline void operator<< (object& o, char* v)
+{
+    msgpack::operator<<(o, static_cast<const char*>(v));
+}
+
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 
 }  // namespace msgpack
