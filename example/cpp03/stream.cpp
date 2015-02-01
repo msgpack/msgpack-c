@@ -1,3 +1,20 @@
+// MessagePack for C++ example
+//
+// Copyright (C) 2008-2015 FURUHASHI Sadayuki and KONDO Takatoshi
+//
+//    Licensed under the Apache License, Version 2.0 (the "License");
+//    you may not use this file except in compliance with the License.
+//    You may obtain a copy of the License at
+//
+//        http://www.apache.org/licenses/LICENSE-2.0
+//
+//    Unless required by applicable law or agreed to in writing, software
+//    distributed under the License is distributed on an "AS IS" BASIS,
+//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//    See the License for the specific language governing permissions and
+//    limitations under the License.
+//
+
 #include <msgpack.hpp>
 #include <iostream>
 #include <stdexcept>
@@ -13,7 +30,7 @@ public:
 
     ~Server() { }
 
-    typedef msgpack::unique_ptr<msgpack::zone> auto_zone;
+    typedef msgpack::unique_ptr<msgpack::zone> unique_zone;
 
     void socket_readable()
     {
@@ -37,7 +54,7 @@ public:
         msgpack::unpacked result;
         while (m_pac.next(&result)) {
             msgpack::object msg = result.get();
-            auto_zone& life = result.zone();
+            unique_zone& life = result.zone();
             process_message(msg, life);
         }
 
@@ -47,7 +64,7 @@ public:
     }
 
 private:
-    void process_message(msgpack::object msg, auto_zone& life)
+    void process_message(msgpack::object msg, unique_zone&)
     {
         std::cout << "message reached: " << msg << std::endl;
     }
@@ -59,25 +76,26 @@ private:
 
 
 static void* run_server(void* arg)
-try {
-    Server* srv = reinterpret_cast<Server*>(arg);
+{
+    try {
+        Server* srv = reinterpret_cast<Server*>(arg);
 
-    while(true) {
-        srv->socket_readable();
+        while(true) {
+            srv->socket_readable();
+        }
+        return NULL;
+
+    } catch (std::exception& e) {
+        std::cerr << "error while processing client packet: "
+                  << e.what() << std::endl;
+        return NULL;
+
+    } catch (...) {
+        std::cerr << "error while processing client packet: "
+                  << "unknown error" << std::endl;
+        return NULL;
     }
-    return NULL;
-
-} catch (std::exception& e) {
-    std::cerr << "error while processing client packet: "
-        << e.what() << std::endl;
-    return NULL;
-
-} catch (...) {
-    std::cerr << "error while processing client packet: "
-        << "unknown error" << std::endl;
-    return NULL;
 }
-
 
 struct fwriter {
     fwriter(int fd) : m_fp( fdopen(fd, "w") ) { }
@@ -130,4 +148,3 @@ int main(void)
 
     pthread_join(thread, NULL);
 }
-
