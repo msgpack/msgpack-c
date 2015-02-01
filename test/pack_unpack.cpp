@@ -218,6 +218,56 @@ TEST(unpack, int_default_null_pointer)
     EXPECT_EQ(1, msg.get().as<int>());
 }
 
+TEST(unpack, int_zone_no_offset_no_ref)
+{
+    msgpack::sbuffer sbuf;
+    msgpack::pack(sbuf, 1);
+
+    msgpack::zone z;
+    msgpack::object obj = msgpack::unpack(z, sbuf.data(), sbuf.size());
+    EXPECT_EQ(1, obj.as<int>());
+}
+
+TEST(unpack, int_zone_offset_no_ref)
+{
+    msgpack::sbuffer sbuf;
+    msgpack::pack(sbuf, 1);
+
+    std::size_t off = 0;
+
+    msgpack::zone z;
+    msgpack::object obj = msgpack::unpack(z, sbuf.data(), sbuf.size(), off);
+    EXPECT_EQ(1, obj.as<int>());
+    EXPECT_EQ(off, sbuf.size());
+}
+
+TEST(unpack, int_zone_no_offset_ref)
+{
+    msgpack::sbuffer sbuf;
+    msgpack::pack(sbuf, 1);
+    bool referenced;
+
+    msgpack::zone z;
+    msgpack::object obj = msgpack::unpack(z, sbuf.data(), sbuf.size(), referenced);
+    EXPECT_EQ(1, obj.as<int>());
+    EXPECT_EQ(false, referenced);
+}
+
+TEST(unpack, int_zone_offset_ref)
+{
+    msgpack::sbuffer sbuf;
+    msgpack::pack(sbuf, 1);
+    std::size_t off = 0;
+    bool referenced;
+
+    msgpack::zone z;
+    msgpack::object obj = msgpack::unpack(z, sbuf.data(), sbuf.size(), off, referenced);
+    EXPECT_EQ(1, obj.as<int>());
+    EXPECT_EQ(false, referenced);
+    EXPECT_EQ(off, sbuf.size());
+}
+
+
 TEST(unpack, sequence)
 {
     msgpack::sbuffer sbuf;
