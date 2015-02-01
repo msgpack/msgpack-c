@@ -25,7 +25,8 @@ check_PROGRAMS = \
 		msgpack_cpp11 \
 		reference_cpp11 \
 		reference \
-		limit
+		limit \
+		iterator
 
 TESTS = $(check_PROGRAMS)
 
@@ -75,5 +76,7 @@ reference_SOURCES = reference.cpp
 reference_cpp11_SOURCES = reference_cpp11.cpp
 
 limit_SOURCES = limit.cpp
+
+iterator_SOURCES = iterator.cpp
 
 EXTRA_DIST = cases.mpac cases_compact.mpac

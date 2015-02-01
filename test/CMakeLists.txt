@@ -29,6 +29,7 @@ LIST (APPEND check_PROGRAMS
     msgpack_c.cpp
     reference.cpp
     limit.cpp
+    iterator.cpp
 )
 
 IF (MSGPACK_CXX11)
