@@ -35,6 +35,7 @@ IF (MSGPACK_CXX11)
     LIST (APPEND check_PROGRAMS
         msgpack_cpp11.cpp
         reference_cpp11.cpp
+        iterator_cpp11.cpp
     )
 ENDIF ()
 

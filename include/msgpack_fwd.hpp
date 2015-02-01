@@ -21,6 +21,7 @@
 #include "msgpack/versioning.hpp"
 #include "msgpack/zone.hpp"
 #include "msgpack/object_fwd.hpp"
+#include "msgpack/iterator.hpp"
 #include "msgpack/adaptor/define.hpp"
 #include "msgpack/pack.hpp"
 
