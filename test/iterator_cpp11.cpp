@@ -29,15 +29,15 @@ TEST(iterator, vector)
     msgpack::unpacked ret;
     msgpack::unpack(ret, sbuf.data(), sbuf.size());
 
-    auto &msgarr = ret.get().via.array;
+    auto const& msgarr = ret.get().via.array;
     auto dist = std::distance(begin(msgarr), end(msgarr));
     auto vecSize = vec.size();
     EXPECT_EQ(dist, vecSize);
-    
-    vec_type::iterator correct = std::begin(vec);
-    for (auto i : msgarr) {
+
+    vec_type::const_iterator correct = std::begin(vec);
+    for (auto const& obj : msgarr) {
         auto u64 = *correct;
-        EXPECT_EQ(i, u64);
+        EXPECT_EQ(obj.as<unsigned int>(), u64);
         ++correct;
     }
 }
@@ -55,15 +55,16 @@ TEST(iterator, map)
     msgpack::unpacked ret;
     msgpack::unpack(ret, sbuf.data(), sbuf.size());
 
-    auto &msgmap = ret.get().via.map;
+    auto const& msgmap = ret.get().via.map;
     auto dist = std::distance(begin(msgmap), end(msgmap));
     auto mapSize = map.size();
     EXPECT_EQ(dist, mapSize);
 
-    for (auto kv : msgmap) {
-      auto val = kv.val.via.u64;
-      auto correct = map[kv.key.via.u64];
-      EXPECT_EQ(val, correct);
+    for (auto const& kv : msgmap) {
+        auto key = kv.key.as<unsigned int>();
+        auto val = kv.val.as<unsigned int>();
+        auto correct = map[key];
+        EXPECT_EQ(val, correct);
     }
 }
 
