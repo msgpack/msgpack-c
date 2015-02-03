@@ -410,16 +410,17 @@ inline void load(T& dst, const char* n, typename msgpack::enable_if<sizeof(T) ==
 class context {
 public:
     context(unpack_reference_func f, void* user_data, unpack_limit const& limit)
-        :m_trail(0), m_user(f, user_data, limit), m_cs(CS_HEADER), m_top(0)
+        :m_trail(0), m_user(f, user_data, limit), m_cs(CS_HEADER)
     {
-        m_stack[0].set_obj(object());
+        m_stack.reserve(MSGPACK_EMBED_STACK_SIZE);
+        m_stack.push_back(unpack_stack());
     }
 
     void init()
     {
         m_cs = CS_HEADER;
         m_trail = 0;
-        m_top = 0;
+        m_stack.resize(1);
         m_stack[0].set_obj(object());
     }
 
@@ -454,26 +455,20 @@ private:
         object& obj,
         const char* load_pos,
         std::size_t& off) {
-        if(m_top < MSGPACK_EMBED_STACK_SIZE /* FIXME */) {
-            typename value<T>::type tmp;
-            load<T>(tmp, load_pos);
-            f(m_user, tmp, m_stack[m_top].obj());
-            if(tmp == 0) {
-                obj = m_stack[m_top].obj();
-                int ret = push_proc(obj, off);
-                if (ret != 0) return ret;
-            }
-            else {
-                m_stack[m_top].set_container_type(container_type);
-                m_stack[m_top].set_count(tmp);
-                ++m_top;
-                m_cs = CS_HEADER;
-                ++m_current;
-            }
+        typename value<T>::type tmp;
+        load<T>(tmp, load_pos);
+        f(m_user, tmp, m_stack.back().obj());
+        if(tmp == 0) {
+            obj = m_stack.back().obj();
+            int ret = push_proc(obj, off);
+            if (ret != 0) return ret;
         }
         else {
-            off = m_current - m_start;
-            return -1;
+            m_stack.back().set_container_type(container_type);
+            m_stack.back().set_count(tmp);
+            m_stack.push_back(unpack_stack());
+            m_cs = CS_HEADER;
+            ++m_current;
         }
         return 0;
     }
@@ -481,37 +476,34 @@ private:
     int push_item(object& obj) {
         bool finish = false;
         while (!finish) {
-            if(m_top == 0) {
+            if(m_stack.size() == 1) {
                 return 1;
             }
-            m_stack_idx = m_top - 1;
-            unpack_stack* sp = &m_stack[m_stack_idx];
-            switch(sp->container_type()) {
+            unpack_stack& sp = *(m_stack.end() - 2);
+            switch(sp.container_type()) {
             case CT_ARRAY_ITEM:
-                unpack_array_item(sp->obj(), obj);
-                if(sp->decl_count() == 0) {
-                    obj = sp->obj();
-                    --m_top;
-                    /*printf("stack pop %d\n", m_top);*/
+                unpack_array_item(sp.obj(), obj);
+                if(sp.decl_count() == 0) {
+                    obj = sp.obj();
+                    m_stack.pop_back();
                 }
                 else {
                     finish = true;
                 }
                 break;
             case CT_MAP_KEY:
-                sp->set_map_key(obj);
-                sp->set_container_type(CT_MAP_VALUE);
+                sp.set_map_key(obj);
+                sp.set_container_type(CT_MAP_VALUE);
                 finish = true;
                 break;
             case CT_MAP_VALUE:
-                unpack_map_item(sp->obj(), sp->map_key(), obj);
-                if(sp->decl_count() == 0) {
-                    obj = sp->obj();
-                    --m_top;
-                    /*printf("stack pop %d\n", m_top);*/
+                unpack_map_item(sp.obj(), sp.map_key(), obj);
+                if(sp.decl_count() == 0) {
+                    obj = sp.obj();
+                    m_stack.pop_back();
                 }
                 else {
-                    sp->set_container_type(CT_MAP_KEY);
+                    sp.set_container_type(CT_MAP_KEY);
                     finish = true;
                 }
                 break;
@@ -551,9 +543,7 @@ private:
     std::size_t m_trail;
     unpack_user m_user;
     uint32_t m_cs;
-    uint32_t m_top;
-    uint32_t m_stack_idx;
-    unpack_stack m_stack[MSGPACK_EMBED_STACK_SIZE];
+    std::vector<unpack_stack> m_stack;
 };
 
 template <>
@@ -567,7 +557,6 @@ inline int context::execute(const char* data, std::size_t len, std::size_t& off)
 
     m_start = data;
     m_current = data + off;
-    m_stack_idx = 0;
     const char* const pe = data + len;
     const char* n = nullptr;
 
