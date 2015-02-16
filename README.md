@@ -210,6 +210,8 @@ Contributing
 To report an issue or send a pull request, use the
 [issue tracker](https://github.com/msgpack/msgpack-c/issues).
 
+Here's the list of [great contributors](https://github.com/msgpack/msgpack-c/graphs/contributors).
+
 License
 -------
 
