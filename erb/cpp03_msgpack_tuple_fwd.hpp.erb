@@ -77,14 +77,14 @@ tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> make_tuple(typename tuple_type<A0>::tr
 
 }  // namespace type
 
-object const& operator>> (
-    object const& o,
+msgpack::object const& operator>> (
+    msgpack::object const& o,
     type::tuple<>&);
 
 <%0.upto(GENERATION_LIMIT) {|i|%>
 template <typename A0<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
-object const& operator>> (
-    object const& o,
+msgpack::object const& operator>> (
+    msgpack::object const& o,
     type::tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>>& v);
 <%}%>
 
@@ -101,12 +101,12 @@ const packer<Stream>& operator<< (
 <%}%>
 
 void operator<< (
-    object::with_zone& o,
+    msgpack::object::with_zone& o,
     const type::tuple<>&);
 <%0.upto(GENERATION_LIMIT) {|i|%>
 template <typename A0<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
 void operator<< (
-    object::with_zone& o,
+    msgpack::object::with_zone& o,
     const type::tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>>& v);
 <%}%>
 

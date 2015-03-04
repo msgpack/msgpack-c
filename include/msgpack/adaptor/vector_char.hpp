@@ -26,14 +26,14 @@ namespace msgpack {
 
 MSGPACK_API_VERSION_NAMESPACE(v1) {
 
-inline object const& operator>> (object const& o, std::vector<char>& v)
+inline msgpack::object const& operator>> (msgpack::object const& o, std::vector<char>& v)
 {
     switch (o.type) {
-    case type::BIN:
+    case msgpack::type::BIN:
         v.resize(o.via.bin.size);
         std::memcpy(&v.front(), o.via.bin.ptr, o.via.bin.size);
         break;
-    case type::STR:
+    case msgpack::type::STR:
         v.resize(o.via.str.size);
         std::memcpy(&v.front(), o.via.str.ptr, o.via.str.size);
         break;
@@ -53,16 +53,16 @@ inline packer<Stream>& operator<< (packer<Stream>& o, const std::vector<char>& v
     return o;
 }
 
-inline void operator<< (object& o, const std::vector<char>& v)
+inline void operator<< (msgpack::object& o, const std::vector<char>& v)
 {
-    o.type = type::BIN;
+    o.type = msgpack::type::BIN;
     o.via.bin.ptr = &v.front();
     o.via.bin.size = static_cast<uint32_t>(v.size());
 }
 
-inline void operator<< (object::with_zone& o, const std::vector<char>& v)
+inline void operator<< (msgpack::object::with_zone& o, const std::vector<char>& v)
 {
-    o.type = type::BIN;
+    o.type = msgpack::type::BIN;
     char* ptr = static_cast<char*>(o.zone.allocate_align(v.size()));
     o.via.bin.ptr = ptr;
     o.via.bin.size = static_cast<uint32_t>(v.size());

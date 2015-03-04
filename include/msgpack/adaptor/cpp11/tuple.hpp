@@ -70,7 +70,7 @@ inline const packer<Stream>& operator<< (
 template <typename Tuple, std::size_t N>
 struct StdTupleConverter {
     static void convert(
-        object const& o,
+        msgpack::object const& o,
         Tuple& v) {
         StdTupleConverter<Tuple, N-1>::convert(o, v);
         o.via.array.ptr[N-1].convert<typename std::remove_reference<decltype(std::get<N-1>(v))>::type>(std::get<N-1>(v));
@@ -80,7 +80,7 @@ struct StdTupleConverter {
 template <typename Tuple>
 struct StdTupleConverter<Tuple, 1> {
     static void convert (
-        object const& o,
+        msgpack::object const& o,
         Tuple& v) {
         o.via.array.ptr[0].convert<typename std::remove_reference<decltype(std::get<0>(v))>::type>(std::get<0>(v));
     }
@@ -89,16 +89,16 @@ struct StdTupleConverter<Tuple, 1> {
 template <typename Tuple>
 struct StdTupleConverter<Tuple, 0> {
     static void convert (
-        object const&,
+        msgpack::object const&,
         Tuple&) {
     }
 };
 
 template <typename... Args>
-inline object const& operator>> (
-    object const& o,
+inline msgpack::object const& operator>> (
+    msgpack::object const& o,
     std::tuple<Args...>& v) {
-    if(o.type != type::ARRAY) { throw type_error(); }
+    if(o.type != msgpack::type::ARRAY) { throw type_error(); }
     if(o.via.array.size < sizeof...(Args)) { throw type_error(); }
     StdTupleConverter<decltype(v), sizeof...(Args)>::convert(o, v);
     return o;
@@ -108,36 +108,36 @@ inline object const& operator>> (
 template <typename Tuple, std::size_t N>
 struct StdTupleToObjectWithZone {
     static void convert(
-        object::with_zone& o,
+        msgpack::object::with_zone& o,
         const Tuple& v) {
         StdTupleToObjectWithZone<Tuple, N-1>::convert(o, v);
-        o.via.array.ptr[N-1] = object(std::get<N-1>(v), o.zone);
+        o.via.array.ptr[N-1] = msgpack::object(std::get<N-1>(v), o.zone);
     }
 };
 
 template <typename Tuple>
 struct StdTupleToObjectWithZone<Tuple, 1> {
     static void convert (
-        object::with_zone& o,
+        msgpack::object::with_zone& o,
         const Tuple& v) {
-        o.via.array.ptr[0] = object(std::get<0>(v), o.zone);
+        o.via.array.ptr[0] = msgpack::object(std::get<0>(v), o.zone);
     }
 };
 
 template <typename Tuple>
 struct StdTupleToObjectWithZone<Tuple, 0> {
     static void convert (
-        object::with_zone&,
+        msgpack::object::with_zone&,
         const Tuple&) {
     }
 };
 
 template <typename... Args>
 inline void operator<< (
-        object::with_zone& o,
+        msgpack::object::with_zone& o,
         std::tuple<Args...> const& v) {
-    o.type = type::ARRAY;
-    o.via.array.ptr = static_cast<object*>(o.zone.allocate_align(sizeof(object)*sizeof...(Args)));
+    o.type = msgpack::type::ARRAY;
+    o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*sizeof...(Args)));
     o.via.array.size = sizeof...(Args);
     StdTupleToObjectWithZone<decltype(v), sizeof...(Args)>::convert(o, v);
 }

@@ -27,13 +27,13 @@ namespace msgpack {
 MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 template <typename T>
-inline object const& operator>> (object const& o, std::vector<T>& v)
+inline msgpack::object const& operator>> (msgpack::object const& o, std::vector<T>& v)
 {
-    if(o.type != type::ARRAY) { throw type_error(); }
+    if(o.type != msgpack::type::ARRAY) { throw type_error(); }
     v.resize(o.via.array.size);
     if(o.via.array.size > 0) {
-        object* p = o.via.array.ptr;
-        object* const pend = o.via.array.ptr + o.via.array.size;
+        msgpack::object* p = o.via.array.ptr;
+        msgpack::object* const pend = o.via.array.ptr + o.via.array.size;
         T* it = &v[0];
         do {
             p->convert(*it);
@@ -56,20 +56,20 @@ inline packer<Stream>& operator<< (packer<Stream>& o, const std::vector<T>& v)
 }
 
 template <typename T>
-inline void operator<< (object::with_zone& o, const std::vector<T>& v)
+inline void operator<< (msgpack::object::with_zone& o, const std::vector<T>& v)
 {
-    o.type = type::ARRAY;
+    o.type = msgpack::type::ARRAY;
     if(v.empty()) {
         o.via.array.ptr = nullptr;
         o.via.array.size = 0;
     } else {
-        object* p = static_cast<object*>(o.zone.allocate_align(sizeof(object)*v.size()));
-        object* const pend = p + v.size();
+        msgpack::object* p = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*v.size()));
+        msgpack::object* const pend = p + v.size();
         o.via.array.ptr = p;
         o.via.array.size = v.size();
         typename std::vector<T>::const_iterator it(v.begin());
         do {
-            *p = object(*it, o.zone);
+            *p = msgpack::object(*it, o.zone);
             ++p;
             ++it;
         } while(p < pend);

@@ -42,8 +42,8 @@ template <typename Tuple, std::size_t N>
 struct StdTupleConverter;
 
 template <typename... Args>
-object const& operator>> (
-    object const& o,
+msgpack::object const& operator>> (
+    msgpack::object const& o,
     std::tuple<Args...>& v);
 
 // --- Convert from tuple to object with zone ---
@@ -52,7 +52,7 @@ struct StdTupleToObjectWithZone;
 
 template <typename... Args>
 void operator<< (
-    object::with_zone& o,
+    msgpack::object::with_zone& o,
     std::tuple<Args...> const& v);
 
 } // MSGPACK_API_VERSION_NAMESPACE(v1)

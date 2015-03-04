@@ -95,7 +95,7 @@ private:
 template <>
 struct tuple<> {
     tuple() {}
-    tuple(object const& o) { o.convert(*this); }
+    tuple(msgpack::object const& o) { o.convert(*this); }
     typedef tuple<> value_type;
 };
 <%0.upto(GENERATION_LIMIT) {|i|%>
@@ -105,7 +105,7 @@ struct tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> {
     tuple() {}
     tuple(typename tuple_type<A0>::transparent_reference _a0<%1.upto(i) {|j|%>, typename tuple_type<A<%=j%>>::transparent_reference _a<%=j%><%}%>) :
         a0(_a0)<%1.upto(i) {|j|%>, a<%=j%>(_a<%=j%>)<%}%> {}
-    tuple(object const& o) { o.convert(*this); }
+    tuple(msgpack::object const& o) { o.convert(*this); }
     template <int N> typename tuple_element<value_type, N>::reference get()
         { return tuple_element<value_type, N>(*this).get(); }
     template <int N> typename const_tuple_element<value_type, N>::const_reference get() const
@@ -136,18 +136,18 @@ inline tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> make_tuple(typename tuple_type<
 
 }  // namespace type
 
-inline object const& operator>> (
-        object const& o,
+inline msgpack::object const& operator>> (
+        msgpack::object const& o,
         type::tuple<>&) {
-    if(o.type != type::ARRAY) { throw type_error(); }
+    if(o.type != msgpack::type::ARRAY) { throw type_error(); }
     return o;
 }
 <%0.upto(GENERATION_LIMIT) {|i|%>
 template <typename A0<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
-inline object const& operator>> (
-        object const& o,
+inline msgpack::object const& operator>> (
+        msgpack::object const& o,
         type::tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>>& v) {
-    if(o.type != type::ARRAY) { throw type_error(); }
+    if(o.type != msgpack::type::ARRAY) { throw type_error(); }
     if(o.via.array.size < <%=i+1%>) { throw type_error(); }
     <%0.upto(i) {|j|%>
     o.via.array.ptr[<%=j%>].convert<typename type::tuple_type<A<%=j%>>::type>(v.template get<<%=j%>>());<%}%>
@@ -175,22 +175,22 @@ inline const packer<Stream>& operator<< (
 <%}%>
 
 inline void operator<< (
-        object::with_zone& o,
+        msgpack::object::with_zone& o,
         const type::tuple<>&) {
-    o.type = type::ARRAY;
+    o.type = msgpack::type::ARRAY;
     o.via.array.ptr = nullptr;
     o.via.array.size = 0;
 }
 <%0.upto(GENERATION_LIMIT) {|i|%>
 template <typename A0<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
 inline void operator<< (
-        object::with_zone& o,
+        msgpack::object::with_zone& o,
         const type::tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>>& v) {
-    o.type = type::ARRAY;
-    o.via.array.ptr = static_cast<object*>(o.zone.allocate_align(sizeof(object)*<%=i+1%>));
+    o.type = msgpack::type::ARRAY;
+    o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*<%=i+1%>));
     o.via.array.size = <%=i+1%>;
     <%0.upto(i) {|j|%>
-    o.via.array.ptr[<%=j%>] = object(v.template get<<%=j%>>(), o.zone);<%}%>
+    o.via.array.ptr[<%=j%>] = msgpack::object(v.template get<<%=j%>>(), o.zone);<%}%>
 }
 <%}%>
 

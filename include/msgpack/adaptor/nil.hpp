@@ -32,9 +32,9 @@ struct nil { };
 }  // namespace type
 
 
-inline object const& operator>> (object const& o, type::nil&)
+inline msgpack::object const& operator>> (msgpack::object const& o, type::nil&)
 {
-    if(o.type != type::NIL) { throw type_error(); }
+    if(o.type != msgpack::type::NIL) { throw type_error(); }
     return o;
 }
 
@@ -45,17 +45,17 @@ inline packer<Stream>& operator<< (packer<Stream>& o, const type::nil&)
     return o;
 }
 
-inline void operator<< (object& o, type::nil)
+inline void operator<< (msgpack::object& o, type::nil)
 {
-    o.type = type::NIL;
+    o.type = msgpack::type::NIL;
 }
 
-inline void operator<< (object::with_zone& o, type::nil v)
-    { static_cast<object&>(o) << v; }
+inline void operator<< (msgpack::object::with_zone& o, type::nil v)
+    { static_cast<msgpack::object&>(o) << v; }
 
 
 template <>
-inline void object::as<void>() const
+inline void msgpack::object::as<void>() const
 {
     msgpack::type::nil v;
     convert(v);

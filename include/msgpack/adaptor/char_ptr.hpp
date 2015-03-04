@@ -35,20 +35,20 @@ inline packer<Stream>& operator<< (packer<Stream>& o, const char* v)
     return o;
 }
 
-inline void operator<< (object::with_zone& o, const char* v)
+inline void operator<< (msgpack::object::with_zone& o, const char* v)
 {
     std::size_t size = std::strlen(v);
-    o.type = type::STR;
+    o.type = msgpack::type::STR;
     char* ptr = static_cast<char*>(o.zone.allocate_align(size));
     o.via.str.ptr = ptr;
     o.via.str.size = static_cast<uint32_t>(size);
     memcpy(ptr, v, size);
 }
 
-inline void operator<< (object& o, const char* v)
+inline void operator<< (msgpack::object& o, const char* v)
 {
     std::size_t size = std::strlen(v);
-    o.type = type::STR;
+    o.type = msgpack::type::STR;
     o.via.str.ptr = v;
     o.via.str.size = static_cast<uint32_t>(size);
 }
