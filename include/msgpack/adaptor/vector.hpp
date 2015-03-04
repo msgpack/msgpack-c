@@ -20,6 +20,8 @@
 
 #include "msgpack/versioning.hpp"
 #include "msgpack/object_fwd.hpp"
+#include "msgpack/adaptor/check_container_size.hpp"
+
 #include <vector>
 
 namespace msgpack {
@@ -47,7 +49,8 @@ inline object const& operator>> (object const& o, std::vector<T>& v)
 template <typename Stream, typename T>
 inline packer<Stream>& operator<< (packer<Stream>& o, const std::vector<T>& v)
 {
-    o.pack_array(v.size());
+    uint32_t size = checked_get_container_size(v.size());
+    o.pack_array(size);
     for(typename std::vector<T>::const_iterator it(v.begin()), it_end(v.end());
             it != it_end; ++it) {
         o.pack(*it);
@@ -63,10 +66,11 @@ inline void operator<< (object::with_zone& o, const std::vector<T>& v)
         o.via.array.ptr = nullptr;
         o.via.array.size = 0;
     } else {
-        object* p = static_cast<object*>(o.zone.allocate_align(sizeof(object)*v.size()));
-        object* const pend = p + v.size();
+        uint32_t size = checked_get_container_size(v.size());
+        object* p = static_cast<object*>(o.zone.allocate_align(sizeof(object)*size));
+        object* const pend = p + size;
         o.via.array.ptr = p;
-        o.via.array.size = v.size();
+        o.via.array.size = size;
         typename std::vector<T>::const_iterator it(v.begin());
         do {
             *p = object(*it, o.zone);
