@@ -102,6 +102,7 @@ IF (MSGPACK_ENABLE_CXX)
         include/msgpack/adaptor/bool_fwd.hpp
         include/msgpack/adaptor/char_ptr.hpp
         include/msgpack/adaptor/char_ptr_fwd.hpp
+        include/msgpack/adaptor/check_container_size.hpp
         include/msgpack/adaptor/cpp11/array.hpp
         include/msgpack/adaptor/cpp11/array_fwd.hpp
         include/msgpack/adaptor/cpp11/array_char.hpp

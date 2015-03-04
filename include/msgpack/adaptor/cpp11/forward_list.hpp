@@ -1,7 +1,7 @@
 //
 // MessagePack for C++ static resolution routine
 //
-// Copyright (C) 2014 KONDO Takatoshi
+// Copyright (C) 2014 KONDO-2015 Takatoshi
 //
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@
 
 #include "msgpack/versioning.hpp"
 #include "msgpack/object_fwd.hpp"
+#include "msgpack/adaptor/check_container_size.hpp"
 
 #include <forward_list>
 
@@ -44,7 +45,8 @@ inline object const& operator>> (object const& o, std::forward_list<T>& v)
 template <typename Stream, typename T>
 inline packer<Stream>& operator<< (packer<Stream>& o, const std::forward_list<T>& v)
 {
-    o.pack_array(std::distance(v.begin(), v.end()));
+    uint32_t size = checked_get_container_size(std::distance(v.begin(), v.end()));
+    o.pack_array(size);
     for(auto const& e : v) o.pack(e);
     return o;
 }
@@ -57,7 +59,7 @@ inline void operator<< (object::with_zone& o, const std::forward_list<T>& v)
         o.via.array.ptr = nullptr;
         o.via.array.size = 0;
     } else {
-        std::size_t size = std::distance(v.begin(), v.end());
+        uint32_t size = checked_get_container_size(std::distance(v.begin(), v.end()));
         o.via.array.size = size;
         object* p = static_cast<object*>(
             o.zone.allocate_align(sizeof(object)*size));

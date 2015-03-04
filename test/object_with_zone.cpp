@@ -322,7 +322,7 @@ TEST(object_without_zone, char_ptr)
 TEST(object_with_zone, raw_ref)
 {
     string s = "abc";
-    msgpack::type::raw_ref v(s.data(), s.size());
+    msgpack::type::raw_ref v(s.data(), static_cast<uint32_t>(s.size()));
     msgpack::zone z;
     msgpack::object obj(v, z);
     EXPECT_EQ(obj.as<msgpack::type::raw_ref>(), v);
@@ -336,7 +336,7 @@ TEST(object_with_zone, raw_ref)
 TEST(object_without_zone, raw_ref)
 {
     string s = "abc";
-    msgpack::type::raw_ref v(s.data(), s.size());
+    msgpack::type::raw_ref v(s.data(), static_cast<uint32_t>(s.size()));
     msgpack::zone z;
     msgpack::object obj(v);
     EXPECT_EQ(obj.as<msgpack::type::raw_ref>(), v);

@@ -1,7 +1,7 @@
 //
 // MessagePack for C++ static resolution routine
 //
-// Copyright (C) 2014 KONDO Takatoshi
+// Copyright (C) 2014-2015 KONDO Takatoshi
 //
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -20,6 +20,8 @@
 
 #include "msgpack/versioning.hpp"
 #include "msgpack_fwd.hpp"
+#include "msgpack/adaptor/check_container_size.hpp"
+
 #include <array>
 
 namespace msgpack {
@@ -48,8 +50,9 @@ inline object const& operator>> (object const& o, std::array<char, N>& v)
 template <typename Stream, std::size_t N>
 inline packer<Stream>& operator<< (packer<Stream>& o, const std::array<char, N>& v)
 {
-    o.pack_bin(v.size());
-    o.pack_bin_body(v.data(), v.size());
+    uint32_t size = checked_get_container_size(v.size());
+    o.pack_bin(size);
+    o.pack_bin_body(v.data(), size);
 
     return o;
 }
@@ -57,19 +60,21 @@ inline packer<Stream>& operator<< (packer<Stream>& o, const std::array<char, N>&
 template <std::size_t N>
 inline void operator<< (object& o, const std::array<char, N>& v)
 {
+    uint32_t size = checked_get_container_size(v.size());
     o.type = type::BIN;
     o.via.bin.ptr = v.data();
-    o.via.bin.size = static_cast<uint32_t>(v.size());
+    o.via.bin.size = size;
 }
 
 template <std::size_t N>
 inline void operator<< (object::with_zone& o, const std::array<char, N>& v)
 {
+    uint32_t size = checked_get_container_size(v.size());
     o.type = type::BIN;
-    char* ptr = static_cast<char*>(o.zone.allocate_align(v.size()));
+    char* ptr = static_cast<char*>(o.zone.allocate_align(size));
     o.via.bin.ptr = ptr;
-    o.via.bin.size = static_cast<uint32_t>(v.size());
-    std::memcpy(ptr, v.data(), v.size());
+    o.via.bin.size = size;
+    std::memcpy(ptr, v.data(), size);
 }
 
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)

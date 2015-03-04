@@ -1,7 +1,7 @@
 //
 // MessagePack for C++ deserializing routine
 //
-// Copyright (C) 2008-2013 FURUHASHI Sadayuki and KONDO Takatoshi
+// Copyright (C) 2008-2015 FURUHASHI Sadayuki and KONDO Takatoshi
 //
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -324,7 +324,7 @@ inline void unpack_ext(unpack_user& u, const char* p, std::size_t l, object& o)
         std::memcpy(tmp, p, l);
         o.via.ext.ptr = tmp;
     }
-    o.via.ext.size = l - 1;
+    o.via.ext.size = static_cast<uint32_t>(l - 1);
 }
 
 
@@ -627,7 +627,7 @@ inline int context::execute(const char* data, std::size_t len, std::size_t& off)
             } else if(0xa0 <= selector && selector <= 0xbf) { // FixStr
                 m_trail = static_cast<uint32_t>(*m_current) & 0x1f;
                 if(m_trail == 0) {
-                    unpack_str(m_user, n, m_trail, obj);
+                    unpack_str(m_user, n, static_cast<uint32_t>(m_trail), obj);
                     int ret = push_proc(obj, off);
                     if (ret != 0) return ret;
                 }
@@ -780,7 +780,7 @@ inline int context::execute(const char* data, std::size_t len, std::size_t& off)
                 load<uint8_t>(tmp, n);
                 m_trail = tmp;
                 if(m_trail == 0) {
-                    unpack_str(m_user, n, m_trail, obj);
+                    unpack_str(m_user, n, static_cast<uint32_t>(m_trail), obj);
                     int ret = push_proc(obj, off);
                     if (ret != 0) return ret;
                 }
@@ -794,7 +794,7 @@ inline int context::execute(const char* data, std::size_t len, std::size_t& off)
                 load<uint8_t>(tmp, n);
                 m_trail = tmp;
                 if(m_trail == 0) {
-                    unpack_bin(m_user, n, m_trail, obj);
+                    unpack_bin(m_user, n, static_cast<uint32_t>(m_trail), obj);
                     int ret = push_proc(obj, off);
                     if (ret != 0) return ret;
                 }
@@ -822,7 +822,7 @@ inline int context::execute(const char* data, std::size_t len, std::size_t& off)
                 load<uint16_t>(tmp, n);
                 m_trail = tmp;
                 if(m_trail == 0) {
-                    unpack_str(m_user, n, m_trail, obj);
+                    unpack_str(m_user, n, static_cast<uint32_t>(m_trail), obj);
                     int ret = push_proc(obj, off);
                     if (ret != 0) return ret;
                 }
@@ -836,7 +836,7 @@ inline int context::execute(const char* data, std::size_t len, std::size_t& off)
                 load<uint16_t>(tmp, n);
                 m_trail = tmp;
                 if(m_trail == 0) {
-                    unpack_bin(m_user, n, m_trail, obj);
+                    unpack_bin(m_user, n, static_cast<uint32_t>(m_trail), obj);
                     int ret = push_proc(obj, off);
                     if (ret != 0) return ret;
                 }
@@ -864,7 +864,7 @@ inline int context::execute(const char* data, std::size_t len, std::size_t& off)
                 load<uint32_t>(tmp, n);
                 m_trail = tmp;
                 if(m_trail == 0) {
-                    unpack_str(m_user, n, m_trail, obj);
+                    unpack_str(m_user, n, static_cast<uint32_t>(m_trail), obj);
                     int ret = push_proc(obj, off);
                     if (ret != 0) return ret;
                 }
@@ -878,7 +878,7 @@ inline int context::execute(const char* data, std::size_t len, std::size_t& off)
                 load<uint32_t>(tmp, n);
                 m_trail = tmp;
                 if(m_trail == 0) {
-                    unpack_bin(m_user, n, m_trail, obj);
+                    unpack_bin(m_user, n, static_cast<uint32_t>(m_trail), obj);
                     int ret = push_proc(obj, off);
                     if (ret != 0) return ret;
                 }
@@ -904,12 +904,12 @@ inline int context::execute(const char* data, std::size_t len, std::size_t& off)
                 }
             } break;
             case ACS_STR_VALUE: {
-                unpack_str(m_user, n, m_trail, obj);
+                unpack_str(m_user, n, static_cast<uint32_t>(m_trail), obj);
                 int ret = push_proc(obj, off);
                 if (ret != 0) return ret;
             } break;
             case ACS_BIN_VALUE: {
-                unpack_bin(m_user, n, m_trail, obj);
+                unpack_bin(m_user, n, static_cast<uint32_t>(m_trail), obj);
                 int ret = push_proc(obj, off);
                 if (ret != 0) return ret;
             } break;

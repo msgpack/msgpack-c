@@ -1,7 +1,7 @@
 //
 // MessagePack for C++ static resolution routine
 //
-// Copyright (C) 2014 KONDO Takatoshi
+// Copyright (C) 2014-2015 KONDO Takatoshi
 //
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@
 
 #include "msgpack/versioning.hpp"
 #include "msgpack/object_fwd.hpp"
+#include "msgpack/adaptor/check_container_size.hpp"
 
 #include <array>
 
@@ -47,7 +48,8 @@ inline object const& operator>> (object const& o, std::array<T, N>& v) {
 
 template <typename Stream, typename T, std::size_t N>
 inline packer<Stream>& operator<< (packer<Stream>& o, const std::array<T, N>& v) {
-    o.pack_array(v.size());
+    uint32_t size = checked_get_container_size(v.size());
+    o.pack_array(size);
     for(auto const& e : v) o.pack(e);
     return o;
 }
@@ -59,8 +61,9 @@ inline void operator<< (object::with_zone& o, const std::array<T, N>& v) {
         o.via.array.ptr = nullptr;
         o.via.array.size = 0;
     } else {
-        object* p = static_cast<object*>(o.zone.allocate_align(sizeof(object)*v.size()));
-        o.via.array.size = v.size();
+        uint32_t size = checked_get_container_size(v.size());
+        object* p = static_cast<object*>(o.zone.allocate_align(sizeof(object)*size));
+        o.via.array.size = size;
         o.via.array.ptr = p;
         for (auto const& e : v) *p++ = object(e, o.zone);
     }
