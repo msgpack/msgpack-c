@@ -1,7 +1,7 @@
 //
 // MessagePack for C++ static resolution routine
 //
-// Copyright (C) 2008-2014 FURUHASHI Sadayuki and KONDO Takatoshi
+// Copyright (C) 2008-2015 FURUHASHI Sadayuki and KONDO Takatoshi
 //
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@
 
 #include "msgpack/versioning.hpp"
 #include "msgpack/object_fwd.hpp"
+#include "msgpack/adaptor/check_container_size.hpp"
 
 #include <tuple>
 
@@ -60,7 +61,8 @@ template <typename Stream, typename... Args>
 inline const packer<Stream>& operator<< (
     packer<Stream>& o,
     const std::tuple<Args...>& v) {
-    o.pack_array(sizeof...(Args));
+    uint32_t size = checked_get_container_size(sizeof...(Args));
+    o.pack_array(size);
     StdTuplePacker<Stream, decltype(v), sizeof...(Args)>::pack(o, v);
     return o;
 }
@@ -136,9 +138,10 @@ template <typename... Args>
 inline void operator<< (
         object::with_zone& o,
         std::tuple<Args...> const& v) {
+    uint32_t size = checked_get_container_size(sizeof...(Args));
     o.type = type::ARRAY;
-    o.via.array.ptr = static_cast<object*>(o.zone.allocate_align(sizeof(object)*sizeof...(Args)));
-    o.via.array.size = sizeof...(Args);
+    o.via.array.ptr = static_cast<object*>(o.zone.allocate_align(sizeof(object)*size));
+    o.via.array.size = size;
     StdTupleToObjectWithZone<decltype(v), sizeof...(Args)>::convert(o, v);
 }
 

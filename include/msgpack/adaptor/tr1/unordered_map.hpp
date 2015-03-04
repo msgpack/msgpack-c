@@ -1,7 +1,7 @@
 //
 // MessagePack for C++ static resolution routine
 //
-// Copyright (C) 2008-2009 FURUHASHI Sadayuki
+// Copyright (C) 2008-2015 FURUHASHI Sadayuki
 //
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@
 
 #include "msgpack/versioning.hpp"
 #include "msgpack/object_fwd.hpp"
+#include "msgpack/adaptor/check_container_size.hpp"
 
 #if defined(_LIBCPP_VERSION) || (_MSC_VER >= 1700)
 
@@ -65,9 +66,10 @@ inline object const& operator>> (object const& o, MSGPACK_STD_TR1::unordered_map
 template <typename Stream, typename K, typename V>
 inline packer<Stream>& operator<< (packer<Stream>& o, const MSGPACK_STD_TR1::unordered_map<K,V>& v)
 {
-    o.pack_map(v.size());
+    uint32_t size = checked_get_container_size(v.size());
+    o.pack_map(size);
     for(typename MSGPACK_STD_TR1::unordered_map<K,V>::const_iterator it(v.begin()), it_end(v.end());
-            it != it_end; ++it) {
+        it != it_end; ++it) {
         o.pack(it->first);
         o.pack(it->second);
     }
@@ -82,10 +84,11 @@ inline void operator<< (object::with_zone& o, const MSGPACK_STD_TR1::unordered_m
         o.via.map.ptr  = nullptr;
         o.via.map.size = 0;
     } else {
-        object_kv* p = static_cast<object_kv*>(o.zone.allocate_align(sizeof(object_kv)*v.size()));
-        object_kv* const pend = p + v.size();
+        uint32_t size = checked_get_container_size(v.size());
+        object_kv* p = static_cast<object_kv*>(o.zone.allocate_align(sizeof(object_kv)*size));
+        object_kv* const pend = p + size;
         o.via.map.ptr  = p;
-        o.via.map.size = v.size();
+        o.via.map.size = size;
         typename MSGPACK_STD_TR1::unordered_map<K,V>::const_iterator it(v.begin());
         do {
             p->key = object(it->first, o.zone);
@@ -117,9 +120,10 @@ inline object const& operator>> (object const& o, MSGPACK_STD_TR1::unordered_mul
 template <typename Stream, typename K, typename V>
 inline packer<Stream>& operator<< (packer<Stream>& o, const MSGPACK_STD_TR1::unordered_multimap<K,V>& v)
 {
-    o.pack_map(v.size());
+    uint32_t size = checked_get_container_size(v.size());
+    o.pack_map(size);
     for(typename MSGPACK_STD_TR1::unordered_multimap<K,V>::const_iterator it(v.begin()), it_end(v.end());
-            it != it_end; ++it) {
+        it != it_end; ++it) {
         o.pack(it->first);
         o.pack(it->second);
     }
@@ -134,10 +138,11 @@ inline void operator<< (object::with_zone& o, const MSGPACK_STD_TR1::unordered_m
         o.via.map.ptr  = nullptr;
         o.via.map.size = 0;
     } else {
-        object_kv* p = static_cast<object_kv*>(o.zone.allocate_align(sizeof(object_kv)*v.size()));
-        object_kv* const pend = p + v.size();
+        uint32_t size = checked_get_container_size(v.size());
+        object_kv* p = static_cast<object_kv*>(o.zone.allocate_align(sizeof(object_kv)*size));
+        object_kv* const pend = p + size;
         o.via.map.ptr  = p;
-        o.via.map.size = v.size();
+        o.via.map.size = size;
         typename MSGPACK_STD_TR1::unordered_multimap<K,V>::const_iterator it(v.begin());
         do {
             p->key = object(it->first, o.zone);
