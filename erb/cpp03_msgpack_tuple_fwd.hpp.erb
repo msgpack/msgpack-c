@@ -89,14 +89,14 @@ msgpack::object const& operator>> (
 <%}%>
 
 template <typename Stream>
-const packer<Stream>& operator<< (
-    packer<Stream>& o,
+const msgpack::packer<Stream>& operator<< (
+    msgpack::packer<Stream>& o,
     const type::tuple<>&);
 
 <%0.upto(GENERATION_LIMIT) {|i|%>
 template <typename Stream, typename A0<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
-const packer<Stream>& operator<< (
-    packer<Stream>& o,
+const msgpack::packer<Stream>& operator<< (
+    msgpack::packer<Stream>& o,
     const type::tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>>& v);
 <%}%>
 

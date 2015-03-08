@@ -35,7 +35,7 @@ struct nil;
 msgpack::object const& operator>> (msgpack::object const& o, type::nil&);
 
 template <typename Stream>
-packer<Stream>& operator<< (packer<Stream>& o, const type::nil&);
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const type::nil&);
 
 void operator<< (msgpack::object& o, type::nil);
 

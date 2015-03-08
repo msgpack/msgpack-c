@@ -41,7 +41,7 @@ inline msgpack::object const& operator>> (msgpack::object const& o, std::list<T>
 }
 
 template <typename Stream, typename T>
-inline packer<Stream>& operator<< (packer<Stream>& o, const std::list<T>& v)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const std::list<T>& v)
 {
     o.pack_array(v.size());
     for(typename std::list<T>::const_iterator it(v.begin()), it_end(v.end());

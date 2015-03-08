@@ -29,7 +29,7 @@ MSGPACK_API_VERSION_NAMESPACE(v1) {
 msgpack::object const& operator>> (msgpack::object const& o, std::vector<char>& v);
 
 template <typename Stream>
-packer<Stream>& operator<< (packer<Stream>& o, const std::vector<char>& v);
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const std::vector<char>& v);
 
 void operator<< (msgpack::object& o, const std::vector<char>& v);
 

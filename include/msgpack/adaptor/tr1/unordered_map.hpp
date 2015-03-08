@@ -63,7 +63,7 @@ inline msgpack::object const& operator>> (msgpack::object const& o, MSGPACK_STD_
 }
 
 template <typename Stream, typename K, typename V>
-inline packer<Stream>& operator<< (packer<Stream>& o, const MSGPACK_STD_TR1::unordered_map<K,V>& v)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const MSGPACK_STD_TR1::unordered_map<K,V>& v)
 {
     o.pack_map(v.size());
     for(typename MSGPACK_STD_TR1::unordered_map<K,V>::const_iterator it(v.begin()), it_end(v.end());
@@ -115,7 +115,7 @@ inline msgpack::object const& operator>> (msgpack::object const& o, MSGPACK_STD_
 }
 
 template <typename Stream, typename K, typename V>
-inline packer<Stream>& operator<< (packer<Stream>& o, const MSGPACK_STD_TR1::unordered_multimap<K,V>& v)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const MSGPACK_STD_TR1::unordered_multimap<K,V>& v)
 {
     o.pack_map(v.size());
     for(typename MSGPACK_STD_TR1::unordered_multimap<K,V>::const_iterator it(v.begin()), it_end(v.end());

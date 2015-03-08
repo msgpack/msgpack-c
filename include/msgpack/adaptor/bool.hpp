@@ -34,7 +34,7 @@ inline msgpack::object const& operator>> (msgpack::object const& o, bool& v)
 }
 
 template <typename Stream>
-inline packer<Stream>& operator<< (packer<Stream>& o, const bool& v)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const bool& v)
 {
     if(v) { o.pack_true(); }
     else { o.pack_false(); }

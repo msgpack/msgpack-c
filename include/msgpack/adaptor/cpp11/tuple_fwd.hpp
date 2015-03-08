@@ -27,13 +27,13 @@ namespace msgpack {
 
 MSGPACK_API_VERSION_NAMESPACE(v1) {
 
-// --- Pack ( from tuple to packer stream ---
+// --- Pack from tuple to packer stream ---
 template <typename Stream, typename Tuple, std::size_t N>
 struct StdTuplePacker;
 
 template <typename Stream, typename... Args>
-const packer<Stream>& operator<< (
-    packer<Stream>& o,
+const msgpack::packer<Stream>& operator<< (
+    msgpack::packer<Stream>& o,
     const std::tuple<Args...>& v);
 
 // --- Convert from tuple to object ---

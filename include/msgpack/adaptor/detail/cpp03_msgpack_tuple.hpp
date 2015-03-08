@@ -11440,16 +11440,16 @@ inline msgpack::object const& operator>> (
 
 
 template <typename Stream>
-inline const packer<Stream>& operator<< (
-        packer<Stream>& o,
+inline const msgpack::packer<Stream>& operator<< (
+        msgpack::packer<Stream>& o,
         const type::tuple<>&) {
     o.pack_array(0);
     return o;
 }
 
 template <typename Stream, typename A0>
-inline const packer<Stream>& operator<< (
-        packer<Stream>& o,
+inline const msgpack::packer<Stream>& operator<< (
+        msgpack::packer<Stream>& o,
         const type::tuple<A0>& v) {
     o.pack_array(1);
     
@@ -11458,8 +11458,8 @@ inline const packer<Stream>& operator<< (
 }
 
 template <typename Stream, typename A0, typename A1>
-inline const packer<Stream>& operator<< (
-        packer<Stream>& o,
+inline const msgpack::packer<Stream>& operator<< (
+        msgpack::packer<Stream>& o,
         const type::tuple<A0, A1>& v) {
     o.pack_array(2);
     
@@ -11469,8 +11469,8 @@ inline const packer<Stream>& operator<< (
 }
 
 template <typename Stream, typename A0, typename A1, typename A2>
-inline const packer<Stream>& operator<< (
-        packer<Stream>& o,
+inline const msgpack::packer<Stream>& operator<< (
+        msgpack::packer<Stream>& o,
         const type::tuple<A0, A1, A2>& v) {
     o.pack_array(3);
     
@@ -11481,8 +11481,8 @@ inline const packer<Stream>& operator<< (
 }
 
 template <typename Stream, typename A0, typename A1, typename A2, typename A3>
-inline const packer<Stream>& operator<< (
-        packer<Stream>& o,
+inline const msgpack::packer<Stream>& operator<< (
+        msgpack::packer<Stream>& o,
         const type::tuple<A0, A1, A2, A3>& v) {
     o.pack_array(4);
     
@@ -11494,8 +11494,8 @@ inline const packer<Stream>& operator<< (
 }
 
 template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4>
-inline const packer<Stream>& operator<< (
-        packer<Stream>& o,
+inline const msgpack::packer<Stream>& operator<< (
+        msgpack::packer<Stream>& o,
         const type::tuple<A0, A1, A2, A3, A4>& v) {
     o.pack_array(5);
     
@@ -11508,8 +11508,8 @@ inline const packer<Stream>& operator<< (
 }
 
 template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4, typename A5>
-inline const packer<Stream>& operator<< (
-        packer<Stream>& o,
+inline const msgpack::packer<Stream>& operator<< (
+        msgpack::packer<Stream>& o,
         const type::tuple<A0, A1, A2, A3, A4, A5>& v) {
     o.pack_array(6);
     
@@ -11523,8 +11523,8 @@ inline const packer<Stream>& operator<< (
 }
 
 template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6>
-inline const packer<Stream>& operator<< (
-        packer<Stream>& o,
+inline const msgpack::packer<Stream>& operator<< (
+        msgpack::packer<Stream>& o,
         const type::tuple<A0, A1, A2, A3, A4, A5, A6>& v) {
     o.pack_array(7);
     
@@ -11539,8 +11539,8 @@ inline const packer<Stream>& operator<< (
 }
 
 template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7>
-inline const packer<Stream>& operator<< (
-        packer<Stream>& o,
+inline const msgpack::packer<Stream>& operator<< (
+        msgpack::packer<Stream>& o,
         const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7>& v) {
     o.pack_array(8);
     
@@ -11556,8 +11556,8 @@ inline const packer<Stream>& operator<< (
 }
 
 template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8>
-inline const packer<Stream>& operator<< (
-        packer<Stream>& o,
+inline const msgpack::packer<Stream>& operator<< (
+        msgpack::packer<Stream>& o,
         const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8>& v) {
     o.pack_array(9);
     
@@ -11574,8 +11574,8 @@ inline const packer<Stream>& operator<< (
 }
 
 template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9>
-inline const packer<Stream>& operator<< (
-        packer<Stream>& o,
+inline const msgpack::packer<Stream>& operator<< (
+        msgpack::packer<Stream>& o,
         const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9>& v) {
     o.pack_array(10);
     
@@ -11593,8 +11593,8 @@ inline const packer<Stream>& operator<< (
 }
 
 template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10>
-inline const packer<Stream>& operator<< (
-        packer<Stream>& o,
+inline const msgpack::packer<Stream>& operator<< (
+        msgpack::packer<Stream>& o,
         const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10>& v) {
     o.pack_array(11);
     
@@ -11613,8 +11613,8 @@ inline const packer<Stream>& operator<< (
 }
 
 template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11>
-inline const packer<Stream>& operator<< (
-        packer<Stream>& o,
+inline const msgpack::packer<Stream>& operator<< (
+        msgpack::packer<Stream>& o,
         const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11>& v) {
     o.pack_array(12);
     
@@ -11634,8 +11634,8 @@ inline const packer<Stream>& operator<< (
 }
 
 template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12>
-inline const packer<Stream>& operator<< (
-        packer<Stream>& o,
+inline const msgpack::packer<Stream>& operator<< (
+        msgpack::packer<Stream>& o,
         const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12>& v) {
     o.pack_array(13);
     
@@ -11656,8 +11656,8 @@ inline const packer<Stream>& operator<< (
 }
 
 template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13>
-inline const packer<Stream>& operator<< (
-        packer<Stream>& o,
+inline const msgpack::packer<Stream>& operator<< (
+        msgpack::packer<Stream>& o,
         const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13>& v) {
     o.pack_array(14);
     
@@ -11679,8 +11679,8 @@ inline const packer<Stream>& operator<< (
 }
 
 template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14>
-inline const packer<Stream>& operator<< (
-        packer<Stream>& o,
+inline const msgpack::packer<Stream>& operator<< (
+        msgpack::packer<Stream>& o,
         const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14>& v) {
     o.pack_array(15);
     
@@ -11703,8 +11703,8 @@ inline const packer<Stream>& operator<< (
 }
 
 template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15>
-inline const packer<Stream>& operator<< (
-        packer<Stream>& o,
+inline const msgpack::packer<Stream>& operator<< (
+        msgpack::packer<Stream>& o,
         const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15>& v) {
     o.pack_array(16);
     
@@ -11728,8 +11728,8 @@ inline const packer<Stream>& operator<< (
 }
 
 template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16>
-inline const packer<Stream>& operator<< (
-        packer<Stream>& o,
+inline const msgpack::packer<Stream>& operator<< (
+        msgpack::packer<Stream>& o,
         const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16>& v) {
     o.pack_array(17);
     
@@ -11754,8 +11754,8 @@ inline const packer<Stream>& operator<< (
 }
 
 template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17>
-inline const packer<Stream>& operator<< (
-        packer<Stream>& o,
+inline const msgpack::packer<Stream>& operator<< (
+        msgpack::packer<Stream>& o,
         const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17>& v) {
     o.pack_array(18);
     
@@ -11781,8 +11781,8 @@ inline const packer<Stream>& operator<< (
 }
 
 template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18>
-inline const packer<Stream>& operator<< (
-        packer<Stream>& o,
+inline const msgpack::packer<Stream>& operator<< (
+        msgpack::packer<Stream>& o,
         const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18>& v) {
     o.pack_array(19);
     
@@ -11809,8 +11809,8 @@ inline const packer<Stream>& operator<< (
 }
 
 template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19>
-inline const packer<Stream>& operator<< (
-        packer<Stream>& o,
+inline const msgpack::packer<Stream>& operator<< (
+        msgpack::packer<Stream>& o,
         const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19>& v) {
     o.pack_array(20);
     
@@ -11838,8 +11838,8 @@ inline const packer<Stream>& operator<< (
 }
 
 template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20>
-inline const packer<Stream>& operator<< (
-        packer<Stream>& o,
+inline const msgpack::packer<Stream>& operator<< (
+        msgpack::packer<Stream>& o,
         const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20>& v) {
     o.pack_array(21);
     
@@ -11868,8 +11868,8 @@ inline const packer<Stream>& operator<< (
 }
 
 template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21>
-inline const packer<Stream>& operator<< (
-        packer<Stream>& o,
+inline const msgpack::packer<Stream>& operator<< (
+        msgpack::packer<Stream>& o,
         const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21>& v) {
     o.pack_array(22);
     
@@ -11899,8 +11899,8 @@ inline const packer<Stream>& operator<< (
 }
 
 template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22>
-inline const packer<Stream>& operator<< (
-        packer<Stream>& o,
+inline const msgpack::packer<Stream>& operator<< (
+        msgpack::packer<Stream>& o,
         const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22>& v) {
     o.pack_array(23);
     
@@ -11931,8 +11931,8 @@ inline const packer<Stream>& operator<< (
 }
 
 template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23>
-inline const packer<Stream>& operator<< (
-        packer<Stream>& o,
+inline const msgpack::packer<Stream>& operator<< (
+        msgpack::packer<Stream>& o,
         const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23>& v) {
     o.pack_array(24);
     
@@ -11964,8 +11964,8 @@ inline const packer<Stream>& operator<< (
 }
 
 template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24>
-inline const packer<Stream>& operator<< (
-        packer<Stream>& o,
+inline const msgpack::packer<Stream>& operator<< (
+        msgpack::packer<Stream>& o,
         const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24>& v) {
     o.pack_array(25);
     
@@ -11998,8 +11998,8 @@ inline const packer<Stream>& operator<< (
 }
 
 template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25>
-inline const packer<Stream>& operator<< (
-        packer<Stream>& o,
+inline const msgpack::packer<Stream>& operator<< (
+        msgpack::packer<Stream>& o,
         const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25>& v) {
     o.pack_array(26);
     
@@ -12033,8 +12033,8 @@ inline const packer<Stream>& operator<< (
 }
 
 template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25, typename A26>
-inline const packer<Stream>& operator<< (
-        packer<Stream>& o,
+inline const msgpack::packer<Stream>& operator<< (
+        msgpack::packer<Stream>& o,
         const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26>& v) {
     o.pack_array(27);
     
@@ -12069,8 +12069,8 @@ inline const packer<Stream>& operator<< (
 }
 
 template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25, typename A26, typename A27>
-inline const packer<Stream>& operator<< (
-        packer<Stream>& o,
+inline const msgpack::packer<Stream>& operator<< (
+        msgpack::packer<Stream>& o,
         const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27>& v) {
     o.pack_array(28);
     
@@ -12106,8 +12106,8 @@ inline const packer<Stream>& operator<< (
 }
 
 template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25, typename A26, typename A27, typename A28>
-inline const packer<Stream>& operator<< (
-        packer<Stream>& o,
+inline const msgpack::packer<Stream>& operator<< (
+        msgpack::packer<Stream>& o,
         const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28>& v) {
     o.pack_array(29);
     
@@ -12144,8 +12144,8 @@ inline const packer<Stream>& operator<< (
 }
 
 template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25, typename A26, typename A27, typename A28, typename A29>
-inline const packer<Stream>& operator<< (
-        packer<Stream>& o,
+inline const msgpack::packer<Stream>& operator<< (
+        msgpack::packer<Stream>& o,
         const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29>& v) {
     o.pack_array(30);
     
@@ -12183,8 +12183,8 @@ inline const packer<Stream>& operator<< (
 }
 
 template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25, typename A26, typename A27, typename A28, typename A29, typename A30>
-inline const packer<Stream>& operator<< (
-        packer<Stream>& o,
+inline const msgpack::packer<Stream>& operator<< (
+        msgpack::packer<Stream>& o,
         const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30>& v) {
     o.pack_array(31);
     
@@ -12223,8 +12223,8 @@ inline const packer<Stream>& operator<< (
 }
 
 template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25, typename A26, typename A27, typename A28, typename A29, typename A30, typename A31>
-inline const packer<Stream>& operator<< (
-        packer<Stream>& o,
+inline const msgpack::packer<Stream>& operator<< (
+        msgpack::packer<Stream>& o,
         const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30, A31>& v) {
     o.pack_array(32);
     

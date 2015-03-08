@@ -42,7 +42,7 @@ inline msgpack::object const& operator>> (msgpack::object const& o, std::forward
 }
 
 template <typename Stream, typename T>
-inline packer<Stream>& operator<< (packer<Stream>& o, const std::forward_list<T>& v)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const std::forward_list<T>& v)
 {
     o.pack_array(std::distance(v.begin(), v.end()));
     for(auto const& e : v) o.pack(e);

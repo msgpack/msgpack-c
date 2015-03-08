@@ -54,8 +54,8 @@ template <typename Stream, typename Tuple, std::size_t N>
 struct MsgpackTuplePacker;
 
 template <typename Stream, typename... Args>
-const packer<Stream>& operator<< (
-    packer<Stream>& o,
+const msgpack::packer<Stream>& operator<< (
+    msgpack::packer<Stream>& o,
     const type::tuple<Args...>& v);
 
 // --- Convert from tuple to object ---

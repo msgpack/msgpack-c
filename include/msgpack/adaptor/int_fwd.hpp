@@ -40,29 +40,29 @@ msgpack::object const& operator>> (msgpack::object const& o, unsigned long& v);
 msgpack::object const& operator>> (msgpack::object const& o, unsigned long long& v);
 
 template <typename Stream>
-packer<Stream>& operator<< (packer<Stream>& o, char v);
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, char v);
 
 template <typename Stream>
-packer<Stream>& operator<< (packer<Stream>& o, signed char v);
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, signed char v);
 template <typename Stream>
-packer<Stream>& operator<< (packer<Stream>& o, signed short v);
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, signed short v);
 template <typename Stream>
-packer<Stream>& operator<< (packer<Stream>& o, signed int v);
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, signed int v);
 template <typename Stream>
-packer<Stream>& operator<< (packer<Stream>& o, signed long v);
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, signed long v);
 template <typename Stream>
-packer<Stream>& operator<< (packer<Stream>& o, signed long long v);
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, signed long long v);
 
 template <typename Stream>
-packer<Stream>& operator<< (packer<Stream>& o, unsigned char v);
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, unsigned char v);
 template <typename Stream>
-packer<Stream>& operator<< (packer<Stream>& o, unsigned short v);
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, unsigned short v);
 template <typename Stream>
-packer<Stream>& operator<< (packer<Stream>& o, unsigned int v);
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, unsigned int v);
 template <typename Stream>
-packer<Stream>& operator<< (packer<Stream>& o, unsigned long v);
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, unsigned long v);
 template <typename Stream>
-packer<Stream>& operator<< (packer<Stream>& o, unsigned long long v);
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, unsigned long long v);
 
 
 void operator<< (msgpack::object& o, char v);

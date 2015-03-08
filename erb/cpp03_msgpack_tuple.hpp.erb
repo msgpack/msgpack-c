@@ -156,16 +156,16 @@ inline msgpack::object const& operator>> (
 <%}%>
 
 template <typename Stream>
-inline const packer<Stream>& operator<< (
-        packer<Stream>& o,
+inline const msgpack::packer<Stream>& operator<< (
+        msgpack::packer<Stream>& o,
         const type::tuple<>&) {
     o.pack_array(0);
     return o;
 }
 <%0.upto(GENERATION_LIMIT) {|i|%>
 template <typename Stream, typename A0<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
-inline const packer<Stream>& operator<< (
-        packer<Stream>& o,
+inline const msgpack::packer<Stream>& operator<< (
+        msgpack::packer<Stream>& o,
         const type::tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>>& v) {
     o.pack_array(<%=i+1%>);
     <%0.upto(i) {|j|%>

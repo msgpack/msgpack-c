@@ -27,11 +27,11 @@ namespace msgpack {
 
 MSGPACK_API_VERSION_NAMESPACE(v1) {
 
-// --- Pack ( from tuple to packer stream ---
+// --- Pack from tuple to packer stream ---
 template <typename Stream, typename Tuple, std::size_t N>
 struct StdTuplePacker {
     static void pack(
-        packer<Stream>& o,
+        msgpack::packer<Stream>& o,
         const Tuple& v) {
         StdTuplePacker<Stream, Tuple, N-1>::pack(o, v);
         o.pack(std::get<N-1>(v));
@@ -41,7 +41,7 @@ struct StdTuplePacker {
 template <typename Stream, typename Tuple>
 struct StdTuplePacker<Stream, Tuple, 1> {
     static void pack (
-        packer<Stream>& o,
+        msgpack::packer<Stream>& o,
         const Tuple& v) {
         o.pack(std::get<0>(v));
     }
@@ -50,15 +50,15 @@ struct StdTuplePacker<Stream, Tuple, 1> {
 template <typename Stream, typename Tuple>
 struct StdTuplePacker<Stream, Tuple, 0> {
     static void pack (
-        packer<Stream>&,
+        msgpack::packer<Stream>&,
         const Tuple&) {
     }
 };
 
 
 template <typename Stream, typename... Args>
-inline const packer<Stream>& operator<< (
-    packer<Stream>& o,
+inline const msgpack::packer<Stream>& operator<< (
+    msgpack::packer<Stream>& o,
     const std::tuple<Args...>& v) {
     o.pack_array(sizeof...(Args));
     StdTuplePacker<Stream, decltype(v), sizeof...(Args)>::pack(o, v);

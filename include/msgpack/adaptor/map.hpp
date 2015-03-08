@@ -61,7 +61,7 @@ inline msgpack::object const& operator>> (msgpack::object const& o, type::assoc_
 }
 
 template <typename Stream, typename K, typename V>
-inline packer<Stream>& operator<< (packer<Stream>& o, const type::assoc_vector<K,V>& v)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const type::assoc_vector<K,V>& v)
 {
     o.pack_map(v.size());
     for(typename type::assoc_vector<K,V>::const_iterator it(v.begin()), it_end(v.end());
@@ -119,7 +119,7 @@ inline msgpack::object const& operator>> (msgpack::object const& o, std::map<K, 
 }
 
 template <typename Stream, typename K, typename V>
-inline packer<Stream>& operator<< (packer<Stream>& o, const std::map<K,V>& v)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const std::map<K,V>& v)
 {
     o.pack_map(v.size());
     for(typename std::map<K,V>::const_iterator it(v.begin()), it_end(v.end());
@@ -171,7 +171,7 @@ inline msgpack::object const& operator>> (msgpack::object const& o, std::multima
 }
 
 template <typename Stream, typename K, typename V>
-inline packer<Stream>& operator<< (packer<Stream>& o, const std::multimap<K,V>& v)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const std::multimap<K,V>& v)
 {
     o.pack_map(v.size());
     for(typename std::multimap<K,V>::const_iterator it(v.begin()), it_end(v.end());

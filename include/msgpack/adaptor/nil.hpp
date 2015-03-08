@@ -39,7 +39,7 @@ inline msgpack::object const& operator>> (msgpack::object const& o, type::nil&)
 }
 
 template <typename Stream>
-inline packer<Stream>& operator<< (packer<Stream>& o, const type::nil&)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const type::nil&)
 {
     o.pack_nil();
     return o;

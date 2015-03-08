@@ -138,49 +138,49 @@ inline msgpack::object const& operator>> (msgpack::object const& o, unsigned lon
 
 
 template <typename Stream>
-inline packer<Stream>& operator<< (packer<Stream>& o, char v)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, char v)
     { o.pack_char(v); return o; }
 
 
 template <typename Stream>
-inline packer<Stream>& operator<< (packer<Stream>& o, signed char v)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, signed char v)
     { o.pack_signed_char(v); return o; }
 
 template <typename Stream>
-inline packer<Stream>& operator<< (packer<Stream>& o, signed short v)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, signed short v)
     { o.pack_short(v); return o; }
 
 template <typename Stream>
-inline packer<Stream>& operator<< (packer<Stream>& o, signed int v)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, signed int v)
     { o.pack_int(v); return o; }
 
 template <typename Stream>
-inline packer<Stream>& operator<< (packer<Stream>& o, signed long v)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, signed long v)
     { o.pack_long(v); return o; }
 
 template <typename Stream>
-inline packer<Stream>& operator<< (packer<Stream>& o, signed long long v)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, signed long long v)
     { o.pack_long_long(v); return o; }
 
 
 template <typename Stream>
-inline packer<Stream>& operator<< (packer<Stream>& o, unsigned char v)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, unsigned char v)
     { o.pack_unsigned_char(v); return o; }
 
 template <typename Stream>
-inline packer<Stream>& operator<< (packer<Stream>& o, unsigned short v)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, unsigned short v)
     { o.pack_unsigned_short(v); return o; }
 
 template <typename Stream>
-inline packer<Stream>& operator<< (packer<Stream>& o, unsigned int v)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, unsigned int v)
     { o.pack_unsigned_int(v); return o; }
 
 template <typename Stream>
-inline packer<Stream>& operator<< (packer<Stream>& o, unsigned long v)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, unsigned long v)
     { o.pack_unsigned_long(v); return o; }
 
 template <typename Stream>
-inline packer<Stream>& operator<< (packer<Stream>& o, unsigned long long v)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, unsigned long long v)
     { o.pack_unsigned_long_long(v); return o; }
 
 

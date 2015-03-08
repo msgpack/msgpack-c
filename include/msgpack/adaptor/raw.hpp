@@ -73,7 +73,7 @@ inline msgpack::object const& operator>> (msgpack::object const& o, msgpack::typ
 }
 
 template <typename Stream>
-inline packer<Stream>& operator<< (packer<Stream>& o, const msgpack::type::raw_ref& v)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const msgpack::type::raw_ref& v)
 {
     o.pack_bin(v.size);
     o.pack_bin_body(v.ptr, v.size);

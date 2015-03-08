@@ -37,7 +37,7 @@ struct raw_ref;
 msgpack::object const& operator>> (msgpack::object const& o, type::raw_ref& v);
 
 template <typename Stream>
-packer<Stream>& operator<< (packer<Stream>& o, const type::raw_ref& v);
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const type::raw_ref& v);
 
 void operator<< (msgpack::object& o, const type::raw_ref& v);
 

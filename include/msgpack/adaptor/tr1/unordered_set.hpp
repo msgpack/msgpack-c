@@ -62,7 +62,7 @@ inline msgpack::object const& operator>> (msgpack::object const& o, MSGPACK_STD_
 }
 
 template <typename Stream, typename T>
-inline packer<Stream>& operator<< (packer<Stream>& o, const MSGPACK_STD_TR1::unordered_set<T>& v)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const MSGPACK_STD_TR1::unordered_set<T>& v)
 {
     o.pack_array(v.size());
     for(typename MSGPACK_STD_TR1::unordered_set<T>::const_iterator it(v.begin()), it_end(v.end());
@@ -110,7 +110,7 @@ inline msgpack::object const& operator>> (msgpack::object const& o, MSGPACK_STD_
 }
 
 template <typename Stream, typename T>
-inline packer<Stream>& operator<< (packer<Stream>& o, const MSGPACK_STD_TR1::unordered_multiset<T>& v)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const MSGPACK_STD_TR1::unordered_multiset<T>& v)
 {
     o.pack_array(v.size());
     for(typename MSGPACK_STD_TR1::unordered_multiset<T>::const_iterator it(v.begin()), it_end(v.end());

@@ -43,7 +43,7 @@ inline msgpack::object const& operator>> (msgpack::object const& o, std::string&
 }
 
 template <typename Stream>
-inline packer<Stream>& operator<< (packer<Stream>& o, const std::string& v)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const std::string& v)
 {
     o.pack_str(v.size());
     o.pack_str_body(v.data(), v.size());

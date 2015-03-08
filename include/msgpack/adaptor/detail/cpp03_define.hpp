@@ -61,7 +61,7 @@
     namespace detail { \
       template <typename Stream> \
       struct packer_serializer<Stream, enum> { \
-        static packer<Stream>& pack(packer<Stream>& o, const enum& v) { \
+        static msgpack::packer<Stream>& pack(msgpack::packer<Stream>& o, const enum& v) { \
           return o << static_cast<int>(v); \
         } \
       }; \

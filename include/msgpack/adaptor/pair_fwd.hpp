@@ -30,7 +30,7 @@ template <typename T1, typename T2>
 msgpack::object const& operator>> (msgpack::object const& o, std::pair<T1, T2>& v);
 
 template <typename Stream, typename T1, typename T2>
-packer<Stream>& operator<< (packer<Stream>& o, const std::pair<T1, T2>& v);
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const std::pair<T1, T2>& v);
 
 template <typename T1, typename T2>
 void operator<< (msgpack::object::with_zone& o, const std::pair<T1, T2>& v);

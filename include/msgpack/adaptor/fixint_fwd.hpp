@@ -56,22 +56,22 @@ msgpack::object const& operator>> (msgpack::object const& o, type::fix_uint32& v
 msgpack::object const& operator>> (msgpack::object const& o, type::fix_uint64& v);
 
 template <typename Stream>
-packer<Stream>& operator<< (packer<Stream>& o, const type::fix_int8& v);
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const type::fix_int8& v);
 template <typename Stream>
-packer<Stream>& operator<< (packer<Stream>& o, const type::fix_int16& v);
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const type::fix_int16& v);
 template <typename Stream>
-packer<Stream>& operator<< (packer<Stream>& o, const type::fix_int32& v);
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const type::fix_int32& v);
 template <typename Stream>
-packer<Stream>& operator<< (packer<Stream>& o, const type::fix_int64& v);
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const type::fix_int64& v);
 
 template <typename Stream>
-packer<Stream>& operator<< (packer<Stream>& o, const type::fix_uint8& v);
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const type::fix_uint8& v);
 template <typename Stream>
-packer<Stream>& operator<< (packer<Stream>& o, const type::fix_uint16& v);
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const type::fix_uint16& v);
 template <typename Stream>
-packer<Stream>& operator<< (packer<Stream>& o, const type::fix_uint32& v);
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const type::fix_uint32& v);
 template <typename Stream>
-packer<Stream>& operator<< (packer<Stream>& o, const type::fix_uint64& v);
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const type::fix_uint64& v);
 
 void operator<< (msgpack::object& o, type::fix_int8 v);
 void operator<< (msgpack::object& o, type::fix_int16 v);

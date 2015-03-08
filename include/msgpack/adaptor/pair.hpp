@@ -37,7 +37,7 @@ inline msgpack::object const& operator>> (msgpack::object const& o, std::pair<T1
 }
 
 template <typename Stream, typename T1, typename T2>
-inline packer<Stream>& operator<< (packer<Stream>& o, const std::pair<T1, T2>& v)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const std::pair<T1, T2>& v)
 {
     o.pack_array(2);
     o.pack(v.first);

@@ -47,7 +47,7 @@ inline msgpack::object const& operator>> (msgpack::object const& o, float& v)
 }
 
 template <typename Stream>
-inline packer<Stream>& operator<< (packer<Stream>& o, const float& v)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const float& v)
 {
     o.pack_float(v);
     return o;
@@ -72,7 +72,7 @@ inline msgpack::object const& operator>> (msgpack::object const& o, double& v)
 }
 
 template <typename Stream>
-inline packer<Stream>& operator<< (packer<Stream>& o, const double& v)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const double& v)
 {
     o.pack_double(v);
     return o;

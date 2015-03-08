@@ -84,36 +84,36 @@ inline msgpack::object const& operator>> (msgpack::object const& o, type::fix_ui
 
 
 template <typename Stream>
-inline packer<Stream>& operator<< (packer<Stream>& o, const type::fix_int8& v)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const type::fix_int8& v)
     { o.pack_fix_int8(v); return o; }
 
 template <typename Stream>
-inline packer<Stream>& operator<< (packer<Stream>& o, const type::fix_int16& v)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const type::fix_int16& v)
     { o.pack_fix_int16(v); return o; }
 
 template <typename Stream>
-inline packer<Stream>& operator<< (packer<Stream>& o, const type::fix_int32& v)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const type::fix_int32& v)
     { o.pack_fix_int32(v); return o; }
 
 template <typename Stream>
-inline packer<Stream>& operator<< (packer<Stream>& o, const type::fix_int64& v)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const type::fix_int64& v)
     { o.pack_fix_int64(v); return o; }
 
 
 template <typename Stream>
-inline packer<Stream>& operator<< (packer<Stream>& o, const type::fix_uint8& v)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const type::fix_uint8& v)
     { o.pack_fix_uint8(v); return o; }
 
 template <typename Stream>
-inline packer<Stream>& operator<< (packer<Stream>& o, const type::fix_uint16& v)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const type::fix_uint16& v)
     { o.pack_fix_uint16(v); return o; }
 
 template <typename Stream>
-inline packer<Stream>& operator<< (packer<Stream>& o, const type::fix_uint32& v)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const type::fix_uint32& v)
     { o.pack_fix_uint32(v); return o; }
 
 template <typename Stream>
-inline packer<Stream>& operator<< (packer<Stream>& o, const type::fix_uint64& v)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const type::fix_uint64& v)
     { o.pack_fix_uint64(v); return o; }
 
 

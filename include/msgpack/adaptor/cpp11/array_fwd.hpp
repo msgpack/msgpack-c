@@ -32,7 +32,7 @@ template <typename T, std::size_t N>
 msgpack::object const& operator>> (msgpack::object const& o, std::array<T, N>& v);
 
 template <typename Stream, typename T, std::size_t N>
-packer<Stream>& operator<< (packer<Stream>& o, const std::array<T, N>& v);
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const std::array<T, N>& v);
 
 template <typename T, std::size_t N>
 void operator<< (msgpack::object::with_zone& o, const std::array<T, N>& v);

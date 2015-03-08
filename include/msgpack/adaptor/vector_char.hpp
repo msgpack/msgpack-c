@@ -45,7 +45,7 @@ inline msgpack::object const& operator>> (msgpack::object const& o, std::vector<
 }
 
 template <typename Stream>
-inline packer<Stream>& operator<< (packer<Stream>& o, const std::vector<char>& v)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const std::vector<char>& v)
 {
     o.pack_bin(v.size());
     o.pack_bin_body(&v.front(), v.size());

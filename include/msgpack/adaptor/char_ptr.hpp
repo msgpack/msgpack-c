@@ -27,7 +27,7 @@ namespace msgpack {
 MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 template <typename Stream>
-inline packer<Stream>& operator<< (packer<Stream>& o, const char* v)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const char* v)
 {
     std::size_t size = std::strlen(v);
     o.pack_str(size);

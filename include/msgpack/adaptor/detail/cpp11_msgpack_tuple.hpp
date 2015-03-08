@@ -91,11 +91,11 @@ namespace type {
     }
 } // namespace type
 
-// --- Pack ( from tuple to packer stream ---
+// --- Pack from tuple to packer stream ---
 template <typename Stream, typename Tuple, std::size_t N>
 struct MsgpackTuplePacker {
     static void pack(
-        packer<Stream>& o,
+        msgpack::packer<Stream>& o,
         const Tuple& v) {
         MsgpackTuplePacker<Stream, Tuple, N-1>::pack(o, v);
         o.pack(type::get<N-1>(v));
@@ -105,7 +105,7 @@ struct MsgpackTuplePacker {
 template <typename Stream, typename Tuple>
 struct MsgpackTuplePacker<Stream, Tuple, 1> {
     static void pack (
-        packer<Stream>& o,
+        msgpack::packer<Stream>& o,
         const Tuple& v) {
         o.pack(type::get<0>(v));
     }
@@ -114,14 +114,14 @@ struct MsgpackTuplePacker<Stream, Tuple, 1> {
 template <typename Stream, typename Tuple>
 struct MsgpackTuplePacker<Stream, Tuple, 0> {
     static void pack (
-        packer<Stream>&,
+        msgpack::packer<Stream>&,
         const Tuple&) {
     }
 };
 
 template <typename Stream, typename... Args>
-const packer<Stream>& operator<< (
-    packer<Stream>& o,
+const msgpack::packer<Stream>& operator<< (
+    msgpack::packer<Stream>& o,
     const type::tuple<Args...>& v) {
     o.pack_array(sizeof...(Args));
     MsgpackTuplePacker<Stream, decltype(v), sizeof...(Args)>::pack(o, v);

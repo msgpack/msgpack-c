@@ -43,7 +43,7 @@ inline msgpack::object const& operator>> (msgpack::object const& o, std::set<T>&
 }
 
 template <typename Stream, typename T>
-inline packer<Stream>& operator<< (packer<Stream>& o, const std::set<T>& v)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const std::set<T>& v)
 {
     o.pack_array(v.size());
     for(typename std::set<T>::const_iterator it(v.begin()), it_end(v.end());
@@ -91,7 +91,7 @@ inline msgpack::object const& operator>> (msgpack::object const& o, std::multise
 }
 
 template <typename Stream, typename T>
-inline packer<Stream>& operator<< (packer<Stream>& o, const std::multiset<T>& v)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const std::multiset<T>& v)
 {
     o.pack_array(v.size());
     for(typename std::multiset<T>::const_iterator it(v.begin()), it_end(v.end());

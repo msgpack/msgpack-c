@@ -31,7 +31,7 @@ template <typename T>
 msgpack::object const& operator>> (msgpack::object const& o, std::unordered_set<T>& v);
 
 template <typename Stream, typename T>
-packer<Stream>& operator<< (packer<Stream>& o, const std::unordered_set<T>& v);
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const std::unordered_set<T>& v);
 
 template <typename T>
 void operator<< (msgpack::object::with_zone& o, const std::unordered_set<T>& v);
@@ -40,7 +40,7 @@ template <typename T>
 msgpack::object const& operator>> (msgpack::object const& o, std::unordered_multiset<T>& v);
 
 template <typename Stream, typename T>
-packer<Stream>& operator<< (packer<Stream>& o, const std::unordered_multiset<T>& v);
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const std::unordered_multiset<T>& v);
 
 template <typename T>
 void operator<< (msgpack::object::with_zone& o, const std::unordered_multiset<T>& v);

@@ -152,7 +152,7 @@ public:
 namespace detail {
 template <typename Stream, typename T>
 struct packer_serializer {
-    static packer<Stream>& pack(packer<Stream>& o, const T& v) {
+    static msgpack::packer<Stream>& pack(msgpack::packer<Stream>& o, const T& v) {
         // If you get a error 'const class your_class has no member named 'msgpack_pack',
         // check the following:
         // 1. The class your_class should have MSGPACK_DEFINE macro or
@@ -163,7 +163,7 @@ struct packer_serializer {
         //    namespace msgpack {
         //    MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS) {
         //    template <typename Stream>
-        //    inline packer<Stream>& operator<< (packer<Stream>& o, const your_class& v)
+        //    inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const your_class& v)
         //    } // MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS)
         //    } // namespace msgpack
         //
@@ -176,14 +176,14 @@ struct packer_serializer {
         //    namespace msgpack {
         //    MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS) {
         //    template <typename Stream>
-        //    packer<Stream>& operator<< (packer<Stream>& o, const your_class& v);
+        //    msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const your_class& v);
         //    } // MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS)
         //    } // namespace msgpack
         //
         //    then, #include "msgpack.hpp", finally place the operator definitions as follows:
         //
         //    template <typename Stream>
-        //    inline packer<Stream>& operator<< (packer<Stream>& o, const your_class& v) {
+        //    inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const your_class& v) {
         //         // packing operation
         //    }
         //    } // MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS)
@@ -197,7 +197,7 @@ struct packer_serializer {
 
 // serialize operator
 template <typename Stream, typename T>
-inline msgpack::packer<Stream>& operator<< (packer<Stream>& o, const T& v)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const T& v)
 {
     return detail::packer_serializer<Stream, T>::pack(o, v);
 }
