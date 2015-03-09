@@ -287,7 +287,7 @@ static inline void init_count(void* buffer)
     *(volatile _msgpack_atomic_counter_t*)buffer = 1;
 }
 
-static inline void decl_count(void* buffer)
+static inline void decr_count(void* buffer)
 {
     // atomic if(--*(_msgpack_atomic_counter_t*)buffer == 0) { free(buffer); }
     if(_msgpack_sync_decr_and_fetch((volatile _msgpack_atomic_counter_t*)buffer) == 0) {
@@ -354,7 +354,7 @@ void msgpack_unpacker_destroy(msgpack_unpacker* mpac)
 {
     msgpack_zone_free(mpac->z);
     free(mpac->ctx);
-    decl_count(mpac->buffer);
+    decr_count(mpac->buffer);
 }
 
 
@@ -434,13 +434,13 @@ bool msgpack_unpacker_expand_buffer(msgpack_unpacker* mpac, size_t size)
         memcpy(tmp+COUNTER_SIZE, mpac->buffer+mpac->off, not_parsed);
 
         if(CTX_REFERENCED(mpac)) {
-            if(!msgpack_zone_push_finalizer(mpac->z, decl_count, mpac->buffer)) {
+            if(!msgpack_zone_push_finalizer(mpac->z, decr_count, mpac->buffer)) {
                 free(tmp);
                 return false;
             }
             CTX_REFERENCED(mpac) = false;
         } else {
-            decl_count(mpac->buffer);
+            decr_count(mpac->buffer);
         }
 
         mpac->buffer = tmp;
@@ -494,7 +494,7 @@ void msgpack_unpacker_reset_zone(msgpack_unpacker* mpac)
 bool msgpack_unpacker_flush_zone(msgpack_unpacker* mpac)
 {
     if(CTX_REFERENCED(mpac)) {
-        if(!msgpack_zone_push_finalizer(mpac->z, decl_count, mpac->buffer)) {
+        if(!msgpack_zone_push_finalizer(mpac->z, decr_count, mpac->buffer)) {
             return false;
         }
         CTX_REFERENCED(mpac) = false;

@@ -335,7 +335,7 @@ public:
     void set_obj(object const& obj) { m_obj = obj; }
     std::size_t count() const { return m_count; }
     void set_count(std::size_t count) { m_count = count; }
-    std::size_t decl_count() { return --m_count; }
+    std::size_t decr_count() { return --m_count; }
     uint32_t container_type() const { return m_container_type; }
     void set_container_type(uint32_t container_type) { m_container_type = container_type; }
     object const& map_key() const { return m_map_key; }
@@ -352,7 +352,7 @@ inline void init_count(void* buffer)
     *reinterpret_cast<volatile _msgpack_atomic_counter_t*>(buffer) = 1;
 }
 
-inline void decl_count(void* buffer)
+inline void decr_count(void* buffer)
 {
     if(_msgpack_sync_decr_and_fetch(reinterpret_cast<volatile _msgpack_atomic_counter_t*>(buffer)) == 0) {
         free(buffer);
@@ -489,7 +489,7 @@ private:
             switch(sp->container_type()) {
             case CT_ARRAY_ITEM:
                 unpack_array_item(sp->obj(), obj);
-                if(sp->decl_count() == 0) {
+                if(sp->decr_count() == 0) {
                     obj = sp->obj();
                     --m_top;
                     /*printf("stack pop %d\n", m_top);*/
@@ -505,7 +505,7 @@ private:
                 break;
             case CT_MAP_VALUE:
                 unpack_map_item(sp->obj(), sp->map_key(), obj);
-                if(sp->decl_count() == 0) {
+                if(sp->decr_count() == 0) {
                     obj = sp->obj();
                     --m_top;
                     /*printf("stack pop %d\n", m_top);*/
@@ -1239,7 +1239,7 @@ inline unpacker& unpacker::operator=(unpacker&& other) {
 inline unpacker::~unpacker()
 {
     // These checks are required for move operations.
-    if (m_buffer) detail::decl_count(m_buffer);
+    if (m_buffer) detail::decr_count(m_buffer);
 }
 
 
@@ -1303,7 +1303,7 @@ inline void unpacker::expand_buffer(std::size_t size)
 
         if(m_ctx.user().referenced()) {
             try {
-                m_z->push_finalizer(&detail::decl_count, m_buffer);
+                m_z->push_finalizer(&detail::decr_count, m_buffer);
             }
             catch (...) {
                 ::free(tmp);
@@ -1311,7 +1311,7 @@ inline void unpacker::expand_buffer(std::size_t size)
             }
             m_ctx.user().set_referenced(false);
         } else {
-            detail::decl_count(m_buffer);
+            detail::decr_count(m_buffer);
         }
 
         m_buffer = tmp;
@@ -1421,7 +1421,7 @@ inline bool unpacker::flush_zone()
 {
     if(m_ctx.user().referenced()) {
         try {
-            m_z->push_finalizer(&detail::decl_count, m_buffer);
+            m_z->push_finalizer(&detail::decr_count, m_buffer);
         } catch (...) {
             return false;
         }
