@@ -59,7 +59,7 @@ TEST(MSGPACK_STL, simple_buffer_vector_bool)
 {
   vector<bool> val1;
   for (unsigned int i = 0; i < kElements; i++)
-    val1.push_back(i % 2);
+    val1.push_back(i % 2 ? false : true);
   msgpack::sbuffer sbuf;
   msgpack::pack(sbuf, val1);
   msgpack::unpacked ret;
