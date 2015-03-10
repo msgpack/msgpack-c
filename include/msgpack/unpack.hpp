@@ -28,6 +28,11 @@
 #include <memory>
 #include <stdexcept>
 
+#if !defined(MSGPACK_USE_CPP03)
+#include <atomic>
+#endif
+
+
 #if defined(_MSC_VER)
 // avoiding confliction std::max, std::min, and macro in windows.h
 #ifndef NOMINMAX
@@ -349,25 +354,46 @@ private:
 
 inline void init_count(void* buffer)
 {
+#if defined(MSGPACK_USE_CPP03)
     *reinterpret_cast<volatile _msgpack_atomic_counter_t*>(buffer) = 1;
+#else  // defined(MSGPACK_USE_CPP03)
+    new (buffer) std::atomic<unsigned int>(1);
+#endif // defined(MSGPACK_USE_CPP03)
 }
 
 inline void decr_count(void* buffer)
 {
+#if defined(MSGPACK_USE_CPP03)
     if(_msgpack_sync_decr_and_fetch(reinterpret_cast<volatile _msgpack_atomic_counter_t*>(buffer)) == 0) {
         free(buffer);
     }
+#else  // defined(MSGPACK_USE_CPP03)
+    if (--*reinterpret_cast<std::atomic<unsigned int>*>(buffer) == 0) {
+        free(buffer);
+    }
+#endif // defined(MSGPACK_USE_CPP03)
 }
 
 inline void incr_count(void* buffer)
 {
+#if defined(MSGPACK_USE_CPP03)
     _msgpack_sync_incr_and_fetch(reinterpret_cast<volatile _msgpack_atomic_counter_t*>(buffer));
+#else  // defined(MSGPACK_USE_CPP03)
+    ++*reinterpret_cast<std::atomic<unsigned int>*>(buffer);
+#endif // defined(MSGPACK_USE_CPP03)
 }
 
+#if defined(MSGPACK_USE_CPP03)
 inline _msgpack_atomic_counter_t get_count(void* buffer)
 {
     return *reinterpret_cast<volatile _msgpack_atomic_counter_t*>(buffer);
 }
+#else  // defined(MSGPACK_USE_CPP03)
+inline std::atomic<unsigned int> const& get_count(void* buffer)
+{
+    return *reinterpret_cast<std::atomic<unsigned int>*>(buffer);
+}
+#endif // defined(MSGPACK_USE_CPP03)
 
 struct fix_tag {
     char f1[65]; // FIXME unique size is required. or use is_same meta function.
