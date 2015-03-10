@@ -139,6 +139,15 @@ inline void pack(Stream& s, const T& v)
     packer<Stream>(s).pack(v);
 }
 
+// serialize operator
+template <typename Stream, typename T>
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const T& v)
+{
+    return detail::packer_serializer<Stream, T>::pack(o, v);
+}
+
+
+
 #if defined(__LITTLE_ENDIAN__)
 template <typename T>
 inline char take8_8(T d) {

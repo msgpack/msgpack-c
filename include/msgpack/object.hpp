@@ -196,13 +196,6 @@ struct packer_serializer {
 };
 }
 
-// serialize operator
-template <typename Stream, typename T>
-inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const T& v)
-{
-    return detail::packer_serializer<Stream, T>::pack(o, v);
-}
-
 inline void operator<< (msgpack::object::with_zone& o, const msgpack::object& v)
 {
     o.type = v.type;
