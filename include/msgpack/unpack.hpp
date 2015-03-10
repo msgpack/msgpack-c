@@ -509,7 +509,7 @@ private:
                 m_stack.push_back(unpack_stack());
             }
             else {
-                throw depth_size_overflow("depth size overflow");
+                throw msgpack::depth_size_overflow("depth size overflow");
             }
             m_cs = MSGPACK_CS_HEADER;
             ++m_current;
