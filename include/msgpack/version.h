@@ -28,6 +28,8 @@ MSGPACK_DLLEXPORT
 int msgpack_version_major(void);
 MSGPACK_DLLEXPORT
 int msgpack_version_minor(void);
+MSGPACK_DLLEXPORT
+int msgpack_version_revision(void);
 
 #include "version_master.h"
 
