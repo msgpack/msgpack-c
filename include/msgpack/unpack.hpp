@@ -40,7 +40,7 @@
 #endif
 
 
-#define COUNTER_SIZE (sizeof(_msgpack_atomic_counter_t))
+const size_t COUNTER_SIZE = sizeof(_msgpack_atomic_counter_t);
 
 #ifndef MSGPACK_UNPACKER_INIT_BUFFER_SIZE
 #define MSGPACK_UNPACKER_INIT_BUFFER_SIZE (64*1024)
@@ -410,7 +410,7 @@ inline void load(T& dst, const char* n, typename msgpack::enable_if<sizeof(T) ==
 class context {
 public:
     context(unpack_reference_func f, void* user_data, unpack_limit const& limit)
-        :m_trail(0), m_user(f, user_data, limit), m_cs(CS_HEADER)
+        :m_trail(0), m_user(f, user_data, limit), m_cs(MSGPACK_CS_HEADER)
     {
         m_stack.reserve(MSGPACK_EMBED_STACK_SIZE);
         m_stack.push_back(unpack_stack());
@@ -418,7 +418,7 @@ public:
 
     void init()
     {
-        m_cs = CS_HEADER;
+        m_cs = MSGPACK_CS_HEADER;
         m_trail = 0;
         m_stack.resize(1);
         m_stack[0].set_obj(object());
@@ -467,7 +467,7 @@ private:
             m_stack.back().set_container_type(container_type);
             m_stack.back().set_count(tmp);
             m_stack.push_back(unpack_stack());
-            m_cs = CS_HEADER;
+            m_cs = MSGPACK_CS_HEADER;
             ++m_current;
         }
         return 0;
@@ -481,7 +481,7 @@ private:
             }
             unpack_stack& sp = *(m_stack.end() - 2);
             switch(sp.container_type()) {
-            case CT_ARRAY_ITEM:
+            case MSGPACK_CT_ARRAY_ITEM:
                 unpack_array_item(sp.obj(), obj);
                 if(sp.decl_count() == 0) {
                     obj = sp.obj();
@@ -491,19 +491,19 @@ private:
                     finish = true;
                 }
                 break;
-            case CT_MAP_KEY:
+            case MSGPACK_CT_MAP_KEY:
                 sp.set_map_key(obj);
-                sp.set_container_type(CT_MAP_VALUE);
+                sp.set_container_type(MSGPACK_CT_MAP_VALUE);
                 finish = true;
                 break;
-            case CT_MAP_VALUE:
+            case MSGPACK_CT_MAP_VALUE:
                 unpack_map_item(sp.obj(), sp.map_key(), obj);
                 if(sp.decl_count() == 0) {
                     obj = sp.obj();
                     m_stack.pop_back();
                 }
                 else {
-                    sp.set_container_type(CT_MAP_KEY);
+                    sp.set_container_type(MSGPACK_CT_MAP_KEY);
                     finish = true;
                 }
                 break;
@@ -526,7 +526,7 @@ private:
             off = m_current - m_start;
         }
         else {
-            m_cs = CS_HEADER;
+            m_cs = MSGPACK_CS_HEADER;
             ++m_current;
         }
         return ret;
@@ -568,7 +568,7 @@ inline int context::execute(const char* data, std::size_t len, std::size_t& off)
     }
     bool fixed_trail_again = false;
     do {
-        if (m_cs == CS_HEADER) {
+        if (m_cs == MSGPACK_CS_HEADER) {
             fixed_trail_again = false;
             int selector = *reinterpret_cast<const unsigned char*>(m_current);
             if (0x00 <= selector && selector <= 0x7f) { // Positive Fixnum
@@ -621,17 +621,17 @@ inline int context::execute(const char* data, std::size_t len, std::size_t& off)
                     if (ret != 0) return ret;
                 }
                 else {
-                    m_cs = ACS_STR_VALUE;
+                    m_cs = MSGPACK_ACS_STR_VALUE;
                     fixed_trail_again = true;
                 }
 
             } else if(0x90 <= selector && selector <= 0x9f) { // FixArray
                 int ret = push_aggregate<fix_tag>(
-                    unpack_array(), CT_ARRAY_ITEM, obj, m_current, off);
+                    unpack_array(), MSGPACK_CT_ARRAY_ITEM, obj, m_current, off);
                 if (ret != 0) return ret;
             } else if(0x80 <= selector && selector <= 0x8f) { // FixMap
                 int ret = push_aggregate<fix_tag>(
-                    unpack_map(), CT_MAP_KEY, obj, m_current, off);
+                    unpack_map(), MSGPACK_CT_MAP_KEY, obj, m_current, off);
                 if (ret != 0) return ret;
             } else if(selector == 0xc2) { // false
                 unpack_false(obj);
@@ -649,9 +649,9 @@ inline int context::execute(const char* data, std::size_t len, std::size_t& off)
                 off = m_current - m_start;
                 return -1;
             }
-            // end CS_HEADER
+            // end MSGPACK_CS_HEADER
         }
-        if (m_cs != CS_HEADER || fixed_trail_again) {
+        if (m_cs != MSGPACK_CS_HEADER || fixed_trail_again) {
             if (fixed_trail_again) {
                 ++m_current;
                 fixed_trail_again = false;
@@ -663,16 +663,16 @@ inline int context::execute(const char* data, std::size_t len, std::size_t& off)
             n = m_current;
             m_current += m_trail - 1;
             switch(m_cs) {
-                //case CS_
-                //case CS_
-            case CS_FLOAT: {
+                //case MSGPACK_CS_
+                //case MSGPACK_CS_
+            case MSGPACK_CS_FLOAT: {
                 union { uint32_t i; float f; } mem;
                 load<uint32_t>(mem.i, n);
                 unpack_float(mem.f, obj);
                 int ret = push_proc(obj, off);
                 if (ret != 0) return ret;
             } break;
-            case CS_DOUBLE: {
+            case MSGPACK_CS_DOUBLE: {
                 union { uint64_t i; double f; } mem;
                 load<uint64_t>(mem.i, n);
 #if defined(__arm__) && !(__ARM_EABI__) // arm-oabi
@@ -683,88 +683,88 @@ inline int context::execute(const char* data, std::size_t len, std::size_t& off)
                 int ret = push_proc(obj, off);
                 if (ret != 0) return ret;
             } break;
-            case CS_UINT_8: {
+            case MSGPACK_CS_UINT_8: {
                 uint8_t tmp;
                 load<uint8_t>(tmp, n);
                 unpack_uint8(tmp, obj);
                 int ret = push_proc(obj, off);
                 if (ret != 0) return ret;
             } break;
-            case CS_UINT_16: {
+            case MSGPACK_CS_UINT_16: {
                 uint16_t tmp;
                 load<uint16_t>(tmp, n);
                 unpack_uint16(tmp, obj);
                 int ret = push_proc(obj, off);
                 if (ret != 0) return ret;
             } break;
-            case CS_UINT_32: {
+            case MSGPACK_CS_UINT_32: {
                 uint32_t tmp;
                 load<uint32_t>(tmp, n);
                 unpack_uint32(tmp, obj);
                 int ret = push_proc(obj, off);
                 if (ret != 0) return ret;
             } break;
-            case CS_UINT_64: {
+            case MSGPACK_CS_UINT_64: {
                 uint64_t tmp;
                 load<uint64_t>(tmp, n);
                 unpack_uint64(tmp, obj);
                 int ret = push_proc(obj, off);
                 if (ret != 0) return ret;
             } break;
-            case CS_INT_8: {
+            case MSGPACK_CS_INT_8: {
                 int8_t tmp;
                 load<int8_t>(tmp, n);
                 unpack_int8(tmp, obj);
                 int ret = push_proc(obj, off);
                 if (ret != 0) return ret;
             } break;
-            case CS_INT_16: {
+            case MSGPACK_CS_INT_16: {
                 int16_t tmp;
                 load<int16_t>(tmp, n);
                 unpack_int16(tmp, obj);
                 int ret = push_proc(obj, off);
                 if (ret != 0) return ret;
             } break;
-            case CS_INT_32: {
+            case MSGPACK_CS_INT_32: {
                 int32_t tmp;
                 load<int32_t>(tmp, n);
                 unpack_int32(tmp, obj);
                 int ret = push_proc(obj, off);
                 if (ret != 0) return ret;
             } break;
-            case CS_INT_64: {
+            case MSGPACK_CS_INT_64: {
                 int64_t tmp;
                 load<int64_t>(tmp, n);
                 unpack_int64(tmp, obj);
                 int ret = push_proc(obj, off);
                 if (ret != 0) return ret;
             } break;
-            case CS_FIXEXT_1: {
+            case MSGPACK_CS_FIXEXT_1: {
                 unpack_ext(m_user, n, 1+1, obj);
                 int ret = push_proc(obj, off);
                 if (ret != 0) return ret;
             } break;
-            case CS_FIXEXT_2: {
+            case MSGPACK_CS_FIXEXT_2: {
                 unpack_ext(m_user, n, 2+1, obj);
                 int ret = push_proc(obj, off);
                 if (ret != 0) return ret;
             } break;
-            case CS_FIXEXT_4: {
+            case MSGPACK_CS_FIXEXT_4: {
                 unpack_ext(m_user, n, 4+1, obj);
                 int ret = push_proc(obj, off);
                 if (ret != 0) return ret;
             } break;
-            case CS_FIXEXT_8: {
+            case MSGPACK_CS_FIXEXT_8: {
                 unpack_ext(m_user, n, 8+1, obj);
                 int ret = push_proc(obj, off);
                 if (ret != 0) return ret;
             } break;
-            case CS_FIXEXT_16: {
+            case MSGPACK_CS_FIXEXT_16: {
                 unpack_ext(m_user, n, 16+1, obj);
                 int ret = push_proc(obj, off);
                 if (ret != 0) return ret;
             } break;
-            case CS_STR_8: {
+            case MSGPACK_CS_STR_8: {
                 uint8_t tmp;
                 load<uint8_t>(tmp, n);
                 m_trail = tmp;
@@ -774,11 +774,11 @@ inline int context::execute(const char* data, std::size_t len, std::size_t& off)
                     if (ret != 0) return ret;
                 }
                 else {
-                    m_cs = ACS_STR_VALUE;
+                    m_cs = MSGPACK_ACS_STR_VALUE;
                     fixed_trail_again = true;
                 }
             } break;
-            case CS_BIN_8: {
+            case MSGPACK_CS_BIN_8: {
                 uint8_t tmp;
                 load<uint8_t>(tmp, n);
                 m_trail = tmp;
@@ -788,11 +788,11 @@ inline int context::execute(const char* data, std::size_t len, std::size_t& off)
                     if (ret != 0) return ret;
                 }
                 else {
-                    m_cs = ACS_BIN_VALUE;
+                    m_cs = MSGPACK_ACS_BIN_VALUE;
                     fixed_trail_again = true;
                 }
             } break;
-            case CS_EXT_8: {
+            case MSGPACK_CS_EXT_8: {
                 uint8_t tmp;
                 load<uint8_t>(tmp, n);
                 m_trail = tmp + 1;
@@ -802,11 +802,11 @@ inline int context::execute(const char* data, std::size_t len, std::size_t& off)
                     if (ret != 0) return ret;
                 }
                 else {
-                    m_cs = ACS_EXT_VALUE;
+                    m_cs = MSGPACK_ACS_EXT_VALUE;
                     fixed_trail_again = true;
                 }
             } break;
-            case CS_STR_16: {
+            case MSGPACK_CS_STR_16: {
                 uint16_t tmp;
                 load<uint16_t>(tmp, n);
                 m_trail = tmp;
@@ -816,11 +816,11 @@ inline int context::execute(const char* data, std::size_t len, std::size_t& off)
                     if (ret != 0) return ret;
                 }
                 else {
-                    m_cs = ACS_STR_VALUE;
+                    m_cs = MSGPACK_ACS_STR_VALUE;
                     fixed_trail_again = true;
                 }
             } break;
-            case CS_BIN_16: {
+            case MSGPACK_CS_BIN_16: {
                 uint16_t tmp;
                 load<uint16_t>(tmp, n);
                 m_trail = tmp;
@@ -830,11 +830,11 @@ inline int context::execute(const char* data, std::size_t len, std::size_t& off)
                     if (ret != 0) return ret;
                 }
                 else {
-                    m_cs = ACS_BIN_VALUE;
+                    m_cs = MSGPACK_ACS_BIN_VALUE;
                     fixed_trail_again = true;
                 }
             } break;
-            case CS_EXT_16: {
+            case MSGPACK_CS_EXT_16: {
                 uint16_t tmp;
                 load<uint16_t>(tmp, n);
                 m_trail = tmp + 1;
@@ -844,11 +844,11 @@ inline int context::execute(const char* data, std::size_t len, std::size_t& off)
                     if (ret != 0) return ret;
                 }
                 else {
-                    m_cs = ACS_EXT_VALUE;
+                    m_cs = MSGPACK_ACS_EXT_VALUE;
                     fixed_trail_again = true;
                 }
             } break;
-            case CS_STR_32: {
+            case MSGPACK_CS_STR_32: {
                 uint32_t tmp;
                 load<uint32_t>(tmp, n);
                 m_trail = tmp;
@@ -858,11 +858,11 @@ inline int context::execute(const char* data, std::size_t len, std::size_t& off)
                     if (ret != 0) return ret;
                 }
                 else {
-                    m_cs = ACS_STR_VALUE;
+                    m_cs = MSGPACK_ACS_STR_VALUE;
                     fixed_trail_again = true;
                 }
             } break;
-            case CS_BIN_32: {
+            case MSGPACK_CS_BIN_32: {
                 uint32_t tmp;
                 load<uint32_t>(tmp, n);
                 m_trail = tmp;
@@ -872,11 +872,11 @@ inline int context::execute(const char* data, std::size_t len, std::size_t& off)
                     if (ret != 0) return ret;
                 }
                 else {
-                    m_cs = ACS_BIN_VALUE;
+                    m_cs = MSGPACK_ACS_BIN_VALUE;
                     fixed_trail_again = true;
                 }
             } break;
-            case CS_EXT_32: {
+            case MSGPACK_CS_EXT_32: {
                 uint32_t tmp;
                 load<uint32_t>(tmp, n);
                 check_ext_size<sizeof(std::size_t)>(tmp);
@@ -888,45 +888,45 @@ inline int context::execute(const char* data, std::size_t len, std::size_t& off)
                     if (ret != 0) return ret;
                 }
                 else {
-                    m_cs = ACS_EXT_VALUE;
+                    m_cs = MSGPACK_ACS_EXT_VALUE;
                     fixed_trail_again = true;
                 }
             } break;
-            case ACS_STR_VALUE: {
+            case MSGPACK_ACS_STR_VALUE: {
                 unpack_str(m_user, n, m_trail, obj);
                 int ret = push_proc(obj, off);
                 if (ret != 0) return ret;
             } break;
-            case ACS_BIN_VALUE: {
+            case MSGPACK_ACS_BIN_VALUE: {
                 unpack_bin(m_user, n, m_trail, obj);
                 int ret = push_proc(obj, off);
                 if (ret != 0) return ret;
             } break;
-            case ACS_EXT_VALUE: {
+            case MSGPACK_ACS_EXT_VALUE: {
                 unpack_ext(m_user, n, m_trail, obj);
                 int ret = push_proc(obj, off);
                 if (ret != 0) return ret;
             } break;
-            case CS_ARRAY_16: {
+            case MSGPACK_CS_ARRAY_16: {
                 int ret = push_aggregate<uint16_t>(
-                    unpack_array(), CT_ARRAY_ITEM, obj, n, off);
+                    unpack_array(), MSGPACK_CT_ARRAY_ITEM, obj, n, off);
                 if (ret != 0) return ret;
             } break;
-            case CS_ARRAY_32: {
+            case MSGPACK_CS_ARRAY_32: {
                 /* FIXME security guard */
                 int ret = push_aggregate<uint32_t>(
-                    unpack_array(), CT_ARRAY_ITEM, obj, n, off);
+                    unpack_array(), MSGPACK_CT_ARRAY_ITEM, obj, n, off);
                 if (ret != 0) return ret;
             } break;
-            case CS_MAP_16: {
+            case MSGPACK_CS_MAP_16: {
                 int ret = push_aggregate<uint16_t>(
-                    unpack_map(), CT_MAP_KEY, obj, n, off);
+                    unpack_map(), MSGPACK_CT_MAP_KEY, obj, n, off);
                 if (ret != 0) return ret;
             } break;
-            case CS_MAP_32: {
+            case MSGPACK_CS_MAP_32: {
                 /* FIXME security guard */
                 int ret = push_aggregate<uint32_t>(
-                    unpack_map(), CT_MAP_KEY, obj, n, off);
+                    unpack_map(), MSGPACK_CT_MAP_KEY, obj, n, off);
                 if (ret != 0) return ret;
             } break;
             default:

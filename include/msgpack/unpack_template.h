@@ -69,7 +69,7 @@ msgpack_unpack_struct_decl(_context) {
 
 msgpack_unpack_func(void, _init)(msgpack_unpack_struct(_context)* ctx)
 {
-    ctx->cs = CS_HEADER;
+    ctx->cs = MSGPACK_CS_HEADER;
     ctx->trail = 0;
     ctx->top = 0;
     /*
@@ -185,7 +185,7 @@ msgpack_unpack_func(int, _execute)(msgpack_unpack_struct(_context)* ctx, const c
     if(p == pe) { goto _out; }
     do {
         switch(cs) {
-        case CS_HEADER:
+        case MSGPACK_CS_HEADER:
             SWITCH_RANGE_BEGIN
             SWITCH_RANGE(0x00, 0x7f)  // Positive Fixnum
                 push_fixed_value(_uint8, *(uint8_t*)p);
@@ -224,10 +224,10 @@ msgpack_unpack_func(int, _execute)(msgpack_unpack_struct(_context)* ctx, const c
                 case 0xd5:  // fixext 2
                 case 0xd6:  // fixext 4
                 case 0xd7:  // fixext 8
-                    again_fixed_trail_if_zero(ACS_EXT_VALUE,
+                    again_fixed_trail_if_zero(MSGPACK_ACS_EXT_VALUE,
                         (1 << (((unsigned int)*p) & 0x03)) + 1, _ext_zero);
                 case 0xd8:  // fixext 16
-                    again_fixed_trail_if_zero(ACS_EXT_VALUE, 16+1, _ext_zero);
+                    again_fixed_trail_if_zero(MSGPACK_ACS_EXT_VALUE, 16+1, _ext_zero);
 
                 case 0xd9:  // str 8
                 case 0xda:  // str 16
@@ -242,16 +242,16 @@ msgpack_unpack_func(int, _execute)(msgpack_unpack_struct(_context)* ctx, const c
                     goto _failed;
                 }
             SWITCH_RANGE(0xa0, 0xbf)  // FixStr
-                again_fixed_trail_if_zero(ACS_STR_VALUE, ((unsigned int)*p & 0x1f), _str_zero);
+                again_fixed_trail_if_zero(MSGPACK_ACS_STR_VALUE, ((unsigned int)*p & 0x1f), _str_zero);
             SWITCH_RANGE(0x90, 0x9f)  // FixArray
-                start_container(_array, ((unsigned int)*p) & 0x0f, CT_ARRAY_ITEM);
+                start_container(_array, ((unsigned int)*p) & 0x0f, MSGPACK_CT_ARRAY_ITEM);
             SWITCH_RANGE(0x80, 0x8f)  // FixMap
-                start_container(_map, ((unsigned int)*p) & 0x0f, CT_MAP_KEY);
+                start_container(_map, ((unsigned int)*p) & 0x0f, MSGPACK_CT_MAP_KEY);
 
             SWITCH_RANGE_DEFAULT
                 goto _failed;
             SWITCH_RANGE_END
-            // end CS_HEADER
+            // end MSGPACK_CS_HEADER
 
 
         _fixed_trail_again:
@@ -261,13 +261,13 @@ msgpack_unpack_func(int, _execute)(msgpack_unpack_struct(_context)* ctx, const c
             if((size_t)(pe - p) < trail) { goto _out; }
             n = p;  p += trail - 1;
             switch(cs) {
-            //case CS_
-            //case CS_
-            case CS_FLOAT: {
+            //case MSGPACK_CS_
+            //case MSGPACK_CS_
+            case MSGPACK_CS_FLOAT: {
                     union { uint32_t i; float f; } mem;
                     _msgpack_load32(uint32_t, n, &mem.i);
                     push_fixed_value(_float, mem.f); }
-            case CS_DOUBLE: {
+            case MSGPACK_CS_DOUBLE: {
                     union { uint64_t i; double f; } mem;
                     _msgpack_load64(uint64_t, n, &mem.i);
 #if defined(__arm__) && !(__ARM_EABI__) // arm-oabi
@@ -275,118 +275,118 @@ msgpack_unpack_func(int, _execute)(msgpack_unpack_struct(_context)* ctx, const c
                     mem.i = (mem.i & 0xFFFFFFFFUL) << 32UL | (mem.i >> 32UL);
 #endif
                     push_fixed_value(_double, mem.f); }
-            case CS_UINT_8:
+            case MSGPACK_CS_UINT_8:
                 push_fixed_value(_uint8, *(uint8_t*)n);
-            case CS_UINT_16:{
+            case MSGPACK_CS_UINT_16:{
                 uint16_t tmp;
                 _msgpack_load16(uint16_t,n,&tmp);
                 push_fixed_value(_uint16, tmp);
             }
-            case CS_UINT_32:{
+            case MSGPACK_CS_UINT_32:{
                 uint32_t tmp;
                 _msgpack_load32(uint32_t,n,&tmp);
                 push_fixed_value(_uint32, tmp);
             }
-            case CS_UINT_64:{
+            case MSGPACK_CS_UINT_64:{
                 uint64_t tmp;
                 _msgpack_load64(uint64_t,n,&tmp);
                 push_fixed_value(_uint64, tmp);
             }
-            case CS_INT_8:
+            case MSGPACK_CS_INT_8:
                 push_fixed_value(_int8, *(int8_t*)n);
-            case CS_INT_16:{
+            case MSGPACK_CS_INT_16:{
                 int16_t tmp;
                 _msgpack_load16(int16_t,n,&tmp);
                 push_fixed_value(_int16, tmp);
             }
-            case CS_INT_32:{
+            case MSGPACK_CS_INT_32:{
                 int32_t tmp;
                 _msgpack_load32(int32_t,n,&tmp);
                 push_fixed_value(_int32, tmp);
             }
-            case CS_INT_64:{
+            case MSGPACK_CS_INT_64:{
                 int64_t tmp;
                 _msgpack_load64(int64_t,n,&tmp);
                 push_fixed_value(_int64, tmp);
             }
-            case CS_FIXEXT_1:
-                again_fixed_trail_if_zero(ACS_EXT_VALUE, 1+1, _ext_zero);
-            case CS_FIXEXT_2:
-                again_fixed_trail_if_zero(ACS_EXT_VALUE, 2+1, _ext_zero);
-            case CS_FIXEXT_4:
-                again_fixed_trail_if_zero(ACS_EXT_VALUE, 4+1, _ext_zero);
-            case CS_FIXEXT_8:
-                again_fixed_trail_if_zero(ACS_EXT_VALUE, 8+1, _ext_zero);
-            case CS_FIXEXT_16:
-                again_fixed_trail_if_zero(ACS_EXT_VALUE, 16+1, _ext_zero);
-            case CS_STR_8:
-                again_fixed_trail_if_zero(ACS_STR_VALUE, *(uint8_t*)n, _str_zero);
-            case CS_BIN_8:
-                again_fixed_trail_if_zero(ACS_BIN_VALUE, *(uint8_t*)n, _bin_zero);
-            case CS_EXT_8:
-                again_fixed_trail_if_zero(ACS_EXT_VALUE, (*(uint8_t*)n) + 1, _ext_zero);
-            case CS_STR_16:{
+            case MSGPACK_CS_FIXEXT_1:
+                again_fixed_trail_if_zero(MSGPACK_ACS_EXT_VALUE, 1+1, _ext_zero);
+            case MSGPACK_CS_FIXEXT_2:
+                again_fixed_trail_if_zero(MSGPACK_ACS_EXT_VALUE, 2+1, _ext_zero);
+            case MSGPACK_CS_FIXEXT_4:
+                again_fixed_trail_if_zero(MSGPACK_ACS_EXT_VALUE, 4+1, _ext_zero);
+            case MSGPACK_CS_FIXEXT_8:
+                again_fixed_trail_if_zero(MSGPACK_ACS_EXT_VALUE, 8+1, _ext_zero);
+            case MSGPACK_CS_FIXEXT_16:
+                again_fixed_trail_if_zero(MSGPACK_ACS_EXT_VALUE, 16+1, _ext_zero);
+            case MSGPACK_CS_STR_8:
+                again_fixed_trail_if_zero(MSGPACK_ACS_STR_VALUE, *(uint8_t*)n, _str_zero);
+            case MSGPACK_CS_BIN_8:
+                again_fixed_trail_if_zero(MSGPACK_ACS_BIN_VALUE, *(uint8_t*)n, _bin_zero);
+            case MSGPACK_CS_EXT_8:
+                again_fixed_trail_if_zero(MSGPACK_ACS_EXT_VALUE, (*(uint8_t*)n) + 1, _ext_zero);
+            case MSGPACK_CS_STR_16:{
                 uint16_t tmp;
                 _msgpack_load16(uint16_t,n,&tmp);
-                again_fixed_trail_if_zero(ACS_STR_VALUE, tmp, _str_zero);
+                again_fixed_trail_if_zero(MSGPACK_ACS_STR_VALUE, tmp, _str_zero);
             }
-            case CS_BIN_16:{
+            case MSGPACK_CS_BIN_16:{
                 uint16_t tmp;
                 _msgpack_load16(uint16_t,n,&tmp);
-                again_fixed_trail_if_zero(ACS_BIN_VALUE, tmp, _bin_zero);
+                again_fixed_trail_if_zero(MSGPACK_ACS_BIN_VALUE, tmp, _bin_zero);
             }
-            case CS_EXT_16:{
+            case MSGPACK_CS_EXT_16:{
                 uint16_t tmp;
                 _msgpack_load16(uint16_t,n,&tmp);
-                again_fixed_trail_if_zero(ACS_EXT_VALUE, tmp + 1, _ext_zero);
+                again_fixed_trail_if_zero(MSGPACK_ACS_EXT_VALUE, tmp + 1, _ext_zero);
             }
-            case CS_STR_32:{
+            case MSGPACK_CS_STR_32:{
                 uint32_t tmp;
                 _msgpack_load32(uint32_t,n,&tmp);
-                again_fixed_trail_if_zero(ACS_STR_VALUE, tmp, _str_zero);
+                again_fixed_trail_if_zero(MSGPACK_ACS_STR_VALUE, tmp, _str_zero);
             }
-            case CS_BIN_32:{
+            case MSGPACK_CS_BIN_32:{
                 uint32_t tmp;
                 _msgpack_load32(uint32_t,n,&tmp);
-                again_fixed_trail_if_zero(ACS_BIN_VALUE, tmp, _bin_zero);
+                again_fixed_trail_if_zero(MSGPACK_ACS_BIN_VALUE, tmp, _bin_zero);
             }
-            case CS_EXT_32:{
+            case MSGPACK_CS_EXT_32:{
                 uint32_t tmp;
                 _msgpack_load32(uint32_t,n,&tmp);
-                again_fixed_trail_if_zero(ACS_EXT_VALUE, tmp + 1, _ext_zero);
+                again_fixed_trail_if_zero(MSGPACK_ACS_EXT_VALUE, tmp + 1, _ext_zero);
             }
-            case ACS_STR_VALUE:
+            case MSGPACK_ACS_STR_VALUE:
             _str_zero:
                 push_variable_value(_str, data, n, trail);
-            case ACS_BIN_VALUE:
+            case MSGPACK_ACS_BIN_VALUE:
             _bin_zero:
                 push_variable_value(_bin, data, n, trail);
-            case ACS_EXT_VALUE:
+            case MSGPACK_ACS_EXT_VALUE:
             _ext_zero:
                 push_variable_value(_ext, data, n, trail);
 
-            case CS_ARRAY_16:{
+            case MSGPACK_CS_ARRAY_16:{
                 uint16_t tmp;
                 _msgpack_load16(uint16_t,n,&tmp);
-                start_container(_array, tmp, CT_ARRAY_ITEM);
+                start_container(_array, tmp, MSGPACK_CT_ARRAY_ITEM);
             }
-            case CS_ARRAY_32:{
+            case MSGPACK_CS_ARRAY_32:{
                 /* FIXME security guard */
                 uint32_t tmp;
                 _msgpack_load32(uint32_t,n,&tmp);
-                start_container(_array, tmp, CT_ARRAY_ITEM);
+                start_container(_array, tmp, MSGPACK_CT_ARRAY_ITEM);
             }
 
-            case CS_MAP_16:{
+            case MSGPACK_CS_MAP_16:{
                 uint16_t tmp;
                 _msgpack_load16(uint16_t,n,&tmp);
-                start_container(_map, tmp, CT_MAP_KEY);
+                start_container(_map, tmp, MSGPACK_CT_MAP_KEY);
             }
-            case CS_MAP_32:{
+            case MSGPACK_CS_MAP_32:{
                 /* FIXME security guard */
                 uint32_t tmp;
                 _msgpack_load32(uint32_t,n,&tmp);
-                start_container(_map, tmp, CT_MAP_KEY);
+                start_container(_map, tmp, MSGPACK_CT_MAP_KEY);
             }
 
             default:
@@ -398,7 +398,7 @@ _push:
     if(top == 0) { goto _finish; }
     c = &stack[top-1];
     switch(c->ct) {
-    case CT_ARRAY_ITEM:
+    case MSGPACK_CT_ARRAY_ITEM:
         if(msgpack_unpack_callback(_array_item)(user, &c->obj, obj) < 0) { goto _failed; }
         if(--c->count == 0) {
             obj = c->obj;
@@ -407,11 +407,11 @@ _push:
             goto _push;
         }
         goto _header_again;
-    case CT_MAP_KEY:
+    case MSGPACK_CT_MAP_KEY:
         c->map_key = obj;
-        c->ct = CT_MAP_VALUE;
+        c->ct = MSGPACK_CT_MAP_VALUE;
         goto _header_again;
-    case CT_MAP_VALUE:
+    case MSGPACK_CT_MAP_VALUE:
         if(msgpack_unpack_callback(_map_item)(user, &c->obj, c->map_key, obj) < 0) { goto _failed; }
         if(--c->count == 0) {
             obj = c->obj;
@@ -419,7 +419,7 @@ _push:
             /*printf("stack pop %d\n", top);*/
             goto _push;
         }
-        c->ct = CT_MAP_KEY;
+        c->ct = MSGPACK_CT_MAP_KEY;
         goto _header_again;
 
     default:
@@ -427,7 +427,7 @@ _push:
     }
 
 _header_again:
-        cs = CS_HEADER;
+        cs = MSGPACK_CS_HEADER;
         ++p;
     } while(p != pe);
     goto _out;
@@ -474,3 +474,7 @@ _end:
 
 #undef NEXT_CS
 
+#undef SWITCH_RANGE_BEGIN
+#undef SWITCH_RANGE
+#undef SWITCH_RANGE_DEFAULT
+#undef SWITCH_RANGE_END
