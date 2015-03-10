@@ -48,7 +48,7 @@ inline packer<Stream>& operator<< (packer<Stream>& o, const std::vector<bool>& v
     o.pack_array(v.size());
     for(std::vector<bool>::const_iterator it(v.begin()), it_end(v.end());
         it != it_end; ++it) {
-        o.pack(*it);
+        o.pack(static_cast<bool>(*it));
     }
     return o;
 }
@@ -66,7 +66,7 @@ inline void operator<< (object::with_zone& o, const std::vector<bool>& v)
         o.via.array.size = v.size();
         std::vector<bool>::const_iterator it(v.begin());
         do {
-            *p = object(*it, o.zone);
+            *p = object(static_cast<bool>(*it), o.zone);
             ++p;
             ++it;
         } while(p < pend);
