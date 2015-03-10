@@ -31,6 +31,11 @@ packer<Stream>& operator<< (packer<Stream>& o, const char* v);
 void operator<< (object::with_zone& o, const char* v);
 void operator<< (object& o, const char* v);
 
+template <typename Stream>
+packer<Stream>& operator<< (packer<Stream>& o, char* v);
+void operator<< (object::with_zone& o, char* v);
+void operator<< (object& o, char* v);
+
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 
 }  // namespace msgpack
