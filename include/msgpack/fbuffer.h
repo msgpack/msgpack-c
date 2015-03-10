@@ -15,8 +15,8 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-#ifndef MSGPACK_FBUFFER_H__
-#define MSGPACK_FBUFFER_H__
+#ifndef MSGPACK_FBUFFER_H
+#define MSGPACK_FBUFFER_H
 
 #include <stdio.h>
 
@@ -44,4 +44,3 @@ static inline int msgpack_fbuffer_write(void* data, const char* buf, unsigned in
 #endif
 
 #endif /* msgpack/fbuffer.h */
-
