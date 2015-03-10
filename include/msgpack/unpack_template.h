@@ -474,3 +474,7 @@ _end:
 
 #undef NEXT_CS
 
+#undef SWITCH_RANGE_BEGIN
+#undef SWITCH_RANGE
+#undef SWITCH_RANGE_DEFAULT
+#undef SWITCH_RANGE_END

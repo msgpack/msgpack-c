@@ -40,7 +40,7 @@
 #endif
 
 
-#define COUNTER_SIZE (sizeof(_msgpack_atomic_counter_t))
+const size_t COUNTER_SIZE = sizeof(_msgpack_atomic_counter_t);
 
 #ifndef MSGPACK_UNPACKER_INIT_BUFFER_SIZE
 #define MSGPACK_UNPACKER_INIT_BUFFER_SIZE (64*1024)
