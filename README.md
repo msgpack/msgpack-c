@@ -1,7 +1,7 @@
 `msgpack` for C/C++
 ===================
 
-Version 0.5.9 [![Build Status](https://travis-ci.org/msgpack/msgpack-c.svg?branch=master)](https://travis-ci.org/msgpack/msgpack-c)
+Version 1.0.0 [![Build Status](https://travis-ci.org/msgpack/msgpack-c.svg?branch=master)](https://travis-ci.org/msgpack/msgpack-c)
 
 It's like JSON but small and fast.
 
