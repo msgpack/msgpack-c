@@ -1,7 +1,7 @@
 //
 // MessagePack for C++ static resolution routine
 //
-// Copyright (C) 2008-2009 FURUHASHI Sadayuki
+// Copyright (C) 2008-2015 FURUHASHI Sadayuki
 //
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -20,6 +20,8 @@
 
 #include "msgpack/versioning.hpp"
 #include "msgpack/object_fwd.hpp"
+#include "msgpack/adaptor/check_container_size.hpp"
+
 #include <list>
 
 namespace msgpack {
@@ -43,9 +45,10 @@ inline object const& operator>> (object const& o, std::list<T>& v)
 template <typename Stream, typename T>
 inline packer<Stream>& operator<< (packer<Stream>& o, const std::list<T>& v)
 {
-    o.pack_array(v.size());
+    uint32_t size = checked_get_container_size(v.size());
+    o.pack_array(size);
     for(typename std::list<T>::const_iterator it(v.begin()), it_end(v.end());
-            it != it_end; ++it) {
+        it != it_end; ++it) {
         o.pack(*it);
     }
     return o;
@@ -59,10 +62,11 @@ inline void operator<< (object::with_zone& o, const std::list<T>& v)
         o.via.array.ptr = nullptr;
         o.via.array.size = 0;
     } else {
-        object* p = static_cast<object*>(o.zone.allocate_align(sizeof(object)*v.size()));
-        object* const pend = p + v.size();
+        uint32_t size = checked_get_container_size(v.size());
+        object* p = static_cast<object*>(o.zone.allocate_align(sizeof(object)*size));
+        object* const pend = p + size;
         o.via.array.ptr = p;
-        o.via.array.size = v.size();
+        o.via.array.size = size;
         typename std::list<T>::const_iterator it(v.begin());
         do {
             *p = object(*it, o.zone);
