@@ -42,6 +42,37 @@ inline object const& operator>> (object const& o, std::vector<bool>& v)
     return o;
 }
 
+template <typename Stream>
+inline packer<Stream>& operator<< (packer<Stream>& o, const std::vector<bool>& v)
+{
+    o.pack_array(v.size());
+    for(std::vector<bool>::const_iterator it(v.begin()), it_end(v.end());
+        it != it_end; ++it) {
+        o.pack(*it);
+    }
+    return o;
+}
+
+inline void operator<< (object::with_zone& o, const std::vector<bool>& v)
+{
+    o.type = type::ARRAY;
+    if(v.empty()) {
+        o.via.array.ptr = nullptr;
+        o.via.array.size = 0;
+    } else {
+        object* p = static_cast<object*>(o.zone.allocate_align(sizeof(object)*v.size()));
+        object* const pend = p + v.size();
+        o.via.array.ptr = p;
+        o.via.array.size = v.size();
+        std::vector<bool>::const_iterator it(v.begin());
+        do {
+            *p = object(*it, o.zone);
+            ++p;
+            ++it;
+        } while(p < pend);
+    }
+}
+
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 
 }  // namespace msgpack

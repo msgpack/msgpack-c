@@ -28,6 +28,11 @@ MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 object const& operator>> (object const& o, std::vector<bool>& v);
 
+template <typename Stream>
+packer<Stream>& operator<< (packer<Stream>& o, const std::vector<bool>& v);
+
+void operator<< (object::with_zone& o, const std::vector<bool>& v);
+
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 
 }  // namespace msgpack
