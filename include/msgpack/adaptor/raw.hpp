@@ -66,7 +66,7 @@ struct raw_ref {
 
 inline msgpack::object const& operator>> (msgpack::object const& o, msgpack::type::raw_ref& v)
 {
-    if(o.type != msgpack::type::BIN) { throw type_error(); }
+    if(o.type != msgpack::type::BIN) { throw msgpack::type_error(); }
     v.ptr  = o.via.bin.ptr;
     v.size = o.via.bin.size;
     return o;

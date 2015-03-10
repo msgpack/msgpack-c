@@ -28,7 +28,7 @@ MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 inline msgpack::object const& operator>> (msgpack::object const& o, bool& v)
 {
-    if(o.type != msgpack::type::BOOLEAN) { throw type_error(); }
+    if(o.type != msgpack::type::BOOLEAN) { throw msgpack::type_error(); }
     v = o.via.boolean;
     return o;
 }

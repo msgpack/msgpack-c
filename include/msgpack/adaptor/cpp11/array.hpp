@@ -31,8 +31,8 @@ MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 template <typename T, std::size_t N>
 inline msgpack::object const& operator>> (msgpack::object const& o, std::array<T, N>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw type_error(); }
-    if(o.via.array.size != N) { throw type_error(); }
+    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+    if(o.via.array.size != N) { throw msgpack::type_error(); }
     if(o.via.array.size > 0) {
         msgpack::object* p = o.via.array.ptr;
         msgpack::object* const pend = o.via.array.ptr + o.via.array.size;

@@ -100,8 +100,8 @@ template <typename... Args>
 inline msgpack::object const& operator>> (
     msgpack::object const& o,
     std::tuple<Args...>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw type_error(); }
-    if(o.via.array.size < sizeof...(Args)) { throw type_error(); }
+    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+    if(o.via.array.size < sizeof...(Args)) { throw msgpack::type_error(); }
     StdTupleConverter<decltype(v), sizeof...(Args)>::convert(o, v);
     return o;
 }

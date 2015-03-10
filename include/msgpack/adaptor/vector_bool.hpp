@@ -28,7 +28,7 @@ MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 inline msgpack::object const& operator>> (msgpack::object const& o, std::vector<bool>& v)
 {
-    if (o.type != msgpack::type::ARRAY) { throw type_error(); }
+    if (o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
     if (o.via.array.size > 0) {
         v.resize(o.via.array.size);
         msgpack::object* p = o.via.array.ptr;

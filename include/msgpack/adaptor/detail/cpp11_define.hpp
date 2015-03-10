@@ -129,7 +129,7 @@ struct define {
     }
     void msgpack_unpack(msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw type_error(); }
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
 
         define_imp<std::tuple<Args&...>, sizeof...(Args)>::unpack(o, a);
     }
@@ -156,7 +156,7 @@ struct define<> {
     }
     void msgpack_unpack(msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw type_error(); }
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
     }
     void msgpack_object(msgpack::object* o, msgpack::zone&) const
     {

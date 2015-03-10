@@ -90,7 +90,7 @@ struct define<> {
     }
     void msgpack_unpack(msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw type_error(); }
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
     }
     void msgpack_object(msgpack::object* o, msgpack::zone&) const
     {
@@ -115,7 +115,7 @@ struct define<A0> {
     }
     void msgpack_unpack(msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw type_error(); }
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
             msgpack::object *ptr = o.via.array.ptr;
@@ -153,7 +153,7 @@ struct define<A0, A1> {
     }
     void msgpack_unpack(msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw type_error(); }
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
             msgpack::object *ptr = o.via.array.ptr;
@@ -195,7 +195,7 @@ struct define<A0, A1, A2> {
     }
     void msgpack_unpack(msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw type_error(); }
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
             msgpack::object *ptr = o.via.array.ptr;
@@ -241,7 +241,7 @@ struct define<A0, A1, A2, A3> {
     }
     void msgpack_unpack(msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw type_error(); }
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
             msgpack::object *ptr = o.via.array.ptr;
@@ -291,7 +291,7 @@ struct define<A0, A1, A2, A3, A4> {
     }
     void msgpack_unpack(msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw type_error(); }
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
             msgpack::object *ptr = o.via.array.ptr;
@@ -345,7 +345,7 @@ struct define<A0, A1, A2, A3, A4, A5> {
     }
     void msgpack_unpack(msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw type_error(); }
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
             msgpack::object *ptr = o.via.array.ptr;
@@ -403,7 +403,7 @@ struct define<A0, A1, A2, A3, A4, A5, A6> {
     }
     void msgpack_unpack(msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw type_error(); }
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
             msgpack::object *ptr = o.via.array.ptr;
@@ -465,7 +465,7 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7> {
     }
     void msgpack_unpack(msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw type_error(); }
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
             msgpack::object *ptr = o.via.array.ptr;
@@ -531,7 +531,7 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8> {
     }
     void msgpack_unpack(msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw type_error(); }
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
             msgpack::object *ptr = o.via.array.ptr;
@@ -601,7 +601,7 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9> {
     }
     void msgpack_unpack(msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw type_error(); }
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
             msgpack::object *ptr = o.via.array.ptr;
@@ -675,7 +675,7 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10> {
     }
     void msgpack_unpack(msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw type_error(); }
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
             msgpack::object *ptr = o.via.array.ptr;
@@ -753,7 +753,7 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11> {
     }
     void msgpack_unpack(msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw type_error(); }
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
             msgpack::object *ptr = o.via.array.ptr;
@@ -835,7 +835,7 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12> {
     }
     void msgpack_unpack(msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw type_error(); }
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
             msgpack::object *ptr = o.via.array.ptr;
@@ -921,7 +921,7 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13> {
     }
     void msgpack_unpack(msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw type_error(); }
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
             msgpack::object *ptr = o.via.array.ptr;
@@ -1011,7 +1011,7 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14> {
     }
     void msgpack_unpack(msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw type_error(); }
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
             msgpack::object *ptr = o.via.array.ptr;
@@ -1105,7 +1105,7 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A
     }
     void msgpack_unpack(msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw type_error(); }
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
             msgpack::object *ptr = o.via.array.ptr;
@@ -1203,7 +1203,7 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A
     }
     void msgpack_unpack(msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw type_error(); }
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
             msgpack::object *ptr = o.via.array.ptr;
@@ -1305,7 +1305,7 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A
     }
     void msgpack_unpack(msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw type_error(); }
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
             msgpack::object *ptr = o.via.array.ptr;
@@ -1411,7 +1411,7 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A
     }
     void msgpack_unpack(msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw type_error(); }
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
             msgpack::object *ptr = o.via.array.ptr;
@@ -1521,7 +1521,7 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A
     }
     void msgpack_unpack(msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw type_error(); }
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
             msgpack::object *ptr = o.via.array.ptr;
@@ -1635,7 +1635,7 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A
     }
     void msgpack_unpack(msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw type_error(); }
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
             msgpack::object *ptr = o.via.array.ptr;
@@ -1753,7 +1753,7 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A
     }
     void msgpack_unpack(msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw type_error(); }
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
             msgpack::object *ptr = o.via.array.ptr;
@@ -1875,7 +1875,7 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A
     }
     void msgpack_unpack(msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw type_error(); }
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
             msgpack::object *ptr = o.via.array.ptr;
@@ -2001,7 +2001,7 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A
     }
     void msgpack_unpack(msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw type_error(); }
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
             msgpack::object *ptr = o.via.array.ptr;
@@ -2131,7 +2131,7 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A
     }
     void msgpack_unpack(msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw type_error(); }
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
             msgpack::object *ptr = o.via.array.ptr;
@@ -2265,7 +2265,7 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A
     }
     void msgpack_unpack(msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw type_error(); }
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
             msgpack::object *ptr = o.via.array.ptr;
@@ -2403,7 +2403,7 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A
     }
     void msgpack_unpack(msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw type_error(); }
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
             msgpack::object *ptr = o.via.array.ptr;
@@ -2545,7 +2545,7 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A
     }
     void msgpack_unpack(msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw type_error(); }
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
             msgpack::object *ptr = o.via.array.ptr;
@@ -2691,7 +2691,7 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A
     }
     void msgpack_unpack(msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw type_error(); }
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
             msgpack::object *ptr = o.via.array.ptr;
@@ -2841,7 +2841,7 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A
     }
     void msgpack_unpack(msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw type_error(); }
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
             msgpack::object *ptr = o.via.array.ptr;
@@ -2995,7 +2995,7 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A
     }
     void msgpack_unpack(msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw type_error(); }
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
             msgpack::object *ptr = o.via.array.ptr;
@@ -3153,7 +3153,7 @@ struct define<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A
     }
     void msgpack_unpack(msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw type_error(); }
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
             msgpack::object *ptr = o.via.array.ptr;

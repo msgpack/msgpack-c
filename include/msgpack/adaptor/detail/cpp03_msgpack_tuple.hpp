@@ -10586,7 +10586,7 @@ inline tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A1
 inline msgpack::object const& operator>> (
         msgpack::object const& o,
         type::tuple<>&) {
-    if(o.type != msgpack::type::ARRAY) { throw type_error(); }
+    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
     return o;
 }
 
@@ -10594,8 +10594,8 @@ template <typename A0>
 inline msgpack::object const& operator>> (
         msgpack::object const& o,
         type::tuple<A0>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw type_error(); }
-    if(o.via.array.size < 1) { throw type_error(); }
+    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+    if(o.via.array.size < 1) { throw msgpack::type_error(); }
     
     o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
     return o;
@@ -10605,8 +10605,8 @@ template <typename A0, typename A1>
 inline msgpack::object const& operator>> (
         msgpack::object const& o,
         type::tuple<A0, A1>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw type_error(); }
-    if(o.via.array.size < 2) { throw type_error(); }
+    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+    if(o.via.array.size < 2) { throw msgpack::type_error(); }
     
     o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
     o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
@@ -10617,8 +10617,8 @@ template <typename A0, typename A1, typename A2>
 inline msgpack::object const& operator>> (
         msgpack::object const& o,
         type::tuple<A0, A1, A2>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw type_error(); }
-    if(o.via.array.size < 3) { throw type_error(); }
+    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+    if(o.via.array.size < 3) { throw msgpack::type_error(); }
     
     o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
     o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
@@ -10630,8 +10630,8 @@ template <typename A0, typename A1, typename A2, typename A3>
 inline msgpack::object const& operator>> (
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw type_error(); }
-    if(o.via.array.size < 4) { throw type_error(); }
+    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+    if(o.via.array.size < 4) { throw msgpack::type_error(); }
     
     o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
     o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
@@ -10644,8 +10644,8 @@ template <typename A0, typename A1, typename A2, typename A3, typename A4>
 inline msgpack::object const& operator>> (
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw type_error(); }
-    if(o.via.array.size < 5) { throw type_error(); }
+    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+    if(o.via.array.size < 5) { throw msgpack::type_error(); }
     
     o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
     o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
@@ -10659,8 +10659,8 @@ template <typename A0, typename A1, typename A2, typename A3, typename A4, typen
 inline msgpack::object const& operator>> (
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4, A5>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw type_error(); }
-    if(o.via.array.size < 6) { throw type_error(); }
+    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+    if(o.via.array.size < 6) { throw msgpack::type_error(); }
     
     o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
     o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
@@ -10675,8 +10675,8 @@ template <typename A0, typename A1, typename A2, typename A3, typename A4, typen
 inline msgpack::object const& operator>> (
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4, A5, A6>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw type_error(); }
-    if(o.via.array.size < 7) { throw type_error(); }
+    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+    if(o.via.array.size < 7) { throw msgpack::type_error(); }
     
     o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
     o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
@@ -10692,8 +10692,8 @@ template <typename A0, typename A1, typename A2, typename A3, typename A4, typen
 inline msgpack::object const& operator>> (
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4, A5, A6, A7>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw type_error(); }
-    if(o.via.array.size < 8) { throw type_error(); }
+    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+    if(o.via.array.size < 8) { throw msgpack::type_error(); }
     
     o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
     o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
@@ -10710,8 +10710,8 @@ template <typename A0, typename A1, typename A2, typename A3, typename A4, typen
 inline msgpack::object const& operator>> (
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw type_error(); }
-    if(o.via.array.size < 9) { throw type_error(); }
+    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+    if(o.via.array.size < 9) { throw msgpack::type_error(); }
     
     o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
     o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
@@ -10729,8 +10729,8 @@ template <typename A0, typename A1, typename A2, typename A3, typename A4, typen
 inline msgpack::object const& operator>> (
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw type_error(); }
-    if(o.via.array.size < 10) { throw type_error(); }
+    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+    if(o.via.array.size < 10) { throw msgpack::type_error(); }
     
     o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
     o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
@@ -10749,8 +10749,8 @@ template <typename A0, typename A1, typename A2, typename A3, typename A4, typen
 inline msgpack::object const& operator>> (
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw type_error(); }
-    if(o.via.array.size < 11) { throw type_error(); }
+    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+    if(o.via.array.size < 11) { throw msgpack::type_error(); }
     
     o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
     o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
@@ -10770,8 +10770,8 @@ template <typename A0, typename A1, typename A2, typename A3, typename A4, typen
 inline msgpack::object const& operator>> (
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw type_error(); }
-    if(o.via.array.size < 12) { throw type_error(); }
+    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+    if(o.via.array.size < 12) { throw msgpack::type_error(); }
     
     o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
     o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
@@ -10792,8 +10792,8 @@ template <typename A0, typename A1, typename A2, typename A3, typename A4, typen
 inline msgpack::object const& operator>> (
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw type_error(); }
-    if(o.via.array.size < 13) { throw type_error(); }
+    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+    if(o.via.array.size < 13) { throw msgpack::type_error(); }
     
     o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
     o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
@@ -10815,8 +10815,8 @@ template <typename A0, typename A1, typename A2, typename A3, typename A4, typen
 inline msgpack::object const& operator>> (
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw type_error(); }
-    if(o.via.array.size < 14) { throw type_error(); }
+    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+    if(o.via.array.size < 14) { throw msgpack::type_error(); }
     
     o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
     o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
@@ -10839,8 +10839,8 @@ template <typename A0, typename A1, typename A2, typename A3, typename A4, typen
 inline msgpack::object const& operator>> (
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw type_error(); }
-    if(o.via.array.size < 15) { throw type_error(); }
+    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+    if(o.via.array.size < 15) { throw msgpack::type_error(); }
     
     o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
     o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
@@ -10864,8 +10864,8 @@ template <typename A0, typename A1, typename A2, typename A3, typename A4, typen
 inline msgpack::object const& operator>> (
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw type_error(); }
-    if(o.via.array.size < 16) { throw type_error(); }
+    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+    if(o.via.array.size < 16) { throw msgpack::type_error(); }
     
     o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
     o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
@@ -10890,8 +10890,8 @@ template <typename A0, typename A1, typename A2, typename A3, typename A4, typen
 inline msgpack::object const& operator>> (
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw type_error(); }
-    if(o.via.array.size < 17) { throw type_error(); }
+    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+    if(o.via.array.size < 17) { throw msgpack::type_error(); }
     
     o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
     o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
@@ -10917,8 +10917,8 @@ template <typename A0, typename A1, typename A2, typename A3, typename A4, typen
 inline msgpack::object const& operator>> (
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw type_error(); }
-    if(o.via.array.size < 18) { throw type_error(); }
+    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+    if(o.via.array.size < 18) { throw msgpack::type_error(); }
     
     o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
     o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
@@ -10945,8 +10945,8 @@ template <typename A0, typename A1, typename A2, typename A3, typename A4, typen
 inline msgpack::object const& operator>> (
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw type_error(); }
-    if(o.via.array.size < 19) { throw type_error(); }
+    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+    if(o.via.array.size < 19) { throw msgpack::type_error(); }
     
     o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
     o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
@@ -10974,8 +10974,8 @@ template <typename A0, typename A1, typename A2, typename A3, typename A4, typen
 inline msgpack::object const& operator>> (
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw type_error(); }
-    if(o.via.array.size < 20) { throw type_error(); }
+    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+    if(o.via.array.size < 20) { throw msgpack::type_error(); }
     
     o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
     o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
@@ -11004,8 +11004,8 @@ template <typename A0, typename A1, typename A2, typename A3, typename A4, typen
 inline msgpack::object const& operator>> (
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw type_error(); }
-    if(o.via.array.size < 21) { throw type_error(); }
+    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+    if(o.via.array.size < 21) { throw msgpack::type_error(); }
     
     o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
     o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
@@ -11035,8 +11035,8 @@ template <typename A0, typename A1, typename A2, typename A3, typename A4, typen
 inline msgpack::object const& operator>> (
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw type_error(); }
-    if(o.via.array.size < 22) { throw type_error(); }
+    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+    if(o.via.array.size < 22) { throw msgpack::type_error(); }
     
     o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
     o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
@@ -11067,8 +11067,8 @@ template <typename A0, typename A1, typename A2, typename A3, typename A4, typen
 inline msgpack::object const& operator>> (
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw type_error(); }
-    if(o.via.array.size < 23) { throw type_error(); }
+    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+    if(o.via.array.size < 23) { throw msgpack::type_error(); }
     
     o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
     o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
@@ -11100,8 +11100,8 @@ template <typename A0, typename A1, typename A2, typename A3, typename A4, typen
 inline msgpack::object const& operator>> (
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw type_error(); }
-    if(o.via.array.size < 24) { throw type_error(); }
+    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+    if(o.via.array.size < 24) { throw msgpack::type_error(); }
     
     o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
     o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
@@ -11134,8 +11134,8 @@ template <typename A0, typename A1, typename A2, typename A3, typename A4, typen
 inline msgpack::object const& operator>> (
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw type_error(); }
-    if(o.via.array.size < 25) { throw type_error(); }
+    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+    if(o.via.array.size < 25) { throw msgpack::type_error(); }
     
     o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
     o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
@@ -11169,8 +11169,8 @@ template <typename A0, typename A1, typename A2, typename A3, typename A4, typen
 inline msgpack::object const& operator>> (
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw type_error(); }
-    if(o.via.array.size < 26) { throw type_error(); }
+    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+    if(o.via.array.size < 26) { throw msgpack::type_error(); }
     
     o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
     o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
@@ -11205,8 +11205,8 @@ template <typename A0, typename A1, typename A2, typename A3, typename A4, typen
 inline msgpack::object const& operator>> (
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw type_error(); }
-    if(o.via.array.size < 27) { throw type_error(); }
+    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+    if(o.via.array.size < 27) { throw msgpack::type_error(); }
     
     o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
     o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
@@ -11242,8 +11242,8 @@ template <typename A0, typename A1, typename A2, typename A3, typename A4, typen
 inline msgpack::object const& operator>> (
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw type_error(); }
-    if(o.via.array.size < 28) { throw type_error(); }
+    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+    if(o.via.array.size < 28) { throw msgpack::type_error(); }
     
     o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
     o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
@@ -11280,8 +11280,8 @@ template <typename A0, typename A1, typename A2, typename A3, typename A4, typen
 inline msgpack::object const& operator>> (
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw type_error(); }
-    if(o.via.array.size < 29) { throw type_error(); }
+    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+    if(o.via.array.size < 29) { throw msgpack::type_error(); }
     
     o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
     o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
@@ -11319,8 +11319,8 @@ template <typename A0, typename A1, typename A2, typename A3, typename A4, typen
 inline msgpack::object const& operator>> (
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw type_error(); }
-    if(o.via.array.size < 30) { throw type_error(); }
+    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+    if(o.via.array.size < 30) { throw msgpack::type_error(); }
     
     o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
     o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
@@ -11359,8 +11359,8 @@ template <typename A0, typename A1, typename A2, typename A3, typename A4, typen
 inline msgpack::object const& operator>> (
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw type_error(); }
-    if(o.via.array.size < 31) { throw type_error(); }
+    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+    if(o.via.array.size < 31) { throw msgpack::type_error(); }
     
     o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
     o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
@@ -11400,8 +11400,8 @@ template <typename A0, typename A1, typename A2, typename A3, typename A4, typen
 inline msgpack::object const& operator>> (
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30, A31>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw type_error(); }
-    if(o.via.array.size < 32) { throw type_error(); }
+    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+    if(o.via.array.size < 32) { throw msgpack::type_error(); }
     
     o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
     o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());

@@ -31,7 +31,7 @@ MSGPACK_API_VERSION_NAMESPACE(v1) {
 template <typename K, typename V>
 inline msgpack::object const& operator>> (msgpack::object const& o, std::unordered_map<K, V>& v)
 {
-    if(o.type != msgpack::type::MAP) { throw type_error(); }
+    if(o.type != msgpack::type::MAP) { throw msgpack::type_error(); }
     msgpack::object_kv* p(o.via.map.ptr);
     msgpack::object_kv* const pend(o.via.map.ptr + o.via.map.size);
     std::unordered_map<K, V> tmp;
@@ -84,7 +84,7 @@ inline void operator<< (msgpack::object::with_zone& o, const std::unordered_map<
 template <typename K, typename V>
 inline msgpack::object const& operator>> (msgpack::object const& o, std::unordered_multimap<K, V>& v)
 {
-    if(o.type != msgpack::type::MAP) { throw type_error(); }
+    if(o.type != msgpack::type::MAP) { throw msgpack::type_error(); }
     msgpack::object_kv* p(o.via.map.ptr);
     msgpack::object_kv* const pend(o.via.map.ptr + o.via.map.size);
     std::unordered_multimap<K, V> tmp;

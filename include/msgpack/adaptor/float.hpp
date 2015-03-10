@@ -41,7 +41,7 @@ inline msgpack::object const& operator>> (msgpack::object const& o, float& v)
         v = static_cast<float>(o.via.i64);
     }
     else {
-        throw type_error();
+        throw msgpack::type_error();
     }
     return o;
 }
@@ -66,7 +66,7 @@ inline msgpack::object const& operator>> (msgpack::object const& o, double& v)
         v = static_cast<double>(o.via.i64);
     }
     else {
-        throw type_error();
+        throw msgpack::type_error();
     }
     return o;
 }

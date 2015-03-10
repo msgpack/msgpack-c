@@ -31,7 +31,7 @@ MSGPACK_API_VERSION_NAMESPACE(v1) {
 template <typename T>
 inline msgpack::object const& operator>> (msgpack::object const& o, std::unordered_set<T>& v)
 {
-    if(o.type != msgpack::type::ARRAY) { throw type_error(); }
+    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
     msgpack::object* p = o.via.array.ptr + o.via.array.size;
     msgpack::object* const pbegin = o.via.array.ptr;
     std::unordered_set<T> tmp;
@@ -81,7 +81,7 @@ inline void operator<< (msgpack::object::with_zone& o, const std::unordered_set<
 template <typename T>
 inline msgpack::object const& operator>> (msgpack::object const& o, std::unordered_multiset<T>& v)
 {
-    if(o.type != msgpack::type::ARRAY) { throw type_error(); }
+    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
     msgpack::object* p = o.via.array.ptr + o.via.array.size;
     msgpack::object* const pbegin = o.via.array.ptr;
     std::unordered_multiset<T> tmp;

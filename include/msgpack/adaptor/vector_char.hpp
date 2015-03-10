@@ -40,7 +40,7 @@ inline msgpack::object const& operator>> (msgpack::object const& o, std::vector<
         std::memcpy(&v.front(), o.via.str.ptr, o.via.str.size);
         break;
     default:
-        throw type_error();
+        throw msgpack::type_error();
         break;
     }
     return o;

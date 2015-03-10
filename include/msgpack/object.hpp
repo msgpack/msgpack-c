@@ -630,7 +630,7 @@ inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const ms
         return o;
 
     default:
-        throw type_error();
+        throw msgpack::type_error();
     }
 }
 

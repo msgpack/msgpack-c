@@ -34,7 +34,7 @@ struct nil { };
 
 inline msgpack::object const& operator>> (msgpack::object const& o, type::nil&)
 {
-    if(o.type != msgpack::type::NIL) { throw type_error(); }
+    if(o.type != msgpack::type::NIL) { throw msgpack::type_error(); }
     return o;
 }
 
