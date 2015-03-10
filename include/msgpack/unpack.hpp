@@ -149,6 +149,15 @@ struct ext_size_overflow : public size_overflow {
 #endif
 };
 
+struct depth_size_overflow : public size_overflow {
+    depth_size_overflow(const std::string& msg)
+        :size_overflow(msg) {}
+#if !defined(MSGPACK_USE_CPP03)
+    depth_size_overflow(const char* msg)
+        :size_overflow(msg) {}
+#endif
+};
+
 class unpack_limit {
 public:
     unpack_limit(
@@ -156,17 +165,20 @@ public:
         std::size_t map = 0xffffffff,
         std::size_t str = 0xffffffff,
         std::size_t bin = 0xffffffff,
-        std::size_t ext = 0xffffffff)
+        std::size_t ext = 0xffffffff,
+        std::size_t depth = 0xffffffff)
         :array_(array),
          map_(map),
          str_(str),
          bin_(bin),
-         ext_(ext) {}
+         ext_(ext),
+         depth_(depth) {}
     std::size_t array() const { return array_; }
     std::size_t map() const { return map_; }
     std::size_t str() const { return str_; }
     std::size_t bin() const { return bin_; }
     std::size_t ext() const { return ext_; }
+    std::size_t depth() const { return depth_; }
 
 private:
     std::size_t array_;
@@ -174,6 +186,7 @@ private:
     std::size_t str_;
     std::size_t bin_;
     std::size_t ext_;
+    std::size_t depth_;
 };
 
 namespace detail {
@@ -492,7 +505,12 @@ private:
         else {
             m_stack.back().set_container_type(container_type);
             m_stack.back().set_count(tmp);
-            m_stack.push_back(unpack_stack());
+            if (m_stack.size() <= m_user.limit().depth()) {
+                m_stack.push_back(unpack_stack());
+            }
+            else {
+                throw msgpack::depth_size_overflow("depth size overflow");
+            }
             m_cs = MSGPACK_CS_HEADER;
             ++m_current;
         }

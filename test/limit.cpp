@@ -269,6 +269,52 @@ TEST(limit, unpack_ext_no_over_64_bit)
     }
 }
 
+TEST(limit, unpack_depth_no_over)
+{
+    std::stringstream ss;
+    std::vector<int> inner;
+    inner.push_back(1);
+    std::vector<std::vector<int> > outer;
+    outer.push_back(inner);
+    msgpack::pack(ss, outer);
+    try {
+        msgpack::unpacked unp;
+        msgpack::unpack(unp, ss.str().c_str(), ss.str().size(), nullptr, nullptr,
+                        msgpack::unpack_limit(1, 0, 0, 0, 0, 2));
+        EXPECT_TRUE(true);
+    }
+    catch(msgpack::depth_size_overflow const&) {
+        EXPECT_TRUE(false);
+    }
+    catch(...) {
+        EXPECT_TRUE(false);
+    }
+}
+
+TEST(limit, unpack_depth_over)
+{
+    std::stringstream ss;
+    std::vector<int> inner;
+    inner.push_back(1);
+    std::vector<std::vector<int> > outer;
+    outer.push_back(inner);
+    msgpack::pack(ss, outer);
+    try {
+        msgpack::unpacked unp;
+        msgpack::unpack(unp, ss.str().c_str(), ss.str().size(), nullptr, nullptr,
+                        msgpack::unpack_limit(1, 0, 0, 0, 0, 1));
+        EXPECT_TRUE(false);
+    }
+    catch(msgpack::depth_size_overflow const&) {
+        EXPECT_TRUE(true);
+    }
+    catch(...) {
+        EXPECT_TRUE(false);
+    }
+}
+
+
+
 #if !defined(MSGPACK_USE_CPP03)
 
 TEST(limit, unpack_array_over_cpp11_no_off_no_ref)
