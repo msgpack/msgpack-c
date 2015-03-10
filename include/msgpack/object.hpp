@@ -523,13 +523,13 @@ object::object(const T& v, zone* z)
 }
 
 
-inline object::object(msgpack_object o)
+inline object::object(const msgpack_object& o)
 {
     // FIXME beter way?
     std::memcpy(this, &o, sizeof(o));
 }
 
-inline void operator<< (object& o, msgpack_object v)
+inline void operator<< (object& o, const msgpack_object& v)
 {
     // FIXME beter way?
     std::memcpy(&o, &v, sizeof(v));

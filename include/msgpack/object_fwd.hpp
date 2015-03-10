@@ -110,7 +110,7 @@ struct object {
 
     object();
 
-    object(msgpack_object o);
+    object(const msgpack_object& o);
 
     template <typename T>
     explicit object(const T& v);
