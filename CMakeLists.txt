@@ -152,6 +152,8 @@ IF (MSGPACK_ENABLE_CXX)
         include/msgpack/adaptor/tr1/unordered_set_fwd.hpp
         include/msgpack/adaptor/vector.hpp
         include/msgpack/adaptor/vector_fwd.hpp
+        include/msgpack/adaptor/vector_bool.hpp
+        include/msgpack/adaptor/vector_bool_fwd.hpp
         include/msgpack/adaptor/vector_char.hpp
         include/msgpack/adaptor/vector_char_fwd.hpp
         include/msgpack/cpp_config.hpp
