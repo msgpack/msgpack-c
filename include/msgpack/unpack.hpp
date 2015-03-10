@@ -242,7 +242,7 @@ inline void unpack_false(msgpack::object& o)
 
 struct unpack_array {
     void operator()(unpack_user& u, uint32_t n, msgpack::object& o) const {
-        if (n > u.limit().array()) throw array_size_overflow("array size overflow");
+        if (n > u.limit().array()) throw msgpack::array_size_overflow("array size overflow");
         o.type = msgpack::type::ARRAY;
         o.via.array.size = 0;
         o.via.array.ptr = static_cast<msgpack::object*>(u.zone().allocate_align(n*sizeof(msgpack::object)));
@@ -260,7 +260,7 @@ inline void unpack_array_item(msgpack::object& c, msgpack::object const& o)
 
 struct unpack_map {
     void operator()(unpack_user& u, uint32_t n, msgpack::object& o) const {
-        if (n > u.limit().map()) throw map_size_overflow("map size overflow");
+        if (n > u.limit().map()) throw msgpack::map_size_overflow("map size overflow");
         o.type = msgpack::type::MAP;
         o.via.map.size = 0;
         o.via.map.ptr = static_cast<msgpack::object_kv*>(u.zone().allocate_align(n*sizeof(msgpack::object_kv)));
@@ -287,7 +287,7 @@ inline void unpack_str(unpack_user& u, const char* p, uint32_t l, msgpack::objec
         u.set_referenced(true);
     }
     else {
-        if (l > u.limit().str()) throw str_size_overflow("str size overflow");
+        if (l > u.limit().str()) throw msgpack::str_size_overflow("str size overflow");
         char* tmp = static_cast<char*>(u.zone().allocate_align(l));
         std::memcpy(tmp, p, l);
         o.via.str.ptr = tmp;
@@ -303,7 +303,7 @@ inline void unpack_bin(unpack_user& u, const char* p, uint32_t l, msgpack::objec
         u.set_referenced(true);
     }
     else {
-        if (l > u.limit().bin()) throw bin_size_overflow("bin size overflow");
+        if (l > u.limit().bin()) throw msgpack::bin_size_overflow("bin size overflow");
         char* tmp = static_cast<char*>(u.zone().allocate_align(l));
         std::memcpy(tmp, p, l);
         o.via.bin.ptr = tmp;
@@ -319,7 +319,7 @@ inline void unpack_ext(unpack_user& u, const char* p, std::size_t l, msgpack::ob
         u.set_referenced(true);
     }
     else {
-        if (l > u.limit().ext()) throw ext_size_overflow("ext size overflow");
+        if (l > u.limit().ext()) throw msgpack::ext_size_overflow("ext size overflow");
         char* tmp = static_cast<char*>(u.zone().allocate_align(l));
         std::memcpy(tmp, p, l);
         o.via.ext.ptr = tmp;
@@ -558,7 +558,7 @@ private:
 
 template <>
 inline void context::check_ext_size<4>(std::size_t size) {
-    if (size == 0xffffffff) throw ext_size_overflow("ext size overflow");
+    if (size == 0xffffffff) throw msgpack::ext_size_overflow("ext size overflow");
 }
 
 inline int context::execute(const char* data, std::size_t len, std::size_t& off)
@@ -1342,7 +1342,7 @@ inline bool unpacker::next(unpacked& result, bool& referenced)
     referenced = false;
     int ret = execute_imp();
     if(ret < 0) {
-        throw parse_error("parse error");
+        throw msgpack::parse_error("parse error");
     }
 
     if(ret == 0) {
@@ -1375,7 +1375,7 @@ inline bool unpacker::execute()
 {
     int ret = execute_imp();
     if(ret < 0) {
-        throw parse_error("parse error");
+        throw msgpack::parse_error("parse error");
     } else if(ret == 0) {
         return false;
     } else {
@@ -1535,10 +1535,10 @@ inline unpacked unpack(
     case UNPACK_EXTRA_BYTES:
         return unpacked(obj, msgpack::move(z));
     case UNPACK_CONTINUE:
-        throw insufficient_bytes("insufficient bytes");
+        throw msgpack::insufficient_bytes("insufficient bytes");
     case UNPACK_PARSE_ERROR:
     default:
-        throw parse_error("parse error");
+        throw msgpack::parse_error("parse error");
     }
     return unpacked();
 }
@@ -1590,10 +1590,10 @@ inline void unpack(unpacked& result,
         result.zone() = msgpack::move(z);
         return;
     case UNPACK_CONTINUE:
-        throw insufficient_bytes("insufficient bytes");
+        throw msgpack::insufficient_bytes("insufficient bytes");
     case UNPACK_PARSE_ERROR:
     default:
-        throw parse_error("parse error");
+        throw msgpack::parse_error("parse error");
     }
 }
 
@@ -1639,10 +1639,10 @@ inline msgpack::object unpack(
     case UNPACK_EXTRA_BYTES:
         return obj;
     case UNPACK_CONTINUE:
-        throw insufficient_bytes("insufficient bytes");
+        throw msgpack::insufficient_bytes("insufficient bytes");
     case UNPACK_PARSE_ERROR:
     default:
-        throw parse_error("parse error");
+        throw msgpack::parse_error("parse error");
     }
     return obj;
 }
