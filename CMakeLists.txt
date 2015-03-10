@@ -83,6 +83,7 @@ LIST (APPEND msgpack_HEADERS
     include/msgpack/unpack_template.h
     include/msgpack/util.h
     include/msgpack/sysdep.h
+    include/msgpack/gcc_atomic.h
     include/msgpack/sbuffer.h
     include/msgpack/version.h
     include/msgpack/vrefbuffer.h
