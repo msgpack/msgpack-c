@@ -60,7 +60,7 @@ inline void operator<< (object::with_zone& o, const std::string& v)
     char* ptr = static_cast<char*>(o.zone.allocate_align(size));
     o.via.str.ptr = ptr;
     o.via.str.size = size;
-    memcpy(ptr, v.data(), size);
+    std::memcpy(ptr, v.data(), v.size());
 }
 
 inline void operator<< (object& o, const std::string& v)

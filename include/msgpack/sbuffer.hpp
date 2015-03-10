@@ -55,7 +55,7 @@ public:
         if(m_alloc - m_size < len) {
             expand_buffer(len);
         }
-        ::memcpy(m_data + m_size, buf, len);
+        std::memcpy(m_data + m_size, buf, len);
         m_size += len;
     }
 

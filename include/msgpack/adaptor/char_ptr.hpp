@@ -44,7 +44,7 @@ inline void operator<< (object::with_zone& o, const char* v)
     char* ptr = static_cast<char*>(o.zone.allocate_align(size));
     o.via.str.ptr = ptr;
     o.via.str.size = size;
-    memcpy(ptr, v, size);
+    std::memcpy(ptr, v, size);
 }
 
 inline void operator<< (object& o, const char* v)

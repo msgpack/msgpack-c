@@ -212,14 +212,14 @@ inline void operator<< (object::with_zone& o, const object& v)
     case type::POSITIVE_INTEGER:
     case type::NEGATIVE_INTEGER:
     case type::FLOAT:
-        ::memcpy(&o.via, &v.via, sizeof(v.via));
+        std::memcpy(&o.via, &v.via, sizeof(v.via));
         return;
 
     case type::STR: {
         char* ptr = static_cast<char*>(o.zone.allocate_align(v.via.str.size));
         o.via.str.ptr = ptr;
         o.via.str.size = v.via.str.size;
-        ::memcpy(ptr, v.via.str.ptr, v.via.str.size);
+        std::memcpy(ptr, v.via.str.ptr, v.via.str.size);
         return;
     }
 
@@ -227,7 +227,7 @@ inline void operator<< (object::with_zone& o, const object& v)
         char* ptr = static_cast<char*>(o.zone.allocate_align(v.via.bin.size));
         o.via.bin.ptr = ptr;
         o.via.bin.size = v.via.bin.size;
-        ::memcpy(ptr, v.via.bin.ptr, v.via.bin.size);
+        std::memcpy(ptr, v.via.bin.ptr, v.via.bin.size);
         return;
     }
 
@@ -235,7 +235,7 @@ inline void operator<< (object::with_zone& o, const object& v)
         char* ptr = static_cast<char*>(o.zone.allocate_align(v.via.ext.size + 1));
         o.via.ext.ptr = ptr;
         o.via.ext.size = v.via.ext.size;
-        ::memcpy(ptr, v.via.ext.ptr, v.via.ext.size + 1);
+        std::memcpy(ptr, v.via.ext.ptr, v.via.ext.size + 1);
         return;
     }
 
@@ -347,15 +347,15 @@ inline bool operator==(const object& x, const object& y)
 
     case type::STR:
         return x.via.str.size == y.via.str.size &&
-            memcmp(x.via.str.ptr, y.via.str.ptr, x.via.str.size) == 0;
+            std::memcmp(x.via.str.ptr, y.via.str.ptr, x.via.str.size) == 0;
 
     case type::BIN:
         return x.via.bin.size == y.via.bin.size &&
-            memcmp(x.via.bin.ptr, y.via.bin.ptr, x.via.bin.size) == 0;
+            std::memcmp(x.via.bin.ptr, y.via.bin.ptr, x.via.bin.size) == 0;
 
     case type::EXT:
         return x.via.ext.size == y.via.ext.size &&
-            memcmp(x.via.ext.ptr, y.via.ext.ptr, x.via.ext.size) == 0;
+            std::memcmp(x.via.ext.ptr, y.via.ext.ptr, x.via.ext.size) == 0;
 
     case type::ARRAY:
         if(x.via.array.size != y.via.array.size) {
@@ -526,20 +526,20 @@ object::object(const T& v, zone* z)
 inline object::object(msgpack_object o)
 {
     // FIXME beter way?
-    ::memcpy(this, &o, sizeof(o));
+    std::memcpy(this, &o, sizeof(o));
 }
 
 inline void operator<< (object& o, msgpack_object v)
 {
     // FIXME beter way?
-    ::memcpy(&o, &v, sizeof(v));
+    std::memcpy(&o, &v, sizeof(v));
 }
 
 inline object::operator msgpack_object() const
 {
     // FIXME beter way?
     msgpack_object obj;
-    ::memcpy(&obj, this, sizeof(obj));
+    std::memcpy(&obj, this, sizeof(obj));
     return obj;
 }
 

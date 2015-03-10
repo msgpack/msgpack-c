@@ -160,7 +160,7 @@ public:
         }
 
         char* m = ib->ptr;
-        ::memcpy(m, buf, len);
+        std::memcpy(m, buf, len);
         ib->free -= len;
         ib->ptr      += len;
 
@@ -222,7 +222,7 @@ public:
             to->m_tail  = nvec + tosize;
         }
 
-        ::memcpy(to->m_tail, m_array, sizeof(iovec)*nused);
+        std::memcpy(to->m_tail, m_array, sizeof(iovec)*nused);
 
         to->m_tail += nused;
         m_tail = m_array;
