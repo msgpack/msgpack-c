@@ -26,12 +26,12 @@ namespace msgpack {
 
 MSGPACK_API_VERSION_NAMESPACE(v1) {
 
-inline object const& operator>> (object const& o, std::vector<bool>& v)
+inline msgpack::object const& operator>> (msgpack::object const& o, std::vector<bool>& v)
 {
-    if (o.type != type::ARRAY) { throw type_error(); }
+    if (o.type != msgpack::type::ARRAY) { throw type_error(); }
     if (o.via.array.size > 0) {
         v.resize(o.via.array.size);
-        object* p = o.via.array.ptr;
+        msgpack::object* p = o.via.array.ptr;
         for (std::vector<bool>::iterator it = v.begin(), end = v.end();
              it != end;
              ++it) {
@@ -43,7 +43,7 @@ inline object const& operator>> (object const& o, std::vector<bool>& v)
 }
 
 template <typename Stream>
-inline packer<Stream>& operator<< (packer<Stream>& o, const std::vector<bool>& v)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const std::vector<bool>& v)
 {
     o.pack_array(v.size());
     for(std::vector<bool>::const_iterator it(v.begin()), it_end(v.end());
@@ -53,15 +53,15 @@ inline packer<Stream>& operator<< (packer<Stream>& o, const std::vector<bool>& v
     return o;
 }
 
-inline void operator<< (object::with_zone& o, const std::vector<bool>& v)
+inline void operator<< (msgpack::object::with_zone& o, const std::vector<bool>& v)
 {
-    o.type = type::ARRAY;
+    o.type = msgpack::type::ARRAY;
     if(v.empty()) {
         o.via.array.ptr = nullptr;
         o.via.array.size = 0;
     } else {
-        object* p = static_cast<object*>(o.zone.allocate_align(sizeof(object)*v.size()));
-        object* const pend = p + v.size();
+        msgpack::object* p = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*v.size()));
+        msgpack::object* const pend = p + v.size();
         o.via.array.ptr = p;
         o.via.array.size = v.size();
         std::vector<bool>::const_iterator it(v.begin());

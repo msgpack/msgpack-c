@@ -47,19 +47,19 @@
 #define MSGPACK_ADD_ENUM(enum) \
   namespace msgpack { \
   MSGPACK_API_VERSION_NAMESPACE(v1) { \
-    inline object const& operator>> (object const& o, enum& v) \
+    inline msgpack::object const& operator>> (msgpack::object const& o, enum& v) \
     { \
       std::underlying_type<enum>::type tmp; \
       o >> tmp; \
       v = static_cast<enum>(tmp);   \
       return o; \
     } \
-    inline void operator<< (object& o, const enum& v) \
+    inline void operator<< (msgpack::object& o, const enum& v) \
     { \
       auto tmp = static_cast<std::underlying_type<enum>::type>(v); \
       o << tmp; \
     } \
-    inline void operator<< (object::with_zone& o, const enum& v) \
+    inline void operator<< (msgpack::object::with_zone& o, const enum& v) \
     { \
       auto tmp = static_cast<std::underlying_type<enum>::type>(v); \
       o << tmp; \
@@ -67,7 +67,7 @@
     namespace detail { \
       template <typename Stream> \
       struct packer_serializer<Stream, enum> { \
-        static packer<Stream>& pack(packer<Stream>& o, const enum& v) { \
+        static msgpack::packer<Stream>& pack(msgpack::packer<Stream>& o, const enum& v) { \
           return o << static_cast<std::underlying_type<enum>::type>(v); \
         } \
       }; \
@@ -129,14 +129,14 @@ struct define {
     }
     void msgpack_unpack(msgpack::object const& o)
     {
-        if(o.type != type::ARRAY) { throw type_error(); }
+        if(o.type != msgpack::type::ARRAY) { throw type_error(); }
 
         define_imp<std::tuple<Args&...>, sizeof...(Args)>::unpack(o, a);
     }
     void msgpack_object(msgpack::object* o, msgpack::zone& z) const
     {
-        o->type = type::ARRAY;
-        o->via.array.ptr = static_cast<object*>(z.allocate_align(sizeof(object)*sizeof...(Args)));
+        o->type = msgpack::type::ARRAY;
+        o->via.array.ptr = static_cast<msgpack::object*>(z.allocate_align(sizeof(msgpack::object)*sizeof...(Args)));
         o->via.array.size = sizeof...(Args);
 
         define_imp<std::tuple<Args&...>, sizeof...(Args)>::object(o, z, a);
@@ -156,11 +156,11 @@ struct define<> {
     }
     void msgpack_unpack(msgpack::object const& o)
     {
-        if(o.type != type::ARRAY) { throw type_error(); }
+        if(o.type != msgpack::type::ARRAY) { throw type_error(); }
     }
     void msgpack_object(msgpack::object* o, msgpack::zone&) const
     {
-        o->type = type::ARRAY;
+        o->type = msgpack::type::ARRAY;
         o->via.array.ptr = NULL;
         o->via.array.size = 0;
     }

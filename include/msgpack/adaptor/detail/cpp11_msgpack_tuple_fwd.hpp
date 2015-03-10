@@ -54,8 +54,8 @@ template <typename Stream, typename Tuple, std::size_t N>
 struct MsgpackTuplePacker;
 
 template <typename Stream, typename... Args>
-const packer<Stream>& operator<< (
-    packer<Stream>& o,
+const msgpack::packer<Stream>& operator<< (
+    msgpack::packer<Stream>& o,
     const type::tuple<Args...>& v);
 
 // --- Convert from tuple to object ---
@@ -64,8 +64,8 @@ template <typename Tuple, std::size_t N>
 struct MsgpackTupleConverter;
 
 template <typename... Args>
-object const& operator>> (
-    object const& o,
+msgpack::object const& operator>> (
+    msgpack::object const& o,
     type::tuple<Args...>& v);
 
 // --- Convert from tuple to object with zone ---
@@ -74,7 +74,7 @@ struct MsgpackTupleToObjectWithZone;
 
 template <typename... Args>
 void operator<< (
-    object::with_zone& o,
+    msgpack::object::with_zone& o,
     type::tuple<Args...> const& v);
 
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)

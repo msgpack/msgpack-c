@@ -29,13 +29,13 @@ namespace msgpack {
 MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 template <typename T, std::size_t N>
-object const& operator>> (object const& o, std::array<T, N>& v);
+msgpack::object const& operator>> (msgpack::object const& o, std::array<T, N>& v);
 
 template <typename Stream, typename T, std::size_t N>
-packer<Stream>& operator<< (packer<Stream>& o, const std::array<T, N>& v);
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const std::array<T, N>& v);
 
 template <typename T, std::size_t N>
-void operator<< (object::with_zone& o, const std::array<T, N>& v);
+void operator<< (msgpack::object::with_zone& o, const std::array<T, N>& v);
 
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 

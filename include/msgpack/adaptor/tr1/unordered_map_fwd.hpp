@@ -47,22 +47,22 @@ namespace msgpack {
 MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 template <typename K, typename V>
-object const& operator>> (object const& o, MSGPACK_STD_TR1::unordered_map<K, V>& v);
+msgpack::object const& operator>> (msgpack::object const& o, MSGPACK_STD_TR1::unordered_map<K, V>& v);
 
 template <typename Stream, typename K, typename V>
-packer<Stream>& operator<< (packer<Stream>& o, const MSGPACK_STD_TR1::unordered_map<K,V>& v);
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const MSGPACK_STD_TR1::unordered_map<K,V>& v);
 
 template <typename K, typename V>
-void operator<< (object::with_zone& o, const MSGPACK_STD_TR1::unordered_map<K,V>& v);
+void operator<< (msgpack::object::with_zone& o, const MSGPACK_STD_TR1::unordered_map<K,V>& v);
 
 template <typename K, typename V>
-object const& operator>> (object const& o, MSGPACK_STD_TR1::unordered_multimap<K, V>& v);
+msgpack::object const& operator>> (msgpack::object const& o, MSGPACK_STD_TR1::unordered_multimap<K, V>& v);
 
 template <typename Stream, typename K, typename V>
-packer<Stream>& operator<< (packer<Stream>& o, const MSGPACK_STD_TR1::unordered_multimap<K,V>& v);
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const MSGPACK_STD_TR1::unordered_multimap<K,V>& v);
 
 template <typename K, typename V>
-void operator<< (object::with_zone& o, const MSGPACK_STD_TR1::unordered_multimap<K,V>& v);
+void operator<< (msgpack::object::with_zone& o, const MSGPACK_STD_TR1::unordered_multimap<K,V>& v);
 
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 

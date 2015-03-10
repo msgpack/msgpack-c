@@ -34,14 +34,14 @@ struct raw_ref;
 }  // namespace type
 
 
-object const& operator>> (object const& o, type::raw_ref& v);
+msgpack::object const& operator>> (msgpack::object const& o, type::raw_ref& v);
 
 template <typename Stream>
-packer<Stream>& operator<< (packer<Stream>& o, const type::raw_ref& v);
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const type::raw_ref& v);
 
-void operator<< (object& o, const type::raw_ref& v);
+void operator<< (msgpack::object& o, const type::raw_ref& v);
 
-void operator<< (object::with_zone& o, const type::raw_ref& v);
+void operator<< (msgpack::object::with_zone& o, const type::raw_ref& v);
 
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 

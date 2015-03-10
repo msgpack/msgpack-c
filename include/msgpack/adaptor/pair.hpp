@@ -27,9 +27,9 @@ namespace msgpack {
 MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 template <typename T1, typename T2>
-inline object const& operator>> (object const& o, std::pair<T1, T2>& v)
+inline msgpack::object const& operator>> (msgpack::object const& o, std::pair<T1, T2>& v)
 {
-    if(o.type != type::ARRAY) { throw type_error(); }
+    if(o.type != msgpack::type::ARRAY) { throw type_error(); }
     if(o.via.array.size != 2) { throw type_error(); }
     o.via.array.ptr[0].convert(v.first);
     o.via.array.ptr[1].convert(v.second);
@@ -37,7 +37,7 @@ inline object const& operator>> (object const& o, std::pair<T1, T2>& v)
 }
 
 template <typename Stream, typename T1, typename T2>
-inline packer<Stream>& operator<< (packer<Stream>& o, const std::pair<T1, T2>& v)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const std::pair<T1, T2>& v)
 {
     o.pack_array(2);
     o.pack(v.first);
@@ -46,14 +46,14 @@ inline packer<Stream>& operator<< (packer<Stream>& o, const std::pair<T1, T2>& v
 }
 
 template <typename T1, typename T2>
-inline void operator<< (object::with_zone& o, const std::pair<T1, T2>& v)
+inline void operator<< (msgpack::object::with_zone& o, const std::pair<T1, T2>& v)
 {
-    o.type = type::ARRAY;
-    object* p = static_cast<object*>(o.zone.allocate_align(sizeof(object)*2));
+    o.type = msgpack::type::ARRAY;
+    msgpack::object* p = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*2));
     o.via.array.ptr = p;
     o.via.array.size = 2;
-    p[0] = object(v.first, o.zone);
-    p[1] = object(v.second, o.zone);
+    p[0] = msgpack::object(v.first, o.zone);
+    p[1] = msgpack::object(v.second, o.zone);
 }
 
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)

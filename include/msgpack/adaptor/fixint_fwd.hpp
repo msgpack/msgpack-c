@@ -45,53 +45,53 @@ typedef fix_int<int64_t> fix_int64;
 }  // namespace type
 
 
-object const& operator>> (object const& o, type::fix_int8& v);
-object const& operator>> (object const& o, type::fix_int16& v);
-object const& operator>> (object const& o, type::fix_int32& v);
-object const& operator>> (object const& o, type::fix_int64& v);
+msgpack::object const& operator>> (msgpack::object const& o, type::fix_int8& v);
+msgpack::object const& operator>> (msgpack::object const& o, type::fix_int16& v);
+msgpack::object const& operator>> (msgpack::object const& o, type::fix_int32& v);
+msgpack::object const& operator>> (msgpack::object const& o, type::fix_int64& v);
 
-object const& operator>> (object const& o, type::fix_uint8& v);
-object const& operator>> (object const& o, type::fix_uint16& v);
-object const& operator>> (object const& o, type::fix_uint32& v);
-object const& operator>> (object const& o, type::fix_uint64& v);
-
-template <typename Stream>
-packer<Stream>& operator<< (packer<Stream>& o, const type::fix_int8& v);
-template <typename Stream>
-packer<Stream>& operator<< (packer<Stream>& o, const type::fix_int16& v);
-template <typename Stream>
-packer<Stream>& operator<< (packer<Stream>& o, const type::fix_int32& v);
-template <typename Stream>
-packer<Stream>& operator<< (packer<Stream>& o, const type::fix_int64& v);
+msgpack::object const& operator>> (msgpack::object const& o, type::fix_uint8& v);
+msgpack::object const& operator>> (msgpack::object const& o, type::fix_uint16& v);
+msgpack::object const& operator>> (msgpack::object const& o, type::fix_uint32& v);
+msgpack::object const& operator>> (msgpack::object const& o, type::fix_uint64& v);
 
 template <typename Stream>
-packer<Stream>& operator<< (packer<Stream>& o, const type::fix_uint8& v);
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const type::fix_int8& v);
 template <typename Stream>
-packer<Stream>& operator<< (packer<Stream>& o, const type::fix_uint16& v);
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const type::fix_int16& v);
 template <typename Stream>
-packer<Stream>& operator<< (packer<Stream>& o, const type::fix_uint32& v);
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const type::fix_int32& v);
 template <typename Stream>
-packer<Stream>& operator<< (packer<Stream>& o, const type::fix_uint64& v);
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const type::fix_int64& v);
 
-void operator<< (object& o, type::fix_int8 v);
-void operator<< (object& o, type::fix_int16 v);
-void operator<< (object& o, type::fix_int32 v);
-void operator<< (object& o, type::fix_int64 v);
+template <typename Stream>
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const type::fix_uint8& v);
+template <typename Stream>
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const type::fix_uint16& v);
+template <typename Stream>
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const type::fix_uint32& v);
+template <typename Stream>
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const type::fix_uint64& v);
 
-void operator<< (object& o, type::fix_uint8 v);
-void operator<< (object& o, type::fix_uint16 v);
-void operator<< (object& o, type::fix_uint32 v);
-void operator<< (object& o, type::fix_uint64 v);
+void operator<< (msgpack::object& o, type::fix_int8 v);
+void operator<< (msgpack::object& o, type::fix_int16 v);
+void operator<< (msgpack::object& o, type::fix_int32 v);
+void operator<< (msgpack::object& o, type::fix_int64 v);
 
-void operator<< (object::with_zone& o, type::fix_int8 v);
-void operator<< (object::with_zone& o, type::fix_int16 v);
-void operator<< (object::with_zone& o, type::fix_int32 v);
-void operator<< (object::with_zone& o, type::fix_int64 v);
+void operator<< (msgpack::object& o, type::fix_uint8 v);
+void operator<< (msgpack::object& o, type::fix_uint16 v);
+void operator<< (msgpack::object& o, type::fix_uint32 v);
+void operator<< (msgpack::object& o, type::fix_uint64 v);
 
-void operator<< (object::with_zone& o, type::fix_uint8 v);
-void operator<< (object::with_zone& o, type::fix_uint16 v);
-void operator<< (object::with_zone& o, type::fix_uint32 v);
-void operator<< (object::with_zone& o, type::fix_uint64 v);
+void operator<< (msgpack::object::with_zone& o, type::fix_int8 v);
+void operator<< (msgpack::object::with_zone& o, type::fix_int16 v);
+void operator<< (msgpack::object::with_zone& o, type::fix_int32 v);
+void operator<< (msgpack::object::with_zone& o, type::fix_int64 v);
+
+void operator<< (msgpack::object::with_zone& o, type::fix_uint8 v);
+void operator<< (msgpack::object::with_zone& o, type::fix_uint16 v);
+void operator<< (msgpack::object::with_zone& o, type::fix_uint32 v);
+void operator<< (msgpack::object::with_zone& o, type::fix_uint64 v);
 
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 

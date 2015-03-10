@@ -43,25 +43,25 @@
 #define MSGPACK_ADD_ENUM(enum) \
   namespace msgpack { \
   MSGPACK_API_VERSION_NAMESPACE(v1) { \
-    inline object const& operator>> (object const& o, enum& v) \
+    inline msgpack::object const& operator>> (msgpack::object const& o, enum& v) \
     { \
       int tmp; \
       o >> tmp; \
       v = static_cast<enum>(tmp); \
       return o; \
     } \
-    inline void operator<< (object& o, const enum& v) \
+    inline void operator<< (msgpack::object& o, const enum& v) \
     { \
       o << static_cast<int>(v); \
     } \
-    inline void operator<< (object::with_zone& o, const enum& v) \
+    inline void operator<< (msgpack::object::with_zone& o, const enum& v) \
     { \
       o << static_cast<int>(v); \
     } \
     namespace detail { \
       template <typename Stream> \
       struct packer_serializer<Stream, enum> { \
-        static packer<Stream>& pack(packer<Stream>& o, const enum& v) { \
+        static msgpack::packer<Stream>& pack(msgpack::packer<Stream>& o, const enum& v) { \
           return o << static_cast<int>(v); \
         } \
       }; \
@@ -90,11 +90,11 @@ struct define<> {
     }
     void msgpack_unpack(msgpack::object const& o)
     {
-        if(o.type != type::ARRAY) { throw type_error(); }
+        if(o.type != msgpack::type::ARRAY) { throw type_error(); }
     }
     void msgpack_object(msgpack::object* o, msgpack::zone&) const
     {
-        o->type = type::ARRAY;
+        o->type = msgpack::type::ARRAY;
         o->via.array.ptr = nullptr;
         o->via.array.size = 0;
     }
@@ -115,7 +115,7 @@ struct define<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> {
     }
     void msgpack_unpack(msgpack::object const& o)
     {
-        if(o.type != type::ARRAY) { throw type_error(); }
+        if(o.type != msgpack::type::ARRAY) { throw type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
             msgpack::object *ptr = o.via.array.ptr;
@@ -127,11 +127,11 @@ struct define<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> {
     }
     void msgpack_object(msgpack::object* o, msgpack::zone& z) const
     {
-        o->type = type::ARRAY;
-        o->via.array.ptr = static_cast<object*>(z.allocate_align(sizeof(object)*<%=i+1%>));
+        o->type = msgpack::type::ARRAY;
+        o->via.array.ptr = static_cast<msgpack::object*>(z.allocate_align(sizeof(msgpack::object)*<%=i+1%>));
         o->via.array.size = <%=i+1%>;
         <%0.upto(i) {|j|%>
-        o->via.array.ptr[<%=j%>] = object(a<%=j%>, z);<%}%>
+        o->via.array.ptr[<%=j%>] = msgpack::object(a<%=j%>, z);<%}%>
     }
     <%0.upto(i) {|j|%>
     A<%=j%>& a<%=j%>;<%}%>

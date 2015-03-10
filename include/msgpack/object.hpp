@@ -82,17 +82,17 @@ struct object::implicit_type {
     operator T() { return obj.as<T>(); }
 
 private:
-    object const& obj;
+    msgpack::object const& obj;
 };
 
-inline object const& operator>> (object const& o, object& v)
+inline msgpack::object const& operator>> (msgpack::object const& o, msgpack::object& v)
 {
     v = o;
     return o;
 }
 
 template <typename T>
-inline object const& operator>> (object const& o, T& v)
+inline msgpack::object const& operator>> (msgpack::object const& o, T& v)
 {
     // If you get a error 'class your_class has no member named 'msgpack_unpack',
     // check the following:
@@ -153,7 +153,7 @@ public:
 namespace detail {
 template <typename Stream, typename T>
 struct packer_serializer {
-    static packer<Stream>& pack(packer<Stream>& o, const T& v) {
+    static msgpack::packer<Stream>& pack(msgpack::packer<Stream>& o, const T& v) {
         // If you get a error 'const class your_class has no member named 'msgpack_pack',
         // check the following:
         // 1. The class your_class should have MSGPACK_DEFINE macro or
@@ -164,7 +164,7 @@ struct packer_serializer {
         //    namespace msgpack {
         //    MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS) {
         //    template <typename Stream>
-        //    inline packer<Stream>& operator<< (packer<Stream>& o, const your_class& v)
+        //    inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const your_class& v)
         //    } // MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS)
         //    } // namespace msgpack
         //
@@ -177,14 +177,14 @@ struct packer_serializer {
         //    namespace msgpack {
         //    MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS) {
         //    template <typename Stream>
-        //    packer<Stream>& operator<< (packer<Stream>& o, const your_class& v);
+        //    msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const your_class& v);
         //    } // MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS)
         //    } // namespace msgpack
         //
         //    then, #include "msgpack.hpp", finally place the operator definitions as follows:
         //
         //    template <typename Stream>
-        //    inline packer<Stream>& operator<< (packer<Stream>& o, const your_class& v) {
+        //    inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const your_class& v) {
         //         // packing operation
         //    }
         //    } // MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS)
@@ -198,25 +198,25 @@ struct packer_serializer {
 
 // serialize operator
 template <typename Stream, typename T>
-inline packer<Stream>& operator<< (packer<Stream>& o, const T& v)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const T& v)
 {
     return detail::packer_serializer<Stream, T>::pack(o, v);
 }
 
-inline void operator<< (object::with_zone& o, const object& v)
+inline void operator<< (msgpack::object::with_zone& o, const msgpack::object& v)
 {
     o.type = v.type;
 
     switch(v.type) {
-    case type::NIL:
-    case type::BOOLEAN:
-    case type::POSITIVE_INTEGER:
-    case type::NEGATIVE_INTEGER:
-    case type::FLOAT:
+    case msgpack::type::NIL:
+    case msgpack::type::BOOLEAN:
+    case msgpack::type::POSITIVE_INTEGER:
+    case msgpack::type::NEGATIVE_INTEGER:
+    case msgpack::type::FLOAT:
         std::memcpy(&o.via, &v.via, sizeof(v.via));
         return;
 
-    case type::STR: {
+    case msgpack::type::STR: {
         char* ptr = static_cast<char*>(o.zone.allocate_align(v.via.str.size));
         o.via.str.ptr = ptr;
         o.via.str.size = v.via.str.size;
@@ -224,7 +224,7 @@ inline void operator<< (object::with_zone& o, const object& v)
         return;
     }
 
-    case type::BIN: {
+    case msgpack::type::BIN: {
         char* ptr = static_cast<char*>(o.zone.allocate_align(v.via.bin.size));
         o.via.bin.ptr = ptr;
         o.via.bin.size = v.via.bin.size;
@@ -232,7 +232,7 @@ inline void operator<< (object::with_zone& o, const object& v)
         return;
     }
 
-    case type::EXT: {
+    case msgpack::type::EXT: {
         char* ptr = static_cast<char*>(o.zone.allocate_align(v.via.ext.size + 1));
         o.via.ext.ptr = ptr;
         o.via.ext.size = v.via.ext.size;
@@ -240,47 +240,47 @@ inline void operator<< (object::with_zone& o, const object& v)
         return;
     }
 
-    case type::ARRAY:
+    case msgpack::type::ARRAY:
         o.via.array.ptr = static_cast<object*>(o.zone.allocate_align(sizeof(object) * v.via.array.size));
         o.via.array.size = v.via.array.size;
-        for (object
+        for (msgpack::object
                 * po(o.via.array.ptr),
                 * pv(v.via.array.ptr),
                 * const pvend(v.via.array.ptr + v.via.array.size);
             pv < pvend;
             ++po, ++pv) {
-            new (po) object(*pv, o.zone);
+            new (po) msgpack::object(*pv, o.zone);
         }
         return;
 
-    case type::MAP:
+    case msgpack::type::MAP:
         o.via.map.ptr = (object_kv*)o.zone.allocate_align(sizeof(object_kv) * v.via.map.size);
         o.via.map.size = v.via.map.size;
-        for(object_kv
+        for(msgpack::object_kv
                 * po(o.via.map.ptr),
                 * pv(v.via.map.ptr),
                 * const pvend(v.via.map.ptr + v.via.map.size);
             pv < pvend;
             ++po, ++pv) {
             object_kv* kv = new (po) object_kv;
-            new (&kv->key) object(pv->key, o.zone);
-            new (&kv->val) object(pv->val, o.zone);
+            new (&kv->key) msgpack::object(pv->key, o.zone);
+            new (&kv->val) msgpack::object(pv->val, o.zone);
         }
         return;
 
     default:
-        throw type_error();
+        throw msgpack::type_error();
     }
 }
 
-inline void operator<< (object::with_zone& o, const object::with_zone& v)
+inline void operator<< (msgpack::object::with_zone& o, const msgpack::object::with_zone& v)
 {
-    return o << static_cast<object const&>(v);
+    return o << static_cast<msgpack::object const&>(v);
 }
 
 // deconvert operator
 template <typename T>
-inline void operator<< (object::with_zone& o, const T& v)
+inline void operator<< (msgpack::object::with_zone& o, const T& v)
 {
     // If you get a error 'const class your_class has no member named 'msgpack_object',
     // check the following:
@@ -320,53 +320,53 @@ inline void operator<< (object::with_zone& o, const T& v)
 
 template <typename Stream>
 template <typename T>
-inline packer<Stream>& packer<Stream>::pack(const T& v)
+inline msgpack::packer<Stream>& packer<Stream>::pack(const T& v)
 {
     msgpack::operator<<(*this, v);
     return *this;
 }
 
-inline bool operator==(const object& x, const object& y)
+inline bool operator==(const msgpack::object& x, const msgpack::object& y)
 {
     if(x.type != y.type) { return false; }
 
     switch(x.type) {
-    case type::NIL:
+    case msgpack::type::NIL:
         return true;
 
-    case type::BOOLEAN:
+    case msgpack::type::BOOLEAN:
         return x.via.boolean == y.via.boolean;
 
-    case type::POSITIVE_INTEGER:
+    case msgpack::type::POSITIVE_INTEGER:
         return x.via.u64 == y.via.u64;
 
-    case type::NEGATIVE_INTEGER:
+    case msgpack::type::NEGATIVE_INTEGER:
         return x.via.i64 == y.via.i64;
 
-    case type::FLOAT:
+    case msgpack::type::FLOAT:
         return x.via.f64 == y.via.f64;
 
-    case type::STR:
+    case msgpack::type::STR:
         return x.via.str.size == y.via.str.size &&
             std::memcmp(x.via.str.ptr, y.via.str.ptr, x.via.str.size) == 0;
 
-    case type::BIN:
+    case msgpack::type::BIN:
         return x.via.bin.size == y.via.bin.size &&
             std::memcmp(x.via.bin.ptr, y.via.bin.ptr, x.via.bin.size) == 0;
 
-    case type::EXT:
+    case msgpack::type::EXT:
         return x.via.ext.size == y.via.ext.size &&
             std::memcmp(x.via.ext.ptr, y.via.ext.ptr, x.via.ext.size) == 0;
 
-    case type::ARRAY:
+    case msgpack::type::ARRAY:
         if(x.via.array.size != y.via.array.size) {
             return false;
         } else if(x.via.array.size == 0) {
             return true;
         } else {
-            object* px = x.via.array.ptr;
-            object* const pxend = x.via.array.ptr + x.via.array.size;
-            object* py = y.via.array.ptr;
+            msgpack::object* px = x.via.array.ptr;
+            msgpack::object* const pxend = x.via.array.ptr + x.via.array.size;
+            msgpack::object* py = y.via.array.ptr;
             do {
                 if(!(*px == *py)) {
                     return false;
@@ -377,15 +377,15 @@ inline bool operator==(const object& x, const object& y)
             return true;
         }
 
-    case type::MAP:
+    case msgpack::type::MAP:
         if(x.via.map.size != y.via.map.size) {
             return false;
         } else if(x.via.map.size == 0) {
             return true;
         } else {
-            object_kv* px = x.via.map.ptr;
-            object_kv* const pxend = x.via.map.ptr + x.via.map.size;
-            object_kv* py = y.via.map.ptr;
+            msgpack::object_kv* px = x.via.map.ptr;
+            msgpack::object_kv* const pxend = x.via.map.ptr + x.via.map.size;
+            msgpack::object_kv* py = y.via.map.ptr;
             do {
                 if(!(px->key == py->key) || !(px->val == py->val)) {
                     return false;
@@ -402,32 +402,32 @@ inline bool operator==(const object& x, const object& y)
 }
 
 template <typename T>
-inline bool operator==(const object& x, const T& y)
+inline bool operator==(const msgpack::object& x, const T& y)
 try {
-    return x == object(y);
+    return x == msgpack::object(y);
 } catch (msgpack::type_error&) {
     return false;
 }
 
-inline bool operator!=(const object& x, const object& y)
+inline bool operator!=(const msgpack::object& x, const msgpack::object& y)
 { return !(x == y); }
 
 template <typename T>
-inline bool operator==(const T& y, const object x)
+inline bool operator==(const T& y, const msgpack::object x)
 { return x == y; }
 
 template <typename T>
-inline bool operator!=(const object& x, const T& y)
+inline bool operator!=(const msgpack::object& x, const T& y)
 { return !(x == y); }
 
 template <typename T>
-inline bool operator!=(const T& y, const object& x)
+inline bool operator!=(const T& y, const msgpack::object& x)
 { return x != y; }
 
 
-inline object::implicit_type object::convert() const
+inline msgpack::object::implicit_type object::convert() const
 {
-    return implicit_type(*this);
+    return msgpack::object::implicit_type(*this);
 }
 
 template <typename T>
@@ -453,7 +453,7 @@ inline T object::as() const
 
 inline object::object()
 {
-    type = type::NIL;
+    type = msgpack::type::NIL;
 }
 
 template <typename T>
@@ -506,7 +506,7 @@ inline object& object::operator=(const T& v)
 }
 
 template <typename T>
-object::object(const T& v, zone& z)
+object::object(const T& v, msgpack::zone& z)
 {
     with_zone oz(z);
     msgpack::operator<<(oz, v);
@@ -515,7 +515,7 @@ object::object(const T& v, zone& z)
 }
 
 template <typename T>
-object::object(const T& v, zone* z)
+object::object(const T& v, msgpack::zone* z)
 {
     with_zone oz(*z);
     msgpack::operator<<(oz, v);
@@ -530,7 +530,7 @@ inline object::object(const msgpack_object& o)
     std::memcpy(this, &o, sizeof(o));
 }
 
-inline void operator<< (object& o, const msgpack_object& v)
+inline void operator<< (msgpack::object& o, const msgpack_object& v)
 {
     // FIXME beter way?
     std::memcpy(&o, &v, sizeof(v));
@@ -547,35 +547,35 @@ inline object::operator msgpack_object() const
 
 // obsolete
 template <typename T>
-inline void convert(T& v, object const& o)
+inline void convert(T& v, msgpack::object const& o)
 {
     o.convert(v);
 }
 
 // obsolete
 template <typename Stream, typename T>
-inline void pack(packer<Stream>& o, const T& v)
+inline void pack(msgpack::packer<Stream>& o, const T& v)
 {
     o.pack(v);
 }
 
 // obsolete
 template <typename Stream, typename T>
-inline void pack_copy(packer<Stream>& o, T v)
+inline void pack_copy(msgpack::packer<Stream>& o, T v)
 {
     pack(o, v);
 }
 
 
 template <typename Stream>
-inline packer<Stream>& operator<< (packer<Stream>& o, const object& v)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const msgpack::object& v)
 {
     switch(v.type) {
-    case type::NIL:
+    case msgpack::type::NIL:
         o.pack_nil();
         return o;
 
-    case type::BOOLEAN:
+    case msgpack::type::BOOLEAN:
         if(v.via.boolean) {
             o.pack_true();
         } else {
@@ -583,45 +583,45 @@ inline packer<Stream>& operator<< (packer<Stream>& o, const object& v)
         }
         return o;
 
-    case type::POSITIVE_INTEGER:
+    case msgpack::type::POSITIVE_INTEGER:
         o.pack_uint64(v.via.u64);
         return o;
 
-    case type::NEGATIVE_INTEGER:
+    case msgpack::type::NEGATIVE_INTEGER:
         o.pack_int64(v.via.i64);
         return o;
 
-    case type::FLOAT:
+    case msgpack::type::FLOAT:
         o.pack_double(v.via.f64);
         return o;
 
-    case type::STR:
+    case msgpack::type::STR:
         o.pack_str(v.via.str.size);
         o.pack_str_body(v.via.str.ptr, v.via.str.size);
         return o;
 
-    case type::BIN:
+    case msgpack::type::BIN:
         o.pack_bin(v.via.bin.size);
         o.pack_bin_body(v.via.bin.ptr, v.via.bin.size);
         return o;
 
-    case type::EXT:
+    case msgpack::type::EXT:
         o.pack_ext(v.via.ext.size, v.via.ext.type());
         o.pack_ext_body(v.via.ext.data(), v.via.ext.size);
         return o;
 
-    case type::ARRAY:
+    case msgpack::type::ARRAY:
         o.pack_array(v.via.array.size);
-        for(object* p(v.via.array.ptr),
+        for(msgpack::object* p(v.via.array.ptr),
                 * const pend(v.via.array.ptr + v.via.array.size);
                 p < pend; ++p) {
             msgpack::operator<<(o, *p);
         }
         return o;
 
-    case type::MAP:
+    case msgpack::type::MAP:
         o.pack_map(v.via.map.size);
-        for(object_kv* p(v.via.map.ptr),
+        for(msgpack::object_kv* p(v.via.map.ptr),
                 * const pend(v.via.map.ptr + v.via.map.size);
                 p < pend; ++p) {
             msgpack::operator<<(o, p->key);
@@ -635,53 +635,53 @@ inline packer<Stream>& operator<< (packer<Stream>& o, const object& v)
 }
 
 template <typename Stream>
-packer<Stream>& operator<< (packer<Stream>& o, const object::with_zone& v)
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const msgpack::object::with_zone& v)
 {
-    return o << static_cast<object>(v);
+    return o << static_cast<msgpack::object>(v);
 }
 
-inline std::ostream& operator<< (std::ostream& s, const object& o)
+inline std::ostream& operator<< (std::ostream& s, const msgpack::object& o)
 {
     switch(o.type) {
-    case type::NIL:
+    case msgpack::type::NIL:
         s << "nil";
         break;
 
-    case type::BOOLEAN:
+    case msgpack::type::BOOLEAN:
         s << (o.via.boolean ? "true" : "false");
         break;
 
-    case type::POSITIVE_INTEGER:
+    case msgpack::type::POSITIVE_INTEGER:
         s << o.via.u64;
         break;
 
-    case type::NEGATIVE_INTEGER:
+    case msgpack::type::NEGATIVE_INTEGER:
         s << o.via.i64;
         break;
 
-    case type::FLOAT:
+    case msgpack::type::FLOAT:
         s << o.via.f64;
         break;
 
-    case type::STR:
+    case msgpack::type::STR:
         (s << '"').write(o.via.str.ptr, o.via.str.size) << '"';
         break;
 
-    case type::BIN:
+    case msgpack::type::BIN:
         (s << '"').write(o.via.bin.ptr, o.via.bin.size) << '"';
         break;
 
-    case type::EXT:
+    case msgpack::type::EXT:
         s << "EXT";
         break;
 
-    case type::ARRAY:
+    case msgpack::type::ARRAY:
         s << "[";
         if(o.via.array.size != 0) {
-            object* p(o.via.array.ptr);
+            msgpack::object* p(o.via.array.ptr);
             s << *p;
             ++p;
-            for(object* const pend(o.via.array.ptr + o.via.array.size);
+            for(msgpack::object* const pend(o.via.array.ptr + o.via.array.size);
                     p < pend; ++p) {
                 s << ", " << *p;
             }
@@ -689,13 +689,13 @@ inline std::ostream& operator<< (std::ostream& s, const object& o)
         s << "]";
         break;
 
-    case type::MAP:
+    case msgpack::type::MAP:
         s << "{";
         if(o.via.map.size != 0) {
-            object_kv* p(o.via.map.ptr);
+            msgpack::object_kv* p(o.via.map.ptr);
             s << p->key << "=>" << p->val;
             ++p;
-            for(object_kv* const pend(o.via.map.ptr + o.via.map.size);
+            for(msgpack::object_kv* const pend(o.via.map.ptr + o.via.map.size);
                     p < pend; ++p) {
                 s << ", " << p->key << "=>" << p->val;
             }

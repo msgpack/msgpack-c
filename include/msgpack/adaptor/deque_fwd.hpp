@@ -27,11 +27,11 @@ namespace msgpack {
 MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 template <typename T>
-object const& operator>> (object const& o, std::deque<T>& v);
+msgpack::object const& operator>> (msgpack::object const& o, std::deque<T>& v);
 template <typename Stream, typename T>
-packer<Stream>& operator<< (packer<Stream>& o, const std::deque<T>& v);
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const std::deque<T>& v);
 template <typename T>
-void operator<< (object::with_zone& o, const std::deque<T>& v);
+void operator<< (msgpack::object::with_zone& o, const std::deque<T>& v);
 
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 

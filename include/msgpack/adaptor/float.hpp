@@ -29,15 +29,15 @@ MSGPACK_API_VERSION_NAMESPACE(v1) {
 // FIXME check overflow, underflow
 
 
-inline object const& operator>> (object const& o, float& v)
+inline msgpack::object const& operator>> (msgpack::object const& o, float& v)
 {
-    if(o.type == type::FLOAT) {
+    if(o.type == msgpack::type::FLOAT) {
         v = static_cast<float>(o.via.f64);
     }
-    else if (o.type == type::POSITIVE_INTEGER) {
+    else if (o.type == msgpack::type::POSITIVE_INTEGER) {
         v = static_cast<float>(o.via.u64);
     }
-    else if (o.type == type::NEGATIVE_INTEGER) {
+    else if (o.type == msgpack::type::NEGATIVE_INTEGER) {
         v = static_cast<float>(o.via.i64);
     }
     else {
@@ -47,22 +47,22 @@ inline object const& operator>> (object const& o, float& v)
 }
 
 template <typename Stream>
-inline packer<Stream>& operator<< (packer<Stream>& o, const float& v)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const float& v)
 {
     o.pack_float(v);
     return o;
 }
 
 
-inline object const& operator>> (object const& o, double& v)
+inline msgpack::object const& operator>> (msgpack::object const& o, double& v)
 {
-    if(o.type == type::FLOAT) {
+    if(o.type == msgpack::type::FLOAT) {
         v = o.via.f64;
     }
-    else if (o.type == type::POSITIVE_INTEGER) {
+    else if (o.type == msgpack::type::POSITIVE_INTEGER) {
         v = static_cast<double>(o.via.u64);
     }
-    else if (o.type == type::NEGATIVE_INTEGER) {
+    else if (o.type == msgpack::type::NEGATIVE_INTEGER) {
         v = static_cast<double>(o.via.i64);
     }
     else {
@@ -72,30 +72,30 @@ inline object const& operator>> (object const& o, double& v)
 }
 
 template <typename Stream>
-inline packer<Stream>& operator<< (packer<Stream>& o, const double& v)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const double& v)
 {
     o.pack_double(v);
     return o;
 }
 
 
-inline void operator<< (object& o, float v)
+inline void operator<< (msgpack::object& o, float v)
 {
-    o.type = type::FLOAT;
+    o.type = msgpack::type::FLOAT;
     o.via.f64 = static_cast<double>(v);
 }
 
-inline void operator<< (object& o, double v)
+inline void operator<< (msgpack::object& o, double v)
 {
-    o.type = type::FLOAT;
+    o.type = msgpack::type::FLOAT;
     o.via.f64 = v;
 }
 
-inline void operator<< (object::with_zone& o, float v)
-    { static_cast<object&>(o) << v; }
+inline void operator<< (msgpack::object::with_zone& o, float v)
+    { static_cast<msgpack::object&>(o) << v; }
 
-inline void operator<< (object::with_zone& o, double v)
-    { static_cast<object&>(o) << v; }
+inline void operator<< (msgpack::object::with_zone& o, double v)
+    { static_cast<msgpack::object&>(o) << v; }
 
 
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)

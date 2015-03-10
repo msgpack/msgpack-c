@@ -29,14 +29,14 @@ namespace msgpack {
 MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 template <std::size_t N>
-inline object const& operator>> (object const& o, std::array<char, N>& v)
+inline msgpack::object const& operator>> (msgpack::object const& o, std::array<char, N>& v)
 {
     switch (o.type) {
-    case type::BIN:
+    case msgpack::type::BIN:
         if(o.via.bin.size != N) { throw type_error(); }
         std::memcpy(v.data(), o.via.bin.ptr, o.via.bin.size);
         break;
-    case type::STR:
+    case msgpack::type::STR:
         if(o.via.str.size != N) { throw type_error(); }
         std::memcpy(v.data(), o.via.str.ptr, N);
         break;
@@ -48,7 +48,7 @@ inline object const& operator>> (object const& o, std::array<char, N>& v)
 }
 
 template <typename Stream, std::size_t N>
-inline packer<Stream>& operator<< (packer<Stream>& o, const std::array<char, N>& v)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const std::array<char, N>& v)
 {
     uint32_t size = checked_get_container_size(v.size());
     o.pack_bin(size);
@@ -58,19 +58,19 @@ inline packer<Stream>& operator<< (packer<Stream>& o, const std::array<char, N>&
 }
 
 template <std::size_t N>
-inline void operator<< (object& o, const std::array<char, N>& v)
+inline void operator<< (msgpack::object& o, const std::array<char, N>& v)
 {
     uint32_t size = checked_get_container_size(v.size());
-    o.type = type::BIN;
+    o.type = msgpack::type::BIN;
     o.via.bin.ptr = v.data();
     o.via.bin.size = size;
 }
 
 template <std::size_t N>
-inline void operator<< (object::with_zone& o, const std::array<char, N>& v)
+inline void operator<< (msgpack::object::with_zone& o, const std::array<char, N>& v)
 {
     uint32_t size = checked_get_container_size(v.size());
-    o.type = type::BIN;
+    o.type = msgpack::type::BIN;
     char* ptr = static_cast<char*>(o.zone.allocate_align(size));
     o.via.bin.ptr = ptr;
     o.via.bin.size = size;

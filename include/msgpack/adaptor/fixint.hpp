@@ -57,152 +57,152 @@ typedef fix_int<int64_t> fix_int64;
 }  // namespace type
 
 
-inline object const& operator>> (object const& o, type::fix_int8& v)
+inline msgpack::object const& operator>> (msgpack::object const& o, type::fix_int8& v)
     { v = type::detail::convert_integer<int8_t>(o); return o; }
 
-inline object const& operator>> (object const& o, type::fix_int16& v)
+inline msgpack::object const& operator>> (msgpack::object const& o, type::fix_int16& v)
     { v = type::detail::convert_integer<int16_t>(o); return o; }
 
-inline object const& operator>> (object const& o, type::fix_int32& v)
+inline msgpack::object const& operator>> (msgpack::object const& o, type::fix_int32& v)
     { v = type::detail::convert_integer<int32_t>(o); return o; }
 
-inline object const& operator>> (object const& o, type::fix_int64& v)
+inline msgpack::object const& operator>> (msgpack::object const& o, type::fix_int64& v)
     { v = type::detail::convert_integer<int64_t>(o); return o; }
 
 
-inline object const& operator>> (object const& o, type::fix_uint8& v)
+inline msgpack::object const& operator>> (msgpack::object const& o, type::fix_uint8& v)
     { v = type::detail::convert_integer<uint8_t>(o); return o; }
 
-inline object const& operator>> (object const& o, type::fix_uint16& v)
+inline msgpack::object const& operator>> (msgpack::object const& o, type::fix_uint16& v)
     { v = type::detail::convert_integer<uint16_t>(o); return o; }
 
-inline object const& operator>> (object const& o, type::fix_uint32& v)
+inline msgpack::object const& operator>> (msgpack::object const& o, type::fix_uint32& v)
     { v = type::detail::convert_integer<uint32_t>(o); return o; }
 
-inline object const& operator>> (object const& o, type::fix_uint64& v)
+inline msgpack::object const& operator>> (msgpack::object const& o, type::fix_uint64& v)
     { v = type::detail::convert_integer<uint64_t>(o); return o; }
 
 
 template <typename Stream>
-inline packer<Stream>& operator<< (packer<Stream>& o, const type::fix_int8& v)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const type::fix_int8& v)
     { o.pack_fix_int8(v); return o; }
 
 template <typename Stream>
-inline packer<Stream>& operator<< (packer<Stream>& o, const type::fix_int16& v)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const type::fix_int16& v)
     { o.pack_fix_int16(v); return o; }
 
 template <typename Stream>
-inline packer<Stream>& operator<< (packer<Stream>& o, const type::fix_int32& v)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const type::fix_int32& v)
     { o.pack_fix_int32(v); return o; }
 
 template <typename Stream>
-inline packer<Stream>& operator<< (packer<Stream>& o, const type::fix_int64& v)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const type::fix_int64& v)
     { o.pack_fix_int64(v); return o; }
 
 
 template <typename Stream>
-inline packer<Stream>& operator<< (packer<Stream>& o, const type::fix_uint8& v)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const type::fix_uint8& v)
     { o.pack_fix_uint8(v); return o; }
 
 template <typename Stream>
-inline packer<Stream>& operator<< (packer<Stream>& o, const type::fix_uint16& v)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const type::fix_uint16& v)
     { o.pack_fix_uint16(v); return o; }
 
 template <typename Stream>
-inline packer<Stream>& operator<< (packer<Stream>& o, const type::fix_uint32& v)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const type::fix_uint32& v)
     { o.pack_fix_uint32(v); return o; }
 
 template <typename Stream>
-inline packer<Stream>& operator<< (packer<Stream>& o, const type::fix_uint64& v)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const type::fix_uint64& v)
     { o.pack_fix_uint64(v); return o; }
 
 
-inline void operator<< (object& o, type::fix_int8 v)
+inline void operator<< (msgpack::object& o, type::fix_int8 v)
 {
     if (v.get() < 0) {
-        o.type = type::NEGATIVE_INTEGER;
+        o.type = msgpack::type::NEGATIVE_INTEGER;
         o.via.i64 = v.get();
     }
     else {
-        o.type = type::POSITIVE_INTEGER;
+        o.type = msgpack::type::POSITIVE_INTEGER;
         o.via.u64 = v.get();
     }
 }
 
-inline void operator<< (object& o, type::fix_int16 v)
+inline void operator<< (msgpack::object& o, type::fix_int16 v)
 {
     if(v.get() < 0) {
-        o.type = type::NEGATIVE_INTEGER;
+        o.type = msgpack::type::NEGATIVE_INTEGER;
         o.via.i64 = v.get();
     }
     else {
-        o.type = type::POSITIVE_INTEGER;
+        o.type = msgpack::type::POSITIVE_INTEGER;
         o.via.u64 = v.get();
     }
 }
 
-inline void operator<< (object& o, type::fix_int32 v)
+inline void operator<< (msgpack::object& o, type::fix_int32 v)
 {
     if (v.get() < 0) {
-        o.type = type::NEGATIVE_INTEGER;
+        o.type = msgpack::type::NEGATIVE_INTEGER;
         o.via.i64 = v.get();
     }
     else {
-        o.type = type::POSITIVE_INTEGER;
+        o.type = msgpack::type::POSITIVE_INTEGER;
         o.via.u64 = v.get();
     }
 }
 
-inline void operator<< (object& o, type::fix_int64 v)
+inline void operator<< (msgpack::object& o, type::fix_int64 v)
 {
     if (v.get() < 0) {
-        o.type = type::NEGATIVE_INTEGER;
+        o.type = msgpack::type::NEGATIVE_INTEGER;
         o.via.i64 = v.get();
     }
     else {
-        o.type = type::POSITIVE_INTEGER;
+        o.type = msgpack::type::POSITIVE_INTEGER;
         o.via.u64 = v.get();
     }
 }
 
 
-inline void operator<< (object& o, type::fix_uint8 v)
-    { o.type = type::POSITIVE_INTEGER, o.via.u64 = v.get(); }
+inline void operator<< (msgpack::object& o, type::fix_uint8 v)
+    { o.type = msgpack::type::POSITIVE_INTEGER, o.via.u64 = v.get(); }
 
-inline void operator<< (object& o, type::fix_uint16 v)
-    { o.type = type::POSITIVE_INTEGER, o.via.u64 = v.get(); }
+inline void operator<< (msgpack::object& o, type::fix_uint16 v)
+    { o.type = msgpack::type::POSITIVE_INTEGER, o.via.u64 = v.get(); }
 
-inline void operator<< (object& o, type::fix_uint32 v)
-    { o.type = type::POSITIVE_INTEGER, o.via.u64 = v.get(); }
+inline void operator<< (msgpack::object& o, type::fix_uint32 v)
+    { o.type = msgpack::type::POSITIVE_INTEGER, o.via.u64 = v.get(); }
 
-inline void operator<< (object& o, type::fix_uint64 v)
-    { o.type = type::POSITIVE_INTEGER, o.via.u64 = v.get(); }
-
-
-inline void operator<< (object::with_zone& o, type::fix_int8 v)
-    { static_cast<object&>(o) << v; }
-
-inline void operator<< (object::with_zone& o, type::fix_int16 v)
-    { static_cast<object&>(o) << v; }
-
-inline void operator<< (object::with_zone& o, type::fix_int32 v)
-    { static_cast<object&>(o) << v; }
-
-inline void operator<< (object::with_zone& o, type::fix_int64 v)
-    { static_cast<object&>(o) << v; }
+inline void operator<< (msgpack::object& o, type::fix_uint64 v)
+    { o.type = msgpack::type::POSITIVE_INTEGER, o.via.u64 = v.get(); }
 
 
-inline void operator<< (object::with_zone& o, type::fix_uint8 v)
-    { static_cast<object&>(o) << v; }
+inline void operator<< (msgpack::object::with_zone& o, type::fix_int8 v)
+    { static_cast<msgpack::object&>(o) << v; }
 
-inline void operator<< (object::with_zone& o, type::fix_uint16 v)
-    { static_cast<object&>(o) << v; }
+inline void operator<< (msgpack::object::with_zone& o, type::fix_int16 v)
+    { static_cast<msgpack::object&>(o) << v; }
 
-inline void operator<< (object::with_zone& o, type::fix_uint32 v)
-    { static_cast<object&>(o) << v; }
+inline void operator<< (msgpack::object::with_zone& o, type::fix_int32 v)
+    { static_cast<msgpack::object&>(o) << v; }
 
-inline void operator<< (object::with_zone& o, type::fix_uint64 v)
-    { static_cast<object&>(o) << v; }
+inline void operator<< (msgpack::object::with_zone& o, type::fix_int64 v)
+    { static_cast<msgpack::object&>(o) << v; }
+
+
+inline void operator<< (msgpack::object::with_zone& o, type::fix_uint8 v)
+    { static_cast<msgpack::object&>(o) << v; }
+
+inline void operator<< (msgpack::object::with_zone& o, type::fix_uint16 v)
+    { static_cast<msgpack::object&>(o) << v; }
+
+inline void operator<< (msgpack::object::with_zone& o, type::fix_uint32 v)
+    { static_cast<msgpack::object&>(o) << v; }
+
+inline void operator<< (msgpack::object::with_zone& o, type::fix_uint64 v)
+    { static_cast<msgpack::object&>(o) << v; }
 
 
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)

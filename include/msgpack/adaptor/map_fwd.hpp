@@ -42,25 +42,25 @@ namespace detail {
 
 
 template <typename K, typename V>
-object const& operator>> (object const& o, type::assoc_vector<K,V>& v);
+msgpack::object const& operator>> (msgpack::object const& o, type::assoc_vector<K,V>& v);
 template <typename Stream, typename K, typename V>
-packer<Stream>& operator<< (packer<Stream>& o, const type::assoc_vector<K,V>& v);
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const type::assoc_vector<K,V>& v);
 template <typename K, typename V>
-void operator<< (object::with_zone& o, const type::assoc_vector<K,V>& v);
+void operator<< (msgpack::object::with_zone& o, const type::assoc_vector<K,V>& v);
 
 template <typename K, typename V>
-object const& operator>> (object const& o, std::map<K, V>& v);
+msgpack::object const& operator>> (msgpack::object const& o, std::map<K, V>& v);
 template <typename Stream, typename K, typename V>
-packer<Stream>& operator<< (packer<Stream>& o, const std::map<K,V>& v);
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const std::map<K,V>& v);
 template <typename K, typename V>
-void operator<< (object::with_zone& o, const std::map<K,V>& v);
+void operator<< (msgpack::object::with_zone& o, const std::map<K,V>& v);
 
 template <typename K, typename V>
-object const& operator>> (object const& o, std::multimap<K, V>& v);
+msgpack::object const& operator>> (msgpack::object const& o, std::multimap<K, V>& v);
 template <typename Stream, typename K, typename V>
-packer<Stream>& operator<< (packer<Stream>& o, const std::multimap<K,V>& v);
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const std::multimap<K,V>& v);
 template <typename K, typename V>
-void operator<< (object::with_zone& o, const std::multimap<K,V>& v);
+void operator<< (msgpack::object::with_zone& o, const std::multimap<K,V>& v);
 
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 

@@ -25,73 +25,73 @@ namespace msgpack {
 
 MSGPACK_API_VERSION_NAMESPACE(v1){
 
-object const& operator>> (object const& o, char& v);
+msgpack::object const& operator>> (msgpack::object const& o, char& v);
 
-object const& operator>> (object const& o, signed char& v);
-object const& operator>> (object const& o, signed short& v);
-object const& operator>> (object const& o, signed int& v);
-object const& operator>> (object const& o, signed long& v);
-object const& operator>> (object const& o, signed long long& v);
+msgpack::object const& operator>> (msgpack::object const& o, signed char& v);
+msgpack::object const& operator>> (msgpack::object const& o, signed short& v);
+msgpack::object const& operator>> (msgpack::object const& o, signed int& v);
+msgpack::object const& operator>> (msgpack::object const& o, signed long& v);
+msgpack::object const& operator>> (msgpack::object const& o, signed long long& v);
 
-object const& operator>> (object const& o, unsigned char& v);
-object const& operator>> (object const& o, unsigned short& v);
-object const& operator>> (object const& o, unsigned int& v);
-object const& operator>> (object const& o, unsigned long& v);
-object const& operator>> (object const& o, unsigned long long& v);
-
-template <typename Stream>
-packer<Stream>& operator<< (packer<Stream>& o, char v);
+msgpack::object const& operator>> (msgpack::object const& o, unsigned char& v);
+msgpack::object const& operator>> (msgpack::object const& o, unsigned short& v);
+msgpack::object const& operator>> (msgpack::object const& o, unsigned int& v);
+msgpack::object const& operator>> (msgpack::object const& o, unsigned long& v);
+msgpack::object const& operator>> (msgpack::object const& o, unsigned long long& v);
 
 template <typename Stream>
-packer<Stream>& operator<< (packer<Stream>& o, signed char v);
-template <typename Stream>
-packer<Stream>& operator<< (packer<Stream>& o, signed short v);
-template <typename Stream>
-packer<Stream>& operator<< (packer<Stream>& o, signed int v);
-template <typename Stream>
-packer<Stream>& operator<< (packer<Stream>& o, signed long v);
-template <typename Stream>
-packer<Stream>& operator<< (packer<Stream>& o, signed long long v);
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, char v);
 
 template <typename Stream>
-packer<Stream>& operator<< (packer<Stream>& o, unsigned char v);
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, signed char v);
 template <typename Stream>
-packer<Stream>& operator<< (packer<Stream>& o, unsigned short v);
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, signed short v);
 template <typename Stream>
-packer<Stream>& operator<< (packer<Stream>& o, unsigned int v);
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, signed int v);
 template <typename Stream>
-packer<Stream>& operator<< (packer<Stream>& o, unsigned long v);
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, signed long v);
 template <typename Stream>
-packer<Stream>& operator<< (packer<Stream>& o, unsigned long long v);
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, signed long long v);
+
+template <typename Stream>
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, unsigned char v);
+template <typename Stream>
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, unsigned short v);
+template <typename Stream>
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, unsigned int v);
+template <typename Stream>
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, unsigned long v);
+template <typename Stream>
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, unsigned long long v);
 
 
-void operator<< (object& o, char v);
+void operator<< (msgpack::object& o, char v);
 
-void operator<< (object& o, signed char v);
-void operator<< (object& o, signed short v);
-void operator<< (object& o, signed int v);
-void operator<< (object& o, signed long v);
-void operator<< (object& o, signed long long v);
+void operator<< (msgpack::object& o, signed char v);
+void operator<< (msgpack::object& o, signed short v);
+void operator<< (msgpack::object& o, signed int v);
+void operator<< (msgpack::object& o, signed long v);
+void operator<< (msgpack::object& o, signed long long v);
 
-void operator<< (object& o, unsigned char v);
-void operator<< (object& o, unsigned short v);
-void operator<< (object& o, unsigned int v);
-void operator<< (object& o, unsigned long v);
-void operator<< (object& o, unsigned long long v);
+void operator<< (msgpack::object& o, unsigned char v);
+void operator<< (msgpack::object& o, unsigned short v);
+void operator<< (msgpack::object& o, unsigned int v);
+void operator<< (msgpack::object& o, unsigned long v);
+void operator<< (msgpack::object& o, unsigned long long v);
 
-void operator<< (object::with_zone& o, char v);
+void operator<< (msgpack::object::with_zone& o, char v);
 
-void operator<< (object::with_zone& o, signed char v);
-void operator<< (object::with_zone& o, signed short v);
-void operator<< (object::with_zone& o, signed int v);
-void operator<< (object::with_zone& o, signed long v);
-void operator<< (object::with_zone& o, const signed long long& v);
+void operator<< (msgpack::object::with_zone& o, signed char v);
+void operator<< (msgpack::object::with_zone& o, signed short v);
+void operator<< (msgpack::object::with_zone& o, signed int v);
+void operator<< (msgpack::object::with_zone& o, signed long v);
+void operator<< (msgpack::object::with_zone& o, const signed long long& v);
 
-void operator<< (object::with_zone& o, unsigned char v);
-void operator<< (object::with_zone& o, unsigned short v);
-void operator<< (object::with_zone& o, unsigned int v);
-void operator<< (object::with_zone& o, unsigned long v);
-void operator<< (object::with_zone& o, const unsigned long long& v);
+void operator<< (msgpack::object::with_zone& o, unsigned char v);
+void operator<< (msgpack::object::with_zone& o, unsigned short v);
+void operator<< (msgpack::object::with_zone& o, unsigned int v);
+void operator<< (msgpack::object::with_zone& o, unsigned long v);
+void operator<< (msgpack::object::with_zone& o, const unsigned long long& v);
 
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 

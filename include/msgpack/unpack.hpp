@@ -66,7 +66,7 @@ namespace msgpack {
 
 MSGPACK_API_VERSION_NAMESPACE(v1) {
 
-typedef bool (*unpack_reference_func)(type::object_type, std::size_t, void*);
+typedef bool (*unpack_reference_func)(msgpack::type::object_type, std::size_t, void*);
 
 struct unpack_error : public std::runtime_error {
     explicit unpack_error(const std::string& msg)
@@ -202,81 +202,81 @@ private:
     unpack_limit m_limit;
 };
 
-inline void unpack_uint8(uint8_t d, object& o)
-{ o.type = type::POSITIVE_INTEGER; o.via.u64 = d; }
+inline void unpack_uint8(uint8_t d, msgpack::object& o)
+{ o.type = msgpack::type::POSITIVE_INTEGER; o.via.u64 = d; }
 
-inline void unpack_uint16(uint16_t d, object& o)
-{ o.type = type::POSITIVE_INTEGER; o.via.u64 = d; }
+inline void unpack_uint16(uint16_t d, msgpack::object& o)
+{ o.type = msgpack::type::POSITIVE_INTEGER; o.via.u64 = d; }
 
-inline void unpack_uint32(uint32_t d, object& o)
-{ o.type = type::POSITIVE_INTEGER; o.via.u64 = d; }
+inline void unpack_uint32(uint32_t d, msgpack::object& o)
+{ o.type = msgpack::type::POSITIVE_INTEGER; o.via.u64 = d; }
 
-inline void unpack_uint64(uint64_t d, object& o)
-{ o.type = type::POSITIVE_INTEGER; o.via.u64 = d; }
+inline void unpack_uint64(uint64_t d, msgpack::object& o)
+{ o.type = msgpack::type::POSITIVE_INTEGER; o.via.u64 = d; }
 
-inline void unpack_int8(int8_t d, object& o)
-{ if(d >= 0) { o.type = type::POSITIVE_INTEGER; o.via.u64 = d; }
-        else { o.type = type::NEGATIVE_INTEGER; o.via.i64 = d; } }
+inline void unpack_int8(int8_t d, msgpack::object& o)
+{ if(d >= 0) { o.type = msgpack::type::POSITIVE_INTEGER; o.via.u64 = d; }
+        else { o.type = msgpack::type::NEGATIVE_INTEGER; o.via.i64 = d; } }
 
-inline void unpack_int16(int16_t d, object& o)
-{ if(d >= 0) { o.type = type::POSITIVE_INTEGER; o.via.u64 = d; }
-        else { o.type = type::NEGATIVE_INTEGER; o.via.i64 = d; } }
+inline void unpack_int16(int16_t d, msgpack::object& o)
+{ if(d >= 0) { o.type = msgpack::type::POSITIVE_INTEGER; o.via.u64 = d; }
+        else { o.type = msgpack::type::NEGATIVE_INTEGER; o.via.i64 = d; } }
 
-inline void unpack_int32(int32_t d, object& o)
-{ if(d >= 0) { o.type = type::POSITIVE_INTEGER; o.via.u64 = d; }
-        else { o.type = type::NEGATIVE_INTEGER; o.via.i64 = d; } }
+inline void unpack_int32(int32_t d, msgpack::object& o)
+{ if(d >= 0) { o.type = msgpack::type::POSITIVE_INTEGER; o.via.u64 = d; }
+        else { o.type = msgpack::type::NEGATIVE_INTEGER; o.via.i64 = d; } }
 
-inline void unpack_int64(int64_t d, object& o)
-{ if(d >= 0) { o.type = type::POSITIVE_INTEGER; o.via.u64 = d; }
-        else { o.type = type::NEGATIVE_INTEGER; o.via.i64 = d; } }
+inline void unpack_int64(int64_t d, msgpack::object& o)
+{ if(d >= 0) { o.type = msgpack::type::POSITIVE_INTEGER; o.via.u64 = d; }
+        else { o.type = msgpack::type::NEGATIVE_INTEGER; o.via.i64 = d; } }
 
-inline void unpack_float(float d, object& o)
-{ o.type = type::FLOAT; o.via.f64 = d; }
+inline void unpack_float(float d, msgpack::object& o)
+{ o.type = msgpack::type::FLOAT; o.via.f64 = d; }
 
-inline void unpack_double(double d, object& o)
-{ o.type = type::FLOAT; o.via.f64 = d; }
+inline void unpack_double(double d, msgpack::object& o)
+{ o.type = msgpack::type::FLOAT; o.via.f64 = d; }
 
-inline void unpack_nil(object& o)
-{ o.type = type::NIL; }
+inline void unpack_nil(msgpack::object& o)
+{ o.type = msgpack::type::NIL; }
 
-inline void unpack_true(object& o)
-{ o.type = type::BOOLEAN; o.via.boolean = true; }
+inline void unpack_true(msgpack::object& o)
+{ o.type = msgpack::type::BOOLEAN; o.via.boolean = true; }
 
-inline void unpack_false(object& o)
-{ o.type = type::BOOLEAN; o.via.boolean = false; }
+inline void unpack_false(msgpack::object& o)
+{ o.type = msgpack::type::BOOLEAN; o.via.boolean = false; }
 
 struct unpack_array {
-    void operator()(unpack_user& u, uint32_t n, object& o) const {
-        if (n > u.limit().array()) throw array_size_overflow("array size overflow");
-        o.type = type::ARRAY;
+    void operator()(unpack_user& u, uint32_t n, msgpack::object& o) const {
+        if (n > u.limit().array()) throw msgpack::array_size_overflow("array size overflow");
+        o.type = msgpack::type::ARRAY;
         o.via.array.size = 0;
-        o.via.array.ptr = static_cast<object*>(u.zone().allocate_align(n*sizeof(object)));
+        o.via.array.ptr = static_cast<msgpack::object*>(u.zone().allocate_align(n*sizeof(msgpack::object)));
     }
 };
 
-inline void unpack_array_item(object& c, object const& o)
+inline void unpack_array_item(msgpack::object& c, msgpack::object const& o)
 {
 #if defined(__GNUC__) && !defined(__clang__)
-    std::memcpy(&c.via.array.ptr[c.via.array.size++], &o, sizeof(object));
+    std::memcpy(&c.via.array.ptr[c.via.array.size++], &o, sizeof(msgpack::object));
 #else  /* __GNUC__ && !__clang__ */
     c.via.array.ptr[c.via.array.size++] = o;
 #endif /* __GNUC__ && !__clang__ */
 }
 
 struct unpack_map {
-    void operator()(unpack_user& u, uint32_t n, object& o) const {
-        if (n > u.limit().map()) throw map_size_overflow("map size overflow");
-        o.type = type::MAP;
+    void operator()(unpack_user& u, uint32_t n, msgpack::object& o) const {
+        if (n > u.limit().map()) throw msgpack::map_size_overflow("map size overflow");
+        o.type = msgpack::type::MAP;
         o.via.map.size = 0;
-        o.via.map.ptr = static_cast<object_kv*>(u.zone().allocate_align(n*sizeof(object_kv)));
+        o.via.map.ptr = static_cast<msgpack::object_kv*>(u.zone().allocate_align(n*sizeof(msgpack::object_kv)));
     }
 };
 
-inline void unpack_map_item(object& c, object const& k, object const& v)
+inline void unpack_map_item(msgpack::object& c, msgpack::object const& k, msgpack::object const& v)
 {
 #if defined(__GNUC__) && !defined(__clang__)
-    std::memcpy(&c.via.map.ptr[c.via.map.size].key, &k, sizeof(object));
-    std::memcpy(&c.via.map.ptr[c.via.map.size].val, &v, sizeof(object));
+    std::memcpy(&c.via.map.ptr[c.via.map.size].key, &k, sizeof(msgpack::object));
+    std::memcpy(&c.via.map.ptr[c.via.map.size].val, &v, sizeof(msgpack::object));
 #else  /* __GNUC__ && !__clang__ */
     c.via.map.ptr[c.via.map.size].key = k;
     c.via.map.ptr[c.via.map.size].val = v;
@@ -284,15 +284,15 @@ inline void unpack_map_item(object& c, object const& k, object const& v)
     ++c.via.map.size;
 }
 
-inline void unpack_str(unpack_user& u, const char* p, uint32_t l, object& o)
+inline void unpack_str(unpack_user& u, const char* p, uint32_t l, msgpack::object& o)
 {
-    o.type = type::STR;
+    o.type = msgpack::type::STR;
     if (u.reference_func() && u.reference_func()(o.type, l, u.user_data())) {
         o.via.str.ptr = p;
         u.set_referenced(true);
     }
     else {
-        if (l > u.limit().str()) throw str_size_overflow("str size overflow");
+        if (l > u.limit().str()) throw msgpack::str_size_overflow("str size overflow");
         char* tmp = static_cast<char*>(u.zone().allocate_align(l));
         std::memcpy(tmp, p, l);
         o.via.str.ptr = tmp;
@@ -300,15 +300,15 @@ inline void unpack_str(unpack_user& u, const char* p, uint32_t l, object& o)
     o.via.str.size = l;
 }
 
-inline void unpack_bin(unpack_user& u, const char* p, uint32_t l, object& o)
+inline void unpack_bin(unpack_user& u, const char* p, uint32_t l, msgpack::object& o)
 {
-    o.type = type::BIN;
+    o.type = msgpack::type::BIN;
     if (u.reference_func() && u.reference_func()(o.type, l, u.user_data())) {
         o.via.bin.ptr = p;
         u.set_referenced(true);
     }
     else {
-        if (l > u.limit().bin()) throw bin_size_overflow("bin size overflow");
+        if (l > u.limit().bin()) throw msgpack::bin_size_overflow("bin size overflow");
         char* tmp = static_cast<char*>(u.zone().allocate_align(l));
         std::memcpy(tmp, p, l);
         o.via.bin.ptr = tmp;
@@ -316,15 +316,15 @@ inline void unpack_bin(unpack_user& u, const char* p, uint32_t l, object& o)
     o.via.bin.size = l;
 }
 
-inline void unpack_ext(unpack_user& u, const char* p, std::size_t l, object& o)
+inline void unpack_ext(unpack_user& u, const char* p, std::size_t l, msgpack::object& o)
 {
-    o.type = type::EXT;
+    o.type = msgpack::type::EXT;
     if (u.reference_func() && u.reference_func()(o.type, l, u.user_data())) {
         o.via.ext.ptr = p;
         u.set_referenced(true);
     }
     else {
-        if (l > u.limit().ext()) throw ext_size_overflow("ext size overflow");
+        if (l > u.limit().ext()) throw msgpack::ext_size_overflow("ext size overflow");
         char* tmp = static_cast<char*>(u.zone().allocate_align(l));
         std::memcpy(tmp, p, l);
         o.via.ext.ptr = tmp;
@@ -335,21 +335,21 @@ inline void unpack_ext(unpack_user& u, const char* p, std::size_t l, object& o)
 
 class unpack_stack {
 public:
-    object const& obj() const { return m_obj; }
-    object& obj() { return m_obj; }
-    void set_obj(object const& obj) { m_obj = obj; }
+    msgpack::object const& obj() const { return m_obj; }
+    msgpack::object& obj() { return m_obj; }
+    void set_obj(msgpack::object const& obj) { m_obj = obj; }
     std::size_t count() const { return m_count; }
     void set_count(std::size_t count) { m_count = count; }
     std::size_t decr_count() { return --m_count; }
     uint32_t container_type() const { return m_container_type; }
     void set_container_type(uint32_t container_type) { m_container_type = container_type; }
-    object const& map_key() const { return m_map_key; }
-    void set_map_key(object const& map_key) { m_map_key = map_key; }
+    msgpack::object const& map_key() const { return m_map_key; }
+    void set_map_key(msgpack::object const& map_key) { m_map_key = map_key; }
 private:
-    object m_obj;
+    msgpack::object m_obj;
     std::size_t m_count;
     uint32_t m_container_type;
-    object m_map_key;
+    msgpack::object m_map_key;
 };
 
 inline void init_count(void* buffer)
@@ -447,10 +447,10 @@ public:
         m_cs = MSGPACK_CS_HEADER;
         m_trail = 0;
         m_stack.resize(1);
-        m_stack[0].set_obj(object());
+        m_stack[0].set_obj(msgpack::object());
     }
 
-    object const& data() const
+    msgpack::object const& data() const
     {
         return m_stack[0].obj();
     }
@@ -478,7 +478,7 @@ private:
     int push_aggregate(
         Func const& f,
         uint32_t container_type,
-        object& obj,
+        msgpack::object& obj,
         const char* load_pos,
         std::size_t& off) {
         typename value<T>::type tmp;
@@ -499,7 +499,7 @@ private:
         return 0;
     }
 
-    int push_item(object& obj) {
+    int push_item(msgpack::object& obj) {
         bool finish = false;
         while (!finish) {
             if(m_stack.size() == 1) {
@@ -540,7 +540,7 @@ private:
         return 0;
     }
 
-    int push_proc(object& obj, std::size_t& off) {
+    int push_proc(msgpack::object& obj, std::size_t& off) {
         int ret = push_item(obj);
         if (ret > 0) {
             m_stack[0].set_obj(obj);
@@ -574,7 +574,7 @@ private:
 
 template <>
 inline void context::check_ext_size<4>(std::size_t size) {
-    if (size == 0xffffffff) throw ext_size_overflow("ext size overflow");
+    if (size == 0xffffffff) throw msgpack::ext_size_overflow("ext size overflow");
 }
 
 inline int context::execute(const char* data, std::size_t len, std::size_t& off)
@@ -586,7 +586,7 @@ inline int context::execute(const char* data, std::size_t len, std::size_t& off)
     const char* const pe = data + len;
     const char* n = nullptr;
 
-    object obj;
+    msgpack::object obj;
 
     if(m_current == pe) {
         off = m_current - m_start;
@@ -973,13 +973,13 @@ class unpacked {
 public:
     unpacked() {}
 
-    unpacked(object const& obj, msgpack::unique_ptr<msgpack::zone> z) :
+    unpacked(msgpack::object const& obj, msgpack::unique_ptr<msgpack::zone> z) :
         m_obj(obj), m_zone(msgpack::move(z)) { }
 
-    void set(object const& obj)
+    void set(msgpack::object const& obj)
         { m_obj = obj; }
 
-    const object& get() const
+    const msgpack::object& get() const
         { return m_obj; }
 
     msgpack::unique_ptr<msgpack::zone>& zone()
@@ -989,7 +989,7 @@ public:
         { return m_zone; }
 
 private:
-    object m_obj;
+    msgpack::object m_obj;
     msgpack::unique_ptr<msgpack::zone> m_zone;
 };
 
@@ -1067,10 +1067,10 @@ public:
     bool execute();
 
     /*! for backward compatibility */
-    object const& data();
+    msgpack::object const& data();
 
     /*! for backward compatibility */
-    zone* release_zone();
+    msgpack::zone* release_zone();
 
     /*! for backward compatibility */
     void reset_zone();
@@ -1099,7 +1099,7 @@ private:
     void expand_buffer(std::size_t size);
     int execute_imp();
     bool flush_zone();
-    static bool default_reference_func(type::object_type type, std::size_t len, void*);
+    static bool default_reference_func(msgpack::type::object_type type, std::size_t len, void*);
 
 private:
     char* m_buffer;
@@ -1107,7 +1107,7 @@ private:
     std::size_t m_free;
     std::size_t m_off;
     std::size_t m_parsed;
-    msgpack::unique_ptr<zone> m_z;
+    msgpack::unique_ptr<msgpack::zone> m_z;
     std::size_t m_initial_buffer_size;
     detail::context m_ctx;
 
@@ -1161,23 +1161,23 @@ void unpack(unpacked& result,
             unpack_reference_func f = nullptr, void* user_data = nullptr,
             unpack_limit const& limit = unpack_limit());
 
-object unpack(
-    zone& z,
+msgpack::object unpack(
+    msgpack::zone& z,
     const char* data, std::size_t len, std::size_t& off, bool& referenced,
     unpack_reference_func f = nullptr, void* user_data = nullptr,
     unpack_limit const& limit = unpack_limit());
-object unpack(
-    zone& z,
+msgpack::object unpack(
+    msgpack::zone& z,
     const char* data, std::size_t len, std::size_t& off,
     unpack_reference_func f = nullptr, void* user_data = nullptr,
     unpack_limit const& limit = unpack_limit());
-object unpack(
-    zone& z,
+msgpack::object unpack(
+    msgpack::zone& z,
     const char* data, std::size_t len, bool& referenced,
     unpack_reference_func f = nullptr, void* user_data = nullptr,
     unpack_limit const& limit = unpack_limit());
-object unpack(
-    zone& z,
+msgpack::object unpack(
+    msgpack::zone& z,
     const char* data, std::size_t len,
     unpack_reference_func f = nullptr, void* user_data = nullptr,
     unpack_limit const& limit = unpack_limit());
@@ -1202,7 +1202,7 @@ inline unpacker::unpacker(unpack_reference_func f,
                           void* user_data,
                           std::size_t initial_buffer_size,
                           unpack_limit const& limit)
-    :m_z(new zone), m_ctx(f, user_data, limit)
+    :m_z(new msgpack::zone), m_ctx(f, user_data, limit)
 {
     if(initial_buffer_size < COUNTER_SIZE) {
         initial_buffer_size = COUNTER_SIZE;
@@ -1357,7 +1357,7 @@ inline bool unpacker::next(unpacked& result, bool& referenced)
     referenced = false;
     int ret = execute_imp();
     if(ret < 0) {
-        throw parse_error("parse error");
+        throw msgpack::parse_error("parse error");
     }
 
     if(ret == 0) {
@@ -1390,7 +1390,7 @@ inline bool unpacker::execute()
 {
     int ret = execute_imp();
     if(ret < 0) {
-        throw parse_error("parse error");
+        throw msgpack::parse_error("parse error");
     } else if(ret == 0) {
         return false;
     } else {
@@ -1408,19 +1408,19 @@ inline int unpacker::execute_imp()
     return ret;
 }
 
-inline object const& unpacker::data()
+inline msgpack::object const& unpacker::data()
 {
     return m_ctx.data();
 }
 
-inline zone* unpacker::release_zone()
+inline msgpack::zone* unpacker::release_zone()
 {
     if(!flush_zone()) {
         return nullptr;
     }
 
-    zone* r =  new zone;
-    zone* old = m_z.release();
+    msgpack::zone* r =  new msgpack::zone;
+    msgpack::zone* old = m_z.release();
     m_z.reset(r);
     m_ctx.user().set_zone(*m_z);
 
@@ -1489,7 +1489,7 @@ namespace detail {
 
 inline unpack_return
 unpack_imp(const char* data, std::size_t len, std::size_t& off,
-           zone& result_zone, object& result, bool& referenced,
+           msgpack::zone& result_zone, msgpack::object& result, bool& referenced,
            unpack_reference_func f = nullptr, void* user_data = nullptr,
            unpack_limit const& limit = unpack_limit())
 {
@@ -1538,8 +1538,8 @@ inline unpacked unpack(
     const char* data, std::size_t len, std::size_t& off, bool& referenced,
     unpack_reference_func f, void* user_data, unpack_limit const& limit)
 {
-    object obj;
-    msgpack::unique_ptr<zone> z(new zone);
+    msgpack::object obj;
+    msgpack::unique_ptr<msgpack::zone> z(new msgpack::zone);
     referenced = false;
     unpack_return ret = detail::unpack_imp(
         data, len, off, *z, obj, referenced, f, user_data, limit);
@@ -1550,10 +1550,10 @@ inline unpacked unpack(
     case UNPACK_EXTRA_BYTES:
         return unpacked(obj, msgpack::move(z));
     case UNPACK_CONTINUE:
-        throw insufficient_bytes("insufficient bytes");
+        throw msgpack::insufficient_bytes("insufficient bytes");
     case UNPACK_PARSE_ERROR:
     default:
-        throw parse_error("parse error");
+        throw msgpack::parse_error("parse error");
     }
     return unpacked();
 }
@@ -1589,8 +1589,8 @@ inline void unpack(unpacked& result,
                    const char* data, std::size_t len, std::size_t& off, bool& referenced,
                    unpack_reference_func f, void* user_data, unpack_limit const& limit)
 {
-    object obj;
-    msgpack::unique_ptr<zone> z(new zone);
+    msgpack::object obj;
+    msgpack::unique_ptr<msgpack::zone> z(new msgpack::zone);
     referenced = false;
     unpack_return ret = detail::unpack_imp(
         data, len, off, *z, obj, referenced, f, user_data, limit);
@@ -1605,10 +1605,10 @@ inline void unpack(unpacked& result,
         result.zone() = msgpack::move(z);
         return;
     case UNPACK_CONTINUE:
-        throw insufficient_bytes("insufficient bytes");
+        throw msgpack::insufficient_bytes("insufficient bytes");
     case UNPACK_PARSE_ERROR:
     default:
-        throw parse_error("parse error");
+        throw msgpack::parse_error("parse error");
     }
 }
 
@@ -1638,12 +1638,12 @@ inline void unpack(unpacked& result,
 }
 
 
-inline object unpack(
-    zone& z,
+inline msgpack::object unpack(
+    msgpack::zone& z,
     const char* data, std::size_t len, std::size_t& off, bool& referenced,
     unpack_reference_func f, void* user_data, unpack_limit const& limit)
 {
-    object obj;
+    msgpack::object obj;
     referenced = false;
     unpack_return ret = detail::unpack_imp(
         data, len, off, z, obj, referenced, f, user_data, limit);
@@ -1654,16 +1654,16 @@ inline object unpack(
     case UNPACK_EXTRA_BYTES:
         return obj;
     case UNPACK_CONTINUE:
-        throw insufficient_bytes("insufficient bytes");
+        throw msgpack::insufficient_bytes("insufficient bytes");
     case UNPACK_PARSE_ERROR:
     default:
-        throw parse_error("parse error");
+        throw msgpack::parse_error("parse error");
     }
     return obj;
 }
 
-inline object unpack(
-    zone& z,
+inline msgpack::object unpack(
+    msgpack::zone& z,
     const char* data, std::size_t len, std::size_t& off,
     unpack_reference_func f, void* user_data, unpack_limit const& limit)
 {
@@ -1671,8 +1671,8 @@ inline object unpack(
     return unpack(z, data, len, off, referenced, f, user_data, limit);
 }
 
-inline object unpack(
-    zone& z,
+inline msgpack::object unpack(
+    msgpack::zone& z,
     const char* data, std::size_t len, bool& referenced,
     unpack_reference_func f, void* user_data, unpack_limit const& limit)
 {
@@ -1680,8 +1680,8 @@ inline object unpack(
     return unpack(z, data, len, off, referenced, f, user_data, limit);
 }
 
-inline object unpack(
-    zone& z,
+inline msgpack::object unpack(
+    msgpack::zone& z,
     const char* data, std::size_t len,
     unpack_reference_func f, void* user_data, unpack_limit const& limit)
 {
@@ -1704,7 +1704,7 @@ inline void unpack(unpacked* result,
         else unpack(*result, data, len, f, user_data, limit);
 }
 
-inline bool unpacker::default_reference_func(type::object_type /*type*/, std::size_t /*len*/, void*)
+inline bool unpacker::default_reference_func(msgpack::type::object_type /*type*/, std::size_t /*len*/, void*)
 {
     return true;
 }

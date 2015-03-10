@@ -32,17 +32,17 @@ struct nil;
 }  // namespace type
 
 
-object const& operator>> (object const& o, type::nil&);
+msgpack::object const& operator>> (msgpack::object const& o, type::nil&);
 
 template <typename Stream>
-packer<Stream>& operator<< (packer<Stream>& o, const type::nil&);
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const type::nil&);
 
-void operator<< (object& o, type::nil);
+void operator<< (msgpack::object& o, type::nil);
 
-void operator<< (object::with_zone& o, type::nil v);
+void operator<< (msgpack::object::with_zone& o, type::nil v);
 
 template <>
-inline void object::as<void>() const;
+inline void msgpack::object::as<void>() const;
 
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 

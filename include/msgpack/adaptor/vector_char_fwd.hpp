@@ -26,14 +26,14 @@ namespace msgpack {
 
 MSGPACK_API_VERSION_NAMESPACE(v1) {
 
-object const& operator>> (object const& o, std::vector<char>& v);
+msgpack::object const& operator>> (msgpack::object const& o, std::vector<char>& v);
 
 template <typename Stream>
-packer<Stream>& operator<< (packer<Stream>& o, const std::vector<char>& v);
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const std::vector<char>& v);
 
-void operator<< (object& o, const std::vector<char>& v);
+void operator<< (msgpack::object& o, const std::vector<char>& v);
 
-void operator<< (object::with_zone& o, const std::vector<char>& v);
+void operator<< (msgpack::object::with_zone& o, const std::vector<char>& v);
 
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 

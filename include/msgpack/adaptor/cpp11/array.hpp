@@ -30,12 +30,12 @@ namespace msgpack {
 MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 template <typename T, std::size_t N>
-inline object const& operator>> (object const& o, std::array<T, N>& v) {
-    if(o.type != type::ARRAY) { throw type_error(); }
+inline msgpack::object const& operator>> (msgpack::object const& o, std::array<T, N>& v) {
+    if(o.type != msgpack::type::ARRAY) { throw type_error(); }
     if(o.via.array.size != N) { throw type_error(); }
     if(o.via.array.size > 0) {
-        object* p = o.via.array.ptr;
-        object* const pend = o.via.array.ptr + o.via.array.size;
+        msgpack::object* p = o.via.array.ptr;
+        msgpack::object* const pend = o.via.array.ptr + o.via.array.size;
         T* it = &v[0];
         do {
             p->convert(*it);
@@ -47,7 +47,7 @@ inline object const& operator>> (object const& o, std::array<T, N>& v) {
 }
 
 template <typename Stream, typename T, std::size_t N>
-inline packer<Stream>& operator<< (packer<Stream>& o, const std::array<T, N>& v) {
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const std::array<T, N>& v) {
     uint32_t size = checked_get_container_size(v.size());
     o.pack_array(size);
     for(auto const& e : v) o.pack(e);
@@ -55,17 +55,17 @@ inline packer<Stream>& operator<< (packer<Stream>& o, const std::array<T, N>& v)
 }
 
 template <typename T, std::size_t N>
-inline void operator<< (object::with_zone& o, const std::array<T, N>& v) {
-    o.type = type::ARRAY;
+inline void operator<< (msgpack::object::with_zone& o, const std::array<T, N>& v) {
+    o.type = msgpack::type::ARRAY;
     if(v.empty()) {
         o.via.array.ptr = nullptr;
         o.via.array.size = 0;
     } else {
         uint32_t size = checked_get_container_size(v.size());
-        object* p = static_cast<object*>(o.zone.allocate_align(sizeof(object)*size));
+        msgpack::object* p = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*size));
         o.via.array.size = size;
         o.via.array.ptr = p;
-        for (auto const& e : v) *p++ = object(e, o.zone);
+        for (auto const& e : v) *p++ = msgpack::object(e, o.zone);
     }
 }
 

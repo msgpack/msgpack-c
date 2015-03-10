@@ -30,11 +30,11 @@ namespace msgpack {
 MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 template <typename T>
-inline object const& operator>> (object const& o, std::forward_list<T>& v)
+inline msgpack::object const& operator>> (msgpack::object const& o, std::forward_list<T>& v)
 {
-    if(o.type != type::ARRAY) { throw type_error(); }
+    if(o.type != msgpack::type::ARRAY) { throw type_error(); }
     v.resize(o.via.array.size);
-    object* p = o.via.array.ptr;
+    msgpack::object* p = o.via.array.ptr;
     for (auto &e : v) {
         p->convert(e);
         ++p;
@@ -43,7 +43,7 @@ inline object const& operator>> (object const& o, std::forward_list<T>& v)
 }
 
 template <typename Stream, typename T>
-inline packer<Stream>& operator<< (packer<Stream>& o, const std::forward_list<T>& v)
+inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const std::forward_list<T>& v)
 {
     uint32_t size = checked_get_container_size(std::distance(v.begin(), v.end()));
     o.pack_array(size);
@@ -52,19 +52,19 @@ inline packer<Stream>& operator<< (packer<Stream>& o, const std::forward_list<T>
 }
 
 template <typename T>
-inline void operator<< (object::with_zone& o, const std::forward_list<T>& v)
+inline void operator<< (msgpack::object::with_zone& o, const std::forward_list<T>& v)
 {
-    o.type = type::ARRAY;
+    o.type = msgpack::type::ARRAY;
     if(v.empty()) {
         o.via.array.ptr = nullptr;
         o.via.array.size = 0;
     } else {
         uint32_t size = checked_get_container_size(std::distance(v.begin(), v.end()));
         o.via.array.size = size;
-        object* p = static_cast<object*>(
-            o.zone.allocate_align(sizeof(object)*size));
+        msgpack::object* p = static_cast<msgpack::object*>(
+            o.zone.allocate_align(sizeof(msgpack::object)*size));
         o.via.array.ptr = p;
-        for(auto const& e : v) *p++ = object(e, o.zone);
+        for(auto const& e : v) *p++ = msgpack::object(e, o.zone);
     }
 }
 

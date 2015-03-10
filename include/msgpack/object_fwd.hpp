@@ -54,12 +54,12 @@ struct object_kv;
 
 struct object_array {
     uint32_t size;
-    object* ptr;
+    msgpack::object* ptr;
 };
 
 struct object_map {
     uint32_t size;
-    object_kv* ptr;
+    msgpack::object_kv* ptr;
 };
 
 struct object_str {
@@ -88,17 +88,17 @@ struct object {
         double   dec; // obsolete
 #endif // MSGPACK_USE_LEGACY_NAME_AS_FLOAT
         double   f64;
-        object_array array;
-        object_map map;
-        object_str str;
-        object_bin bin;
-        object_ext ext;
+        msgpack::object_array array;
+        msgpack::object_map map;
+        msgpack::object_str str;
+        msgpack::object_bin bin;
+        msgpack::object_ext ext;
     };
 
-    type::object_type type;
+    msgpack::type::object_type type;
     union_type via;
 
-    bool is_nil() const { return type == type::NIL; }
+    bool is_nil() const { return type == msgpack::type::NIL; }
 
     template <typename T>
     T as() const;
@@ -116,11 +116,11 @@ struct object {
     explicit object(const T& v);
 
     template <typename T>
-    object(const T& v, zone& z);
+    object(const T& v, msgpack::zone& z);
 
     // obsolete
     template <typename T>
-    object(const T& v, zone* z);
+    object(const T& v, msgpack::zone* z);
 
     template <typename T>
     object& operator=(const T& v);
@@ -139,8 +139,8 @@ public:
 class type_error : public std::bad_cast { };
 
 struct object_kv {
-    object key;
-    object val;
+    msgpack::object key;
+    msgpack::object val;
 };
 
 namespace detail {
@@ -148,32 +148,32 @@ template <typename Stream, typename T>
 struct packer_serializer;
 } // namespace detail
 
-object const& operator>> (object const& o, object& v);
+msgpack::object const& operator>> (msgpack::object const& o, msgpack::object& v);
 
 template <typename T>
-object const& operator>> (object const& o, T& v);
+msgpack::object const& operator>> (msgpack::object const& o, T& v);
 
 template <typename T>
-void operator<< (object::with_zone& o, const T& v);
+void operator<< (msgpack::object::with_zone& o, const T& v);
 
-void operator<< (object::with_zone& o, const object& v);
+void operator<< (msgpack::object::with_zone& o, const msgpack::object& v);
 
-void operator<< (object::with_zone& o, const object::with_zone& v);
+void operator<< (msgpack::object::with_zone& o, const msgpack::object::with_zone& v);
 
 template <typename Stream>
 class packer;
 
 template <typename Stream>
-packer<Stream>& operator<< (packer<Stream>& o, const object& v);
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const msgpack::object& v);
 
 template <typename Stream>
-packer<Stream>& operator<< (packer<Stream>& o, const object::with_zone& v);
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const msgpack::object::with_zone& v);
 
 template <typename Stream, typename T>
-packer<Stream>& operator<< (packer<Stream>& o, const T& v);
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const T& v);
 
 template <typename T>
-void operator<< (object::with_zone& o, const T& v);
+void operator<< (msgpack::object::with_zone& o, const T& v);
 
 } // MSGPACK_API_VERSION_NAMESPACE(v1)
 

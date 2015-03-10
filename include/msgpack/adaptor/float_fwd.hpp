@@ -26,16 +26,16 @@ namespace msgpack {
 
 MSGPACK_API_VERSION_NAMESPACE(v1) {
 
-object const& operator>> (object const& o, float& v);
+msgpack::object const& operator>> (msgpack::object const& o, float& v);
 template <typename Stream>
-packer<Stream>& operator<< (packer<Stream>& o, const float& v);
-object const& operator>> (object const& o, double& v);
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const float& v);
+msgpack::object const& operator>> (msgpack::object const& o, double& v);
 template <typename Stream>
-packer<Stream>& operator<< (packer<Stream>& o, const double& v);
-void operator<< (object& o, float v);
-void operator<< (object& o, double v);
-void operator<< (object::with_zone& o, float v);
-void operator<< (object::with_zone& o, double v);
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const double& v);
+void operator<< (msgpack::object& o, float v);
+void operator<< (msgpack::object& o, double v);
+void operator<< (msgpack::object::with_zone& o, float v);
+void operator<< (msgpack::object::with_zone& o, double v);
 
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 
