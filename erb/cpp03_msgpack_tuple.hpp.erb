@@ -139,7 +139,7 @@ inline tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> make_tuple(typename tuple_type<
 inline msgpack::object const& operator>> (
         msgpack::object const& o,
         type::tuple<>&) {
-    if(o.type != msgpack::type::ARRAY) { throw type_error(); }
+    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
     return o;
 }
 <%0.upto(GENERATION_LIMIT) {|i|%>
@@ -147,8 +147,8 @@ template <typename A0<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
 inline msgpack::object const& operator>> (
         msgpack::object const& o,
         type::tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw type_error(); }
-    if(o.via.array.size < <%=i+1%>) { throw type_error(); }
+    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+    if(o.via.array.size < <%=i+1%>) { throw msgpack::type_error(); }
     <%0.upto(i) {|j|%>
     o.via.array.ptr[<%=j%>].convert<typename type::tuple_type<A<%=j%>>::type>(v.template get<<%=j%>>());<%}%>
     return o;

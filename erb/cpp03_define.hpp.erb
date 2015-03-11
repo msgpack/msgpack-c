@@ -90,7 +90,7 @@ struct define<> {
     }
     void msgpack_unpack(msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw type_error(); }
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
     }
     void msgpack_object(msgpack::object* o, msgpack::zone&) const
     {
@@ -115,7 +115,7 @@ struct define<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> {
     }
     void msgpack_unpack(msgpack::object const& o)
     {
-        if(o.type != msgpack::type::ARRAY) { throw type_error(); }
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
         const size_t size = o.via.array.size;
         if(size > 0) {
             msgpack::object *ptr = o.via.array.ptr;
