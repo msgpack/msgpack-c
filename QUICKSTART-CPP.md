@@ -2,7 +2,7 @@
 
 The serialization library is production-ready.
 
-Currently, RPC implementation is testing phase. Requires newer kernel, not running on RHEL5/CentOS5.
+Currently, RPC implementation is in testing phase. Requires newer kernel, not running on RHEL5/CentOS5.
 
 # Install
 
