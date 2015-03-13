@@ -2,7 +2,7 @@
 
 The serialization library is production-ready.
 
-Currently, no RPC implementation is not available.
+Currently, RPC implementation is not available.
 
 # Install
 
