@@ -66,7 +66,6 @@ msgpack_unpack_struct_decl(_context) {
     msgpack_unpack_struct(_stack) stack[MSGPACK_EMBED_STACK_SIZE];
 };
 
-
 msgpack_unpack_func(void, _init)(msgpack_unpack_struct(_context)* ctx)
 {
     ctx->cs = MSGPACK_CS_HEADER;
@@ -93,10 +92,9 @@ msgpack_unpack_func(msgpack_unpack_object, _data)(msgpack_unpack_struct(_context
     return (ctx)->stack[0].obj;
 }
 
-
 msgpack_unpack_func(int, _execute)(msgpack_unpack_struct(_context)* ctx, const char* data, size_t len, size_t* off)
 {
-    assert(len >= *off);
+    /* assert(len >= *off); */
 
     const unsigned char* p = (unsigned char*)data + *off;
     const unsigned char* const pe = (unsigned char*)data + len;
@@ -252,7 +250,6 @@ msgpack_unpack_func(int, _execute)(msgpack_unpack_struct(_context)* ctx, const c
                 goto _failed;
             SWITCH_RANGE_END
             // end MSGPACK_CS_HEADER
-
 
         _fixed_trail_again:
             ++p;
@@ -432,7 +429,6 @@ _header_again:
     } while(p != pe);
     goto _out;
 
-
 _finish:
     stack[0].obj = obj;
     ++p;
@@ -457,7 +453,6 @@ _end:
 
     return ret;
 }
-
 
 #undef msgpack_unpack_func
 #undef msgpack_unpack_callback
