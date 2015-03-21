@@ -44,7 +44,7 @@ namespace type {
     public:
         using base = std::tuple<Types...>;
 
-        using base::tuple;
+        using base::base;
 
         tuple() = default;
         tuple(tuple const&) = default;
