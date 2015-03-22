@@ -36,7 +36,7 @@ typedef unsigned __int64 uint64_t;
 #include <stdbool.h>
 #endif
 
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) && !defined(_LIB)
 #define MSGPACK_DLLEXPORT __declspec(dllexport)
 #else  /* _MSC_VER */
 #define MSGPACK_DLLEXPORT
@@ -92,7 +92,6 @@ typedef unsigned int _msgpack_atomic_counter_t;
 #define __LITTLE_ENDIAN__
 #endif
 #endif
-
 
 #ifdef __LITTLE_ENDIAN__
 
@@ -181,7 +180,6 @@ typedef unsigned int _msgpack_atomic_counter_t;
 #define _msgpack_load64(cast, from) \
     ({ cast val; memcpy(&val, (char*)from, 8); _msgpack_be64(val); })
 */
-
 
 #if !defined(__cplusplus) && defined(_MSC_VER)
 #  if !defined(FALSE)
