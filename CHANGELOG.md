@@ -1,3 +1,29 @@
+2015-03-10 version 1.0.0:
+  * Support msgpack v5 format (str, bin, and ext) https://github.com/msgpack/msgpack/blob/master/spec.md (#142)
+  * Support std::tuple, std::forward_list, std::array, std::unordered_set, std::unordered_map on C++11. tr1 unordered containers are still supported (#53, #130, #137, #154, #169)
+  * Update msgpack-c as a header-only library on C++ (#142)
+  * Move include directory (#142)
+  * Update the name of float format family on msgpack::object from 'dec' to 'f64' (#194)
+  * Remove existing elements on associative containers when unpacking (#127)
+  * Add an API versioning functionality https://github.com/msgpack/msgpack-c/wiki/cpp_versioning (#139)
+  * Add C++11 enum class support (#205)
+  * Map std::vector<char> and std::array<char> to BIN (#100)
+  * Map '\0' teminated char* and char const* to STR (#206)
+  * Add the new parameter on unpacking functions and classes to limit msgpack's bytestream size (https://github.com/msgpack/msgpack-c/wiki/cpp_unpacker#limit-size-of-elements) (#175)
+  * Add the copy or reference choosing function on unpack() and unpacker (https://github.com/msgpack/msgpack-c/wiki/cpp_unpacker#memory-management)
+  * Add the new unpack() overloads for C++11 https://github.com/msgpack/msgpack-c/wiki/cpp_unpacker (#128)
+  * Add a msgpack::object::with_zone (deep) copying function (#133, #163)
+  * Remove the compile-time defined limit of msgpack nest level on C++ (#218)
+  * Add the new unpack() overloads that use an existing zone (#201)
+  * Add the range-based for loop support on msgpack object array and map (#203)
+  * Add msgpack revision getter function for 'revision' (#237)
+  * Support EXT for C (#118, #129)
+  * Fix unpacking buffer allocation problem when malformed data is given (#160, #185)
+  * Add dll exporting function on MSVC (#162)
+  * Fix msgpack::zone::allocate_no_align(). Now it allocates the memory that is not aligned as expected (#171)
+  * Improve documents (https://github.com/msgpack/msgpack-c/wiki)
+  * Other bug fixes and refactoring: #62, #91, #95, #97, #107, #109, #113, #117, #119, #121, #122, #123, #126, #131, #136, #138, #140, #143, #145, #146, #150, #151, #152, #156, #157, #158, #161, #165, #170, #172, #179, #180, #181, #182, #183, #192, #195, #199, #200, #207, #211, #212, #219, #222, #224, #230, #231, #232, #233, #234, #235
+
 2014-07-02 version 0.5.9:
 
   * Support std::tr1 unordered containers by default (#51, #63, #68, #69)
