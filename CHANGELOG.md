@@ -1,3 +1,9 @@
+2015-3-22 version 1.0.1:
+  * Fix compilation error on Mac 10.9 (#244)
+  * Fix typos in documents (#240)
+  * Update CHANGELOG.md for version 1.0.0 (#242)
+  * Fix erb templates for the next code generation (#239)
+
 2015-03-10 version 1.0.0:
   * Support msgpack v5 format (str, bin, and ext) https://github.com/msgpack/msgpack/blob/master/spec.md (#142)
   * Support std::tuple, std::forward_list, std::array, std::unordered_set, std::unordered_map on C++11. tr1 unordered containers are still supported (#53, #130, #137, #154, #169)
