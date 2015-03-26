@@ -75,6 +75,7 @@ static inline void clear_chunk_list(msgpack_zone_chunk_list* cl, size_t chunk_si
 void* msgpack_zone_malloc_expand(msgpack_zone* zone, size_t size)
 {
     msgpack_zone_chunk_list* const cl = &zone->chunk_list;
+    msgpack_zone_chunk* chunk;
 
     size_t sz = zone->chunk_size;
 
@@ -87,16 +88,20 @@ void* msgpack_zone_malloc_expand(msgpack_zone* zone, size_t size)
         sz = tmp_sz;
     }
 
-    msgpack_zone_chunk* chunk = (msgpack_zone_chunk*)malloc(
+    chunk = (msgpack_zone_chunk*)malloc(
             sizeof(msgpack_zone_chunk) + sz);
-    if (chunk == NULL)  return NULL;
-    char* ptr = ((char*)chunk) + sizeof(msgpack_zone_chunk);
-    chunk->next = cl->head;
-    cl->head = chunk;
-    cl->free = sz - size;
-    cl->ptr  = ptr + size;
+    if (chunk == NULL) {
+        return NULL;
+    }
+    else {
+        char* ptr = ((char*)chunk) + sizeof(msgpack_zone_chunk);
+        chunk->next = cl->head;
+        cl->head = chunk;
+        cl->free = sz - size;
+        cl->ptr  = ptr + size;
 
-    return ptr;
+        return ptr;
+    }
 }
 
 
@@ -131,6 +136,7 @@ bool msgpack_zone_push_finalizer_expand(msgpack_zone* zone,
         void (*func)(void* data), void* data)
 {
     msgpack_zone_finalizer_array* const fa = &zone->finalizer_array;
+    msgpack_zone_finalizer* tmp;
 
     const size_t nused = (size_t)(fa->end - fa->array);
 
@@ -143,8 +149,7 @@ bool msgpack_zone_push_finalizer_expand(msgpack_zone* zone,
         nnext = nused * 2;
     }
 
-    msgpack_zone_finalizer* tmp =
-        (msgpack_zone_finalizer*)realloc(fa->array,
+    tmp = (msgpack_zone_finalizer*)realloc(fa->array,
                 sizeof(msgpack_zone_finalizer) * nnext);
     if(tmp == NULL) {
         return false;

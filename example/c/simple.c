@@ -3,12 +3,15 @@
 
 int main(void)
 {
-    /* msgpack::sbuffer is a simple buffer implementation. */
     msgpack_sbuffer sbuf;
+    msgpack_packer pk;
+    msgpack_zone mempool;
+    msgpack_object deserialized;
+
+    /* msgpack::sbuffer is a simple buffer implementation. */
     msgpack_sbuffer_init(&sbuf);
 
     /* serialize values into the buffer using msgpack_sbuffer_write callback function. */
-    msgpack_packer pk;
     msgpack_packer_init(&pk, &sbuf, msgpack_sbuffer_write);
 
     msgpack_pack_array(&pk, 3);
@@ -19,10 +22,8 @@ int main(void)
 
     /* deserialize the buffer into msgpack_object instance. */
     /* deserialized object is valid during the msgpack_zone instance alive. */
-    msgpack_zone mempool;
     msgpack_zone_init(&mempool, 2048);
 
-    msgpack_object deserialized;
     msgpack_unpack(sbuf.data, sbuf.size, NULL, &mempool, &deserialized);
 
     /* print the deserialized object. */

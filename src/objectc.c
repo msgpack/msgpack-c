@@ -71,33 +71,39 @@ int msgpack_pack_object(msgpack_packer* pk, msgpack_object d)
     case MSGPACK_OBJECT_ARRAY:
         {
             int ret = msgpack_pack_array(pk, d.via.array.size);
-            if(ret < 0) { return ret; }
-
-            msgpack_object* o = d.via.array.ptr;
-            msgpack_object* const oend = d.via.array.ptr + d.via.array.size;
-            for(; o != oend; ++o) {
-                ret = msgpack_pack_object(pk, *o);
-                if(ret < 0) { return ret; }
+            if(ret < 0) {
+                return ret;
             }
+            else {
+                msgpack_object* o = d.via.array.ptr;
+                msgpack_object* const oend = d.via.array.ptr + d.via.array.size;
+                for(; o != oend; ++o) {
+                    ret = msgpack_pack_object(pk, *o);
+                    if(ret < 0) { return ret; }
+                }
 
-            return 0;
+                return 0;
+            }
         }
 
     case MSGPACK_OBJECT_MAP:
         {
             int ret = msgpack_pack_map(pk, d.via.map.size);
-            if(ret < 0) { return ret; }
-
-            msgpack_object_kv* kv = d.via.map.ptr;
-            msgpack_object_kv* const kvend = d.via.map.ptr + d.via.map.size;
-            for(; kv != kvend; ++kv) {
-                ret = msgpack_pack_object(pk, kv->key);
-                if(ret < 0) { return ret; }
-                ret = msgpack_pack_object(pk, kv->val);
-                if(ret < 0) { return ret; }
+            if(ret < 0) {
+                return ret;
             }
+            else {
+                msgpack_object_kv* kv = d.via.map.ptr;
+                msgpack_object_kv* const kvend = d.via.map.ptr + d.via.map.size;
+                for(; kv != kvend; ++kv) {
+                    ret = msgpack_pack_object(pk, kv->key);
+                    if(ret < 0) { return ret; }
+                    ret = msgpack_pack_object(pk, kv->val);
+                    if(ret < 0) { return ret; }
+                }
 
-            return 0;
+                return 0;
+            }
         }
 
     default:
@@ -172,9 +178,9 @@ void msgpack_object_print(FILE* out, msgpack_object o)
         fprintf(out, "[");
         if(o.via.array.size != 0) {
             msgpack_object* p = o.via.array.ptr;
+            msgpack_object* const pend = o.via.array.ptr + o.via.array.size;
             msgpack_object_print(out, *p);
             ++p;
-            msgpack_object* const pend = o.via.array.ptr + o.via.array.size;
             for(; p < pend; ++p) {
                 fprintf(out, ", ");
                 msgpack_object_print(out, *p);
@@ -187,11 +193,11 @@ void msgpack_object_print(FILE* out, msgpack_object o)
         fprintf(out, "{");
         if(o.via.map.size != 0) {
             msgpack_object_kv* p = o.via.map.ptr;
+            msgpack_object_kv* const pend = o.via.map.ptr + o.via.map.size;
             msgpack_object_print(out, p->key);
             fprintf(out, "=>");
             msgpack_object_print(out, p->val);
             ++p;
-            msgpack_object_kv* const pend = o.via.map.ptr + o.via.map.size;
             for(; p < pend; ++p) {
                 fprintf(out, ", ");
                 msgpack_object_print(out, p->key);

@@ -52,6 +52,7 @@ void unpack(receiver* r) {
     msgpack_unpack_return ret;
     char* buf;
     size_t recv_len;
+    int recv_count = 0;
 
     msgpack_unpacked_init(&result);
     if (msgpack_unpacker_buffer_capacity(unp) < EACH_RECV_SIZE) {
@@ -64,7 +65,6 @@ void unpack(receiver* r) {
     msgpack_unpacker_buffer_consumed(unp, recv_len);
 
 
-    int recv_count = 0;
     while (recv_len > 0) {
         int i = 0;
         printf("receive count: %d %zd bytes received.:\n", recv_count++, recv_len);
