@@ -21,6 +21,8 @@ LIST (APPEND check_PROGRAMS
     cases.cpp
     fixint.cpp
     fixint_c.cpp
+    int_head.cpp
+    int_head_c.cpp
     msgpack_tuple.cpp
     msgpack_basic.cpp
     msgpack_container.cpp

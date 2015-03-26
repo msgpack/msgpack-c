@@ -15,6 +15,8 @@ check_PROGRAMS = \
 		cases \
 		fixint \
 		fixint_c \
+		int_head \
+		int_head_c \
 		version \
 		msgpack_tuple \
 		msgpack_c \
@@ -54,6 +56,10 @@ cases_SOURCES = cases.cpp
 fixint_SOURCES = fixint.cpp
 
 fixint_c_SOURCES = fixint_c.cpp
+
+int_head_SOURCES = int_head.cpp
+
+int_head_c_SOURCES = int_head_c.cpp
 
 version_SOURCES = version.cpp
 
