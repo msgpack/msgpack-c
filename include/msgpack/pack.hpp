@@ -871,10 +871,14 @@ inline void packer<Stream>::pack_imp_int16(int16_t d)
         pack_imp_int8(static_cast<int8_t>(d));
     }
     else {
-        /* signed 16 */
-        char buf[3];
-        buf[0] = static_cast<char>(0xd1u); _msgpack_store16(&buf[1], static_cast<int16_t>(d));
-        append_buffer(buf, 3);
+        if (0 <= d && d < (1<<8)) {
+            pack_imp_uint8(static_cast<uint8_t>(d));
+        } else {
+            /* signed 16 */
+            char buf[3];
+            buf[0] = static_cast<char>(0xd1u); _msgpack_store16(&buf[1], static_cast<int16_t>(d));
+            append_buffer(buf, 3);
+        }
     }
 }
 
@@ -884,10 +888,14 @@ inline void packer<Stream>::pack_imp_int32(int32_t d)
     if (-(1<<15) <= d && d < (1<<15)) {
         pack_imp_int16(static_cast<int16_t>(d));
     } else {
-        /* signed 32 */
-        char buf[5];
-        buf[0] = static_cast<char>(0xd2u); _msgpack_store32(&buf[1], static_cast<int32_t>(d));
-        append_buffer(buf, 5);
+        if (0 <= d && d < (1<<16)) {
+            pack_imp_uint16(static_cast<uint16_t>(d));
+        } else {
+            /* signed 32 */
+            char buf[5];
+            buf[0] = static_cast<char>(0xd2u); _msgpack_store32(&buf[1], static_cast<int32_t>(d));
+            append_buffer(buf, 5);
+        }
     }
 }
 
@@ -897,10 +905,14 @@ inline void packer<Stream>::pack_imp_int64(int64_t d)
     if (-(1LL<<31) <= d && d < (1LL<<31)) {
         pack_imp_int32(static_cast<int32_t>(d));
     } else {
-        /* signed 64 */
-        char buf[9];
-        buf[0] = static_cast<char>(0xd3u); _msgpack_store64(&buf[1], d);
-        append_buffer(buf, 9);
+        if (0 <= d && d < (1LL<<32)) {
+            pack_imp_uint32(static_cast<uint32_t>(d));
+        } else {
+            /* signed 64 */
+            char buf[9];
+            buf[0] = static_cast<char>(0xd3u); _msgpack_store64(&buf[1], d);
+            append_buffer(buf, 9);
+        }
     }
 }
 

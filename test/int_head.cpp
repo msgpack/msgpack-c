@@ -236,6 +236,18 @@ TEST(int_head, int16)
         std::stringstream ss;
         int16_t v = static_cast<int16_t>(std::numeric_limits<int8_t>::max()) + 1;
         msgpack::pack(ss, v);
+        EXPECT_EQ(ss.str()[0], static_cast<char>(0xccu));
+    }
+    {
+        std::stringstream ss;
+        int16_t v = static_cast<int16_t>(std::numeric_limits<uint8_t>::max());
+        msgpack::pack(ss, v);
+        EXPECT_EQ(ss.str()[0], static_cast<char>(0xccu));
+    }
+    {
+        std::stringstream ss;
+        int16_t v = static_cast<int16_t>(std::numeric_limits<uint8_t>::max()) + 1;
+        msgpack::pack(ss, v);
         EXPECT_EQ(ss.str()[0], static_cast<char>(0xd1u));
     }
     {
@@ -282,6 +294,18 @@ TEST(int_head, int32)
         std::stringstream ss;
         int32_t v = static_cast<int32_t>(std::numeric_limits<int8_t>::max()) + 1;
         msgpack::pack(ss, v);
+        EXPECT_EQ(ss.str()[0], static_cast<char>(0xccu));
+    }
+    {
+        std::stringstream ss;
+        int32_t v = static_cast<int32_t>(std::numeric_limits<uint8_t>::max());
+        msgpack::pack(ss, v);
+        EXPECT_EQ(ss.str()[0], static_cast<char>(0xccu));
+    }
+    {
+        std::stringstream ss;
+        int32_t v = static_cast<int32_t>(std::numeric_limits<uint8_t>::max()) + 1;
+        msgpack::pack(ss, v);
         EXPECT_EQ(ss.str()[0], static_cast<char>(0xd1u));
     }
     {
@@ -305,6 +329,18 @@ TEST(int_head, int32)
     {
         std::stringstream ss;
         int32_t v = static_cast<int32_t>(std::numeric_limits<int16_t>::max()) + 1;
+        msgpack::pack(ss, v);
+        EXPECT_EQ(ss.str()[0], static_cast<char>(0xcdu));
+    }
+    {
+        std::stringstream ss;
+        int32_t v = static_cast<int32_t>(std::numeric_limits<uint16_t>::max());
+        msgpack::pack(ss, v);
+        EXPECT_EQ(ss.str()[0], static_cast<char>(0xcdu));
+    }
+    {
+        std::stringstream ss;
+        int32_t v = static_cast<int32_t>(std::numeric_limits<uint16_t>::max()) + 1;
         msgpack::pack(ss, v);
         EXPECT_EQ(ss.str()[0], static_cast<char>(0xd2u));
     }
@@ -352,6 +388,18 @@ TEST(int_head, int64)
         std::stringstream ss;
         int64_t v = static_cast<int64_t>(std::numeric_limits<int8_t>::max()) + 1;
         msgpack::pack(ss, v);
+        EXPECT_EQ(ss.str()[0], static_cast<char>(0xccu));
+    }
+    {
+        std::stringstream ss;
+        int64_t v = static_cast<int64_t>(std::numeric_limits<uint8_t>::max());
+        msgpack::pack(ss, v);
+        EXPECT_EQ(ss.str()[0], static_cast<char>(0xccu));
+    }
+    {
+        std::stringstream ss;
+        int64_t v = static_cast<int64_t>(std::numeric_limits<uint8_t>::max()) + 1;
+        msgpack::pack(ss, v);
         EXPECT_EQ(ss.str()[0], static_cast<char>(0xd1u));
     }
     {
@@ -376,6 +424,18 @@ TEST(int_head, int64)
         std::stringstream ss;
         int64_t v = static_cast<int64_t>(std::numeric_limits<int16_t>::max()) + 1;
         msgpack::pack(ss, v);
+        EXPECT_EQ(ss.str()[0], static_cast<char>(0xcdu));
+    }
+    {
+        std::stringstream ss;
+        int64_t v = static_cast<int64_t>(std::numeric_limits<uint16_t>::max());
+        msgpack::pack(ss, v);
+        EXPECT_EQ(ss.str()[0], static_cast<char>(0xcdu));
+    }
+    {
+        std::stringstream ss;
+        int64_t v = static_cast<int64_t>(std::numeric_limits<uint16_t>::max()) + 1;
+        msgpack::pack(ss, v);
         EXPECT_EQ(ss.str()[0], static_cast<char>(0xd2u));
     }
     {
@@ -399,6 +459,18 @@ TEST(int_head, int64)
     {
         std::stringstream ss;
         int64_t v = static_cast<int64_t>(std::numeric_limits<int32_t>::max()) + 1;
+        msgpack::pack(ss, v);
+        EXPECT_EQ(ss.str()[0], static_cast<char>(0xceu));
+    }
+    {
+        std::stringstream ss;
+        int64_t v = static_cast<int64_t>(std::numeric_limits<uint32_t>::max());
+        msgpack::pack(ss, v);
+        EXPECT_EQ(ss.str()[0], static_cast<char>(0xceu));
+    }
+    {
+        std::stringstream ss;
+        int64_t v = static_cast<int64_t>(std::numeric_limits<uint32_t>::max()) + 1;
         msgpack::pack(ss, v);
         EXPECT_EQ(ss.str()[0], static_cast<char>(0xd3u));
     }

@@ -391,6 +391,30 @@ TEST(int_head_c, int16)
 
         int16_t v = static_cast<int16_t>(std::numeric_limits<int8_t>::max()) + 1;
         msgpack_pack_int16(&pk, v);
+        EXPECT_EQ(sbuf.data[0], static_cast<char>(0xccu));
+
+        msgpack_sbuffer_destroy(&sbuf);
+    }
+    {
+        msgpack_sbuffer sbuf;
+        msgpack_sbuffer_init(&sbuf);
+        msgpack_packer pk;
+        msgpack_packer_init(&pk, &sbuf, msgpack_sbuffer_write);
+
+        int16_t v = static_cast<int16_t>(std::numeric_limits<uint8_t>::max());
+        msgpack_pack_int16(&pk, v);
+        EXPECT_EQ(sbuf.data[0], static_cast<char>(0xccu));
+
+        msgpack_sbuffer_destroy(&sbuf);
+    }
+    {
+        msgpack_sbuffer sbuf;
+        msgpack_sbuffer_init(&sbuf);
+        msgpack_packer pk;
+        msgpack_packer_init(&pk, &sbuf, msgpack_sbuffer_write);
+
+        int16_t v = static_cast<int16_t>(std::numeric_limits<uint8_t>::max()) + 1;
+        msgpack_pack_int16(&pk, v);
         EXPECT_EQ(sbuf.data[0], static_cast<char>(0xd1u));
 
         msgpack_sbuffer_destroy(&sbuf);
@@ -479,6 +503,30 @@ TEST(int_head_c, int32)
 
         int32_t v = static_cast<int32_t>(std::numeric_limits<int8_t>::max()) + 1;
         msgpack_pack_int32(&pk, v);
+        EXPECT_EQ(sbuf.data[0], static_cast<char>(0xccu));
+
+        msgpack_sbuffer_destroy(&sbuf);
+    }
+    {
+        msgpack_sbuffer sbuf;
+        msgpack_sbuffer_init(&sbuf);
+        msgpack_packer pk;
+        msgpack_packer_init(&pk, &sbuf, msgpack_sbuffer_write);
+
+        int32_t v = static_cast<int32_t>(std::numeric_limits<uint8_t>::max());
+        msgpack_pack_int32(&pk, v);
+        EXPECT_EQ(sbuf.data[0], static_cast<char>(0xccu));
+
+        msgpack_sbuffer_destroy(&sbuf);
+    }
+    {
+        msgpack_sbuffer sbuf;
+        msgpack_sbuffer_init(&sbuf);
+        msgpack_packer pk;
+        msgpack_packer_init(&pk, &sbuf, msgpack_sbuffer_write);
+
+        int32_t v = static_cast<int32_t>(std::numeric_limits<uint8_t>::max()) + 1;
+        msgpack_pack_int32(&pk, v);
         EXPECT_EQ(sbuf.data[0], static_cast<char>(0xd1u));
 
         msgpack_sbuffer_destroy(&sbuf);
@@ -526,6 +574,30 @@ TEST(int_head_c, int32)
         msgpack_packer_init(&pk, &sbuf, msgpack_sbuffer_write);
 
         int32_t v = static_cast<int32_t>(std::numeric_limits<int16_t>::max()) + 1;
+        msgpack_pack_int32(&pk, v);
+        EXPECT_EQ(sbuf.data[0], static_cast<char>(0xcdu));
+
+        msgpack_sbuffer_destroy(&sbuf);
+    }
+    {
+        msgpack_sbuffer sbuf;
+        msgpack_sbuffer_init(&sbuf);
+        msgpack_packer pk;
+        msgpack_packer_init(&pk, &sbuf, msgpack_sbuffer_write);
+
+        int32_t v = static_cast<int32_t>(std::numeric_limits<uint16_t>::max());
+        msgpack_pack_int32(&pk, v);
+        EXPECT_EQ(sbuf.data[0], static_cast<char>(0xcdu));
+
+        msgpack_sbuffer_destroy(&sbuf);
+    }
+    {
+        msgpack_sbuffer sbuf;
+        msgpack_sbuffer_init(&sbuf);
+        msgpack_packer pk;
+        msgpack_packer_init(&pk, &sbuf, msgpack_sbuffer_write);
+
+        int32_t v = static_cast<int32_t>(std::numeric_limits<uint16_t>::max()) + 1;
         msgpack_pack_int32(&pk, v);
         EXPECT_EQ(sbuf.data[0], static_cast<char>(0xd2u));
 
@@ -615,6 +687,30 @@ TEST(int_head_c, int64)
 
         int64_t v = static_cast<int64_t>(std::numeric_limits<int8_t>::max()) + 1;
         msgpack_pack_int64(&pk, v);
+        EXPECT_EQ(sbuf.data[0], static_cast<char>(0xccu));
+
+        msgpack_sbuffer_destroy(&sbuf);
+    }
+    {
+        msgpack_sbuffer sbuf;
+        msgpack_sbuffer_init(&sbuf);
+        msgpack_packer pk;
+        msgpack_packer_init(&pk, &sbuf, msgpack_sbuffer_write);
+
+        int64_t v = static_cast<int64_t>(std::numeric_limits<uint8_t>::max());
+        msgpack_pack_int64(&pk, v);
+        EXPECT_EQ(sbuf.data[0], static_cast<char>(0xccu));
+
+        msgpack_sbuffer_destroy(&sbuf);
+    }
+    {
+        msgpack_sbuffer sbuf;
+        msgpack_sbuffer_init(&sbuf);
+        msgpack_packer pk;
+        msgpack_packer_init(&pk, &sbuf, msgpack_sbuffer_write);
+
+        int64_t v = static_cast<int64_t>(std::numeric_limits<uint8_t>::max()) + 1;
+        msgpack_pack_int64(&pk, v);
         EXPECT_EQ(sbuf.data[0], static_cast<char>(0xd1u));
 
         msgpack_sbuffer_destroy(&sbuf);
@@ -663,6 +759,30 @@ TEST(int_head_c, int64)
 
         int32_t v = static_cast<int32_t>(std::numeric_limits<int16_t>::max()) + 1;
         msgpack_pack_int64(&pk, v);
+        EXPECT_EQ(sbuf.data[0], static_cast<char>(0xcdu));
+
+        msgpack_sbuffer_destroy(&sbuf);
+    }
+    {
+        msgpack_sbuffer sbuf;
+        msgpack_sbuffer_init(&sbuf);
+        msgpack_packer pk;
+        msgpack_packer_init(&pk, &sbuf, msgpack_sbuffer_write);
+
+        int32_t v = static_cast<int32_t>(std::numeric_limits<uint16_t>::max());
+        msgpack_pack_int64(&pk, v);
+        EXPECT_EQ(sbuf.data[0], static_cast<char>(0xcdu));
+
+        msgpack_sbuffer_destroy(&sbuf);
+    }
+    {
+        msgpack_sbuffer sbuf;
+        msgpack_sbuffer_init(&sbuf);
+        msgpack_packer pk;
+        msgpack_packer_init(&pk, &sbuf, msgpack_sbuffer_write);
+
+        int32_t v = static_cast<int32_t>(std::numeric_limits<uint16_t>::max()) + 1;
+        msgpack_pack_int64(&pk, v);
         EXPECT_EQ(sbuf.data[0], static_cast<char>(0xd2u));
 
         msgpack_sbuffer_destroy(&sbuf);
@@ -710,6 +830,30 @@ TEST(int_head_c, int64)
         msgpack_packer_init(&pk, &sbuf, msgpack_sbuffer_write);
 
         int64_t v = static_cast<int64_t>(std::numeric_limits<int32_t>::max()) + 1;
+        msgpack_pack_int64(&pk, v);
+        EXPECT_EQ(sbuf.data[0], static_cast<char>(0xceu));
+
+        msgpack_sbuffer_destroy(&sbuf);
+    }
+    {
+        msgpack_sbuffer sbuf;
+        msgpack_sbuffer_init(&sbuf);
+        msgpack_packer pk;
+        msgpack_packer_init(&pk, &sbuf, msgpack_sbuffer_write);
+
+        int64_t v = static_cast<int64_t>(std::numeric_limits<uint32_t>::max());
+        msgpack_pack_int64(&pk, v);
+        EXPECT_EQ(sbuf.data[0], static_cast<char>(0xceu));
+
+        msgpack_sbuffer_destroy(&sbuf);
+    }
+    {
+        msgpack_sbuffer sbuf;
+        msgpack_sbuffer_init(&sbuf);
+        msgpack_packer pk;
+        msgpack_packer_init(&pk, &sbuf, msgpack_sbuffer_write);
+
+        int64_t v = static_cast<int64_t>(std::numeric_limits<uint32_t>::max()) + 1;
         msgpack_pack_int64(&pk, v);
         EXPECT_EQ(sbuf.data[0], static_cast<char>(0xd3u));
 
