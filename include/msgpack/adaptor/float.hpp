@@ -24,7 +24,9 @@
 
 namespace msgpack {
 
+/// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
+/// @endcond
 
 // FIXME check overflow, underflow
 
@@ -98,7 +100,9 @@ inline void operator<< (msgpack::object::with_zone& o, double v)
     { static_cast<msgpack::object&>(o) << v; }
 
 
+/// @cond
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
+/// @endcond
 
 }  // namespace msgpack
 

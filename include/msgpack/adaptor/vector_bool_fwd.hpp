@@ -24,7 +24,9 @@
 
 namespace msgpack {
 
+/// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
+/// @endcond
 
 object const& operator>> (object const& o, std::vector<bool>& v);
 
@@ -33,7 +35,9 @@ packer<Stream>& operator<< (packer<Stream>& o, const std::vector<bool>& v);
 
 void operator<< (object::with_zone& o, const std::vector<bool>& v);
 
+/// @cond
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
+/// @endcond
 
 }  // namespace msgpack
 

@@ -23,7 +23,9 @@
 
 namespace msgpack {
 
+/// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
+/// @endcond
 
 msgpack::object const& operator>> (msgpack::object const& o, bool& v);
 template <typename Stream>
@@ -32,7 +34,9 @@ void operator<< (msgpack::object& o, bool v);
 void operator<< (msgpack::object::with_zone& o, bool v);
 
 
+/// @cond
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
+/// @endcond
 
 }  // namespace msgpack
 

@@ -23,7 +23,9 @@
 
 namespace msgpack {
 
+/// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
+/// @endcond
 
 namespace type {
 
@@ -31,8 +33,10 @@ namespace type {
 // FIXME operator!=
 
 
+/// @cond
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25, typename A26, typename A27, typename A28, typename A29, typename A30, typename A31, typename A32>
 struct tuple;
+/// @endcond
 
 template <typename Tuple, int N>
 struct tuple_element;
@@ -67,6 +71,7 @@ struct tuple_type<const T&> {
     typedef const T& transparent_reference;
 };
 
+/// @cond
 
 
 template <typename A0>
@@ -9174,6 +9179,7 @@ private:
 };
 
 
+/// @endcond
 
 template <>
 struct tuple<> {
@@ -9181,6 +9187,8 @@ struct tuple<> {
     tuple(msgpack::object const& o) { o.convert(*this); }
     typedef tuple<> value_type;
 };
+
+/// @cond
 
 template <typename A0>
 struct tuple<A0> {
@@ -10382,11 +10390,14 @@ template <int N, typename A0, typename A1, typename A2, typename A3, typename A4
 inline typename type::const_tuple_element<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30, A31>, N>::const_reference get(type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30, A31> const& t)
 { return t.template get<N>(); }
 
+/// @endcond
 
 inline tuple<> make_tuple()
 {
     return tuple<>();
 }
+
+/// @cond
 
 template <typename A0>
 inline tuple<A0> make_tuple(typename tuple_type<A0>::transparent_reference a0)
@@ -10580,6 +10591,7 @@ inline tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A1
     return tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30, A31>(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20, a21, a22, a23, a24, a25, a26, a27, a28, a29, a30, a31);
 }
 
+/// @endcond
 
 }  // namespace type
 
@@ -10589,6 +10601,8 @@ inline msgpack::object const& operator>> (
     if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
     return o;
 }
+
+/// @cond
 
 template <typename A0>
 inline msgpack::object const& operator>> (
@@ -11438,6 +11452,7 @@ inline msgpack::object const& operator>> (
     return o;
 }
 
+/// @endcond
 
 template <typename Stream>
 inline const msgpack::packer<Stream>& operator<< (
@@ -11446,6 +11461,8 @@ inline const msgpack::packer<Stream>& operator<< (
     o.pack_array(0);
     return o;
 }
+
+/// @cond
 
 template <typename Stream, typename A0>
 inline const msgpack::packer<Stream>& operator<< (
@@ -12263,6 +12280,7 @@ inline const msgpack::packer<Stream>& operator<< (
     return o;
 }
 
+/// @endcond
 
 inline void operator<< (
         msgpack::object::with_zone& o,
@@ -12271,6 +12289,8 @@ inline void operator<< (
     o.via.array.ptr = nullptr;
     o.via.array.size = 0;
 }
+
+/// @cond
 
 template <typename A0>
 inline void operator<< (
@@ -13120,8 +13140,11 @@ inline void operator<< (
     o.via.array.ptr[31] = msgpack::object(v.template get<31>(), o.zone);
 }
 
+/// @endcond
 
+/// @cond
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
+/// @endcond
 
 }  // namespace msgpack
 

@@ -35,7 +35,9 @@
 <% GENERATION_LIMIT = 15 %>
 namespace msgpack {
 
+/// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
+/// @endcond
 
 class zone {
     struct finalizer {
@@ -179,10 +181,12 @@ public:
     {
         ::operator delete(p, place);
     }
+    /// @cond
     <%0.upto(GENERATION_LIMIT) {|i|%>
     template <typename T<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
     T* allocate(<%=(1..i).map{|j|"A#{j} a#{j}"}.join(', ')%>);
     <%}%>
+    /// @endcond
 
 private:
     void undo_allocate(size_t size);
@@ -304,6 +308,7 @@ inline void zone::undo_allocate(size_t size)
     m_chunk_list.m_free += size;
 }
 
+/// @cond
 <%0.upto(GENERATION_LIMIT) {|i|%>
 template <typename T<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
 T* zone::allocate(<%=(1..i).map{|j|"A#{j} a#{j}"}.join(', ')%>)
@@ -324,8 +329,11 @@ T* zone::allocate(<%=(1..i).map{|j|"A#{j} a#{j}"}.join(', ')%>)
     }
 }
 <%}%>
+/// @endcond
 
+/// @cond
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
+/// @endcond
 
 }  // namespace msgpack
 

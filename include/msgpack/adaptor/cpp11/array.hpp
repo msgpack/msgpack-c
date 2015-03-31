@@ -27,7 +27,9 @@
 
 namespace msgpack {
 
+/// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
+/// @endcond
 
 template <typename T, std::size_t N>
 inline msgpack::object const& operator>> (msgpack::object const& o, std::array<T, N>& v) {
@@ -69,7 +71,9 @@ inline void operator<< (msgpack::object::with_zone& o, const std::array<T, N>& v
     }
 }
 
+/// @cond
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
+/// @endcond
 
 } // namespace msgpack
 

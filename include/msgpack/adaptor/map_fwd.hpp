@@ -26,7 +26,9 @@
 
 namespace msgpack {
 
+/// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
+/// @endcond
 
 namespace type {
 
@@ -62,7 +64,9 @@ msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const std::mult
 template <typename K, typename V>
 void operator<< (msgpack::object::with_zone& o, const std::multimap<K,V>& v);
 
+/// @cond
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
+/// @endcond
 
 }  // namespace msgpack
 

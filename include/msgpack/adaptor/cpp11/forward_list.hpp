@@ -27,7 +27,9 @@
 
 namespace msgpack {
 
+/// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
+/// @endcond
 
 template <typename T>
 inline msgpack::object const& operator>> (msgpack::object const& o, std::forward_list<T>& v)
@@ -68,7 +70,9 @@ inline void operator<< (msgpack::object::with_zone& o, const std::forward_list<T
     }
 }
 
+/// @cond
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
+/// @endcond
 
 } // namespace msgpack
 

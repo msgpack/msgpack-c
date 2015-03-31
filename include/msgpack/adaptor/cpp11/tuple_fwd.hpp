@@ -25,7 +25,9 @@
 
 namespace msgpack {
 
+/// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
+/// @endcond
 
 // --- Pack from tuple to packer stream ---
 template <typename Stream, typename Tuple, std::size_t N>
@@ -55,7 +57,9 @@ void operator<< (
     msgpack::object::with_zone& o,
     std::tuple<Args...> const& v);
 
+/// @cond
 } // MSGPACK_API_VERSION_NAMESPACE(v1)
+/// @endcond
 
 } // namespace msgpack
 

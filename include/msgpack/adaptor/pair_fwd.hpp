@@ -24,7 +24,9 @@
 
 namespace msgpack {
 
+/// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
+/// @endcond
 
 template <typename T1, typename T2>
 msgpack::object const& operator>> (msgpack::object const& o, std::pair<T1, T2>& v);
@@ -35,7 +37,9 @@ msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const std::pair
 template <typename T1, typename T2>
 void operator<< (msgpack::object::with_zone& o, const std::pair<T1, T2>& v);
 
+/// @cond
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
+/// @endcond
 
 }  // namespace msgpack
 

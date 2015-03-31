@@ -23,7 +23,9 @@
 
 namespace msgpack {
 
+/// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
+/// @endcond
 
 namespace type {
 
@@ -31,8 +33,10 @@ namespace type {
 // FIXME operator!=
 
 
+/// @cond
 template <typename A0 = void, typename A1 = void, typename A2 = void, typename A3 = void, typename A4 = void, typename A5 = void, typename A6 = void, typename A7 = void, typename A8 = void, typename A9 = void, typename A10 = void, typename A11 = void, typename A12 = void, typename A13 = void, typename A14 = void, typename A15 = void, typename A16 = void, typename A17 = void, typename A18 = void, typename A19 = void, typename A20 = void, typename A21 = void, typename A22 = void, typename A23 = void, typename A24 = void, typename A25 = void, typename A26 = void, typename A27 = void, typename A28 = void, typename A29 = void, typename A30 = void, typename A31 = void, typename A32 = void>
 struct tuple;
+/// @endcond
 
 template <typename Tuple, int N>
 struct tuple_element;
@@ -43,6 +47,7 @@ struct const_tuple_element;
 template <typename T>
 struct tuple_type;
 
+/// @cond
 
 
 template <typename A0>
@@ -3342,9 +3347,12 @@ template <typename A0, typename A1, typename A2, typename A3, typename A4, typen
 struct const_tuple_element<tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30, A31>, 31>;
 
 
+/// @endcond
 
 template <>
 struct tuple<>;
+
+/// @cond
 
 template <typename A0>
 struct tuple<A0>;
@@ -3701,6 +3709,7 @@ tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16,
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25, typename A26, typename A27, typename A28, typename A29, typename A30, typename A31>
 tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30, A31> make_tuple(typename tuple_type<A0>::transparent_reference a0, typename tuple_type<A1>::transparent_reference a1, typename tuple_type<A2>::transparent_reference a2, typename tuple_type<A3>::transparent_reference a3, typename tuple_type<A4>::transparent_reference a4, typename tuple_type<A5>::transparent_reference a5, typename tuple_type<A6>::transparent_reference a6, typename tuple_type<A7>::transparent_reference a7, typename tuple_type<A8>::transparent_reference a8, typename tuple_type<A9>::transparent_reference a9, typename tuple_type<A10>::transparent_reference a10, typename tuple_type<A11>::transparent_reference a11, typename tuple_type<A12>::transparent_reference a12, typename tuple_type<A13>::transparent_reference a13, typename tuple_type<A14>::transparent_reference a14, typename tuple_type<A15>::transparent_reference a15, typename tuple_type<A16>::transparent_reference a16, typename tuple_type<A17>::transparent_reference a17, typename tuple_type<A18>::transparent_reference a18, typename tuple_type<A19>::transparent_reference a19, typename tuple_type<A20>::transparent_reference a20, typename tuple_type<A21>::transparent_reference a21, typename tuple_type<A22>::transparent_reference a22, typename tuple_type<A23>::transparent_reference a23, typename tuple_type<A24>::transparent_reference a24, typename tuple_type<A25>::transparent_reference a25, typename tuple_type<A26>::transparent_reference a26, typename tuple_type<A27>::transparent_reference a27, typename tuple_type<A28>::transparent_reference a28, typename tuple_type<A29>::transparent_reference a29, typename tuple_type<A30>::transparent_reference a30, typename tuple_type<A31>::transparent_reference a31);
 
+/// @endcond
 
 }  // namespace type
 
@@ -3708,6 +3717,7 @@ msgpack::object const& operator>> (
     msgpack::object const& o,
     type::tuple<>&);
 
+/// @cond
 
 template <typename A0>
 msgpack::object const& operator>> (
@@ -3869,12 +3879,14 @@ msgpack::object const& operator>> (
     msgpack::object const& o,
     type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30, A31>& v);
 
+/// @endcond
 
 template <typename Stream>
 const msgpack::packer<Stream>& operator<< (
     msgpack::packer<Stream>& o,
     const type::tuple<>&);
 
+/// @cond
 
 template <typename Stream, typename A0>
 const msgpack::packer<Stream>& operator<< (
@@ -4036,10 +4048,13 @@ const msgpack::packer<Stream>& operator<< (
     msgpack::packer<Stream>& o,
     const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30, A31>& v);
 
+/// @endcond
 
 void operator<< (
     msgpack::object::with_zone& o,
     const type::tuple<>&);
+
+/// @cond
 
 template <typename A0>
 void operator<< (
@@ -4201,8 +4216,11 @@ void operator<< (
     msgpack::object::with_zone& o,
     const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30, A31>& v);
 
+/// @endcond
 
+/// @cond
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
+/// @endcond
 
 }  // namespace msgpack
 

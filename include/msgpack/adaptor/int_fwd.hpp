@@ -23,7 +23,9 @@
 
 namespace msgpack {
 
+/// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1){
+/// @endcond
 
 msgpack::object const& operator>> (msgpack::object const& o, char& v);
 
@@ -93,7 +95,9 @@ void operator<< (msgpack::object::with_zone& o, unsigned int v);
 void operator<< (msgpack::object::with_zone& o, unsigned long v);
 void operator<< (msgpack::object::with_zone& o, const unsigned long long& v);
 
+/// @cond
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
+/// @endcond
 
 }  // namespace msgpack
 

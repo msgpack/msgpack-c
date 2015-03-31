@@ -25,7 +25,9 @@
 
 namespace msgpack {
 
+/// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
+/// @endcond
 
 namespace type {
     // tuple
@@ -205,7 +207,9 @@ inline void operator<< (
     MsgpackTupleToObjectWithZone<decltype(v), sizeof...(Args)>::convert(o, v);
 }
 
+/// @cond
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
+///@endcond
 
 }  // namespace msgpack
 

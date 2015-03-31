@@ -26,7 +26,9 @@
 
 namespace msgpack {
 
+/// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
+/// @endcond
 
 template <typename Stream>
 inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const char* v)
@@ -71,7 +73,9 @@ inline void operator<< (object& o, char* v)
     msgpack::operator<<(o, static_cast<const char*>(v));
 }
 
+/// @cond
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
+/// @endcond
 
 }  // namespace msgpack
 

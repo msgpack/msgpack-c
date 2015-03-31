@@ -23,7 +23,9 @@
 
 namespace msgpack {
 
+/// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
+/// @endcond
 
 namespace type {
 
@@ -31,8 +33,10 @@ namespace type {
 // FIXME operator!=
 <% GENERATION_LIMIT = 31 %>
 
+/// @cond
 template <typename A0<%1.upto(GENERATION_LIMIT+1) {|i|%>, typename A<%=i%><%}%>>
 struct tuple;
+/// @endcond
 
 template <typename Tuple, int N>
 struct tuple_element;
@@ -67,6 +71,7 @@ struct tuple_type<const T&> {
     typedef const T& transparent_reference;
 };
 
+/// @cond
 <%0.upto(GENERATION_LIMIT) {|i|%>
 <%0.upto(i) {|j|%>
 template <typename A0<%1.upto(i) {|k|%>, typename A<%=k%><%}%>>
@@ -91,6 +96,7 @@ private:
 };
 <%}%>
 <%}%>
+/// @endcond
 
 template <>
 struct tuple<> {
@@ -98,6 +104,8 @@ struct tuple<> {
     tuple(msgpack::object const& o) { o.convert(*this); }
     typedef tuple<> value_type;
 };
+
+/// @cond
 <%0.upto(GENERATION_LIMIT) {|i|%>
 template <typename A0<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
 struct tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> {
@@ -121,11 +129,14 @@ template <int N, typename A0<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
 inline typename type::const_tuple_element<type::tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>>, N>::const_reference get(type::tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> const& t)
 { return t.template get<N>(); }
 <%}%>
+/// @endcond
 
 inline tuple<> make_tuple()
 {
     return tuple<>();
 }
+
+/// @cond
 <%0.upto(GENERATION_LIMIT) {|i|%>
 template <typename A0<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
 inline tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> make_tuple(typename tuple_type<A0>::transparent_reference a0<%1.upto(i) {|j|%>, typename tuple_type<A<%=j%>>::transparent_reference a<%=j%><%}%>)
@@ -133,6 +144,7 @@ inline tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> make_tuple(typename tuple_type<
     return tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>>(a0<%1.upto(i) {|j|%>, a<%=j%><%}%>);
 }
 <%}%>
+/// @endcond
 
 }  // namespace type
 
@@ -142,6 +154,8 @@ inline msgpack::object const& operator>> (
     if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
     return o;
 }
+
+/// @cond
 <%0.upto(GENERATION_LIMIT) {|i|%>
 template <typename A0<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
 inline msgpack::object const& operator>> (
@@ -154,6 +168,7 @@ inline msgpack::object const& operator>> (
     return o;
 }
 <%}%>
+/// @endcond
 
 template <typename Stream>
 inline const msgpack::packer<Stream>& operator<< (
@@ -162,6 +177,8 @@ inline const msgpack::packer<Stream>& operator<< (
     o.pack_array(0);
     return o;
 }
+
+/// @cond
 <%0.upto(GENERATION_LIMIT) {|i|%>
 template <typename Stream, typename A0<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
 inline const msgpack::packer<Stream>& operator<< (
@@ -173,6 +190,7 @@ inline const msgpack::packer<Stream>& operator<< (
     return o;
 }
 <%}%>
+/// @endcond
 
 inline void operator<< (
         msgpack::object::with_zone& o,
@@ -181,6 +199,8 @@ inline void operator<< (
     o.via.array.ptr = nullptr;
     o.via.array.size = 0;
 }
+
+/// @cond
 <%0.upto(GENERATION_LIMIT) {|i|%>
 template <typename A0<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
 inline void operator<< (
@@ -193,8 +213,11 @@ inline void operator<< (
     o.via.array.ptr[<%=j%>] = msgpack::object(v.template get<<%=j%>>(), o.zone);<%}%>
 }
 <%}%>
+/// @endcond
 
+/// @cond
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
+/// @endcond
 
 }  // namespace msgpack
 

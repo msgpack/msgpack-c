@@ -45,7 +45,9 @@
 
 namespace msgpack {
 
+/// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
+/// @endcond
 
 template <typename K, typename V>
 inline msgpack::object const& operator>> (msgpack::object const& o, MSGPACK_STD_TR1::unordered_map<K, V>& v)
@@ -153,7 +155,9 @@ inline void operator<< (msgpack::object::with_zone& o, const MSGPACK_STD_TR1::un
     }
 }
 
+/// @cond
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
+/// @endcond
 
 }  // namespace msgpack
 

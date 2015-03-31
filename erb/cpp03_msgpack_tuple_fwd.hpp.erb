@@ -23,7 +23,9 @@
 
 namespace msgpack {
 
+/// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
+/// @endcond
 
 namespace type {
 
@@ -31,8 +33,10 @@ namespace type {
 // FIXME operator!=
 <% GENERATION_LIMIT = 31 %>
 
+/// @cond
 template <typename A0 = void<%1.upto(GENERATION_LIMIT+1) {|i|%>, typename A<%=i%> = void<%}%>>
 struct tuple;
+/// @endcond
 
 template <typename Tuple, int N>
 struct tuple_element;
@@ -43,6 +47,7 @@ struct const_tuple_element;
 template <typename T>
 struct tuple_type;
 
+/// @cond
 <%0.upto(GENERATION_LIMIT) {|i|%>
 <%0.upto(i) {|j|%>
 template <typename A0<%1.upto(i) {|k|%>, typename A<%=k%><%}%>>
@@ -56,9 +61,12 @@ template <typename A0<%1.upto(i) {|k|%>, typename A<%=k%><%}%>>
 struct const_tuple_element<tuple<A0<%1.upto(i) {|k|%>, A<%=k%><%}%>>, <%=j%>>;
 <%}%>
 <%}%>
+/// @endcond
 
 template <>
 struct tuple<>;
+
+/// @cond
 <%0.upto(GENERATION_LIMIT) {|i|%>
 template <typename A0<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
 struct tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>>;
@@ -74,6 +82,7 @@ tuple<> make_tuple();
 template <typename A0<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
 tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> make_tuple(typename tuple_type<A0>::transparent_reference a0<%1.upto(i) {|j|%>, typename tuple_type<A<%=j%>>::transparent_reference a<%=j%><%}%>);
 <%}%>
+/// @endcond
 
 }  // namespace type
 
@@ -81,36 +90,45 @@ msgpack::object const& operator>> (
     msgpack::object const& o,
     type::tuple<>&);
 
+/// @cond
 <%0.upto(GENERATION_LIMIT) {|i|%>
 template <typename A0<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
 msgpack::object const& operator>> (
     msgpack::object const& o,
     type::tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>>& v);
 <%}%>
+/// @endcond
 
 template <typename Stream>
 const msgpack::packer<Stream>& operator<< (
     msgpack::packer<Stream>& o,
     const type::tuple<>&);
 
+/// @cond
 <%0.upto(GENERATION_LIMIT) {|i|%>
 template <typename Stream, typename A0<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
 const msgpack::packer<Stream>& operator<< (
     msgpack::packer<Stream>& o,
     const type::tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>>& v);
 <%}%>
+/// @endcond
 
 void operator<< (
     msgpack::object::with_zone& o,
     const type::tuple<>&);
+
+/// @cond
 <%0.upto(GENERATION_LIMIT) {|i|%>
 template <typename A0<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
 void operator<< (
     msgpack::object::with_zone& o,
     const type::tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>>& v);
 <%}%>
+/// @endcond
 
+/// @cond
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
+/// @endcond
 
 }  // namespace msgpack
 

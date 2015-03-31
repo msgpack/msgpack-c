@@ -25,7 +25,9 @@
 
 namespace msgpack {
 
+/// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
+/// @endcond
 
 template <typename K, typename V>
 msgpack::object const& operator>> (msgpack::object const& o, std::unordered_map<K, V>& v);
@@ -45,7 +47,9 @@ msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const std::unor
 template <typename K, typename V>
 void operator<< (msgpack::object::with_zone& o, const std::unordered_multimap<K,V>& v);
 
+/// @cond
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
+/// @endcond
 
 }  // namespace msgpack
 

@@ -65,7 +65,9 @@
 
 namespace msgpack {
 
+/// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
+/// @endcond
 
 struct object::with_zone : object {
     with_zone(msgpack::zone& zone) : zone(zone) { }
@@ -703,7 +705,9 @@ inline std::ostream& operator<< (std::ostream& s, const msgpack::object& o)
     return s;
 }
 
+/// @cond
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
+/// @endcond
 
 }  // namespace msgpack
 

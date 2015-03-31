@@ -24,7 +24,9 @@
 
 namespace msgpack {
 
+/// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1){
+/// @endcond
 
 namespace type {
 namespace detail {
@@ -301,7 +303,9 @@ inline void operator<< (msgpack::object::with_zone& o, const unsigned long long&
     { static_cast<msgpack::object&>(o) << v; }
 
 
+/// @cond
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
+/// @endcond
 
 }  // namespace msgpack
 

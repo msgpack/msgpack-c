@@ -26,7 +26,9 @@
 
 namespace msgpack {
 
+/// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
+/// @endcond
 
 inline msgpack::object const& operator>> (msgpack::object const& o, std::string& v)
 {
@@ -71,7 +73,9 @@ inline void operator<< (msgpack::object& o, const std::string& v)
     o.via.str.size = size;
 }
 
+/// @cond
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
+/// @endcond
 
 }  // namespace msgpack
 

@@ -141,6 +141,8 @@ doxygen_c:
 	cat ../Doxyfile > Doxyfile_c
 	echo "FILE_PATTERNS      = *.h" >> Doxyfile_c
 	echo "OUTPUT_DIRECTORY   = doc_c" >> Doxyfile_c
+	echo "INPUT              = ../include" >> Doxyfile_c
+	echo "EXTRACT_ALL        = YES" >> Doxyfile_c
 	echo "PROJECT_NAME       = \"MessagePack for C\"" >> Doxyfile_c
 	doxygen Doxyfile_c
 
@@ -148,6 +150,8 @@ doxygen_cpp:
 	cat ../Doxyfile > Doxyfile_cpp
 	echo "FILE_PATTERNS      = *.hpp" >> Doxyfile_cpp
 	echo "OUTPUT_DIRECTORY   = doc_cpp" >> Doxyfile_cpp
+	echo "INPUT              = ../include" >> Doxyfile_cpp
+	echo "EXTRACT_ALL        = YES" >> Doxyfile_cpp
 	echo "PROJECT_NAME       = \"MessagePack for C++\"" >> Doxyfile_cpp
 	doxygen Doxyfile_cpp
 
