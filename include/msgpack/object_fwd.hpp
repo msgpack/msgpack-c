@@ -136,6 +136,13 @@ public:
     implicit_type convert() const;
 };
 
+struct object::with_zone : object {
+    with_zone(msgpack::zone& zone) : zone(zone) { }
+    msgpack::zone& zone;
+private:
+    with_zone();
+};
+
 class type_error : public std::bad_cast { };
 
 struct object_kv {

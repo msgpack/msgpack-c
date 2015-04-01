@@ -67,13 +67,6 @@ namespace msgpack {
 
 MSGPACK_API_VERSION_NAMESPACE(v1) {
 
-struct object::with_zone : object {
-    with_zone(msgpack::zone& zone) : zone(zone) { }
-    msgpack::zone& zone;
-private:
-    with_zone();
-};
-
 struct object::implicit_type {
     implicit_type(object const& o) : obj(o) { }
     ~implicit_type() { }
