@@ -24,5 +24,6 @@
 #include "msgpack/iterator.hpp"
 #include "msgpack/adaptor/define.hpp"
 #include "msgpack/pack.hpp"
+#include "msgpack/unpack.hpp"
 
 #endif // MSGPACK_FWD_HPP

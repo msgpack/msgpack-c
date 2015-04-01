@@ -19,7 +19,7 @@
 #define MSGPACK_CPP03_MSGPACK_TUPLE_HPP
 
 #include "msgpack/versioning.hpp"
-#include "msgpack/object.hpp"
+#include "msgpack/object_fwd.hpp"
 
 namespace msgpack {
 

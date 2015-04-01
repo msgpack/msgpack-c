@@ -19,7 +19,7 @@
 #define MSGPACK_UNPACK_HPP
 
 #include "msgpack/versioning.hpp"
-#include "object.hpp"
+#include "object_fwd.hpp"
 #include "zone.hpp"
 #include "unpack_define.h"
 #include "cpp_config.hpp"
@@ -27,6 +27,7 @@
 
 #include <memory>
 #include <stdexcept>
+#include <cstring>
 
 #if !defined(MSGPACK_USE_CPP03)
 #include <atomic>
