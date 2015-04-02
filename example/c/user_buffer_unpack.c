@@ -33,7 +33,7 @@ void unpack(char const* buf, size_t len) {
         msgpack_object obj = result.data;
 
         /* Use obj. */
-        printf("Object no %d:\n", i++);
+        printf("Object no %d:\n", ++i);
         msgpack_object_print(stdout, obj);
         printf("\n");
         /* If you want to allocate something on the zone, you can use zone. */
@@ -72,4 +72,5 @@ Object no 2:
 "second"
 Object no 3:
 [42, false]
+All msgpack_object in the buffer is consumed.
 */
