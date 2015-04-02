@@ -20,7 +20,7 @@
 #define MSGPACK_CPP11_FORWARD_LIST_HPP
 
 #include "msgpack/versioning.hpp"
-#include "msgpack/object_fwd.hpp"
+#include "msgpack/adaptor/adaptor_base.hpp"
 #include "msgpack/adaptor/check_container_size.hpp"
 
 #include <forward_list>
@@ -29,46 +29,54 @@ namespace msgpack {
 
 MSGPACK_API_VERSION_NAMESPACE(v1) {
 
+namespace adaptor {
+
 template <typename T>
-inline msgpack::object const& operator>> (msgpack::object const& o, std::forward_list<T>& v)
-{
-    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-    v.resize(o.via.array.size);
-    msgpack::object* p = o.via.array.ptr;
-    for (auto &e : v) {
-        p->convert(e);
-        ++p;
+struct convert<std::forward_list<T>> {
+    msgpack::object const& operator()(msgpack::object const& o, std::forward_list<T>& v) const {
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        v.resize(o.via.array.size);
+        msgpack::object* p = o.via.array.ptr;
+        for (auto &e : v) {
+            p->convert(e);
+            ++p;
+        }
+        return o;
     }
-    return o;
-}
-
-template <typename Stream, typename T>
-inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const std::forward_list<T>& v)
-{
-    uint32_t size = checked_get_container_size(std::distance(v.begin(), v.end()));
-    o.pack_array(size);
-    for(auto const& e : v) o.pack(e);
-    return o;
-}
+};
 
 template <typename T>
-inline void operator<< (msgpack::object::with_zone& o, const std::forward_list<T>& v)
-{
-    o.type = msgpack::type::ARRAY;
-    if(v.empty()) {
-        o.via.array.ptr = nullptr;
-        o.via.array.size = 0;
-    } else {
+struct pack<std::forward_list<T>> {
+    template <typename Stream>
+    msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const std::forward_list<T>& v) const {
         uint32_t size = checked_get_container_size(std::distance(v.begin(), v.end()));
-        o.via.array.size = size;
-        msgpack::object* p = static_cast<msgpack::object*>(
-            o.zone.allocate_align(sizeof(msgpack::object)*size));
-        o.via.array.ptr = p;
-        for(auto const& e : v) *p++ = msgpack::object(e, o.zone);
+        o.pack_array(size);
+        for(auto const& e : v) o.pack(e);
+        return o;
     }
-}
+};
 
-}  // MSGPACK_API_VERSION_NAMESPACE(v1)
+template <typename T>
+struct object_with_zone<std::forward_list<T>> {
+    void operator()(msgpack::object::with_zone& o, const std::forward_list<T>& v) const {
+        o.type = msgpack::type::ARRAY;
+        if(v.empty()) {
+            o.via.array.ptr = nullptr;
+            o.via.array.size = 0;
+        } else {
+            uint32_t size = checked_get_container_size(std::distance(v.begin(), v.end()));
+            o.via.array.size = size;
+            msgpack::object* p = static_cast<msgpack::object*>(
+                o.zone.allocate_align(sizeof(msgpack::object)*size));
+            o.via.array.ptr = p;
+            for(auto const& e : v) *p++ = msgpack::object(e, o.zone);
+        }
+    }
+};
+
+} // namespace adaptor
+
+} // MSGPACK_API_VERSION_NAMESPACE(v1)
 
 } // namespace msgpack
 

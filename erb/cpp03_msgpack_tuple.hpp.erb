@@ -20,6 +20,7 @@
 
 #include "msgpack/versioning.hpp"
 #include "msgpack/object.hpp"
+#include "msgpack/adaptor/adaptor_base.hpp"
 
 namespace msgpack {
 
@@ -31,7 +32,7 @@ namespace type {
 // FIXME operator!=
 <% GENERATION_LIMIT = 31 %>
 
-template <typename A0<%1.upto(GENERATION_LIMIT+1) {|i|%>, typename A<%=i%><%}%>>
+template <typename A0 = void<%1.upto(GENERATION_LIMIT+1) {|i|%>, typename A<%=i%> = void<%}%>>
 struct tuple;
 
 template <typename Tuple, int N>
@@ -136,81 +137,90 @@ inline tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> make_tuple(typename tuple_type<
 
 }  // namespace type
 
-inline msgpack::object const& operator>> (
+namespace adaptor {
+
+template <>
+struct convert<type::tuple<> > {
+    msgpack::object const& operator()(
         msgpack::object const& o,
-        type::tuple<>&) {
-    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-    return o;
-}
+        type::tuple<>&) const {
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        return o;
+    }
+};
+
 <%0.upto(GENERATION_LIMIT) {|i|%>
 template <typename A0<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
-inline msgpack::object const& operator>> (
+struct convert<type::tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> > {
+    msgpack::object const& operator()(
         msgpack::object const& o,
-        type::tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-    if(o.via.array.size < <%=i+1%>) { throw msgpack::type_error(); }
-    <%0.upto(i) {|j|%>
-    o.via.array.ptr[<%=j%>].convert<typename type::tuple_type<A<%=j%>>::type>(v.template get<<%=j%>>());<%}%>
-    return o;
-}
+        type::tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>>& v) const {
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.via.array.size < <%=i+1%>) { throw msgpack::type_error(); }
+        <%0.upto(i) {|j|%>
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[<%=j%>].msgpack::object::convert<typename type::tuple_type<A<%=j%>>::type>(v.template get<<%=j%>>());<%}%>
+        return o;
+    }
+};
 <%}%>
 
-template <typename Stream>
-inline const msgpack::packer<Stream>& operator<< (
+template <>
+struct pack<type::tuple<> > {
+    template <typename Stream>
+    msgpack::packer<Stream>& operator()(
         msgpack::packer<Stream>& o,
-        const type::tuple<>&) {
-    o.pack_array(0);
-    return o;
-}
-<%0.upto(GENERATION_LIMIT) {|i|%>
-template <typename Stream, typename A0<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
-inline const msgpack::packer<Stream>& operator<< (
-        msgpack::packer<Stream>& o,
-        const type::tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>>& v) {
-    o.pack_array(<%=i+1%>);
-    <%0.upto(i) {|j|%>
-    o.pack(v.template get<<%=j%>>());<%}%>
-    return o;
-}
-<%}%>
+        const type::tuple<>&) const {
+        o.pack_array(0);
+        return o;
+    }
+};
 
-inline void operator<< (
-        msgpack::object::with_zone& o,
-        const type::tuple<>&) {
-    o.type = msgpack::type::ARRAY;
-    o.via.array.ptr = nullptr;
-    o.via.array.size = 0;
-}
 <%0.upto(GENERATION_LIMIT) {|i|%>
 template <typename A0<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
-inline void operator<< (
-        msgpack::object::with_zone& o,
-        const type::tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>>& v) {
-    o.type = msgpack::type::ARRAY;
-    o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*<%=i+1%>));
-    o.via.array.size = <%=i+1%>;
-    <%0.upto(i) {|j|%>
-    o.via.array.ptr[<%=j%>] = msgpack::object(v.template get<<%=j%>>(), o.zone);<%}%>
-}
+struct pack<type::tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> > {
+    template <typename Stream>
+    msgpack::packer<Stream>& operator()(
+        msgpack::packer<Stream>& o,
+        const type::tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>>& v) const {
+        o.pack_array(<%=i+1%>);
+        <%0.upto(i) {|j|%>
+        o.pack(v.template get<<%=j%>>());<%}%>
+        return o;
+    }
+};
 <%}%>
+
+template <>
+struct object_with_zone<type::tuple<> > {
+    void operator()(
+        msgpack::object::with_zone& o,
+        const type::tuple<>&) const {
+        o.type = msgpack::type::ARRAY;
+        o.via.array.ptr = nullptr;
+        o.via.array.size = 0;
+    }
+};
+
+<%0.upto(GENERATION_LIMIT) {|i|%>
+template <typename A0<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
+struct object_with_zone<type::tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> > {
+    void operator()(
+        msgpack::object::with_zone& o,
+        const type::tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>>& v) const {
+        o.type = msgpack::type::ARRAY;
+        o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*<%=i+1%>));
+        o.via.array.size = <%=i+1%>;
+        <%0.upto(i) {|j|%>
+        o.via.array.ptr[<%=j%>] = msgpack::object(v.template get<<%=j%>>(), o.zone);<%}%>
+    }
+};
+<%}%>
+
+} // namespace adaptor
 
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 
 }  // namespace msgpack
-
-
-//inline std::ostream& operator<< (std::ostream& o, const msgpack::type::tuple<>& v) {
-//  return o << "[]";
-//}
-//<%0.upto(GENERATION_LIMIT) {|i|%>
-//template <typename A0<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
-//inline std::ostream& operator<< (std::ostream& o,
-//      const msgpack::type::tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>>& v) {
-//  return o << "["
-//  <%0.upto(i) {|j|%>
-//  <<<%if j != 0 then%> ", " <<<%end%> v.template get<<%=j%>>()<%}%>
-//  << "]";
-//}
-//<%}%>
 
 #endif // MSGPACK_CPP03_MSGPACK_TUPLE_HPP

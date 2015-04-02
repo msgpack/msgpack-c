@@ -143,37 +143,12 @@ struct object_kv {
     msgpack::object val;
 };
 
-namespace detail {
-template <typename Stream, typename T>
-struct packer_serializer;
-} // namespace detail
-
-msgpack::object const& operator>> (msgpack::object const& o, msgpack::object& v);
-
-template <typename T>
-msgpack::object const& operator>> (msgpack::object const& o, T& v);
-
-template <typename T>
-void operator<< (msgpack::object::with_zone& o, const T& v);
-
-void operator<< (msgpack::object::with_zone& o, const msgpack::object& v);
-
-void operator<< (msgpack::object::with_zone& o, const msgpack::object::with_zone& v);
-
-template <typename Stream>
-class packer;
-
-template <typename Stream>
-msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const msgpack::object& v);
-
-template <typename Stream>
-msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const msgpack::object::with_zone& v);
-
-template <typename Stream, typename T>
-msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const T& v);
-
-template <typename T>
-void operator<< (msgpack::object::with_zone& o, const T& v);
+struct object::with_zone : object {
+    with_zone(msgpack::zone& zone) : zone(zone) { }
+    msgpack::zone& zone;
+private:
+    with_zone();
+};
 
 } // MSGPACK_API_VERSION_NAMESPACE(v1)
 

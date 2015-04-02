@@ -1,4 +1,4 @@
-#include <msgpack_fwd.hpp>
+#include <msgpack.hpp>
 
 #include <cmath>
 #include <string>
@@ -37,8 +37,6 @@ public:
 };
 
 MSGPACK_ADD_ENUM(TestEnumMemberClass::TestEnumType);
-
-#include <msgpack.hpp>
 
 using namespace std;
 

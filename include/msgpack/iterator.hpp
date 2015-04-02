@@ -20,7 +20,7 @@
 #define MSGPACK_ITERATOR_HPP
 #if !defined(MSGPACK_USE_CPP03)
 
-#include <msgpack_fwd.hpp>
+#include <msgpack/object_fwd.hpp>
 
 namespace msgpack
 {
@@ -30,7 +30,7 @@ namespace msgpack
         inline const object_kv* begin(const object_map &map) { return map.ptr; }
         inline object_kv* end(object_map &map) { return map.ptr + map.size; }
         inline const object_kv* end(const object_map &map) { return map.ptr + map.size; }
-        
+
         inline object* begin(object_array &array) { return array.ptr; }
         inline const object* begin(const object_array &array) { return array.ptr; }
         inline object* end(object_array &array) { return array.ptr + array.size; }

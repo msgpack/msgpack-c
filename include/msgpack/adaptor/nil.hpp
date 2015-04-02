@@ -19,7 +19,7 @@
 #define MSGPACK_TYPE_NIL_HPP
 
 #include "msgpack/versioning.hpp"
-#include "msgpack/object_fwd.hpp"
+#include "msgpack/adaptor/adaptor_base.hpp"
 
 namespace msgpack {
 
@@ -31,28 +31,40 @@ struct nil { };
 
 }  // namespace type
 
+namespace adaptor {
 
-inline msgpack::object const& operator>> (msgpack::object const& o, type::nil&)
-{
-    if(o.type != msgpack::type::NIL) { throw msgpack::type_error(); }
-    return o;
-}
+template <>
+struct convert<type::nil> {
+    msgpack::object const& operator()(msgpack::object const& o, type::nil&) const {
+        if(o.type != msgpack::type::NIL) { throw msgpack::type_error(); }
+        return o;
+    }
+};
 
-template <typename Stream>
-inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const type::nil&)
-{
-    o.pack_nil();
-    return o;
-}
+template <>
+struct pack<type::nil> {
+    template <typename Stream>
+    msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const type::nil&) const {
+        o.pack_nil();
+        return o;
+    }
+};
 
-inline void operator<< (msgpack::object& o, type::nil)
-{
-    o.type = msgpack::type::NIL;
-}
+template <>
+struct object<type::nil> {
+    void operator()(msgpack::object& o, type::nil) const {
+        o.type = msgpack::type::NIL;
+    }
+};
 
-inline void operator<< (msgpack::object::with_zone& o, type::nil v)
-    { static_cast<msgpack::object&>(o) << v; }
+template <>
+struct object_with_zone<type::nil> {
+    void operator()(msgpack::object::with_zone& o, type::nil v) const {
+        static_cast<msgpack::object&>(o) << v;
+    }
+};
 
+} // namespace adaptror
 
 template <>
 inline void msgpack::object::as<void>() const
@@ -60,6 +72,7 @@ inline void msgpack::object::as<void>() const
     msgpack::type::nil v;
     convert(v);
 }
+
 
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 

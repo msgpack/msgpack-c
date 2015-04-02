@@ -1,4 +1,4 @@
-#include <msgpack_fwd.hpp>
+#include <msgpack.hpp>
 #include <gtest/gtest.h>
 #include <cmath>
 
@@ -38,9 +38,6 @@ MSGPACK_ADD_ENUM(outer_enum_class::enum_class_test);
 
 #endif // !defined(MSGPACK_USE_CPP03)
 
-
-
-#include <msgpack.hpp>
 
 
 using namespace std;
