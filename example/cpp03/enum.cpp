@@ -15,10 +15,11 @@
 //    limitations under the License.
 //
 
-#include <msgpack_fwd.hpp>
 #include <sstream>
 #include <iostream>
 #include <cassert>
+
+#include <msgpack.hpp>
 
 enum my_enum {
     elem1,
@@ -27,8 +28,6 @@ enum my_enum {
 };
 
 MSGPACK_ADD_ENUM(my_enum);
-
-#include <msgpack.hpp>
 
 int main(void)
 {
