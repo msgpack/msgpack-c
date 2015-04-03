@@ -30,7 +30,9 @@
 
 namespace msgpack {
 
+/// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
+/// @endcond
 
 template <typename Stream>
 class packer {
@@ -1050,7 +1052,9 @@ inline void packer<Stream>::pack_imp_int64(T d)
     }
 }
 
+/// @cond
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
+/// @endcond
 
 }  // namespace msgpack
 

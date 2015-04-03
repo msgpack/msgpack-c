@@ -32,7 +32,9 @@
 
 namespace msgpack {
 
+/// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
+/// @endcond
 
 struct object::implicit_type {
     implicit_type(object const& o) : obj(o) { }
@@ -627,7 +629,9 @@ inline std::ostream& operator<< (std::ostream& s, const msgpack::object& o)
     return s;
 }
 
+/// @cond
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
+/// @endcond
 
 }  // namespace msgpack
 

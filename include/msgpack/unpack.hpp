@@ -64,7 +64,9 @@ const size_t COUNTER_SIZE = sizeof(_msgpack_atomic_counter_t);
 
 namespace msgpack {
 
+/// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
+/// @endcond
 
 typedef bool (*unpack_reference_func)(msgpack::type::object_type, std::size_t, void*);
 
@@ -1727,7 +1729,9 @@ inline bool unpacker::default_reference_func(msgpack::type::object_type /*type*/
     return true;
 }
 
+/// @cond
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
+/// @endcond
 
 }  // namespace msgpack
 

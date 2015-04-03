@@ -24,7 +24,9 @@
 
 namespace msgpack {
 
+/// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
+/// @endcond
 
 namespace type {
 
@@ -32,8 +34,10 @@ namespace type {
 // FIXME operator!=
 <% GENERATION_LIMIT = 31 %>
 
+/// @cond
 template <typename A0 = void<%1.upto(GENERATION_LIMIT+1) {|i|%>, typename A<%=i%> = void<%}%>>
 struct tuple;
+/// @endcond
 
 template <typename Tuple, int N>
 struct tuple_element;
@@ -68,6 +72,7 @@ struct tuple_type<const T&> {
     typedef const T& transparent_reference;
 };
 
+/// @cond
 <%0.upto(GENERATION_LIMIT) {|i|%>
 <%0.upto(i) {|j|%>
 template <typename A0<%1.upto(i) {|k|%>, typename A<%=k%><%}%>>
@@ -92,6 +97,7 @@ private:
 };
 <%}%>
 <%}%>
+/// @endcond
 
 template <>
 struct tuple<> {
@@ -99,6 +105,8 @@ struct tuple<> {
     tuple(msgpack::object const& o) { o.convert(*this); }
     typedef tuple<> value_type;
 };
+
+/// @cond
 <%0.upto(GENERATION_LIMIT) {|i|%>
 template <typename A0<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
 struct tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> {
@@ -122,11 +130,14 @@ template <int N, typename A0<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
 inline typename type::const_tuple_element<type::tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>>, N>::const_reference get(type::tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> const& t)
 { return t.template get<N>(); }
 <%}%>
+/// @endcond
 
 inline tuple<> make_tuple()
 {
     return tuple<>();
 }
+
+/// @cond
 <%0.upto(GENERATION_LIMIT) {|i|%>
 template <typename A0<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
 inline tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> make_tuple(typename tuple_type<A0>::transparent_reference a0<%1.upto(i) {|j|%>, typename tuple_type<A<%=j%>>::transparent_reference a<%=j%><%}%>)
@@ -134,6 +145,7 @@ inline tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> make_tuple(typename tuple_type<
     return tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>>(a0<%1.upto(i) {|j|%>, a<%=j%><%}%>);
 }
 <%}%>
+/// @endcond
 
 }  // namespace type
 
@@ -149,6 +161,7 @@ struct convert<type::tuple<> > {
     }
 };
 
+/// @cond
 <%0.upto(GENERATION_LIMIT) {|i|%>
 template <typename A0<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
 struct convert<type::tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> > {
@@ -164,6 +177,7 @@ struct convert<type::tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> > {
     }
 };
 <%}%>
+/// @endcond
 
 template <>
 struct pack<type::tuple<> > {
@@ -176,6 +190,7 @@ struct pack<type::tuple<> > {
     }
 };
 
+/// @cond
 <%0.upto(GENERATION_LIMIT) {|i|%>
 template <typename A0<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
 struct pack<type::tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> > {
@@ -190,6 +205,7 @@ struct pack<type::tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> > {
     }
 };
 <%}%>
+/// @endcond
 
 template <>
 struct object_with_zone<type::tuple<> > {
@@ -202,6 +218,7 @@ struct object_with_zone<type::tuple<> > {
     }
 };
 
+/// @cond
 <%0.upto(GENERATION_LIMIT) {|i|%>
 template <typename A0<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
 struct object_with_zone<type::tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> > {
@@ -216,10 +233,13 @@ struct object_with_zone<type::tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> > {
     }
 };
 <%}%>
+/// @endcond
 
 } // namespace adaptor
 
+/// @cond
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
+/// @endcond
 
 }  // namespace msgpack
 

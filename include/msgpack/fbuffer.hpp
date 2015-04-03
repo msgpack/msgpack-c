@@ -25,7 +25,9 @@
 
 namespace msgpack {
 
+/// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
+/// @endcond
 
 class fbuffer {
 public:
@@ -57,7 +59,9 @@ private:
     FILE* m_file;
 };
 
+/// @cond
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
+/// @endcond
 
 }  // namespace msgpack
 

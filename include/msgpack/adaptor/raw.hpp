@@ -25,7 +25,9 @@
 
 namespace msgpack {
 
+/// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
+/// @endcond
 
 namespace type {
 
@@ -103,7 +105,9 @@ struct object_with_zone<msgpack::type::raw_ref> {
 
 } // namespace adaptor
 
+/// @cond
 } // MSGPACK_API_VERSION_NAMESPACE(v1)
+/// @endcond
 
 } // namespace msgpack
 

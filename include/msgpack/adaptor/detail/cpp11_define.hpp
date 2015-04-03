@@ -46,7 +46,9 @@
 // MSGPACK_ADD_ENUM must be used in the global namespace.
 #define MSGPACK_ADD_ENUM(enum_name) \
   namespace msgpack { \
+  /** @cond */ \
   MSGPACK_API_VERSION_NAMESPACE(v1) { \
+  /** @endcond */ \
   namespace adaptor { \
     template<> \
     struct convert<enum_name> { \
@@ -79,11 +81,15 @@
       } \
     }; \
   } \
+  /** @cond */ \
   } \
+  /** @endcond */ \
   }
 
 namespace msgpack {
+/// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
+/// @endcond
 namespace type {
 
 template <typename Tuple, std::size_t N>
@@ -185,7 +191,9 @@ define<Args...> make_define(Args&... args)
 }
 
 }  // namespace type
+/// @cond
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
+/// @endcond
 }  // namespace msgpack
 
 #endif // MSGPACK_CPP11_DEFINE_HPP

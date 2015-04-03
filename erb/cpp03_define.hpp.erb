@@ -42,7 +42,9 @@
 // MSGPACK_ADD_ENUM must be used in the global namespace.
 #define MSGPACK_ADD_ENUM(enum_name) \
   namespace msgpack { \
+  /** @cond */ \
   MSGPACK_API_VERSION_NAMESPACE(v1) { \
+  /** @endcond */ \
   namespace adaptor { \
     template<> \
     struct convert<enum_name> { \
@@ -73,18 +75,22 @@
       } \
     }; \
   } \
+  /** @cond */ \
   } \
+  /** @endcond */ \
   }
 
 namespace msgpack {
+/// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
+/// @endcond
 namespace type {
 
-
+/// @cond
 <% GENERATION_LIMIT = 31 %>
 template <typename A0 = void<%1.upto(GENERATION_LIMIT+1) {|i|%>, typename A<%=i%> = void<%}%>>
 struct define;
-
+/// @endcond
 
 template <>
 struct define<> {
@@ -106,6 +112,8 @@ struct define<> {
         o->via.array.size = 0;
     }
 };
+
+/// @cond
 <%0.upto(GENERATION_LIMIT) {|i|%>
 template <typename A0<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
 struct define<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> {
@@ -144,11 +152,14 @@ struct define<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> {
     A<%=j%>& a<%=j%>;<%}%>
 };
 <%}%>
+/// @endcond
 
 inline define<> make_define()
 {
     return define<>();
 }
+
+/// @cond
 <%0.upto(GENERATION_LIMIT) {|i|%>
 template <typename A0<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
 define<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> make_define(A0& a0<%1.upto(i) {|j|%>, A<%=j%>& a<%=j%><%}%>)
@@ -156,9 +167,12 @@ define<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> make_define(A0& a0<%1.upto(i) {|j|%>,
     return define<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>>(a0<%1.upto(i) {|j|%>, a<%=j%><%}%>);
 }
 <%}%>
+/// @endcond
 
 }  // namespace type
+/// @cond
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
+/// @endcond
 }  // namespace msgpack
 
 

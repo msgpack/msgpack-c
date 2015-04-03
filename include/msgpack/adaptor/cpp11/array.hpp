@@ -27,7 +27,9 @@
 
 namespace msgpack {
 
+/// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
+/// @endcond
 
 namespace adaptor {
 
@@ -80,7 +82,9 @@ struct object_with_zone<std::array<T, N>> {
 
 } // namespace adaptor
 
+/// @cond
 } // MSGPACK_API_VERSION_NAMESPACE(v1)
+/// @endcond
 
 } // namespace msgpack
 

@@ -44,7 +44,9 @@
 
 namespace msgpack {
 
+/// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
+/// @endcond
 
 template <typename T>
 struct unique_ptr : std::auto_ptr<T> {
@@ -75,7 +77,9 @@ template <typename T>
 struct enable_if<false, T> {
 };
 
+/// @cond
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
+/// @endcond
 
 }  // namespace msgpack
 
@@ -86,7 +90,9 @@ struct enable_if<false, T> {
 #include <tuple>
 
 namespace msgpack {
+/// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
+/// @endcond
 
     // unique_ptr
     using std::unique_ptr;
@@ -98,7 +104,9 @@ MSGPACK_API_VERSION_NAMESPACE(v1) {
     using std::swap;
     using std::enable_if;
 
+/// @cond
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
+/// @endcond
 }  // namespace msgpack
 
 
