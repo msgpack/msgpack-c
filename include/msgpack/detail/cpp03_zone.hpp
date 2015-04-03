@@ -35,7 +35,9 @@
 
 namespace msgpack {
 
+/// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
+/// @endcond
 
 class zone {
     struct finalizer {
@@ -179,6 +181,7 @@ public:
     {
         ::operator delete(p, place);
     }
+    /// @cond
     
     template <typename T>
     T* allocate();
@@ -228,6 +231,7 @@ public:
     template <typename T, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15>
     T* allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11, A12 a12, A13 a13, A14 a14, A15 a15);
     
+    /// @endcond
 
 private:
     void undo_allocate(size_t size);
@@ -349,6 +353,7 @@ inline void zone::undo_allocate(size_t size)
     m_chunk_list.m_free += size;
 }
 
+/// @cond
 
 template <typename T>
 T* zone::allocate()
@@ -654,8 +659,11 @@ T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9,
     }
 }
 
+/// @endcond
 
+/// @cond
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
+/// @endcond
 
 }  // namespace msgpack
 

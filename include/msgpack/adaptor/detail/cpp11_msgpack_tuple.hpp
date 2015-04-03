@@ -25,7 +25,9 @@
 
 namespace msgpack {
 
+/// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
+/// @endcond
 
 namespace type {
     // tuple
@@ -224,7 +226,9 @@ template <typename... Args>
 
 }  // namespace adaptor
 
+/// @cond
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
+///@endcond
 
 }  // namespace msgpack
 

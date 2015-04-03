@@ -45,7 +45,9 @@
 
 namespace msgpack {
 
+/// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
+/// @endcond
 
 namespace adaptor {
 
@@ -164,7 +166,9 @@ struct object_with_zone<MSGPACK_STD_TR1::unordered_multimap<K, V> > {
 
 } // namespace adaptor
 
+/// @cond
 } // MSGPACK_API_VERSION_NAMESPACE(v1)
+/// @endcond
 
 } // namespace msgpack
 

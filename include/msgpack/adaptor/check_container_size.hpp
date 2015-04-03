@@ -23,7 +23,9 @@
 
 namespace msgpack {
 
+/// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
+/// @endcond
 
 struct container_size_overflow : public std::runtime_error {
     explicit container_size_overflow(const std::string& msg)
@@ -54,7 +56,9 @@ inline uint32_t checked_get_container_size(T size) {
 }
 
 
+/// @cond
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
+/// @endcond
 
 }  // namespace msgpack
 

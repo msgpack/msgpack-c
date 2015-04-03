@@ -24,7 +24,9 @@
 
 namespace msgpack {
 
+/// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
+/// @endcond
 
 namespace type {
 
@@ -32,8 +34,10 @@ namespace type {
 // FIXME operator!=
 
 
+/// @cond
 template <typename A0 = void, typename A1 = void, typename A2 = void, typename A3 = void, typename A4 = void, typename A5 = void, typename A6 = void, typename A7 = void, typename A8 = void, typename A9 = void, typename A10 = void, typename A11 = void, typename A12 = void, typename A13 = void, typename A14 = void, typename A15 = void, typename A16 = void, typename A17 = void, typename A18 = void, typename A19 = void, typename A20 = void, typename A21 = void, typename A22 = void, typename A23 = void, typename A24 = void, typename A25 = void, typename A26 = void, typename A27 = void, typename A28 = void, typename A29 = void, typename A30 = void, typename A31 = void, typename A32 = void>
 struct tuple;
+/// @endcond
 
 template <typename Tuple, int N>
 struct tuple_element;
@@ -68,6 +72,7 @@ struct tuple_type<const T&> {
     typedef const T& transparent_reference;
 };
 
+/// @cond
 
 
 template <typename A0>
@@ -9175,6 +9180,7 @@ private:
 };
 
 
+/// @endcond
 
 template <>
 struct tuple<> {
@@ -9182,6 +9188,8 @@ struct tuple<> {
     tuple(msgpack::object const& o) { o.convert(*this); }
     typedef tuple<> value_type;
 };
+
+/// @cond
 
 template <typename A0>
 struct tuple<A0> {
@@ -10383,11 +10391,14 @@ template <int N, typename A0, typename A1, typename A2, typename A3, typename A4
 inline typename type::const_tuple_element<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30, A31>, N>::const_reference get(type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30, A31> const& t)
 { return t.template get<N>(); }
 
+/// @endcond
 
 inline tuple<> make_tuple()
 {
     return tuple<>();
 }
+
+/// @cond
 
 template <typename A0>
 inline tuple<A0> make_tuple(typename tuple_type<A0>::transparent_reference a0)
@@ -10581,6 +10592,7 @@ inline tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A1
     return tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30, A31>(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20, a21, a22, a23, a24, a25, a26, a27, a28, a29, a30, a31);
 }
 
+/// @endcond
 
 }  // namespace type
 
@@ -10596,6 +10608,7 @@ struct convert<type::tuple<> > {
     }
 };
 
+/// @cond
 
 template <typename A0>
 struct convert<type::tuple<A0> > {
@@ -12037,6 +12050,7 @@ struct convert<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12
     }
 };
 
+/// @endcond
 
 template <>
 struct pack<type::tuple<> > {
@@ -12049,6 +12063,7 @@ struct pack<type::tuple<> > {
     }
 };
 
+/// @cond
 
 template <typename A0>
 struct pack<type::tuple<A0> > {
@@ -12962,6 +12977,7 @@ struct pack<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A
     }
 };
 
+/// @endcond
 
 template <>
 struct object_with_zone<type::tuple<> > {
@@ -12974,6 +12990,7 @@ struct object_with_zone<type::tuple<> > {
     }
 };
 
+/// @cond
 
 template <typename A0>
 struct object_with_zone<type::tuple<A0> > {
@@ -13887,10 +13904,13 @@ struct object_with_zone<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10,
     }
 };
 
+/// @endcond
 
 } // namespace adaptor
 
+/// @cond
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
+/// @endcond
 
 }  // namespace msgpack
 

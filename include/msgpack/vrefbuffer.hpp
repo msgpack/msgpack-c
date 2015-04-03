@@ -41,7 +41,9 @@ struct iovec {
 
 namespace msgpack {
 
+/// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
+/// @endcond
 
 namespace detail {
     // int64, uint64, double
@@ -289,7 +291,9 @@ private:
 
 };
 
+/// @cond
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
+/// @endcond
 
 }  // namespace msgpack
 
