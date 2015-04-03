@@ -22,7 +22,9 @@
 
 namespace msgpack {
 
+/// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
+/// @endcond
 
 template <typename Stream>
 class packer;
@@ -80,7 +82,10 @@ void operator<< (msgpack::object::with_zone& o, T const& v) {
     adaptor::object_with_zone<T>()(o, v);
 }
 
+/// @cond
 } // MSGPACK_API_VERSION_NAMESPACE(v1)
+/// @endcond
+
 } // namespace msgpack
 
 
