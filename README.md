@@ -201,7 +201,7 @@ the binaries:' text box.
 ### Documentation
 
 You can get addtional information on the
-[wiki](https://github.com/msgpack/msgpack-c/wiki/cpp_overview).
+[wiki](https://github.com/msgpack/msgpack-c/wiki).
 
 Contributing
 ------------
