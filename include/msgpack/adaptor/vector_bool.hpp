@@ -50,7 +50,8 @@ template <>
 struct pack<std::vector<bool> > {
     template <typename Stream>
     msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const std::vector<bool>& v) const {
-        o.pack_array(v.size());
+        uint32_t size = checked_get_container_size(v.size());
+        o.pack_array(size);
         for(std::vector<bool>::const_iterator it(v.begin()), it_end(v.end());
             it != it_end; ++it) {
             o.pack(static_cast<bool>(*it));
@@ -67,10 +68,11 @@ struct object_with_zone<std::vector<bool> > {
             o.via.array.ptr = nullptr;
             o.via.array.size = 0;
         } else {
-            msgpack::object* p = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*v.size()));
-            msgpack::object* const pend = p + v.size();
+            uint32_t size = checked_get_container_size(v.size());
+            msgpack::object* p = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*size));
+            msgpack::object* const pend = p + size;
             o.via.array.ptr = p;
-            o.via.array.size = v.size();
+            o.via.array.size = size;
             std::vector<bool>::const_iterator it(v.begin());
             do {
                 *p = msgpack::object(static_cast<bool>(*it), o.zone);
