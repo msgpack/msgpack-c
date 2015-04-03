@@ -21,8 +21,7 @@
 #include <sstream>
 #include <cassert>
 
-// msgpack.hpp is also ok
-#include <msgpack_fwd.hpp>
+#include <msgpack.hpp>
 
 
 class my_class {
@@ -56,8 +55,6 @@ void print(std::string const& buf) {
     }
     std::cout << std::dec << std::endl;
 }
-
-#include <msgpack.hpp>
 
 int main() {
     {   // pack, unpack

@@ -19,8 +19,8 @@
 #define MSGPACK_TYPE_RAW_HPP
 
 #include "msgpack/versioning.hpp"
-#include "msgpack/object_fwd.hpp"
-#include <string.h>
+#include "msgpack/adaptor/adaptor_base.hpp"
+#include <cstring>
 #include <string>
 
 namespace msgpack {
@@ -61,38 +61,50 @@ struct raw_ref {
     }
 };
 
-}  // namespace type
+} // namespace type
 
+namespace adaptor {
 
-inline msgpack::object const& operator>> (msgpack::object const& o, msgpack::type::raw_ref& v)
-{
-    if(o.type != msgpack::type::BIN) { throw msgpack::type_error(); }
-    v.ptr  = o.via.bin.ptr;
-    v.size = o.via.bin.size;
-    return o;
-}
+template <>
+struct convert<msgpack::type::raw_ref> {
+    msgpack::object const& operator()(msgpack::object const& o, msgpack::type::raw_ref& v) const {
+        if(o.type != msgpack::type::BIN) { throw msgpack::type_error(); }
+        v.ptr  = o.via.bin.ptr;
+        v.size = o.via.bin.size;
+        return o;
+    }
+};
 
-template <typename Stream>
-inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const msgpack::type::raw_ref& v)
-{
-    o.pack_bin(v.size);
-    o.pack_bin_body(v.ptr, v.size);
-    return o;
-}
+template <>
+struct pack<msgpack::type::raw_ref> {
+    template <typename Stream>
+    msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const msgpack::type::raw_ref& v) const {
+        o.pack_bin(v.size);
+        o.pack_bin_body(v.ptr, v.size);
+        return o;
+    }
+};
 
-inline void operator<< (msgpack::object& o, const msgpack::type::raw_ref& v)
-{
-    o.type = msgpack::type::BIN;
-    o.via.bin.ptr = v.ptr;
-    o.via.bin.size = v.size;
-}
+template <>
+struct object<msgpack::type::raw_ref> {
+    void operator()(msgpack::object& o, const msgpack::type::raw_ref& v) const {
+        o.type = msgpack::type::BIN;
+        o.via.bin.ptr = v.ptr;
+        o.via.bin.size = v.size;
+    }
+};
 
-inline void operator<< (msgpack::object::with_zone& o, const msgpack::type::raw_ref& v)
-    { static_cast<msgpack::object&>(o) << v; }
+template <>
+struct object_with_zone<msgpack::type::raw_ref> {
+    void operator()(msgpack::object::with_zone& o, const msgpack::type::raw_ref& v) const {
+        static_cast<msgpack::object&>(o) << v;
+    }
+};
 
+} // namespace adaptor
 
-}  // MSGPACK_API_VERSION_NAMESPACE(v1)
+} // MSGPACK_API_VERSION_NAMESPACE(v1)
 
-}  // namespace msgpack
+} // namespace msgpack
 
 #endif // MSGPACK_TYPE_RAW_HPP

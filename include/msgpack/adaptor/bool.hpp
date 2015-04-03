@@ -19,37 +19,49 @@
 #define MSGPACK_TYPE_BOOL_HPP
 
 #include "msgpack/versioning.hpp"
-#include "msgpack/object_fwd.hpp"
-#include <vector>
+#include "msgpack/adaptor/adaptor_base.hpp"
 
 namespace msgpack {
 
 MSGPACK_API_VERSION_NAMESPACE(v1) {
 
-inline msgpack::object const& operator>> (msgpack::object const& o, bool& v)
-{
-    if(o.type != msgpack::type::BOOLEAN) { throw msgpack::type_error(); }
-    v = o.via.boolean;
-    return o;
-}
+namespace adaptor {
 
-template <typename Stream>
-inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const bool& v)
-{
-    if(v) { o.pack_true(); }
-    else { o.pack_false(); }
-    return o;
-}
+template <>
+struct convert<bool> {
+    msgpack::object const& operator()(msgpack::object const& o, bool& v) const {
+        if(o.type != msgpack::type::BOOLEAN) { throw msgpack::type_error(); }
+        v = o.via.boolean;
+        return o;
+    }
+};
 
-inline void operator<< (msgpack::object& o, bool v)
-{
-    o.type = msgpack::type::BOOLEAN;
-    o.via.boolean = v;
-}
+template <>
+struct pack<bool> {
+    template <typename Stream>
+    msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const bool& v) const {
+        if(v) { o.pack_true(); }
+        else { o.pack_false(); }
+        return o;
+    }
+};
 
-inline void operator<< (msgpack::object::with_zone& o, bool v)
-    { static_cast<msgpack::object&>(o) << v; }
+template <>
+struct object<bool> {
+    void operator()(msgpack::object& o, bool v) const {
+        o.type = msgpack::type::BOOLEAN;
+        o.via.boolean = v;
+    }
+};
 
+template <>
+struct object_with_zone<bool> {
+    void operator()(msgpack::object::with_zone& o, bool v) const {
+        static_cast<msgpack::object&>(o) << v;
+    }
+};
+
+} // namespace adaptor
 
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 

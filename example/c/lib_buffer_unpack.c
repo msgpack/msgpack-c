@@ -8,8 +8,6 @@ typedef struct receiver {
     size_t rest;
 } receiver;
 
-receiver r;
-
 void receiver_init(receiver *r) {
     msgpack_packer pk;
 
@@ -53,6 +51,7 @@ void unpack(receiver* r) {
     char* buf;
     size_t recv_len;
     int recv_count = 0;
+    int i = 0;
 
     msgpack_unpacked_init(&result);
     if (msgpack_unpacker_buffer_capacity(unp) < EACH_RECV_SIZE) {
@@ -65,15 +64,14 @@ void unpack(receiver* r) {
     msgpack_unpacker_buffer_consumed(unp, recv_len);
 
 
-    while (recv_len > 0) {
-        int i = 0;
-        printf("receive count: %d %zd bytes received.:\n", recv_count++, recv_len);
+   while (recv_len > 0) {
+        printf("receive count: %d %zd bytes received.\n", recv_count++, recv_len);
         ret = msgpack_unpacker_next(unp, &result);
         while (ret == MSGPACK_UNPACK_SUCCESS) {
             msgpack_object obj = result.data;
 
             /* Use obj. */
-            printf("Object no %d:\n", i++);
+            printf("Object no %d:\n", ++i);
             msgpack_object_print(stdout, obj);
             printf("\n");
             /* If you want to allocate something on the zone, you can use zone. */
@@ -110,10 +108,16 @@ int main(void) {
 /* Output */
 
 /*
+receive count: 0 4 bytes received.
+receive count: 1 4 bytes received.
+receive count: 2 4 bytes received.
 Object no 1:
 [1, true, "example"]
+receive count: 3 4 bytes received.
+receive count: 4 4 bytes received.
 Object no 2:
 "second"
+receive count: 5 1 bytes received.
 Object no 3:
 [42, false]
 */

@@ -19,10 +19,10 @@
 #define MSGPACK_CPP11_DEFINE_HPP
 
 #include "msgpack/versioning.hpp"
-#include "msgpack/object_fwd.hpp"
+#include "msgpack/adaptor/adaptor_base.hpp"
 
 // for MSGPACK_ADD_ENUM
-#include "msgpack/adaptor/int_fwd.hpp"
+#include "msgpack/adaptor/int.hpp"
 
 #include <type_traits>
 #include <tuple>
@@ -44,34 +44,41 @@
     }
 
 // MSGPACK_ADD_ENUM must be used in the global namespace.
-#define MSGPACK_ADD_ENUM(enum) \
+#define MSGPACK_ADD_ENUM(enum_name) \
   namespace msgpack { \
   MSGPACK_API_VERSION_NAMESPACE(v1) { \
-    inline msgpack::object const& operator>> (msgpack::object const& o, enum& v) \
-    { \
-      std::underlying_type<enum>::type tmp; \
-      o >> tmp; \
-      v = static_cast<enum>(tmp);   \
-      return o; \
-    } \
-    inline void operator<< (msgpack::object& o, const enum& v) \
-    { \
-      auto tmp = static_cast<std::underlying_type<enum>::type>(v); \
-      o << tmp; \
-    } \
-    inline void operator<< (msgpack::object::with_zone& o, const enum& v) \
-    { \
-      auto tmp = static_cast<std::underlying_type<enum>::type>(v); \
-      o << tmp; \
-    } \
-    namespace detail { \
+  namespace adaptor { \
+    template<> \
+    struct convert<enum_name> { \
+      msgpack::object const& operator()(msgpack::object const& o, enum_name& v) const { \
+        std::underlying_type<enum_name>::type tmp; \
+        o >> tmp; \
+        v = static_cast<enum_name>(tmp);   \
+        return o; \
+      } \
+    }; \
+    template<> \
+    struct object<enum_name> { \
+      void operator()(msgpack::object& o, const enum_name& v) const { \
+        auto tmp = static_cast<std::underlying_type<enum_name>::type>(v); \
+        o << tmp; \
+      } \
+    }; \
+    template<> \
+    struct object_with_zone<enum_name> { \
+      void operator()(msgpack::object::with_zone& o, const enum_name& v) const {  \
+        auto tmp = static_cast<std::underlying_type<enum_name>::type>(v); \
+        o << tmp; \
+      } \
+    }; \
+    template <> \
+    struct pack<enum_name> { \
       template <typename Stream> \
-      struct packer_serializer<Stream, enum> { \
-        static msgpack::packer<Stream>& pack(msgpack::packer<Stream>& o, const enum& v) { \
-          return o << static_cast<std::underlying_type<enum>::type>(v); \
-        } \
-      }; \
-    } \
+      msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const enum_name& v) const { \
+        return o << static_cast<std::underlying_type<enum_name>::type>(v); \
+      } \
+    }; \
+  } \
   } \
   }
 

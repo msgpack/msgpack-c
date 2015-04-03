@@ -20,6 +20,7 @@
 
 #include "msgpack/versioning.hpp"
 #include "msgpack/object.hpp"
+#include "msgpack/adaptor/adaptor_base.hpp"
 
 namespace msgpack {
 
@@ -31,7 +32,7 @@ namespace type {
 // FIXME operator!=
 
 
-template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25, typename A26, typename A27, typename A28, typename A29, typename A30, typename A31, typename A32>
+template <typename A0 = void, typename A1 = void, typename A2 = void, typename A3 = void, typename A4 = void, typename A5 = void, typename A6 = void, typename A7 = void, typename A8 = void, typename A9 = void, typename A10 = void, typename A11 = void, typename A12 = void, typename A13 = void, typename A14 = void, typename A15 = void, typename A16 = void, typename A17 = void, typename A18 = void, typename A19 = void, typename A20 = void, typename A21 = void, typename A22 = void, typename A23 = void, typename A24 = void, typename A25 = void, typename A26 = void, typename A27 = void, typename A28 = void, typename A29 = void, typename A30 = void, typename A31 = void, typename A32 = void>
 struct tuple;
 
 template <typename Tuple, int N>
@@ -10583,3336 +10584,3314 @@ inline tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A1
 
 }  // namespace type
 
-inline msgpack::object const& operator>> (
+namespace adaptor {
+
+template <>
+struct convert<type::tuple<> > {
+    msgpack::object const& operator()(
         msgpack::object const& o,
-        type::tuple<>&) {
-    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-    return o;
-}
+        type::tuple<>&) const {
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        return o;
+    }
+};
+
 
 template <typename A0>
-inline msgpack::object const& operator>> (
+struct convert<type::tuple<A0> > {
+    msgpack::object const& operator()(
         msgpack::object const& o,
-        type::tuple<A0>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-    if(o.via.array.size < 1) { throw msgpack::type_error(); }
-    
-    o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
-    return o;
-}
+        type::tuple<A0>& v) const {
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.via.array.size < 1) { throw msgpack::type_error(); }
+        
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1>
-inline msgpack::object const& operator>> (
+struct convert<type::tuple<A0, A1> > {
+    msgpack::object const& operator()(
         msgpack::object const& o,
-        type::tuple<A0, A1>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-    if(o.via.array.size < 2) { throw msgpack::type_error(); }
-    
-    o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
-    o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
-    return o;
-}
+        type::tuple<A0, A1>& v) const {
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.via.array.size < 2) { throw msgpack::type_error(); }
+        
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2>
-inline msgpack::object const& operator>> (
+struct convert<type::tuple<A0, A1, A2> > {
+    msgpack::object const& operator()(
         msgpack::object const& o,
-        type::tuple<A0, A1, A2>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-    if(o.via.array.size < 3) { throw msgpack::type_error(); }
-    
-    o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
-    o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
-    o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(v.template get<2>());
-    return o;
-}
+        type::tuple<A0, A1, A2>& v) const {
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.via.array.size < 3) { throw msgpack::type_error(); }
+        
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3>
-inline msgpack::object const& operator>> (
+struct convert<type::tuple<A0, A1, A2, A3> > {
+    msgpack::object const& operator()(
         msgpack::object const& o,
-        type::tuple<A0, A1, A2, A3>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-    if(o.via.array.size < 4) { throw msgpack::type_error(); }
-    
-    o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
-    o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
-    o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(v.template get<2>());
-    o.via.array.ptr[3].convert<typename type::tuple_type<A3>::type>(v.template get<3>());
-    return o;
-}
+        type::tuple<A0, A1, A2, A3>& v) const {
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.via.array.size < 4) { throw msgpack::type_error(); }
+        
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4>
-inline msgpack::object const& operator>> (
+struct convert<type::tuple<A0, A1, A2, A3, A4> > {
+    msgpack::object const& operator()(
         msgpack::object const& o,
-        type::tuple<A0, A1, A2, A3, A4>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-    if(o.via.array.size < 5) { throw msgpack::type_error(); }
-    
-    o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
-    o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
-    o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(v.template get<2>());
-    o.via.array.ptr[3].convert<typename type::tuple_type<A3>::type>(v.template get<3>());
-    o.via.array.ptr[4].convert<typename type::tuple_type<A4>::type>(v.template get<4>());
-    return o;
-}
+        type::tuple<A0, A1, A2, A3, A4>& v) const {
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.via.array.size < 5) { throw msgpack::type_error(); }
+        
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5>
-inline msgpack::object const& operator>> (
+struct convert<type::tuple<A0, A1, A2, A3, A4, A5> > {
+    msgpack::object const& operator()(
         msgpack::object const& o,
-        type::tuple<A0, A1, A2, A3, A4, A5>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-    if(o.via.array.size < 6) { throw msgpack::type_error(); }
-    
-    o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
-    o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
-    o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(v.template get<2>());
-    o.via.array.ptr[3].convert<typename type::tuple_type<A3>::type>(v.template get<3>());
-    o.via.array.ptr[4].convert<typename type::tuple_type<A4>::type>(v.template get<4>());
-    o.via.array.ptr[5].convert<typename type::tuple_type<A5>::type>(v.template get<5>());
-    return o;
-}
+        type::tuple<A0, A1, A2, A3, A4, A5>& v) const {
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.via.array.size < 6) { throw msgpack::type_error(); }
+        
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6>
-inline msgpack::object const& operator>> (
+struct convert<type::tuple<A0, A1, A2, A3, A4, A5, A6> > {
+    msgpack::object const& operator()(
         msgpack::object const& o,
-        type::tuple<A0, A1, A2, A3, A4, A5, A6>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-    if(o.via.array.size < 7) { throw msgpack::type_error(); }
-    
-    o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
-    o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
-    o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(v.template get<2>());
-    o.via.array.ptr[3].convert<typename type::tuple_type<A3>::type>(v.template get<3>());
-    o.via.array.ptr[4].convert<typename type::tuple_type<A4>::type>(v.template get<4>());
-    o.via.array.ptr[5].convert<typename type::tuple_type<A5>::type>(v.template get<5>());
-    o.via.array.ptr[6].convert<typename type::tuple_type<A6>::type>(v.template get<6>());
-    return o;
-}
+        type::tuple<A0, A1, A2, A3, A4, A5, A6>& v) const {
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.via.array.size < 7) { throw msgpack::type_error(); }
+        
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7>
-inline msgpack::object const& operator>> (
+struct convert<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7> > {
+    msgpack::object const& operator()(
         msgpack::object const& o,
-        type::tuple<A0, A1, A2, A3, A4, A5, A6, A7>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-    if(o.via.array.size < 8) { throw msgpack::type_error(); }
-    
-    o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
-    o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
-    o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(v.template get<2>());
-    o.via.array.ptr[3].convert<typename type::tuple_type<A3>::type>(v.template get<3>());
-    o.via.array.ptr[4].convert<typename type::tuple_type<A4>::type>(v.template get<4>());
-    o.via.array.ptr[5].convert<typename type::tuple_type<A5>::type>(v.template get<5>());
-    o.via.array.ptr[6].convert<typename type::tuple_type<A6>::type>(v.template get<6>());
-    o.via.array.ptr[7].convert<typename type::tuple_type<A7>::type>(v.template get<7>());
-    return o;
-}
+        type::tuple<A0, A1, A2, A3, A4, A5, A6, A7>& v) const {
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.via.array.size < 8) { throw msgpack::type_error(); }
+        
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8>
-inline msgpack::object const& operator>> (
+struct convert<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8> > {
+    msgpack::object const& operator()(
         msgpack::object const& o,
-        type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-    if(o.via.array.size < 9) { throw msgpack::type_error(); }
-    
-    o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
-    o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
-    o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(v.template get<2>());
-    o.via.array.ptr[3].convert<typename type::tuple_type<A3>::type>(v.template get<3>());
-    o.via.array.ptr[4].convert<typename type::tuple_type<A4>::type>(v.template get<4>());
-    o.via.array.ptr[5].convert<typename type::tuple_type<A5>::type>(v.template get<5>());
-    o.via.array.ptr[6].convert<typename type::tuple_type<A6>::type>(v.template get<6>());
-    o.via.array.ptr[7].convert<typename type::tuple_type<A7>::type>(v.template get<7>());
-    o.via.array.ptr[8].convert<typename type::tuple_type<A8>::type>(v.template get<8>());
-    return o;
-}
+        type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8>& v) const {
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.via.array.size < 9) { throw msgpack::type_error(); }
+        
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9>
-inline msgpack::object const& operator>> (
+struct convert<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9> > {
+    msgpack::object const& operator()(
         msgpack::object const& o,
-        type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-    if(o.via.array.size < 10) { throw msgpack::type_error(); }
-    
-    o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
-    o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
-    o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(v.template get<2>());
-    o.via.array.ptr[3].convert<typename type::tuple_type<A3>::type>(v.template get<3>());
-    o.via.array.ptr[4].convert<typename type::tuple_type<A4>::type>(v.template get<4>());
-    o.via.array.ptr[5].convert<typename type::tuple_type<A5>::type>(v.template get<5>());
-    o.via.array.ptr[6].convert<typename type::tuple_type<A6>::type>(v.template get<6>());
-    o.via.array.ptr[7].convert<typename type::tuple_type<A7>::type>(v.template get<7>());
-    o.via.array.ptr[8].convert<typename type::tuple_type<A8>::type>(v.template get<8>());
-    o.via.array.ptr[9].convert<typename type::tuple_type<A9>::type>(v.template get<9>());
-    return o;
-}
+        type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9>& v) const {
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.via.array.size < 10) { throw msgpack::type_error(); }
+        
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10>
-inline msgpack::object const& operator>> (
+struct convert<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10> > {
+    msgpack::object const& operator()(
         msgpack::object const& o,
-        type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-    if(o.via.array.size < 11) { throw msgpack::type_error(); }
-    
-    o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
-    o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
-    o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(v.template get<2>());
-    o.via.array.ptr[3].convert<typename type::tuple_type<A3>::type>(v.template get<3>());
-    o.via.array.ptr[4].convert<typename type::tuple_type<A4>::type>(v.template get<4>());
-    o.via.array.ptr[5].convert<typename type::tuple_type<A5>::type>(v.template get<5>());
-    o.via.array.ptr[6].convert<typename type::tuple_type<A6>::type>(v.template get<6>());
-    o.via.array.ptr[7].convert<typename type::tuple_type<A7>::type>(v.template get<7>());
-    o.via.array.ptr[8].convert<typename type::tuple_type<A8>::type>(v.template get<8>());
-    o.via.array.ptr[9].convert<typename type::tuple_type<A9>::type>(v.template get<9>());
-    o.via.array.ptr[10].convert<typename type::tuple_type<A10>::type>(v.template get<10>());
-    return o;
-}
+        type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10>& v) const {
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.via.array.size < 11) { throw msgpack::type_error(); }
+        
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11>
-inline msgpack::object const& operator>> (
+struct convert<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11> > {
+    msgpack::object const& operator()(
         msgpack::object const& o,
-        type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-    if(o.via.array.size < 12) { throw msgpack::type_error(); }
-    
-    o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
-    o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
-    o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(v.template get<2>());
-    o.via.array.ptr[3].convert<typename type::tuple_type<A3>::type>(v.template get<3>());
-    o.via.array.ptr[4].convert<typename type::tuple_type<A4>::type>(v.template get<4>());
-    o.via.array.ptr[5].convert<typename type::tuple_type<A5>::type>(v.template get<5>());
-    o.via.array.ptr[6].convert<typename type::tuple_type<A6>::type>(v.template get<6>());
-    o.via.array.ptr[7].convert<typename type::tuple_type<A7>::type>(v.template get<7>());
-    o.via.array.ptr[8].convert<typename type::tuple_type<A8>::type>(v.template get<8>());
-    o.via.array.ptr[9].convert<typename type::tuple_type<A9>::type>(v.template get<9>());
-    o.via.array.ptr[10].convert<typename type::tuple_type<A10>::type>(v.template get<10>());
-    o.via.array.ptr[11].convert<typename type::tuple_type<A11>::type>(v.template get<11>());
-    return o;
-}
+        type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11>& v) const {
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.via.array.size < 12) { throw msgpack::type_error(); }
+        
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12>
-inline msgpack::object const& operator>> (
+struct convert<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12> > {
+    msgpack::object const& operator()(
         msgpack::object const& o,
-        type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-    if(o.via.array.size < 13) { throw msgpack::type_error(); }
-    
-    o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
-    o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
-    o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(v.template get<2>());
-    o.via.array.ptr[3].convert<typename type::tuple_type<A3>::type>(v.template get<3>());
-    o.via.array.ptr[4].convert<typename type::tuple_type<A4>::type>(v.template get<4>());
-    o.via.array.ptr[5].convert<typename type::tuple_type<A5>::type>(v.template get<5>());
-    o.via.array.ptr[6].convert<typename type::tuple_type<A6>::type>(v.template get<6>());
-    o.via.array.ptr[7].convert<typename type::tuple_type<A7>::type>(v.template get<7>());
-    o.via.array.ptr[8].convert<typename type::tuple_type<A8>::type>(v.template get<8>());
-    o.via.array.ptr[9].convert<typename type::tuple_type<A9>::type>(v.template get<9>());
-    o.via.array.ptr[10].convert<typename type::tuple_type<A10>::type>(v.template get<10>());
-    o.via.array.ptr[11].convert<typename type::tuple_type<A11>::type>(v.template get<11>());
-    o.via.array.ptr[12].convert<typename type::tuple_type<A12>::type>(v.template get<12>());
-    return o;
-}
+        type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12>& v) const {
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.via.array.size < 13) { throw msgpack::type_error(); }
+        
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13>
-inline msgpack::object const& operator>> (
+struct convert<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13> > {
+    msgpack::object const& operator()(
         msgpack::object const& o,
-        type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-    if(o.via.array.size < 14) { throw msgpack::type_error(); }
-    
-    o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
-    o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
-    o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(v.template get<2>());
-    o.via.array.ptr[3].convert<typename type::tuple_type<A3>::type>(v.template get<3>());
-    o.via.array.ptr[4].convert<typename type::tuple_type<A4>::type>(v.template get<4>());
-    o.via.array.ptr[5].convert<typename type::tuple_type<A5>::type>(v.template get<5>());
-    o.via.array.ptr[6].convert<typename type::tuple_type<A6>::type>(v.template get<6>());
-    o.via.array.ptr[7].convert<typename type::tuple_type<A7>::type>(v.template get<7>());
-    o.via.array.ptr[8].convert<typename type::tuple_type<A8>::type>(v.template get<8>());
-    o.via.array.ptr[9].convert<typename type::tuple_type<A9>::type>(v.template get<9>());
-    o.via.array.ptr[10].convert<typename type::tuple_type<A10>::type>(v.template get<10>());
-    o.via.array.ptr[11].convert<typename type::tuple_type<A11>::type>(v.template get<11>());
-    o.via.array.ptr[12].convert<typename type::tuple_type<A12>::type>(v.template get<12>());
-    o.via.array.ptr[13].convert<typename type::tuple_type<A13>::type>(v.template get<13>());
-    return o;
-}
+        type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13>& v) const {
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.via.array.size < 14) { throw msgpack::type_error(); }
+        
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14>
-inline msgpack::object const& operator>> (
+struct convert<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14> > {
+    msgpack::object const& operator()(
         msgpack::object const& o,
-        type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-    if(o.via.array.size < 15) { throw msgpack::type_error(); }
-    
-    o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
-    o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
-    o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(v.template get<2>());
-    o.via.array.ptr[3].convert<typename type::tuple_type<A3>::type>(v.template get<3>());
-    o.via.array.ptr[4].convert<typename type::tuple_type<A4>::type>(v.template get<4>());
-    o.via.array.ptr[5].convert<typename type::tuple_type<A5>::type>(v.template get<5>());
-    o.via.array.ptr[6].convert<typename type::tuple_type<A6>::type>(v.template get<6>());
-    o.via.array.ptr[7].convert<typename type::tuple_type<A7>::type>(v.template get<7>());
-    o.via.array.ptr[8].convert<typename type::tuple_type<A8>::type>(v.template get<8>());
-    o.via.array.ptr[9].convert<typename type::tuple_type<A9>::type>(v.template get<9>());
-    o.via.array.ptr[10].convert<typename type::tuple_type<A10>::type>(v.template get<10>());
-    o.via.array.ptr[11].convert<typename type::tuple_type<A11>::type>(v.template get<11>());
-    o.via.array.ptr[12].convert<typename type::tuple_type<A12>::type>(v.template get<12>());
-    o.via.array.ptr[13].convert<typename type::tuple_type<A13>::type>(v.template get<13>());
-    o.via.array.ptr[14].convert<typename type::tuple_type<A14>::type>(v.template get<14>());
-    return o;
-}
+        type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14>& v) const {
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.via.array.size < 15) { throw msgpack::type_error(); }
+        
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[14].msgpack::object::convert<typename type::tuple_type<A14>::type>(v.template get<14>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15>
-inline msgpack::object const& operator>> (
+struct convert<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15> > {
+    msgpack::object const& operator()(
         msgpack::object const& o,
-        type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-    if(o.via.array.size < 16) { throw msgpack::type_error(); }
-    
-    o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
-    o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
-    o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(v.template get<2>());
-    o.via.array.ptr[3].convert<typename type::tuple_type<A3>::type>(v.template get<3>());
-    o.via.array.ptr[4].convert<typename type::tuple_type<A4>::type>(v.template get<4>());
-    o.via.array.ptr[5].convert<typename type::tuple_type<A5>::type>(v.template get<5>());
-    o.via.array.ptr[6].convert<typename type::tuple_type<A6>::type>(v.template get<6>());
-    o.via.array.ptr[7].convert<typename type::tuple_type<A7>::type>(v.template get<7>());
-    o.via.array.ptr[8].convert<typename type::tuple_type<A8>::type>(v.template get<8>());
-    o.via.array.ptr[9].convert<typename type::tuple_type<A9>::type>(v.template get<9>());
-    o.via.array.ptr[10].convert<typename type::tuple_type<A10>::type>(v.template get<10>());
-    o.via.array.ptr[11].convert<typename type::tuple_type<A11>::type>(v.template get<11>());
-    o.via.array.ptr[12].convert<typename type::tuple_type<A12>::type>(v.template get<12>());
-    o.via.array.ptr[13].convert<typename type::tuple_type<A13>::type>(v.template get<13>());
-    o.via.array.ptr[14].convert<typename type::tuple_type<A14>::type>(v.template get<14>());
-    o.via.array.ptr[15].convert<typename type::tuple_type<A15>::type>(v.template get<15>());
-    return o;
-}
+        type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15>& v) const {
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.via.array.size < 16) { throw msgpack::type_error(); }
+        
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[14].msgpack::object::convert<typename type::tuple_type<A14>::type>(v.template get<14>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[15].msgpack::object::convert<typename type::tuple_type<A15>::type>(v.template get<15>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16>
-inline msgpack::object const& operator>> (
+struct convert<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16> > {
+    msgpack::object const& operator()(
         msgpack::object const& o,
-        type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-    if(o.via.array.size < 17) { throw msgpack::type_error(); }
-    
-    o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
-    o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
-    o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(v.template get<2>());
-    o.via.array.ptr[3].convert<typename type::tuple_type<A3>::type>(v.template get<3>());
-    o.via.array.ptr[4].convert<typename type::tuple_type<A4>::type>(v.template get<4>());
-    o.via.array.ptr[5].convert<typename type::tuple_type<A5>::type>(v.template get<5>());
-    o.via.array.ptr[6].convert<typename type::tuple_type<A6>::type>(v.template get<6>());
-    o.via.array.ptr[7].convert<typename type::tuple_type<A7>::type>(v.template get<7>());
-    o.via.array.ptr[8].convert<typename type::tuple_type<A8>::type>(v.template get<8>());
-    o.via.array.ptr[9].convert<typename type::tuple_type<A9>::type>(v.template get<9>());
-    o.via.array.ptr[10].convert<typename type::tuple_type<A10>::type>(v.template get<10>());
-    o.via.array.ptr[11].convert<typename type::tuple_type<A11>::type>(v.template get<11>());
-    o.via.array.ptr[12].convert<typename type::tuple_type<A12>::type>(v.template get<12>());
-    o.via.array.ptr[13].convert<typename type::tuple_type<A13>::type>(v.template get<13>());
-    o.via.array.ptr[14].convert<typename type::tuple_type<A14>::type>(v.template get<14>());
-    o.via.array.ptr[15].convert<typename type::tuple_type<A15>::type>(v.template get<15>());
-    o.via.array.ptr[16].convert<typename type::tuple_type<A16>::type>(v.template get<16>());
-    return o;
-}
+        type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16>& v) const {
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.via.array.size < 17) { throw msgpack::type_error(); }
+        
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[14].msgpack::object::convert<typename type::tuple_type<A14>::type>(v.template get<14>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[15].msgpack::object::convert<typename type::tuple_type<A15>::type>(v.template get<15>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[16].msgpack::object::convert<typename type::tuple_type<A16>::type>(v.template get<16>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17>
-inline msgpack::object const& operator>> (
+struct convert<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17> > {
+    msgpack::object const& operator()(
         msgpack::object const& o,
-        type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-    if(o.via.array.size < 18) { throw msgpack::type_error(); }
-    
-    o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
-    o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
-    o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(v.template get<2>());
-    o.via.array.ptr[3].convert<typename type::tuple_type<A3>::type>(v.template get<3>());
-    o.via.array.ptr[4].convert<typename type::tuple_type<A4>::type>(v.template get<4>());
-    o.via.array.ptr[5].convert<typename type::tuple_type<A5>::type>(v.template get<5>());
-    o.via.array.ptr[6].convert<typename type::tuple_type<A6>::type>(v.template get<6>());
-    o.via.array.ptr[7].convert<typename type::tuple_type<A7>::type>(v.template get<7>());
-    o.via.array.ptr[8].convert<typename type::tuple_type<A8>::type>(v.template get<8>());
-    o.via.array.ptr[9].convert<typename type::tuple_type<A9>::type>(v.template get<9>());
-    o.via.array.ptr[10].convert<typename type::tuple_type<A10>::type>(v.template get<10>());
-    o.via.array.ptr[11].convert<typename type::tuple_type<A11>::type>(v.template get<11>());
-    o.via.array.ptr[12].convert<typename type::tuple_type<A12>::type>(v.template get<12>());
-    o.via.array.ptr[13].convert<typename type::tuple_type<A13>::type>(v.template get<13>());
-    o.via.array.ptr[14].convert<typename type::tuple_type<A14>::type>(v.template get<14>());
-    o.via.array.ptr[15].convert<typename type::tuple_type<A15>::type>(v.template get<15>());
-    o.via.array.ptr[16].convert<typename type::tuple_type<A16>::type>(v.template get<16>());
-    o.via.array.ptr[17].convert<typename type::tuple_type<A17>::type>(v.template get<17>());
-    return o;
-}
+        type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17>& v) const {
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.via.array.size < 18) { throw msgpack::type_error(); }
+        
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[14].msgpack::object::convert<typename type::tuple_type<A14>::type>(v.template get<14>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[15].msgpack::object::convert<typename type::tuple_type<A15>::type>(v.template get<15>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[16].msgpack::object::convert<typename type::tuple_type<A16>::type>(v.template get<16>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[17].msgpack::object::convert<typename type::tuple_type<A17>::type>(v.template get<17>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18>
-inline msgpack::object const& operator>> (
+struct convert<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18> > {
+    msgpack::object const& operator()(
         msgpack::object const& o,
-        type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-    if(o.via.array.size < 19) { throw msgpack::type_error(); }
-    
-    o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
-    o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
-    o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(v.template get<2>());
-    o.via.array.ptr[3].convert<typename type::tuple_type<A3>::type>(v.template get<3>());
-    o.via.array.ptr[4].convert<typename type::tuple_type<A4>::type>(v.template get<4>());
-    o.via.array.ptr[5].convert<typename type::tuple_type<A5>::type>(v.template get<5>());
-    o.via.array.ptr[6].convert<typename type::tuple_type<A6>::type>(v.template get<6>());
-    o.via.array.ptr[7].convert<typename type::tuple_type<A7>::type>(v.template get<7>());
-    o.via.array.ptr[8].convert<typename type::tuple_type<A8>::type>(v.template get<8>());
-    o.via.array.ptr[9].convert<typename type::tuple_type<A9>::type>(v.template get<9>());
-    o.via.array.ptr[10].convert<typename type::tuple_type<A10>::type>(v.template get<10>());
-    o.via.array.ptr[11].convert<typename type::tuple_type<A11>::type>(v.template get<11>());
-    o.via.array.ptr[12].convert<typename type::tuple_type<A12>::type>(v.template get<12>());
-    o.via.array.ptr[13].convert<typename type::tuple_type<A13>::type>(v.template get<13>());
-    o.via.array.ptr[14].convert<typename type::tuple_type<A14>::type>(v.template get<14>());
-    o.via.array.ptr[15].convert<typename type::tuple_type<A15>::type>(v.template get<15>());
-    o.via.array.ptr[16].convert<typename type::tuple_type<A16>::type>(v.template get<16>());
-    o.via.array.ptr[17].convert<typename type::tuple_type<A17>::type>(v.template get<17>());
-    o.via.array.ptr[18].convert<typename type::tuple_type<A18>::type>(v.template get<18>());
-    return o;
-}
+        type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18>& v) const {
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.via.array.size < 19) { throw msgpack::type_error(); }
+        
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[14].msgpack::object::convert<typename type::tuple_type<A14>::type>(v.template get<14>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[15].msgpack::object::convert<typename type::tuple_type<A15>::type>(v.template get<15>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[16].msgpack::object::convert<typename type::tuple_type<A16>::type>(v.template get<16>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[17].msgpack::object::convert<typename type::tuple_type<A17>::type>(v.template get<17>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[18].msgpack::object::convert<typename type::tuple_type<A18>::type>(v.template get<18>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19>
-inline msgpack::object const& operator>> (
+struct convert<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19> > {
+    msgpack::object const& operator()(
         msgpack::object const& o,
-        type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-    if(o.via.array.size < 20) { throw msgpack::type_error(); }
-    
-    o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
-    o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
-    o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(v.template get<2>());
-    o.via.array.ptr[3].convert<typename type::tuple_type<A3>::type>(v.template get<3>());
-    o.via.array.ptr[4].convert<typename type::tuple_type<A4>::type>(v.template get<4>());
-    o.via.array.ptr[5].convert<typename type::tuple_type<A5>::type>(v.template get<5>());
-    o.via.array.ptr[6].convert<typename type::tuple_type<A6>::type>(v.template get<6>());
-    o.via.array.ptr[7].convert<typename type::tuple_type<A7>::type>(v.template get<7>());
-    o.via.array.ptr[8].convert<typename type::tuple_type<A8>::type>(v.template get<8>());
-    o.via.array.ptr[9].convert<typename type::tuple_type<A9>::type>(v.template get<9>());
-    o.via.array.ptr[10].convert<typename type::tuple_type<A10>::type>(v.template get<10>());
-    o.via.array.ptr[11].convert<typename type::tuple_type<A11>::type>(v.template get<11>());
-    o.via.array.ptr[12].convert<typename type::tuple_type<A12>::type>(v.template get<12>());
-    o.via.array.ptr[13].convert<typename type::tuple_type<A13>::type>(v.template get<13>());
-    o.via.array.ptr[14].convert<typename type::tuple_type<A14>::type>(v.template get<14>());
-    o.via.array.ptr[15].convert<typename type::tuple_type<A15>::type>(v.template get<15>());
-    o.via.array.ptr[16].convert<typename type::tuple_type<A16>::type>(v.template get<16>());
-    o.via.array.ptr[17].convert<typename type::tuple_type<A17>::type>(v.template get<17>());
-    o.via.array.ptr[18].convert<typename type::tuple_type<A18>::type>(v.template get<18>());
-    o.via.array.ptr[19].convert<typename type::tuple_type<A19>::type>(v.template get<19>());
-    return o;
-}
+        type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19>& v) const {
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.via.array.size < 20) { throw msgpack::type_error(); }
+        
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[14].msgpack::object::convert<typename type::tuple_type<A14>::type>(v.template get<14>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[15].msgpack::object::convert<typename type::tuple_type<A15>::type>(v.template get<15>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[16].msgpack::object::convert<typename type::tuple_type<A16>::type>(v.template get<16>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[17].msgpack::object::convert<typename type::tuple_type<A17>::type>(v.template get<17>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[18].msgpack::object::convert<typename type::tuple_type<A18>::type>(v.template get<18>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[19].msgpack::object::convert<typename type::tuple_type<A19>::type>(v.template get<19>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20>
-inline msgpack::object const& operator>> (
+struct convert<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20> > {
+    msgpack::object const& operator()(
         msgpack::object const& o,
-        type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-    if(o.via.array.size < 21) { throw msgpack::type_error(); }
-    
-    o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
-    o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
-    o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(v.template get<2>());
-    o.via.array.ptr[3].convert<typename type::tuple_type<A3>::type>(v.template get<3>());
-    o.via.array.ptr[4].convert<typename type::tuple_type<A4>::type>(v.template get<4>());
-    o.via.array.ptr[5].convert<typename type::tuple_type<A5>::type>(v.template get<5>());
-    o.via.array.ptr[6].convert<typename type::tuple_type<A6>::type>(v.template get<6>());
-    o.via.array.ptr[7].convert<typename type::tuple_type<A7>::type>(v.template get<7>());
-    o.via.array.ptr[8].convert<typename type::tuple_type<A8>::type>(v.template get<8>());
-    o.via.array.ptr[9].convert<typename type::tuple_type<A9>::type>(v.template get<9>());
-    o.via.array.ptr[10].convert<typename type::tuple_type<A10>::type>(v.template get<10>());
-    o.via.array.ptr[11].convert<typename type::tuple_type<A11>::type>(v.template get<11>());
-    o.via.array.ptr[12].convert<typename type::tuple_type<A12>::type>(v.template get<12>());
-    o.via.array.ptr[13].convert<typename type::tuple_type<A13>::type>(v.template get<13>());
-    o.via.array.ptr[14].convert<typename type::tuple_type<A14>::type>(v.template get<14>());
-    o.via.array.ptr[15].convert<typename type::tuple_type<A15>::type>(v.template get<15>());
-    o.via.array.ptr[16].convert<typename type::tuple_type<A16>::type>(v.template get<16>());
-    o.via.array.ptr[17].convert<typename type::tuple_type<A17>::type>(v.template get<17>());
-    o.via.array.ptr[18].convert<typename type::tuple_type<A18>::type>(v.template get<18>());
-    o.via.array.ptr[19].convert<typename type::tuple_type<A19>::type>(v.template get<19>());
-    o.via.array.ptr[20].convert<typename type::tuple_type<A20>::type>(v.template get<20>());
-    return o;
-}
+        type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20>& v) const {
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.via.array.size < 21) { throw msgpack::type_error(); }
+        
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[14].msgpack::object::convert<typename type::tuple_type<A14>::type>(v.template get<14>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[15].msgpack::object::convert<typename type::tuple_type<A15>::type>(v.template get<15>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[16].msgpack::object::convert<typename type::tuple_type<A16>::type>(v.template get<16>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[17].msgpack::object::convert<typename type::tuple_type<A17>::type>(v.template get<17>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[18].msgpack::object::convert<typename type::tuple_type<A18>::type>(v.template get<18>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[19].msgpack::object::convert<typename type::tuple_type<A19>::type>(v.template get<19>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[20].msgpack::object::convert<typename type::tuple_type<A20>::type>(v.template get<20>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21>
-inline msgpack::object const& operator>> (
+struct convert<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21> > {
+    msgpack::object const& operator()(
         msgpack::object const& o,
-        type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-    if(o.via.array.size < 22) { throw msgpack::type_error(); }
-    
-    o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
-    o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
-    o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(v.template get<2>());
-    o.via.array.ptr[3].convert<typename type::tuple_type<A3>::type>(v.template get<3>());
-    o.via.array.ptr[4].convert<typename type::tuple_type<A4>::type>(v.template get<4>());
-    o.via.array.ptr[5].convert<typename type::tuple_type<A5>::type>(v.template get<5>());
-    o.via.array.ptr[6].convert<typename type::tuple_type<A6>::type>(v.template get<6>());
-    o.via.array.ptr[7].convert<typename type::tuple_type<A7>::type>(v.template get<7>());
-    o.via.array.ptr[8].convert<typename type::tuple_type<A8>::type>(v.template get<8>());
-    o.via.array.ptr[9].convert<typename type::tuple_type<A9>::type>(v.template get<9>());
-    o.via.array.ptr[10].convert<typename type::tuple_type<A10>::type>(v.template get<10>());
-    o.via.array.ptr[11].convert<typename type::tuple_type<A11>::type>(v.template get<11>());
-    o.via.array.ptr[12].convert<typename type::tuple_type<A12>::type>(v.template get<12>());
-    o.via.array.ptr[13].convert<typename type::tuple_type<A13>::type>(v.template get<13>());
-    o.via.array.ptr[14].convert<typename type::tuple_type<A14>::type>(v.template get<14>());
-    o.via.array.ptr[15].convert<typename type::tuple_type<A15>::type>(v.template get<15>());
-    o.via.array.ptr[16].convert<typename type::tuple_type<A16>::type>(v.template get<16>());
-    o.via.array.ptr[17].convert<typename type::tuple_type<A17>::type>(v.template get<17>());
-    o.via.array.ptr[18].convert<typename type::tuple_type<A18>::type>(v.template get<18>());
-    o.via.array.ptr[19].convert<typename type::tuple_type<A19>::type>(v.template get<19>());
-    o.via.array.ptr[20].convert<typename type::tuple_type<A20>::type>(v.template get<20>());
-    o.via.array.ptr[21].convert<typename type::tuple_type<A21>::type>(v.template get<21>());
-    return o;
-}
+        type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21>& v) const {
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.via.array.size < 22) { throw msgpack::type_error(); }
+        
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[14].msgpack::object::convert<typename type::tuple_type<A14>::type>(v.template get<14>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[15].msgpack::object::convert<typename type::tuple_type<A15>::type>(v.template get<15>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[16].msgpack::object::convert<typename type::tuple_type<A16>::type>(v.template get<16>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[17].msgpack::object::convert<typename type::tuple_type<A17>::type>(v.template get<17>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[18].msgpack::object::convert<typename type::tuple_type<A18>::type>(v.template get<18>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[19].msgpack::object::convert<typename type::tuple_type<A19>::type>(v.template get<19>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[20].msgpack::object::convert<typename type::tuple_type<A20>::type>(v.template get<20>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[21].msgpack::object::convert<typename type::tuple_type<A21>::type>(v.template get<21>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22>
-inline msgpack::object const& operator>> (
+struct convert<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22> > {
+    msgpack::object const& operator()(
         msgpack::object const& o,
-        type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-    if(o.via.array.size < 23) { throw msgpack::type_error(); }
-    
-    o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
-    o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
-    o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(v.template get<2>());
-    o.via.array.ptr[3].convert<typename type::tuple_type<A3>::type>(v.template get<3>());
-    o.via.array.ptr[4].convert<typename type::tuple_type<A4>::type>(v.template get<4>());
-    o.via.array.ptr[5].convert<typename type::tuple_type<A5>::type>(v.template get<5>());
-    o.via.array.ptr[6].convert<typename type::tuple_type<A6>::type>(v.template get<6>());
-    o.via.array.ptr[7].convert<typename type::tuple_type<A7>::type>(v.template get<7>());
-    o.via.array.ptr[8].convert<typename type::tuple_type<A8>::type>(v.template get<8>());
-    o.via.array.ptr[9].convert<typename type::tuple_type<A9>::type>(v.template get<9>());
-    o.via.array.ptr[10].convert<typename type::tuple_type<A10>::type>(v.template get<10>());
-    o.via.array.ptr[11].convert<typename type::tuple_type<A11>::type>(v.template get<11>());
-    o.via.array.ptr[12].convert<typename type::tuple_type<A12>::type>(v.template get<12>());
-    o.via.array.ptr[13].convert<typename type::tuple_type<A13>::type>(v.template get<13>());
-    o.via.array.ptr[14].convert<typename type::tuple_type<A14>::type>(v.template get<14>());
-    o.via.array.ptr[15].convert<typename type::tuple_type<A15>::type>(v.template get<15>());
-    o.via.array.ptr[16].convert<typename type::tuple_type<A16>::type>(v.template get<16>());
-    o.via.array.ptr[17].convert<typename type::tuple_type<A17>::type>(v.template get<17>());
-    o.via.array.ptr[18].convert<typename type::tuple_type<A18>::type>(v.template get<18>());
-    o.via.array.ptr[19].convert<typename type::tuple_type<A19>::type>(v.template get<19>());
-    o.via.array.ptr[20].convert<typename type::tuple_type<A20>::type>(v.template get<20>());
-    o.via.array.ptr[21].convert<typename type::tuple_type<A21>::type>(v.template get<21>());
-    o.via.array.ptr[22].convert<typename type::tuple_type<A22>::type>(v.template get<22>());
-    return o;
-}
+        type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22>& v) const {
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.via.array.size < 23) { throw msgpack::type_error(); }
+        
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[14].msgpack::object::convert<typename type::tuple_type<A14>::type>(v.template get<14>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[15].msgpack::object::convert<typename type::tuple_type<A15>::type>(v.template get<15>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[16].msgpack::object::convert<typename type::tuple_type<A16>::type>(v.template get<16>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[17].msgpack::object::convert<typename type::tuple_type<A17>::type>(v.template get<17>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[18].msgpack::object::convert<typename type::tuple_type<A18>::type>(v.template get<18>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[19].msgpack::object::convert<typename type::tuple_type<A19>::type>(v.template get<19>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[20].msgpack::object::convert<typename type::tuple_type<A20>::type>(v.template get<20>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[21].msgpack::object::convert<typename type::tuple_type<A21>::type>(v.template get<21>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[22].msgpack::object::convert<typename type::tuple_type<A22>::type>(v.template get<22>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23>
-inline msgpack::object const& operator>> (
+struct convert<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23> > {
+    msgpack::object const& operator()(
         msgpack::object const& o,
-        type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-    if(o.via.array.size < 24) { throw msgpack::type_error(); }
-    
-    o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
-    o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
-    o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(v.template get<2>());
-    o.via.array.ptr[3].convert<typename type::tuple_type<A3>::type>(v.template get<3>());
-    o.via.array.ptr[4].convert<typename type::tuple_type<A4>::type>(v.template get<4>());
-    o.via.array.ptr[5].convert<typename type::tuple_type<A5>::type>(v.template get<5>());
-    o.via.array.ptr[6].convert<typename type::tuple_type<A6>::type>(v.template get<6>());
-    o.via.array.ptr[7].convert<typename type::tuple_type<A7>::type>(v.template get<7>());
-    o.via.array.ptr[8].convert<typename type::tuple_type<A8>::type>(v.template get<8>());
-    o.via.array.ptr[9].convert<typename type::tuple_type<A9>::type>(v.template get<9>());
-    o.via.array.ptr[10].convert<typename type::tuple_type<A10>::type>(v.template get<10>());
-    o.via.array.ptr[11].convert<typename type::tuple_type<A11>::type>(v.template get<11>());
-    o.via.array.ptr[12].convert<typename type::tuple_type<A12>::type>(v.template get<12>());
-    o.via.array.ptr[13].convert<typename type::tuple_type<A13>::type>(v.template get<13>());
-    o.via.array.ptr[14].convert<typename type::tuple_type<A14>::type>(v.template get<14>());
-    o.via.array.ptr[15].convert<typename type::tuple_type<A15>::type>(v.template get<15>());
-    o.via.array.ptr[16].convert<typename type::tuple_type<A16>::type>(v.template get<16>());
-    o.via.array.ptr[17].convert<typename type::tuple_type<A17>::type>(v.template get<17>());
-    o.via.array.ptr[18].convert<typename type::tuple_type<A18>::type>(v.template get<18>());
-    o.via.array.ptr[19].convert<typename type::tuple_type<A19>::type>(v.template get<19>());
-    o.via.array.ptr[20].convert<typename type::tuple_type<A20>::type>(v.template get<20>());
-    o.via.array.ptr[21].convert<typename type::tuple_type<A21>::type>(v.template get<21>());
-    o.via.array.ptr[22].convert<typename type::tuple_type<A22>::type>(v.template get<22>());
-    o.via.array.ptr[23].convert<typename type::tuple_type<A23>::type>(v.template get<23>());
-    return o;
-}
+        type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23>& v) const {
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.via.array.size < 24) { throw msgpack::type_error(); }
+        
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[14].msgpack::object::convert<typename type::tuple_type<A14>::type>(v.template get<14>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[15].msgpack::object::convert<typename type::tuple_type<A15>::type>(v.template get<15>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[16].msgpack::object::convert<typename type::tuple_type<A16>::type>(v.template get<16>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[17].msgpack::object::convert<typename type::tuple_type<A17>::type>(v.template get<17>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[18].msgpack::object::convert<typename type::tuple_type<A18>::type>(v.template get<18>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[19].msgpack::object::convert<typename type::tuple_type<A19>::type>(v.template get<19>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[20].msgpack::object::convert<typename type::tuple_type<A20>::type>(v.template get<20>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[21].msgpack::object::convert<typename type::tuple_type<A21>::type>(v.template get<21>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[22].msgpack::object::convert<typename type::tuple_type<A22>::type>(v.template get<22>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[23].msgpack::object::convert<typename type::tuple_type<A23>::type>(v.template get<23>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24>
-inline msgpack::object const& operator>> (
+struct convert<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24> > {
+    msgpack::object const& operator()(
         msgpack::object const& o,
-        type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-    if(o.via.array.size < 25) { throw msgpack::type_error(); }
-    
-    o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
-    o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
-    o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(v.template get<2>());
-    o.via.array.ptr[3].convert<typename type::tuple_type<A3>::type>(v.template get<3>());
-    o.via.array.ptr[4].convert<typename type::tuple_type<A4>::type>(v.template get<4>());
-    o.via.array.ptr[5].convert<typename type::tuple_type<A5>::type>(v.template get<5>());
-    o.via.array.ptr[6].convert<typename type::tuple_type<A6>::type>(v.template get<6>());
-    o.via.array.ptr[7].convert<typename type::tuple_type<A7>::type>(v.template get<7>());
-    o.via.array.ptr[8].convert<typename type::tuple_type<A8>::type>(v.template get<8>());
-    o.via.array.ptr[9].convert<typename type::tuple_type<A9>::type>(v.template get<9>());
-    o.via.array.ptr[10].convert<typename type::tuple_type<A10>::type>(v.template get<10>());
-    o.via.array.ptr[11].convert<typename type::tuple_type<A11>::type>(v.template get<11>());
-    o.via.array.ptr[12].convert<typename type::tuple_type<A12>::type>(v.template get<12>());
-    o.via.array.ptr[13].convert<typename type::tuple_type<A13>::type>(v.template get<13>());
-    o.via.array.ptr[14].convert<typename type::tuple_type<A14>::type>(v.template get<14>());
-    o.via.array.ptr[15].convert<typename type::tuple_type<A15>::type>(v.template get<15>());
-    o.via.array.ptr[16].convert<typename type::tuple_type<A16>::type>(v.template get<16>());
-    o.via.array.ptr[17].convert<typename type::tuple_type<A17>::type>(v.template get<17>());
-    o.via.array.ptr[18].convert<typename type::tuple_type<A18>::type>(v.template get<18>());
-    o.via.array.ptr[19].convert<typename type::tuple_type<A19>::type>(v.template get<19>());
-    o.via.array.ptr[20].convert<typename type::tuple_type<A20>::type>(v.template get<20>());
-    o.via.array.ptr[21].convert<typename type::tuple_type<A21>::type>(v.template get<21>());
-    o.via.array.ptr[22].convert<typename type::tuple_type<A22>::type>(v.template get<22>());
-    o.via.array.ptr[23].convert<typename type::tuple_type<A23>::type>(v.template get<23>());
-    o.via.array.ptr[24].convert<typename type::tuple_type<A24>::type>(v.template get<24>());
-    return o;
-}
+        type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24>& v) const {
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.via.array.size < 25) { throw msgpack::type_error(); }
+        
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[14].msgpack::object::convert<typename type::tuple_type<A14>::type>(v.template get<14>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[15].msgpack::object::convert<typename type::tuple_type<A15>::type>(v.template get<15>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[16].msgpack::object::convert<typename type::tuple_type<A16>::type>(v.template get<16>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[17].msgpack::object::convert<typename type::tuple_type<A17>::type>(v.template get<17>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[18].msgpack::object::convert<typename type::tuple_type<A18>::type>(v.template get<18>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[19].msgpack::object::convert<typename type::tuple_type<A19>::type>(v.template get<19>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[20].msgpack::object::convert<typename type::tuple_type<A20>::type>(v.template get<20>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[21].msgpack::object::convert<typename type::tuple_type<A21>::type>(v.template get<21>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[22].msgpack::object::convert<typename type::tuple_type<A22>::type>(v.template get<22>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[23].msgpack::object::convert<typename type::tuple_type<A23>::type>(v.template get<23>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[24].msgpack::object::convert<typename type::tuple_type<A24>::type>(v.template get<24>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25>
-inline msgpack::object const& operator>> (
+struct convert<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25> > {
+    msgpack::object const& operator()(
         msgpack::object const& o,
-        type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-    if(o.via.array.size < 26) { throw msgpack::type_error(); }
-    
-    o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
-    o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
-    o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(v.template get<2>());
-    o.via.array.ptr[3].convert<typename type::tuple_type<A3>::type>(v.template get<3>());
-    o.via.array.ptr[4].convert<typename type::tuple_type<A4>::type>(v.template get<4>());
-    o.via.array.ptr[5].convert<typename type::tuple_type<A5>::type>(v.template get<5>());
-    o.via.array.ptr[6].convert<typename type::tuple_type<A6>::type>(v.template get<6>());
-    o.via.array.ptr[7].convert<typename type::tuple_type<A7>::type>(v.template get<7>());
-    o.via.array.ptr[8].convert<typename type::tuple_type<A8>::type>(v.template get<8>());
-    o.via.array.ptr[9].convert<typename type::tuple_type<A9>::type>(v.template get<9>());
-    o.via.array.ptr[10].convert<typename type::tuple_type<A10>::type>(v.template get<10>());
-    o.via.array.ptr[11].convert<typename type::tuple_type<A11>::type>(v.template get<11>());
-    o.via.array.ptr[12].convert<typename type::tuple_type<A12>::type>(v.template get<12>());
-    o.via.array.ptr[13].convert<typename type::tuple_type<A13>::type>(v.template get<13>());
-    o.via.array.ptr[14].convert<typename type::tuple_type<A14>::type>(v.template get<14>());
-    o.via.array.ptr[15].convert<typename type::tuple_type<A15>::type>(v.template get<15>());
-    o.via.array.ptr[16].convert<typename type::tuple_type<A16>::type>(v.template get<16>());
-    o.via.array.ptr[17].convert<typename type::tuple_type<A17>::type>(v.template get<17>());
-    o.via.array.ptr[18].convert<typename type::tuple_type<A18>::type>(v.template get<18>());
-    o.via.array.ptr[19].convert<typename type::tuple_type<A19>::type>(v.template get<19>());
-    o.via.array.ptr[20].convert<typename type::tuple_type<A20>::type>(v.template get<20>());
-    o.via.array.ptr[21].convert<typename type::tuple_type<A21>::type>(v.template get<21>());
-    o.via.array.ptr[22].convert<typename type::tuple_type<A22>::type>(v.template get<22>());
-    o.via.array.ptr[23].convert<typename type::tuple_type<A23>::type>(v.template get<23>());
-    o.via.array.ptr[24].convert<typename type::tuple_type<A24>::type>(v.template get<24>());
-    o.via.array.ptr[25].convert<typename type::tuple_type<A25>::type>(v.template get<25>());
-    return o;
-}
+        type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25>& v) const {
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.via.array.size < 26) { throw msgpack::type_error(); }
+        
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[14].msgpack::object::convert<typename type::tuple_type<A14>::type>(v.template get<14>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[15].msgpack::object::convert<typename type::tuple_type<A15>::type>(v.template get<15>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[16].msgpack::object::convert<typename type::tuple_type<A16>::type>(v.template get<16>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[17].msgpack::object::convert<typename type::tuple_type<A17>::type>(v.template get<17>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[18].msgpack::object::convert<typename type::tuple_type<A18>::type>(v.template get<18>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[19].msgpack::object::convert<typename type::tuple_type<A19>::type>(v.template get<19>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[20].msgpack::object::convert<typename type::tuple_type<A20>::type>(v.template get<20>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[21].msgpack::object::convert<typename type::tuple_type<A21>::type>(v.template get<21>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[22].msgpack::object::convert<typename type::tuple_type<A22>::type>(v.template get<22>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[23].msgpack::object::convert<typename type::tuple_type<A23>::type>(v.template get<23>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[24].msgpack::object::convert<typename type::tuple_type<A24>::type>(v.template get<24>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[25].msgpack::object::convert<typename type::tuple_type<A25>::type>(v.template get<25>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25, typename A26>
-inline msgpack::object const& operator>> (
+struct convert<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26> > {
+    msgpack::object const& operator()(
         msgpack::object const& o,
-        type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-    if(o.via.array.size < 27) { throw msgpack::type_error(); }
-    
-    o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
-    o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
-    o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(v.template get<2>());
-    o.via.array.ptr[3].convert<typename type::tuple_type<A3>::type>(v.template get<3>());
-    o.via.array.ptr[4].convert<typename type::tuple_type<A4>::type>(v.template get<4>());
-    o.via.array.ptr[5].convert<typename type::tuple_type<A5>::type>(v.template get<5>());
-    o.via.array.ptr[6].convert<typename type::tuple_type<A6>::type>(v.template get<6>());
-    o.via.array.ptr[7].convert<typename type::tuple_type<A7>::type>(v.template get<7>());
-    o.via.array.ptr[8].convert<typename type::tuple_type<A8>::type>(v.template get<8>());
-    o.via.array.ptr[9].convert<typename type::tuple_type<A9>::type>(v.template get<9>());
-    o.via.array.ptr[10].convert<typename type::tuple_type<A10>::type>(v.template get<10>());
-    o.via.array.ptr[11].convert<typename type::tuple_type<A11>::type>(v.template get<11>());
-    o.via.array.ptr[12].convert<typename type::tuple_type<A12>::type>(v.template get<12>());
-    o.via.array.ptr[13].convert<typename type::tuple_type<A13>::type>(v.template get<13>());
-    o.via.array.ptr[14].convert<typename type::tuple_type<A14>::type>(v.template get<14>());
-    o.via.array.ptr[15].convert<typename type::tuple_type<A15>::type>(v.template get<15>());
-    o.via.array.ptr[16].convert<typename type::tuple_type<A16>::type>(v.template get<16>());
-    o.via.array.ptr[17].convert<typename type::tuple_type<A17>::type>(v.template get<17>());
-    o.via.array.ptr[18].convert<typename type::tuple_type<A18>::type>(v.template get<18>());
-    o.via.array.ptr[19].convert<typename type::tuple_type<A19>::type>(v.template get<19>());
-    o.via.array.ptr[20].convert<typename type::tuple_type<A20>::type>(v.template get<20>());
-    o.via.array.ptr[21].convert<typename type::tuple_type<A21>::type>(v.template get<21>());
-    o.via.array.ptr[22].convert<typename type::tuple_type<A22>::type>(v.template get<22>());
-    o.via.array.ptr[23].convert<typename type::tuple_type<A23>::type>(v.template get<23>());
-    o.via.array.ptr[24].convert<typename type::tuple_type<A24>::type>(v.template get<24>());
-    o.via.array.ptr[25].convert<typename type::tuple_type<A25>::type>(v.template get<25>());
-    o.via.array.ptr[26].convert<typename type::tuple_type<A26>::type>(v.template get<26>());
-    return o;
-}
+        type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26>& v) const {
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.via.array.size < 27) { throw msgpack::type_error(); }
+        
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[14].msgpack::object::convert<typename type::tuple_type<A14>::type>(v.template get<14>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[15].msgpack::object::convert<typename type::tuple_type<A15>::type>(v.template get<15>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[16].msgpack::object::convert<typename type::tuple_type<A16>::type>(v.template get<16>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[17].msgpack::object::convert<typename type::tuple_type<A17>::type>(v.template get<17>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[18].msgpack::object::convert<typename type::tuple_type<A18>::type>(v.template get<18>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[19].msgpack::object::convert<typename type::tuple_type<A19>::type>(v.template get<19>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[20].msgpack::object::convert<typename type::tuple_type<A20>::type>(v.template get<20>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[21].msgpack::object::convert<typename type::tuple_type<A21>::type>(v.template get<21>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[22].msgpack::object::convert<typename type::tuple_type<A22>::type>(v.template get<22>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[23].msgpack::object::convert<typename type::tuple_type<A23>::type>(v.template get<23>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[24].msgpack::object::convert<typename type::tuple_type<A24>::type>(v.template get<24>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[25].msgpack::object::convert<typename type::tuple_type<A25>::type>(v.template get<25>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[26].msgpack::object::convert<typename type::tuple_type<A26>::type>(v.template get<26>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25, typename A26, typename A27>
-inline msgpack::object const& operator>> (
+struct convert<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27> > {
+    msgpack::object const& operator()(
         msgpack::object const& o,
-        type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-    if(o.via.array.size < 28) { throw msgpack::type_error(); }
-    
-    o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
-    o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
-    o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(v.template get<2>());
-    o.via.array.ptr[3].convert<typename type::tuple_type<A3>::type>(v.template get<3>());
-    o.via.array.ptr[4].convert<typename type::tuple_type<A4>::type>(v.template get<4>());
-    o.via.array.ptr[5].convert<typename type::tuple_type<A5>::type>(v.template get<5>());
-    o.via.array.ptr[6].convert<typename type::tuple_type<A6>::type>(v.template get<6>());
-    o.via.array.ptr[7].convert<typename type::tuple_type<A7>::type>(v.template get<7>());
-    o.via.array.ptr[8].convert<typename type::tuple_type<A8>::type>(v.template get<8>());
-    o.via.array.ptr[9].convert<typename type::tuple_type<A9>::type>(v.template get<9>());
-    o.via.array.ptr[10].convert<typename type::tuple_type<A10>::type>(v.template get<10>());
-    o.via.array.ptr[11].convert<typename type::tuple_type<A11>::type>(v.template get<11>());
-    o.via.array.ptr[12].convert<typename type::tuple_type<A12>::type>(v.template get<12>());
-    o.via.array.ptr[13].convert<typename type::tuple_type<A13>::type>(v.template get<13>());
-    o.via.array.ptr[14].convert<typename type::tuple_type<A14>::type>(v.template get<14>());
-    o.via.array.ptr[15].convert<typename type::tuple_type<A15>::type>(v.template get<15>());
-    o.via.array.ptr[16].convert<typename type::tuple_type<A16>::type>(v.template get<16>());
-    o.via.array.ptr[17].convert<typename type::tuple_type<A17>::type>(v.template get<17>());
-    o.via.array.ptr[18].convert<typename type::tuple_type<A18>::type>(v.template get<18>());
-    o.via.array.ptr[19].convert<typename type::tuple_type<A19>::type>(v.template get<19>());
-    o.via.array.ptr[20].convert<typename type::tuple_type<A20>::type>(v.template get<20>());
-    o.via.array.ptr[21].convert<typename type::tuple_type<A21>::type>(v.template get<21>());
-    o.via.array.ptr[22].convert<typename type::tuple_type<A22>::type>(v.template get<22>());
-    o.via.array.ptr[23].convert<typename type::tuple_type<A23>::type>(v.template get<23>());
-    o.via.array.ptr[24].convert<typename type::tuple_type<A24>::type>(v.template get<24>());
-    o.via.array.ptr[25].convert<typename type::tuple_type<A25>::type>(v.template get<25>());
-    o.via.array.ptr[26].convert<typename type::tuple_type<A26>::type>(v.template get<26>());
-    o.via.array.ptr[27].convert<typename type::tuple_type<A27>::type>(v.template get<27>());
-    return o;
-}
+        type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27>& v) const {
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.via.array.size < 28) { throw msgpack::type_error(); }
+        
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[14].msgpack::object::convert<typename type::tuple_type<A14>::type>(v.template get<14>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[15].msgpack::object::convert<typename type::tuple_type<A15>::type>(v.template get<15>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[16].msgpack::object::convert<typename type::tuple_type<A16>::type>(v.template get<16>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[17].msgpack::object::convert<typename type::tuple_type<A17>::type>(v.template get<17>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[18].msgpack::object::convert<typename type::tuple_type<A18>::type>(v.template get<18>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[19].msgpack::object::convert<typename type::tuple_type<A19>::type>(v.template get<19>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[20].msgpack::object::convert<typename type::tuple_type<A20>::type>(v.template get<20>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[21].msgpack::object::convert<typename type::tuple_type<A21>::type>(v.template get<21>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[22].msgpack::object::convert<typename type::tuple_type<A22>::type>(v.template get<22>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[23].msgpack::object::convert<typename type::tuple_type<A23>::type>(v.template get<23>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[24].msgpack::object::convert<typename type::tuple_type<A24>::type>(v.template get<24>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[25].msgpack::object::convert<typename type::tuple_type<A25>::type>(v.template get<25>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[26].msgpack::object::convert<typename type::tuple_type<A26>::type>(v.template get<26>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[27].msgpack::object::convert<typename type::tuple_type<A27>::type>(v.template get<27>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25, typename A26, typename A27, typename A28>
-inline msgpack::object const& operator>> (
+struct convert<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28> > {
+    msgpack::object const& operator()(
         msgpack::object const& o,
-        type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-    if(o.via.array.size < 29) { throw msgpack::type_error(); }
-    
-    o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
-    o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
-    o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(v.template get<2>());
-    o.via.array.ptr[3].convert<typename type::tuple_type<A3>::type>(v.template get<3>());
-    o.via.array.ptr[4].convert<typename type::tuple_type<A4>::type>(v.template get<4>());
-    o.via.array.ptr[5].convert<typename type::tuple_type<A5>::type>(v.template get<5>());
-    o.via.array.ptr[6].convert<typename type::tuple_type<A6>::type>(v.template get<6>());
-    o.via.array.ptr[7].convert<typename type::tuple_type<A7>::type>(v.template get<7>());
-    o.via.array.ptr[8].convert<typename type::tuple_type<A8>::type>(v.template get<8>());
-    o.via.array.ptr[9].convert<typename type::tuple_type<A9>::type>(v.template get<9>());
-    o.via.array.ptr[10].convert<typename type::tuple_type<A10>::type>(v.template get<10>());
-    o.via.array.ptr[11].convert<typename type::tuple_type<A11>::type>(v.template get<11>());
-    o.via.array.ptr[12].convert<typename type::tuple_type<A12>::type>(v.template get<12>());
-    o.via.array.ptr[13].convert<typename type::tuple_type<A13>::type>(v.template get<13>());
-    o.via.array.ptr[14].convert<typename type::tuple_type<A14>::type>(v.template get<14>());
-    o.via.array.ptr[15].convert<typename type::tuple_type<A15>::type>(v.template get<15>());
-    o.via.array.ptr[16].convert<typename type::tuple_type<A16>::type>(v.template get<16>());
-    o.via.array.ptr[17].convert<typename type::tuple_type<A17>::type>(v.template get<17>());
-    o.via.array.ptr[18].convert<typename type::tuple_type<A18>::type>(v.template get<18>());
-    o.via.array.ptr[19].convert<typename type::tuple_type<A19>::type>(v.template get<19>());
-    o.via.array.ptr[20].convert<typename type::tuple_type<A20>::type>(v.template get<20>());
-    o.via.array.ptr[21].convert<typename type::tuple_type<A21>::type>(v.template get<21>());
-    o.via.array.ptr[22].convert<typename type::tuple_type<A22>::type>(v.template get<22>());
-    o.via.array.ptr[23].convert<typename type::tuple_type<A23>::type>(v.template get<23>());
-    o.via.array.ptr[24].convert<typename type::tuple_type<A24>::type>(v.template get<24>());
-    o.via.array.ptr[25].convert<typename type::tuple_type<A25>::type>(v.template get<25>());
-    o.via.array.ptr[26].convert<typename type::tuple_type<A26>::type>(v.template get<26>());
-    o.via.array.ptr[27].convert<typename type::tuple_type<A27>::type>(v.template get<27>());
-    o.via.array.ptr[28].convert<typename type::tuple_type<A28>::type>(v.template get<28>());
-    return o;
-}
+        type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28>& v) const {
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.via.array.size < 29) { throw msgpack::type_error(); }
+        
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[14].msgpack::object::convert<typename type::tuple_type<A14>::type>(v.template get<14>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[15].msgpack::object::convert<typename type::tuple_type<A15>::type>(v.template get<15>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[16].msgpack::object::convert<typename type::tuple_type<A16>::type>(v.template get<16>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[17].msgpack::object::convert<typename type::tuple_type<A17>::type>(v.template get<17>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[18].msgpack::object::convert<typename type::tuple_type<A18>::type>(v.template get<18>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[19].msgpack::object::convert<typename type::tuple_type<A19>::type>(v.template get<19>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[20].msgpack::object::convert<typename type::tuple_type<A20>::type>(v.template get<20>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[21].msgpack::object::convert<typename type::tuple_type<A21>::type>(v.template get<21>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[22].msgpack::object::convert<typename type::tuple_type<A22>::type>(v.template get<22>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[23].msgpack::object::convert<typename type::tuple_type<A23>::type>(v.template get<23>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[24].msgpack::object::convert<typename type::tuple_type<A24>::type>(v.template get<24>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[25].msgpack::object::convert<typename type::tuple_type<A25>::type>(v.template get<25>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[26].msgpack::object::convert<typename type::tuple_type<A26>::type>(v.template get<26>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[27].msgpack::object::convert<typename type::tuple_type<A27>::type>(v.template get<27>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[28].msgpack::object::convert<typename type::tuple_type<A28>::type>(v.template get<28>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25, typename A26, typename A27, typename A28, typename A29>
-inline msgpack::object const& operator>> (
+struct convert<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29> > {
+    msgpack::object const& operator()(
         msgpack::object const& o,
-        type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-    if(o.via.array.size < 30) { throw msgpack::type_error(); }
-    
-    o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
-    o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
-    o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(v.template get<2>());
-    o.via.array.ptr[3].convert<typename type::tuple_type<A3>::type>(v.template get<3>());
-    o.via.array.ptr[4].convert<typename type::tuple_type<A4>::type>(v.template get<4>());
-    o.via.array.ptr[5].convert<typename type::tuple_type<A5>::type>(v.template get<5>());
-    o.via.array.ptr[6].convert<typename type::tuple_type<A6>::type>(v.template get<6>());
-    o.via.array.ptr[7].convert<typename type::tuple_type<A7>::type>(v.template get<7>());
-    o.via.array.ptr[8].convert<typename type::tuple_type<A8>::type>(v.template get<8>());
-    o.via.array.ptr[9].convert<typename type::tuple_type<A9>::type>(v.template get<9>());
-    o.via.array.ptr[10].convert<typename type::tuple_type<A10>::type>(v.template get<10>());
-    o.via.array.ptr[11].convert<typename type::tuple_type<A11>::type>(v.template get<11>());
-    o.via.array.ptr[12].convert<typename type::tuple_type<A12>::type>(v.template get<12>());
-    o.via.array.ptr[13].convert<typename type::tuple_type<A13>::type>(v.template get<13>());
-    o.via.array.ptr[14].convert<typename type::tuple_type<A14>::type>(v.template get<14>());
-    o.via.array.ptr[15].convert<typename type::tuple_type<A15>::type>(v.template get<15>());
-    o.via.array.ptr[16].convert<typename type::tuple_type<A16>::type>(v.template get<16>());
-    o.via.array.ptr[17].convert<typename type::tuple_type<A17>::type>(v.template get<17>());
-    o.via.array.ptr[18].convert<typename type::tuple_type<A18>::type>(v.template get<18>());
-    o.via.array.ptr[19].convert<typename type::tuple_type<A19>::type>(v.template get<19>());
-    o.via.array.ptr[20].convert<typename type::tuple_type<A20>::type>(v.template get<20>());
-    o.via.array.ptr[21].convert<typename type::tuple_type<A21>::type>(v.template get<21>());
-    o.via.array.ptr[22].convert<typename type::tuple_type<A22>::type>(v.template get<22>());
-    o.via.array.ptr[23].convert<typename type::tuple_type<A23>::type>(v.template get<23>());
-    o.via.array.ptr[24].convert<typename type::tuple_type<A24>::type>(v.template get<24>());
-    o.via.array.ptr[25].convert<typename type::tuple_type<A25>::type>(v.template get<25>());
-    o.via.array.ptr[26].convert<typename type::tuple_type<A26>::type>(v.template get<26>());
-    o.via.array.ptr[27].convert<typename type::tuple_type<A27>::type>(v.template get<27>());
-    o.via.array.ptr[28].convert<typename type::tuple_type<A28>::type>(v.template get<28>());
-    o.via.array.ptr[29].convert<typename type::tuple_type<A29>::type>(v.template get<29>());
-    return o;
-}
+        type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29>& v) const {
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.via.array.size < 30) { throw msgpack::type_error(); }
+        
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[14].msgpack::object::convert<typename type::tuple_type<A14>::type>(v.template get<14>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[15].msgpack::object::convert<typename type::tuple_type<A15>::type>(v.template get<15>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[16].msgpack::object::convert<typename type::tuple_type<A16>::type>(v.template get<16>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[17].msgpack::object::convert<typename type::tuple_type<A17>::type>(v.template get<17>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[18].msgpack::object::convert<typename type::tuple_type<A18>::type>(v.template get<18>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[19].msgpack::object::convert<typename type::tuple_type<A19>::type>(v.template get<19>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[20].msgpack::object::convert<typename type::tuple_type<A20>::type>(v.template get<20>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[21].msgpack::object::convert<typename type::tuple_type<A21>::type>(v.template get<21>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[22].msgpack::object::convert<typename type::tuple_type<A22>::type>(v.template get<22>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[23].msgpack::object::convert<typename type::tuple_type<A23>::type>(v.template get<23>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[24].msgpack::object::convert<typename type::tuple_type<A24>::type>(v.template get<24>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[25].msgpack::object::convert<typename type::tuple_type<A25>::type>(v.template get<25>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[26].msgpack::object::convert<typename type::tuple_type<A26>::type>(v.template get<26>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[27].msgpack::object::convert<typename type::tuple_type<A27>::type>(v.template get<27>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[28].msgpack::object::convert<typename type::tuple_type<A28>::type>(v.template get<28>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[29].msgpack::object::convert<typename type::tuple_type<A29>::type>(v.template get<29>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25, typename A26, typename A27, typename A28, typename A29, typename A30>
-inline msgpack::object const& operator>> (
+struct convert<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30> > {
+    msgpack::object const& operator()(
         msgpack::object const& o,
-        type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-    if(o.via.array.size < 31) { throw msgpack::type_error(); }
-    
-    o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
-    o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
-    o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(v.template get<2>());
-    o.via.array.ptr[3].convert<typename type::tuple_type<A3>::type>(v.template get<3>());
-    o.via.array.ptr[4].convert<typename type::tuple_type<A4>::type>(v.template get<4>());
-    o.via.array.ptr[5].convert<typename type::tuple_type<A5>::type>(v.template get<5>());
-    o.via.array.ptr[6].convert<typename type::tuple_type<A6>::type>(v.template get<6>());
-    o.via.array.ptr[7].convert<typename type::tuple_type<A7>::type>(v.template get<7>());
-    o.via.array.ptr[8].convert<typename type::tuple_type<A8>::type>(v.template get<8>());
-    o.via.array.ptr[9].convert<typename type::tuple_type<A9>::type>(v.template get<9>());
-    o.via.array.ptr[10].convert<typename type::tuple_type<A10>::type>(v.template get<10>());
-    o.via.array.ptr[11].convert<typename type::tuple_type<A11>::type>(v.template get<11>());
-    o.via.array.ptr[12].convert<typename type::tuple_type<A12>::type>(v.template get<12>());
-    o.via.array.ptr[13].convert<typename type::tuple_type<A13>::type>(v.template get<13>());
-    o.via.array.ptr[14].convert<typename type::tuple_type<A14>::type>(v.template get<14>());
-    o.via.array.ptr[15].convert<typename type::tuple_type<A15>::type>(v.template get<15>());
-    o.via.array.ptr[16].convert<typename type::tuple_type<A16>::type>(v.template get<16>());
-    o.via.array.ptr[17].convert<typename type::tuple_type<A17>::type>(v.template get<17>());
-    o.via.array.ptr[18].convert<typename type::tuple_type<A18>::type>(v.template get<18>());
-    o.via.array.ptr[19].convert<typename type::tuple_type<A19>::type>(v.template get<19>());
-    o.via.array.ptr[20].convert<typename type::tuple_type<A20>::type>(v.template get<20>());
-    o.via.array.ptr[21].convert<typename type::tuple_type<A21>::type>(v.template get<21>());
-    o.via.array.ptr[22].convert<typename type::tuple_type<A22>::type>(v.template get<22>());
-    o.via.array.ptr[23].convert<typename type::tuple_type<A23>::type>(v.template get<23>());
-    o.via.array.ptr[24].convert<typename type::tuple_type<A24>::type>(v.template get<24>());
-    o.via.array.ptr[25].convert<typename type::tuple_type<A25>::type>(v.template get<25>());
-    o.via.array.ptr[26].convert<typename type::tuple_type<A26>::type>(v.template get<26>());
-    o.via.array.ptr[27].convert<typename type::tuple_type<A27>::type>(v.template get<27>());
-    o.via.array.ptr[28].convert<typename type::tuple_type<A28>::type>(v.template get<28>());
-    o.via.array.ptr[29].convert<typename type::tuple_type<A29>::type>(v.template get<29>());
-    o.via.array.ptr[30].convert<typename type::tuple_type<A30>::type>(v.template get<30>());
-    return o;
-}
+        type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30>& v) const {
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.via.array.size < 31) { throw msgpack::type_error(); }
+        
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[14].msgpack::object::convert<typename type::tuple_type<A14>::type>(v.template get<14>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[15].msgpack::object::convert<typename type::tuple_type<A15>::type>(v.template get<15>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[16].msgpack::object::convert<typename type::tuple_type<A16>::type>(v.template get<16>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[17].msgpack::object::convert<typename type::tuple_type<A17>::type>(v.template get<17>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[18].msgpack::object::convert<typename type::tuple_type<A18>::type>(v.template get<18>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[19].msgpack::object::convert<typename type::tuple_type<A19>::type>(v.template get<19>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[20].msgpack::object::convert<typename type::tuple_type<A20>::type>(v.template get<20>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[21].msgpack::object::convert<typename type::tuple_type<A21>::type>(v.template get<21>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[22].msgpack::object::convert<typename type::tuple_type<A22>::type>(v.template get<22>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[23].msgpack::object::convert<typename type::tuple_type<A23>::type>(v.template get<23>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[24].msgpack::object::convert<typename type::tuple_type<A24>::type>(v.template get<24>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[25].msgpack::object::convert<typename type::tuple_type<A25>::type>(v.template get<25>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[26].msgpack::object::convert<typename type::tuple_type<A26>::type>(v.template get<26>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[27].msgpack::object::convert<typename type::tuple_type<A27>::type>(v.template get<27>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[28].msgpack::object::convert<typename type::tuple_type<A28>::type>(v.template get<28>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[29].msgpack::object::convert<typename type::tuple_type<A29>::type>(v.template get<29>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[30].msgpack::object::convert<typename type::tuple_type<A30>::type>(v.template get<30>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25, typename A26, typename A27, typename A28, typename A29, typename A30, typename A31>
-inline msgpack::object const& operator>> (
+struct convert<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30, A31> > {
+    msgpack::object const& operator()(
         msgpack::object const& o,
-        type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30, A31>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-    if(o.via.array.size < 32) { throw msgpack::type_error(); }
-    
-    o.via.array.ptr[0].convert<typename type::tuple_type<A0>::type>(v.template get<0>());
-    o.via.array.ptr[1].convert<typename type::tuple_type<A1>::type>(v.template get<1>());
-    o.via.array.ptr[2].convert<typename type::tuple_type<A2>::type>(v.template get<2>());
-    o.via.array.ptr[3].convert<typename type::tuple_type<A3>::type>(v.template get<3>());
-    o.via.array.ptr[4].convert<typename type::tuple_type<A4>::type>(v.template get<4>());
-    o.via.array.ptr[5].convert<typename type::tuple_type<A5>::type>(v.template get<5>());
-    o.via.array.ptr[6].convert<typename type::tuple_type<A6>::type>(v.template get<6>());
-    o.via.array.ptr[7].convert<typename type::tuple_type<A7>::type>(v.template get<7>());
-    o.via.array.ptr[8].convert<typename type::tuple_type<A8>::type>(v.template get<8>());
-    o.via.array.ptr[9].convert<typename type::tuple_type<A9>::type>(v.template get<9>());
-    o.via.array.ptr[10].convert<typename type::tuple_type<A10>::type>(v.template get<10>());
-    o.via.array.ptr[11].convert<typename type::tuple_type<A11>::type>(v.template get<11>());
-    o.via.array.ptr[12].convert<typename type::tuple_type<A12>::type>(v.template get<12>());
-    o.via.array.ptr[13].convert<typename type::tuple_type<A13>::type>(v.template get<13>());
-    o.via.array.ptr[14].convert<typename type::tuple_type<A14>::type>(v.template get<14>());
-    o.via.array.ptr[15].convert<typename type::tuple_type<A15>::type>(v.template get<15>());
-    o.via.array.ptr[16].convert<typename type::tuple_type<A16>::type>(v.template get<16>());
-    o.via.array.ptr[17].convert<typename type::tuple_type<A17>::type>(v.template get<17>());
-    o.via.array.ptr[18].convert<typename type::tuple_type<A18>::type>(v.template get<18>());
-    o.via.array.ptr[19].convert<typename type::tuple_type<A19>::type>(v.template get<19>());
-    o.via.array.ptr[20].convert<typename type::tuple_type<A20>::type>(v.template get<20>());
-    o.via.array.ptr[21].convert<typename type::tuple_type<A21>::type>(v.template get<21>());
-    o.via.array.ptr[22].convert<typename type::tuple_type<A22>::type>(v.template get<22>());
-    o.via.array.ptr[23].convert<typename type::tuple_type<A23>::type>(v.template get<23>());
-    o.via.array.ptr[24].convert<typename type::tuple_type<A24>::type>(v.template get<24>());
-    o.via.array.ptr[25].convert<typename type::tuple_type<A25>::type>(v.template get<25>());
-    o.via.array.ptr[26].convert<typename type::tuple_type<A26>::type>(v.template get<26>());
-    o.via.array.ptr[27].convert<typename type::tuple_type<A27>::type>(v.template get<27>());
-    o.via.array.ptr[28].convert<typename type::tuple_type<A28>::type>(v.template get<28>());
-    o.via.array.ptr[29].convert<typename type::tuple_type<A29>::type>(v.template get<29>());
-    o.via.array.ptr[30].convert<typename type::tuple_type<A30>::type>(v.template get<30>());
-    o.via.array.ptr[31].convert<typename type::tuple_type<A31>::type>(v.template get<31>());
-    return o;
-}
+        type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30, A31>& v) const {
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.via.array.size < 32) { throw msgpack::type_error(); }
+        
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[14].msgpack::object::convert<typename type::tuple_type<A14>::type>(v.template get<14>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[15].msgpack::object::convert<typename type::tuple_type<A15>::type>(v.template get<15>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[16].msgpack::object::convert<typename type::tuple_type<A16>::type>(v.template get<16>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[17].msgpack::object::convert<typename type::tuple_type<A17>::type>(v.template get<17>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[18].msgpack::object::convert<typename type::tuple_type<A18>::type>(v.template get<18>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[19].msgpack::object::convert<typename type::tuple_type<A19>::type>(v.template get<19>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[20].msgpack::object::convert<typename type::tuple_type<A20>::type>(v.template get<20>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[21].msgpack::object::convert<typename type::tuple_type<A21>::type>(v.template get<21>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[22].msgpack::object::convert<typename type::tuple_type<A22>::type>(v.template get<22>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[23].msgpack::object::convert<typename type::tuple_type<A23>::type>(v.template get<23>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[24].msgpack::object::convert<typename type::tuple_type<A24>::type>(v.template get<24>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[25].msgpack::object::convert<typename type::tuple_type<A25>::type>(v.template get<25>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[26].msgpack::object::convert<typename type::tuple_type<A26>::type>(v.template get<26>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[27].msgpack::object::convert<typename type::tuple_type<A27>::type>(v.template get<27>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[28].msgpack::object::convert<typename type::tuple_type<A28>::type>(v.template get<28>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[29].msgpack::object::convert<typename type::tuple_type<A29>::type>(v.template get<29>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[30].msgpack::object::convert<typename type::tuple_type<A30>::type>(v.template get<30>());
+        // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
+        o.via.array.ptr[31].msgpack::object::convert<typename type::tuple_type<A31>::type>(v.template get<31>());
+        return o;
+    }
+};
 
 
-template <typename Stream>
-inline const msgpack::packer<Stream>& operator<< (
+template <>
+struct pack<type::tuple<> > {
+    template <typename Stream>
+    msgpack::packer<Stream>& operator()(
         msgpack::packer<Stream>& o,
-        const type::tuple<>&) {
-    o.pack_array(0);
-    return o;
-}
+        const type::tuple<>&) const {
+        o.pack_array(0);
+        return o;
+    }
+};
 
-template <typename Stream, typename A0>
-inline const msgpack::packer<Stream>& operator<< (
-        msgpack::packer<Stream>& o,
-        const type::tuple<A0>& v) {
-    o.pack_array(1);
-    
-    o.pack(v.template get<0>());
-    return o;
-}
-
-template <typename Stream, typename A0, typename A1>
-inline const msgpack::packer<Stream>& operator<< (
-        msgpack::packer<Stream>& o,
-        const type::tuple<A0, A1>& v) {
-    o.pack_array(2);
-    
-    o.pack(v.template get<0>());
-    o.pack(v.template get<1>());
-    return o;
-}
-
-template <typename Stream, typename A0, typename A1, typename A2>
-inline const msgpack::packer<Stream>& operator<< (
-        msgpack::packer<Stream>& o,
-        const type::tuple<A0, A1, A2>& v) {
-    o.pack_array(3);
-    
-    o.pack(v.template get<0>());
-    o.pack(v.template get<1>());
-    o.pack(v.template get<2>());
-    return o;
-}
-
-template <typename Stream, typename A0, typename A1, typename A2, typename A3>
-inline const msgpack::packer<Stream>& operator<< (
-        msgpack::packer<Stream>& o,
-        const type::tuple<A0, A1, A2, A3>& v) {
-    o.pack_array(4);
-    
-    o.pack(v.template get<0>());
-    o.pack(v.template get<1>());
-    o.pack(v.template get<2>());
-    o.pack(v.template get<3>());
-    return o;
-}
-
-template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4>
-inline const msgpack::packer<Stream>& operator<< (
-        msgpack::packer<Stream>& o,
-        const type::tuple<A0, A1, A2, A3, A4>& v) {
-    o.pack_array(5);
-    
-    o.pack(v.template get<0>());
-    o.pack(v.template get<1>());
-    o.pack(v.template get<2>());
-    o.pack(v.template get<3>());
-    o.pack(v.template get<4>());
-    return o;
-}
-
-template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4, typename A5>
-inline const msgpack::packer<Stream>& operator<< (
-        msgpack::packer<Stream>& o,
-        const type::tuple<A0, A1, A2, A3, A4, A5>& v) {
-    o.pack_array(6);
-    
-    o.pack(v.template get<0>());
-    o.pack(v.template get<1>());
-    o.pack(v.template get<2>());
-    o.pack(v.template get<3>());
-    o.pack(v.template get<4>());
-    o.pack(v.template get<5>());
-    return o;
-}
-
-template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6>
-inline const msgpack::packer<Stream>& operator<< (
-        msgpack::packer<Stream>& o,
-        const type::tuple<A0, A1, A2, A3, A4, A5, A6>& v) {
-    o.pack_array(7);
-    
-    o.pack(v.template get<0>());
-    o.pack(v.template get<1>());
-    o.pack(v.template get<2>());
-    o.pack(v.template get<3>());
-    o.pack(v.template get<4>());
-    o.pack(v.template get<5>());
-    o.pack(v.template get<6>());
-    return o;
-}
-
-template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7>
-inline const msgpack::packer<Stream>& operator<< (
-        msgpack::packer<Stream>& o,
-        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7>& v) {
-    o.pack_array(8);
-    
-    o.pack(v.template get<0>());
-    o.pack(v.template get<1>());
-    o.pack(v.template get<2>());
-    o.pack(v.template get<3>());
-    o.pack(v.template get<4>());
-    o.pack(v.template get<5>());
-    o.pack(v.template get<6>());
-    o.pack(v.template get<7>());
-    return o;
-}
-
-template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8>
-inline const msgpack::packer<Stream>& operator<< (
-        msgpack::packer<Stream>& o,
-        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8>& v) {
-    o.pack_array(9);
-    
-    o.pack(v.template get<0>());
-    o.pack(v.template get<1>());
-    o.pack(v.template get<2>());
-    o.pack(v.template get<3>());
-    o.pack(v.template get<4>());
-    o.pack(v.template get<5>());
-    o.pack(v.template get<6>());
-    o.pack(v.template get<7>());
-    o.pack(v.template get<8>());
-    return o;
-}
-
-template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9>
-inline const msgpack::packer<Stream>& operator<< (
-        msgpack::packer<Stream>& o,
-        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9>& v) {
-    o.pack_array(10);
-    
-    o.pack(v.template get<0>());
-    o.pack(v.template get<1>());
-    o.pack(v.template get<2>());
-    o.pack(v.template get<3>());
-    o.pack(v.template get<4>());
-    o.pack(v.template get<5>());
-    o.pack(v.template get<6>());
-    o.pack(v.template get<7>());
-    o.pack(v.template get<8>());
-    o.pack(v.template get<9>());
-    return o;
-}
-
-template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10>
-inline const msgpack::packer<Stream>& operator<< (
-        msgpack::packer<Stream>& o,
-        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10>& v) {
-    o.pack_array(11);
-    
-    o.pack(v.template get<0>());
-    o.pack(v.template get<1>());
-    o.pack(v.template get<2>());
-    o.pack(v.template get<3>());
-    o.pack(v.template get<4>());
-    o.pack(v.template get<5>());
-    o.pack(v.template get<6>());
-    o.pack(v.template get<7>());
-    o.pack(v.template get<8>());
-    o.pack(v.template get<9>());
-    o.pack(v.template get<10>());
-    return o;
-}
-
-template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11>
-inline const msgpack::packer<Stream>& operator<< (
-        msgpack::packer<Stream>& o,
-        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11>& v) {
-    o.pack_array(12);
-    
-    o.pack(v.template get<0>());
-    o.pack(v.template get<1>());
-    o.pack(v.template get<2>());
-    o.pack(v.template get<3>());
-    o.pack(v.template get<4>());
-    o.pack(v.template get<5>());
-    o.pack(v.template get<6>());
-    o.pack(v.template get<7>());
-    o.pack(v.template get<8>());
-    o.pack(v.template get<9>());
-    o.pack(v.template get<10>());
-    o.pack(v.template get<11>());
-    return o;
-}
-
-template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12>
-inline const msgpack::packer<Stream>& operator<< (
-        msgpack::packer<Stream>& o,
-        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12>& v) {
-    o.pack_array(13);
-    
-    o.pack(v.template get<0>());
-    o.pack(v.template get<1>());
-    o.pack(v.template get<2>());
-    o.pack(v.template get<3>());
-    o.pack(v.template get<4>());
-    o.pack(v.template get<5>());
-    o.pack(v.template get<6>());
-    o.pack(v.template get<7>());
-    o.pack(v.template get<8>());
-    o.pack(v.template get<9>());
-    o.pack(v.template get<10>());
-    o.pack(v.template get<11>());
-    o.pack(v.template get<12>());
-    return o;
-}
-
-template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13>
-inline const msgpack::packer<Stream>& operator<< (
-        msgpack::packer<Stream>& o,
-        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13>& v) {
-    o.pack_array(14);
-    
-    o.pack(v.template get<0>());
-    o.pack(v.template get<1>());
-    o.pack(v.template get<2>());
-    o.pack(v.template get<3>());
-    o.pack(v.template get<4>());
-    o.pack(v.template get<5>());
-    o.pack(v.template get<6>());
-    o.pack(v.template get<7>());
-    o.pack(v.template get<8>());
-    o.pack(v.template get<9>());
-    o.pack(v.template get<10>());
-    o.pack(v.template get<11>());
-    o.pack(v.template get<12>());
-    o.pack(v.template get<13>());
-    return o;
-}
-
-template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14>
-inline const msgpack::packer<Stream>& operator<< (
-        msgpack::packer<Stream>& o,
-        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14>& v) {
-    o.pack_array(15);
-    
-    o.pack(v.template get<0>());
-    o.pack(v.template get<1>());
-    o.pack(v.template get<2>());
-    o.pack(v.template get<3>());
-    o.pack(v.template get<4>());
-    o.pack(v.template get<5>());
-    o.pack(v.template get<6>());
-    o.pack(v.template get<7>());
-    o.pack(v.template get<8>());
-    o.pack(v.template get<9>());
-    o.pack(v.template get<10>());
-    o.pack(v.template get<11>());
-    o.pack(v.template get<12>());
-    o.pack(v.template get<13>());
-    o.pack(v.template get<14>());
-    return o;
-}
-
-template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15>
-inline const msgpack::packer<Stream>& operator<< (
-        msgpack::packer<Stream>& o,
-        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15>& v) {
-    o.pack_array(16);
-    
-    o.pack(v.template get<0>());
-    o.pack(v.template get<1>());
-    o.pack(v.template get<2>());
-    o.pack(v.template get<3>());
-    o.pack(v.template get<4>());
-    o.pack(v.template get<5>());
-    o.pack(v.template get<6>());
-    o.pack(v.template get<7>());
-    o.pack(v.template get<8>());
-    o.pack(v.template get<9>());
-    o.pack(v.template get<10>());
-    o.pack(v.template get<11>());
-    o.pack(v.template get<12>());
-    o.pack(v.template get<13>());
-    o.pack(v.template get<14>());
-    o.pack(v.template get<15>());
-    return o;
-}
-
-template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16>
-inline const msgpack::packer<Stream>& operator<< (
-        msgpack::packer<Stream>& o,
-        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16>& v) {
-    o.pack_array(17);
-    
-    o.pack(v.template get<0>());
-    o.pack(v.template get<1>());
-    o.pack(v.template get<2>());
-    o.pack(v.template get<3>());
-    o.pack(v.template get<4>());
-    o.pack(v.template get<5>());
-    o.pack(v.template get<6>());
-    o.pack(v.template get<7>());
-    o.pack(v.template get<8>());
-    o.pack(v.template get<9>());
-    o.pack(v.template get<10>());
-    o.pack(v.template get<11>());
-    o.pack(v.template get<12>());
-    o.pack(v.template get<13>());
-    o.pack(v.template get<14>());
-    o.pack(v.template get<15>());
-    o.pack(v.template get<16>());
-    return o;
-}
-
-template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17>
-inline const msgpack::packer<Stream>& operator<< (
-        msgpack::packer<Stream>& o,
-        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17>& v) {
-    o.pack_array(18);
-    
-    o.pack(v.template get<0>());
-    o.pack(v.template get<1>());
-    o.pack(v.template get<2>());
-    o.pack(v.template get<3>());
-    o.pack(v.template get<4>());
-    o.pack(v.template get<5>());
-    o.pack(v.template get<6>());
-    o.pack(v.template get<7>());
-    o.pack(v.template get<8>());
-    o.pack(v.template get<9>());
-    o.pack(v.template get<10>());
-    o.pack(v.template get<11>());
-    o.pack(v.template get<12>());
-    o.pack(v.template get<13>());
-    o.pack(v.template get<14>());
-    o.pack(v.template get<15>());
-    o.pack(v.template get<16>());
-    o.pack(v.template get<17>());
-    return o;
-}
-
-template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18>
-inline const msgpack::packer<Stream>& operator<< (
-        msgpack::packer<Stream>& o,
-        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18>& v) {
-    o.pack_array(19);
-    
-    o.pack(v.template get<0>());
-    o.pack(v.template get<1>());
-    o.pack(v.template get<2>());
-    o.pack(v.template get<3>());
-    o.pack(v.template get<4>());
-    o.pack(v.template get<5>());
-    o.pack(v.template get<6>());
-    o.pack(v.template get<7>());
-    o.pack(v.template get<8>());
-    o.pack(v.template get<9>());
-    o.pack(v.template get<10>());
-    o.pack(v.template get<11>());
-    o.pack(v.template get<12>());
-    o.pack(v.template get<13>());
-    o.pack(v.template get<14>());
-    o.pack(v.template get<15>());
-    o.pack(v.template get<16>());
-    o.pack(v.template get<17>());
-    o.pack(v.template get<18>());
-    return o;
-}
-
-template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19>
-inline const msgpack::packer<Stream>& operator<< (
-        msgpack::packer<Stream>& o,
-        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19>& v) {
-    o.pack_array(20);
-    
-    o.pack(v.template get<0>());
-    o.pack(v.template get<1>());
-    o.pack(v.template get<2>());
-    o.pack(v.template get<3>());
-    o.pack(v.template get<4>());
-    o.pack(v.template get<5>());
-    o.pack(v.template get<6>());
-    o.pack(v.template get<7>());
-    o.pack(v.template get<8>());
-    o.pack(v.template get<9>());
-    o.pack(v.template get<10>());
-    o.pack(v.template get<11>());
-    o.pack(v.template get<12>());
-    o.pack(v.template get<13>());
-    o.pack(v.template get<14>());
-    o.pack(v.template get<15>());
-    o.pack(v.template get<16>());
-    o.pack(v.template get<17>());
-    o.pack(v.template get<18>());
-    o.pack(v.template get<19>());
-    return o;
-}
-
-template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20>
-inline const msgpack::packer<Stream>& operator<< (
-        msgpack::packer<Stream>& o,
-        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20>& v) {
-    o.pack_array(21);
-    
-    o.pack(v.template get<0>());
-    o.pack(v.template get<1>());
-    o.pack(v.template get<2>());
-    o.pack(v.template get<3>());
-    o.pack(v.template get<4>());
-    o.pack(v.template get<5>());
-    o.pack(v.template get<6>());
-    o.pack(v.template get<7>());
-    o.pack(v.template get<8>());
-    o.pack(v.template get<9>());
-    o.pack(v.template get<10>());
-    o.pack(v.template get<11>());
-    o.pack(v.template get<12>());
-    o.pack(v.template get<13>());
-    o.pack(v.template get<14>());
-    o.pack(v.template get<15>());
-    o.pack(v.template get<16>());
-    o.pack(v.template get<17>());
-    o.pack(v.template get<18>());
-    o.pack(v.template get<19>());
-    o.pack(v.template get<20>());
-    return o;
-}
-
-template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21>
-inline const msgpack::packer<Stream>& operator<< (
-        msgpack::packer<Stream>& o,
-        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21>& v) {
-    o.pack_array(22);
-    
-    o.pack(v.template get<0>());
-    o.pack(v.template get<1>());
-    o.pack(v.template get<2>());
-    o.pack(v.template get<3>());
-    o.pack(v.template get<4>());
-    o.pack(v.template get<5>());
-    o.pack(v.template get<6>());
-    o.pack(v.template get<7>());
-    o.pack(v.template get<8>());
-    o.pack(v.template get<9>());
-    o.pack(v.template get<10>());
-    o.pack(v.template get<11>());
-    o.pack(v.template get<12>());
-    o.pack(v.template get<13>());
-    o.pack(v.template get<14>());
-    o.pack(v.template get<15>());
-    o.pack(v.template get<16>());
-    o.pack(v.template get<17>());
-    o.pack(v.template get<18>());
-    o.pack(v.template get<19>());
-    o.pack(v.template get<20>());
-    o.pack(v.template get<21>());
-    return o;
-}
-
-template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22>
-inline const msgpack::packer<Stream>& operator<< (
-        msgpack::packer<Stream>& o,
-        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22>& v) {
-    o.pack_array(23);
-    
-    o.pack(v.template get<0>());
-    o.pack(v.template get<1>());
-    o.pack(v.template get<2>());
-    o.pack(v.template get<3>());
-    o.pack(v.template get<4>());
-    o.pack(v.template get<5>());
-    o.pack(v.template get<6>());
-    o.pack(v.template get<7>());
-    o.pack(v.template get<8>());
-    o.pack(v.template get<9>());
-    o.pack(v.template get<10>());
-    o.pack(v.template get<11>());
-    o.pack(v.template get<12>());
-    o.pack(v.template get<13>());
-    o.pack(v.template get<14>());
-    o.pack(v.template get<15>());
-    o.pack(v.template get<16>());
-    o.pack(v.template get<17>());
-    o.pack(v.template get<18>());
-    o.pack(v.template get<19>());
-    o.pack(v.template get<20>());
-    o.pack(v.template get<21>());
-    o.pack(v.template get<22>());
-    return o;
-}
-
-template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23>
-inline const msgpack::packer<Stream>& operator<< (
-        msgpack::packer<Stream>& o,
-        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23>& v) {
-    o.pack_array(24);
-    
-    o.pack(v.template get<0>());
-    o.pack(v.template get<1>());
-    o.pack(v.template get<2>());
-    o.pack(v.template get<3>());
-    o.pack(v.template get<4>());
-    o.pack(v.template get<5>());
-    o.pack(v.template get<6>());
-    o.pack(v.template get<7>());
-    o.pack(v.template get<8>());
-    o.pack(v.template get<9>());
-    o.pack(v.template get<10>());
-    o.pack(v.template get<11>());
-    o.pack(v.template get<12>());
-    o.pack(v.template get<13>());
-    o.pack(v.template get<14>());
-    o.pack(v.template get<15>());
-    o.pack(v.template get<16>());
-    o.pack(v.template get<17>());
-    o.pack(v.template get<18>());
-    o.pack(v.template get<19>());
-    o.pack(v.template get<20>());
-    o.pack(v.template get<21>());
-    o.pack(v.template get<22>());
-    o.pack(v.template get<23>());
-    return o;
-}
-
-template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24>
-inline const msgpack::packer<Stream>& operator<< (
-        msgpack::packer<Stream>& o,
-        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24>& v) {
-    o.pack_array(25);
-    
-    o.pack(v.template get<0>());
-    o.pack(v.template get<1>());
-    o.pack(v.template get<2>());
-    o.pack(v.template get<3>());
-    o.pack(v.template get<4>());
-    o.pack(v.template get<5>());
-    o.pack(v.template get<6>());
-    o.pack(v.template get<7>());
-    o.pack(v.template get<8>());
-    o.pack(v.template get<9>());
-    o.pack(v.template get<10>());
-    o.pack(v.template get<11>());
-    o.pack(v.template get<12>());
-    o.pack(v.template get<13>());
-    o.pack(v.template get<14>());
-    o.pack(v.template get<15>());
-    o.pack(v.template get<16>());
-    o.pack(v.template get<17>());
-    o.pack(v.template get<18>());
-    o.pack(v.template get<19>());
-    o.pack(v.template get<20>());
-    o.pack(v.template get<21>());
-    o.pack(v.template get<22>());
-    o.pack(v.template get<23>());
-    o.pack(v.template get<24>());
-    return o;
-}
-
-template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25>
-inline const msgpack::packer<Stream>& operator<< (
-        msgpack::packer<Stream>& o,
-        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25>& v) {
-    o.pack_array(26);
-    
-    o.pack(v.template get<0>());
-    o.pack(v.template get<1>());
-    o.pack(v.template get<2>());
-    o.pack(v.template get<3>());
-    o.pack(v.template get<4>());
-    o.pack(v.template get<5>());
-    o.pack(v.template get<6>());
-    o.pack(v.template get<7>());
-    o.pack(v.template get<8>());
-    o.pack(v.template get<9>());
-    o.pack(v.template get<10>());
-    o.pack(v.template get<11>());
-    o.pack(v.template get<12>());
-    o.pack(v.template get<13>());
-    o.pack(v.template get<14>());
-    o.pack(v.template get<15>());
-    o.pack(v.template get<16>());
-    o.pack(v.template get<17>());
-    o.pack(v.template get<18>());
-    o.pack(v.template get<19>());
-    o.pack(v.template get<20>());
-    o.pack(v.template get<21>());
-    o.pack(v.template get<22>());
-    o.pack(v.template get<23>());
-    o.pack(v.template get<24>());
-    o.pack(v.template get<25>());
-    return o;
-}
-
-template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25, typename A26>
-inline const msgpack::packer<Stream>& operator<< (
-        msgpack::packer<Stream>& o,
-        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26>& v) {
-    o.pack_array(27);
-    
-    o.pack(v.template get<0>());
-    o.pack(v.template get<1>());
-    o.pack(v.template get<2>());
-    o.pack(v.template get<3>());
-    o.pack(v.template get<4>());
-    o.pack(v.template get<5>());
-    o.pack(v.template get<6>());
-    o.pack(v.template get<7>());
-    o.pack(v.template get<8>());
-    o.pack(v.template get<9>());
-    o.pack(v.template get<10>());
-    o.pack(v.template get<11>());
-    o.pack(v.template get<12>());
-    o.pack(v.template get<13>());
-    o.pack(v.template get<14>());
-    o.pack(v.template get<15>());
-    o.pack(v.template get<16>());
-    o.pack(v.template get<17>());
-    o.pack(v.template get<18>());
-    o.pack(v.template get<19>());
-    o.pack(v.template get<20>());
-    o.pack(v.template get<21>());
-    o.pack(v.template get<22>());
-    o.pack(v.template get<23>());
-    o.pack(v.template get<24>());
-    o.pack(v.template get<25>());
-    o.pack(v.template get<26>());
-    return o;
-}
-
-template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25, typename A26, typename A27>
-inline const msgpack::packer<Stream>& operator<< (
-        msgpack::packer<Stream>& o,
-        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27>& v) {
-    o.pack_array(28);
-    
-    o.pack(v.template get<0>());
-    o.pack(v.template get<1>());
-    o.pack(v.template get<2>());
-    o.pack(v.template get<3>());
-    o.pack(v.template get<4>());
-    o.pack(v.template get<5>());
-    o.pack(v.template get<6>());
-    o.pack(v.template get<7>());
-    o.pack(v.template get<8>());
-    o.pack(v.template get<9>());
-    o.pack(v.template get<10>());
-    o.pack(v.template get<11>());
-    o.pack(v.template get<12>());
-    o.pack(v.template get<13>());
-    o.pack(v.template get<14>());
-    o.pack(v.template get<15>());
-    o.pack(v.template get<16>());
-    o.pack(v.template get<17>());
-    o.pack(v.template get<18>());
-    o.pack(v.template get<19>());
-    o.pack(v.template get<20>());
-    o.pack(v.template get<21>());
-    o.pack(v.template get<22>());
-    o.pack(v.template get<23>());
-    o.pack(v.template get<24>());
-    o.pack(v.template get<25>());
-    o.pack(v.template get<26>());
-    o.pack(v.template get<27>());
-    return o;
-}
-
-template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25, typename A26, typename A27, typename A28>
-inline const msgpack::packer<Stream>& operator<< (
-        msgpack::packer<Stream>& o,
-        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28>& v) {
-    o.pack_array(29);
-    
-    o.pack(v.template get<0>());
-    o.pack(v.template get<1>());
-    o.pack(v.template get<2>());
-    o.pack(v.template get<3>());
-    o.pack(v.template get<4>());
-    o.pack(v.template get<5>());
-    o.pack(v.template get<6>());
-    o.pack(v.template get<7>());
-    o.pack(v.template get<8>());
-    o.pack(v.template get<9>());
-    o.pack(v.template get<10>());
-    o.pack(v.template get<11>());
-    o.pack(v.template get<12>());
-    o.pack(v.template get<13>());
-    o.pack(v.template get<14>());
-    o.pack(v.template get<15>());
-    o.pack(v.template get<16>());
-    o.pack(v.template get<17>());
-    o.pack(v.template get<18>());
-    o.pack(v.template get<19>());
-    o.pack(v.template get<20>());
-    o.pack(v.template get<21>());
-    o.pack(v.template get<22>());
-    o.pack(v.template get<23>());
-    o.pack(v.template get<24>());
-    o.pack(v.template get<25>());
-    o.pack(v.template get<26>());
-    o.pack(v.template get<27>());
-    o.pack(v.template get<28>());
-    return o;
-}
-
-template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25, typename A26, typename A27, typename A28, typename A29>
-inline const msgpack::packer<Stream>& operator<< (
-        msgpack::packer<Stream>& o,
-        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29>& v) {
-    o.pack_array(30);
-    
-    o.pack(v.template get<0>());
-    o.pack(v.template get<1>());
-    o.pack(v.template get<2>());
-    o.pack(v.template get<3>());
-    o.pack(v.template get<4>());
-    o.pack(v.template get<5>());
-    o.pack(v.template get<6>());
-    o.pack(v.template get<7>());
-    o.pack(v.template get<8>());
-    o.pack(v.template get<9>());
-    o.pack(v.template get<10>());
-    o.pack(v.template get<11>());
-    o.pack(v.template get<12>());
-    o.pack(v.template get<13>());
-    o.pack(v.template get<14>());
-    o.pack(v.template get<15>());
-    o.pack(v.template get<16>());
-    o.pack(v.template get<17>());
-    o.pack(v.template get<18>());
-    o.pack(v.template get<19>());
-    o.pack(v.template get<20>());
-    o.pack(v.template get<21>());
-    o.pack(v.template get<22>());
-    o.pack(v.template get<23>());
-    o.pack(v.template get<24>());
-    o.pack(v.template get<25>());
-    o.pack(v.template get<26>());
-    o.pack(v.template get<27>());
-    o.pack(v.template get<28>());
-    o.pack(v.template get<29>());
-    return o;
-}
-
-template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25, typename A26, typename A27, typename A28, typename A29, typename A30>
-inline const msgpack::packer<Stream>& operator<< (
-        msgpack::packer<Stream>& o,
-        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30>& v) {
-    o.pack_array(31);
-    
-    o.pack(v.template get<0>());
-    o.pack(v.template get<1>());
-    o.pack(v.template get<2>());
-    o.pack(v.template get<3>());
-    o.pack(v.template get<4>());
-    o.pack(v.template get<5>());
-    o.pack(v.template get<6>());
-    o.pack(v.template get<7>());
-    o.pack(v.template get<8>());
-    o.pack(v.template get<9>());
-    o.pack(v.template get<10>());
-    o.pack(v.template get<11>());
-    o.pack(v.template get<12>());
-    o.pack(v.template get<13>());
-    o.pack(v.template get<14>());
-    o.pack(v.template get<15>());
-    o.pack(v.template get<16>());
-    o.pack(v.template get<17>());
-    o.pack(v.template get<18>());
-    o.pack(v.template get<19>());
-    o.pack(v.template get<20>());
-    o.pack(v.template get<21>());
-    o.pack(v.template get<22>());
-    o.pack(v.template get<23>());
-    o.pack(v.template get<24>());
-    o.pack(v.template get<25>());
-    o.pack(v.template get<26>());
-    o.pack(v.template get<27>());
-    o.pack(v.template get<28>());
-    o.pack(v.template get<29>());
-    o.pack(v.template get<30>());
-    return o;
-}
-
-template <typename Stream, typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25, typename A26, typename A27, typename A28, typename A29, typename A30, typename A31>
-inline const msgpack::packer<Stream>& operator<< (
-        msgpack::packer<Stream>& o,
-        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30, A31>& v) {
-    o.pack_array(32);
-    
-    o.pack(v.template get<0>());
-    o.pack(v.template get<1>());
-    o.pack(v.template get<2>());
-    o.pack(v.template get<3>());
-    o.pack(v.template get<4>());
-    o.pack(v.template get<5>());
-    o.pack(v.template get<6>());
-    o.pack(v.template get<7>());
-    o.pack(v.template get<8>());
-    o.pack(v.template get<9>());
-    o.pack(v.template get<10>());
-    o.pack(v.template get<11>());
-    o.pack(v.template get<12>());
-    o.pack(v.template get<13>());
-    o.pack(v.template get<14>());
-    o.pack(v.template get<15>());
-    o.pack(v.template get<16>());
-    o.pack(v.template get<17>());
-    o.pack(v.template get<18>());
-    o.pack(v.template get<19>());
-    o.pack(v.template get<20>());
-    o.pack(v.template get<21>());
-    o.pack(v.template get<22>());
-    o.pack(v.template get<23>());
-    o.pack(v.template get<24>());
-    o.pack(v.template get<25>());
-    o.pack(v.template get<26>());
-    o.pack(v.template get<27>());
-    o.pack(v.template get<28>());
-    o.pack(v.template get<29>());
-    o.pack(v.template get<30>());
-    o.pack(v.template get<31>());
-    return o;
-}
-
-
-inline void operator<< (
-        msgpack::object::with_zone& o,
-        const type::tuple<>&) {
-    o.type = msgpack::type::ARRAY;
-    o.via.array.ptr = nullptr;
-    o.via.array.size = 0;
-}
 
 template <typename A0>
-inline void operator<< (
-        msgpack::object::with_zone& o,
-        const type::tuple<A0>& v) {
-    o.type = msgpack::type::ARRAY;
-    o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*1));
-    o.via.array.size = 1;
-    
-    o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
-}
+struct pack<type::tuple<A0> > {
+    template <typename Stream>
+    msgpack::packer<Stream>& operator()(
+        msgpack::packer<Stream>& o,
+        const type::tuple<A0>& v) const {
+        o.pack_array(1);
+        
+        o.pack(v.template get<0>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1>
-inline void operator<< (
-        msgpack::object::with_zone& o,
-        const type::tuple<A0, A1>& v) {
-    o.type = msgpack::type::ARRAY;
-    o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*2));
-    o.via.array.size = 2;
-    
-    o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
-    o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
-}
+struct pack<type::tuple<A0, A1> > {
+    template <typename Stream>
+    msgpack::packer<Stream>& operator()(
+        msgpack::packer<Stream>& o,
+        const type::tuple<A0, A1>& v) const {
+        o.pack_array(2);
+        
+        o.pack(v.template get<0>());
+        o.pack(v.template get<1>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2>
-inline void operator<< (
-        msgpack::object::with_zone& o,
-        const type::tuple<A0, A1, A2>& v) {
-    o.type = msgpack::type::ARRAY;
-    o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*3));
-    o.via.array.size = 3;
-    
-    o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
-    o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
-    o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
-}
+struct pack<type::tuple<A0, A1, A2> > {
+    template <typename Stream>
+    msgpack::packer<Stream>& operator()(
+        msgpack::packer<Stream>& o,
+        const type::tuple<A0, A1, A2>& v) const {
+        o.pack_array(3);
+        
+        o.pack(v.template get<0>());
+        o.pack(v.template get<1>());
+        o.pack(v.template get<2>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3>
-inline void operator<< (
-        msgpack::object::with_zone& o,
-        const type::tuple<A0, A1, A2, A3>& v) {
-    o.type = msgpack::type::ARRAY;
-    o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*4));
-    o.via.array.size = 4;
-    
-    o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
-    o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
-    o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
-    o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
-}
+struct pack<type::tuple<A0, A1, A2, A3> > {
+    template <typename Stream>
+    msgpack::packer<Stream>& operator()(
+        msgpack::packer<Stream>& o,
+        const type::tuple<A0, A1, A2, A3>& v) const {
+        o.pack_array(4);
+        
+        o.pack(v.template get<0>());
+        o.pack(v.template get<1>());
+        o.pack(v.template get<2>());
+        o.pack(v.template get<3>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4>
-inline void operator<< (
-        msgpack::object::with_zone& o,
-        const type::tuple<A0, A1, A2, A3, A4>& v) {
-    o.type = msgpack::type::ARRAY;
-    o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*5));
-    o.via.array.size = 5;
-    
-    o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
-    o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
-    o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
-    o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
-    o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
-}
+struct pack<type::tuple<A0, A1, A2, A3, A4> > {
+    template <typename Stream>
+    msgpack::packer<Stream>& operator()(
+        msgpack::packer<Stream>& o,
+        const type::tuple<A0, A1, A2, A3, A4>& v) const {
+        o.pack_array(5);
+        
+        o.pack(v.template get<0>());
+        o.pack(v.template get<1>());
+        o.pack(v.template get<2>());
+        o.pack(v.template get<3>());
+        o.pack(v.template get<4>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5>
-inline void operator<< (
-        msgpack::object::with_zone& o,
-        const type::tuple<A0, A1, A2, A3, A4, A5>& v) {
-    o.type = msgpack::type::ARRAY;
-    o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*6));
-    o.via.array.size = 6;
-    
-    o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
-    o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
-    o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
-    o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
-    o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
-    o.via.array.ptr[5] = msgpack::object(v.template get<5>(), o.zone);
-}
+struct pack<type::tuple<A0, A1, A2, A3, A4, A5> > {
+    template <typename Stream>
+    msgpack::packer<Stream>& operator()(
+        msgpack::packer<Stream>& o,
+        const type::tuple<A0, A1, A2, A3, A4, A5>& v) const {
+        o.pack_array(6);
+        
+        o.pack(v.template get<0>());
+        o.pack(v.template get<1>());
+        o.pack(v.template get<2>());
+        o.pack(v.template get<3>());
+        o.pack(v.template get<4>());
+        o.pack(v.template get<5>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6>
-inline void operator<< (
-        msgpack::object::with_zone& o,
-        const type::tuple<A0, A1, A2, A3, A4, A5, A6>& v) {
-    o.type = msgpack::type::ARRAY;
-    o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*7));
-    o.via.array.size = 7;
-    
-    o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
-    o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
-    o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
-    o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
-    o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
-    o.via.array.ptr[5] = msgpack::object(v.template get<5>(), o.zone);
-    o.via.array.ptr[6] = msgpack::object(v.template get<6>(), o.zone);
-}
+struct pack<type::tuple<A0, A1, A2, A3, A4, A5, A6> > {
+    template <typename Stream>
+    msgpack::packer<Stream>& operator()(
+        msgpack::packer<Stream>& o,
+        const type::tuple<A0, A1, A2, A3, A4, A5, A6>& v) const {
+        o.pack_array(7);
+        
+        o.pack(v.template get<0>());
+        o.pack(v.template get<1>());
+        o.pack(v.template get<2>());
+        o.pack(v.template get<3>());
+        o.pack(v.template get<4>());
+        o.pack(v.template get<5>());
+        o.pack(v.template get<6>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7>
-inline void operator<< (
-        msgpack::object::with_zone& o,
-        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7>& v) {
-    o.type = msgpack::type::ARRAY;
-    o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*8));
-    o.via.array.size = 8;
-    
-    o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
-    o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
-    o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
-    o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
-    o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
-    o.via.array.ptr[5] = msgpack::object(v.template get<5>(), o.zone);
-    o.via.array.ptr[6] = msgpack::object(v.template get<6>(), o.zone);
-    o.via.array.ptr[7] = msgpack::object(v.template get<7>(), o.zone);
-}
+struct pack<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7> > {
+    template <typename Stream>
+    msgpack::packer<Stream>& operator()(
+        msgpack::packer<Stream>& o,
+        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7>& v) const {
+        o.pack_array(8);
+        
+        o.pack(v.template get<0>());
+        o.pack(v.template get<1>());
+        o.pack(v.template get<2>());
+        o.pack(v.template get<3>());
+        o.pack(v.template get<4>());
+        o.pack(v.template get<5>());
+        o.pack(v.template get<6>());
+        o.pack(v.template get<7>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8>
-inline void operator<< (
-        msgpack::object::with_zone& o,
-        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8>& v) {
-    o.type = msgpack::type::ARRAY;
-    o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*9));
-    o.via.array.size = 9;
-    
-    o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
-    o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
-    o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
-    o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
-    o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
-    o.via.array.ptr[5] = msgpack::object(v.template get<5>(), o.zone);
-    o.via.array.ptr[6] = msgpack::object(v.template get<6>(), o.zone);
-    o.via.array.ptr[7] = msgpack::object(v.template get<7>(), o.zone);
-    o.via.array.ptr[8] = msgpack::object(v.template get<8>(), o.zone);
-}
+struct pack<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8> > {
+    template <typename Stream>
+    msgpack::packer<Stream>& operator()(
+        msgpack::packer<Stream>& o,
+        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8>& v) const {
+        o.pack_array(9);
+        
+        o.pack(v.template get<0>());
+        o.pack(v.template get<1>());
+        o.pack(v.template get<2>());
+        o.pack(v.template get<3>());
+        o.pack(v.template get<4>());
+        o.pack(v.template get<5>());
+        o.pack(v.template get<6>());
+        o.pack(v.template get<7>());
+        o.pack(v.template get<8>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9>
-inline void operator<< (
-        msgpack::object::with_zone& o,
-        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9>& v) {
-    o.type = msgpack::type::ARRAY;
-    o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*10));
-    o.via.array.size = 10;
-    
-    o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
-    o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
-    o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
-    o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
-    o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
-    o.via.array.ptr[5] = msgpack::object(v.template get<5>(), o.zone);
-    o.via.array.ptr[6] = msgpack::object(v.template get<6>(), o.zone);
-    o.via.array.ptr[7] = msgpack::object(v.template get<7>(), o.zone);
-    o.via.array.ptr[8] = msgpack::object(v.template get<8>(), o.zone);
-    o.via.array.ptr[9] = msgpack::object(v.template get<9>(), o.zone);
-}
+struct pack<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9> > {
+    template <typename Stream>
+    msgpack::packer<Stream>& operator()(
+        msgpack::packer<Stream>& o,
+        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9>& v) const {
+        o.pack_array(10);
+        
+        o.pack(v.template get<0>());
+        o.pack(v.template get<1>());
+        o.pack(v.template get<2>());
+        o.pack(v.template get<3>());
+        o.pack(v.template get<4>());
+        o.pack(v.template get<5>());
+        o.pack(v.template get<6>());
+        o.pack(v.template get<7>());
+        o.pack(v.template get<8>());
+        o.pack(v.template get<9>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10>
-inline void operator<< (
-        msgpack::object::with_zone& o,
-        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10>& v) {
-    o.type = msgpack::type::ARRAY;
-    o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*11));
-    o.via.array.size = 11;
-    
-    o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
-    o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
-    o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
-    o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
-    o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
-    o.via.array.ptr[5] = msgpack::object(v.template get<5>(), o.zone);
-    o.via.array.ptr[6] = msgpack::object(v.template get<6>(), o.zone);
-    o.via.array.ptr[7] = msgpack::object(v.template get<7>(), o.zone);
-    o.via.array.ptr[8] = msgpack::object(v.template get<8>(), o.zone);
-    o.via.array.ptr[9] = msgpack::object(v.template get<9>(), o.zone);
-    o.via.array.ptr[10] = msgpack::object(v.template get<10>(), o.zone);
-}
+struct pack<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10> > {
+    template <typename Stream>
+    msgpack::packer<Stream>& operator()(
+        msgpack::packer<Stream>& o,
+        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10>& v) const {
+        o.pack_array(11);
+        
+        o.pack(v.template get<0>());
+        o.pack(v.template get<1>());
+        o.pack(v.template get<2>());
+        o.pack(v.template get<3>());
+        o.pack(v.template get<4>());
+        o.pack(v.template get<5>());
+        o.pack(v.template get<6>());
+        o.pack(v.template get<7>());
+        o.pack(v.template get<8>());
+        o.pack(v.template get<9>());
+        o.pack(v.template get<10>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11>
-inline void operator<< (
-        msgpack::object::with_zone& o,
-        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11>& v) {
-    o.type = msgpack::type::ARRAY;
-    o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*12));
-    o.via.array.size = 12;
-    
-    o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
-    o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
-    o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
-    o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
-    o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
-    o.via.array.ptr[5] = msgpack::object(v.template get<5>(), o.zone);
-    o.via.array.ptr[6] = msgpack::object(v.template get<6>(), o.zone);
-    o.via.array.ptr[7] = msgpack::object(v.template get<7>(), o.zone);
-    o.via.array.ptr[8] = msgpack::object(v.template get<8>(), o.zone);
-    o.via.array.ptr[9] = msgpack::object(v.template get<9>(), o.zone);
-    o.via.array.ptr[10] = msgpack::object(v.template get<10>(), o.zone);
-    o.via.array.ptr[11] = msgpack::object(v.template get<11>(), o.zone);
-}
+struct pack<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11> > {
+    template <typename Stream>
+    msgpack::packer<Stream>& operator()(
+        msgpack::packer<Stream>& o,
+        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11>& v) const {
+        o.pack_array(12);
+        
+        o.pack(v.template get<0>());
+        o.pack(v.template get<1>());
+        o.pack(v.template get<2>());
+        o.pack(v.template get<3>());
+        o.pack(v.template get<4>());
+        o.pack(v.template get<5>());
+        o.pack(v.template get<6>());
+        o.pack(v.template get<7>());
+        o.pack(v.template get<8>());
+        o.pack(v.template get<9>());
+        o.pack(v.template get<10>());
+        o.pack(v.template get<11>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12>
-inline void operator<< (
-        msgpack::object::with_zone& o,
-        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12>& v) {
-    o.type = msgpack::type::ARRAY;
-    o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*13));
-    o.via.array.size = 13;
-    
-    o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
-    o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
-    o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
-    o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
-    o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
-    o.via.array.ptr[5] = msgpack::object(v.template get<5>(), o.zone);
-    o.via.array.ptr[6] = msgpack::object(v.template get<6>(), o.zone);
-    o.via.array.ptr[7] = msgpack::object(v.template get<7>(), o.zone);
-    o.via.array.ptr[8] = msgpack::object(v.template get<8>(), o.zone);
-    o.via.array.ptr[9] = msgpack::object(v.template get<9>(), o.zone);
-    o.via.array.ptr[10] = msgpack::object(v.template get<10>(), o.zone);
-    o.via.array.ptr[11] = msgpack::object(v.template get<11>(), o.zone);
-    o.via.array.ptr[12] = msgpack::object(v.template get<12>(), o.zone);
-}
+struct pack<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12> > {
+    template <typename Stream>
+    msgpack::packer<Stream>& operator()(
+        msgpack::packer<Stream>& o,
+        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12>& v) const {
+        o.pack_array(13);
+        
+        o.pack(v.template get<0>());
+        o.pack(v.template get<1>());
+        o.pack(v.template get<2>());
+        o.pack(v.template get<3>());
+        o.pack(v.template get<4>());
+        o.pack(v.template get<5>());
+        o.pack(v.template get<6>());
+        o.pack(v.template get<7>());
+        o.pack(v.template get<8>());
+        o.pack(v.template get<9>());
+        o.pack(v.template get<10>());
+        o.pack(v.template get<11>());
+        o.pack(v.template get<12>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13>
-inline void operator<< (
-        msgpack::object::with_zone& o,
-        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13>& v) {
-    o.type = msgpack::type::ARRAY;
-    o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*14));
-    o.via.array.size = 14;
-    
-    o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
-    o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
-    o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
-    o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
-    o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
-    o.via.array.ptr[5] = msgpack::object(v.template get<5>(), o.zone);
-    o.via.array.ptr[6] = msgpack::object(v.template get<6>(), o.zone);
-    o.via.array.ptr[7] = msgpack::object(v.template get<7>(), o.zone);
-    o.via.array.ptr[8] = msgpack::object(v.template get<8>(), o.zone);
-    o.via.array.ptr[9] = msgpack::object(v.template get<9>(), o.zone);
-    o.via.array.ptr[10] = msgpack::object(v.template get<10>(), o.zone);
-    o.via.array.ptr[11] = msgpack::object(v.template get<11>(), o.zone);
-    o.via.array.ptr[12] = msgpack::object(v.template get<12>(), o.zone);
-    o.via.array.ptr[13] = msgpack::object(v.template get<13>(), o.zone);
-}
+struct pack<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13> > {
+    template <typename Stream>
+    msgpack::packer<Stream>& operator()(
+        msgpack::packer<Stream>& o,
+        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13>& v) const {
+        o.pack_array(14);
+        
+        o.pack(v.template get<0>());
+        o.pack(v.template get<1>());
+        o.pack(v.template get<2>());
+        o.pack(v.template get<3>());
+        o.pack(v.template get<4>());
+        o.pack(v.template get<5>());
+        o.pack(v.template get<6>());
+        o.pack(v.template get<7>());
+        o.pack(v.template get<8>());
+        o.pack(v.template get<9>());
+        o.pack(v.template get<10>());
+        o.pack(v.template get<11>());
+        o.pack(v.template get<12>());
+        o.pack(v.template get<13>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14>
-inline void operator<< (
-        msgpack::object::with_zone& o,
-        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14>& v) {
-    o.type = msgpack::type::ARRAY;
-    o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*15));
-    o.via.array.size = 15;
-    
-    o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
-    o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
-    o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
-    o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
-    o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
-    o.via.array.ptr[5] = msgpack::object(v.template get<5>(), o.zone);
-    o.via.array.ptr[6] = msgpack::object(v.template get<6>(), o.zone);
-    o.via.array.ptr[7] = msgpack::object(v.template get<7>(), o.zone);
-    o.via.array.ptr[8] = msgpack::object(v.template get<8>(), o.zone);
-    o.via.array.ptr[9] = msgpack::object(v.template get<9>(), o.zone);
-    o.via.array.ptr[10] = msgpack::object(v.template get<10>(), o.zone);
-    o.via.array.ptr[11] = msgpack::object(v.template get<11>(), o.zone);
-    o.via.array.ptr[12] = msgpack::object(v.template get<12>(), o.zone);
-    o.via.array.ptr[13] = msgpack::object(v.template get<13>(), o.zone);
-    o.via.array.ptr[14] = msgpack::object(v.template get<14>(), o.zone);
-}
+struct pack<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14> > {
+    template <typename Stream>
+    msgpack::packer<Stream>& operator()(
+        msgpack::packer<Stream>& o,
+        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14>& v) const {
+        o.pack_array(15);
+        
+        o.pack(v.template get<0>());
+        o.pack(v.template get<1>());
+        o.pack(v.template get<2>());
+        o.pack(v.template get<3>());
+        o.pack(v.template get<4>());
+        o.pack(v.template get<5>());
+        o.pack(v.template get<6>());
+        o.pack(v.template get<7>());
+        o.pack(v.template get<8>());
+        o.pack(v.template get<9>());
+        o.pack(v.template get<10>());
+        o.pack(v.template get<11>());
+        o.pack(v.template get<12>());
+        o.pack(v.template get<13>());
+        o.pack(v.template get<14>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15>
-inline void operator<< (
-        msgpack::object::with_zone& o,
-        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15>& v) {
-    o.type = msgpack::type::ARRAY;
-    o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*16));
-    o.via.array.size = 16;
-    
-    o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
-    o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
-    o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
-    o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
-    o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
-    o.via.array.ptr[5] = msgpack::object(v.template get<5>(), o.zone);
-    o.via.array.ptr[6] = msgpack::object(v.template get<6>(), o.zone);
-    o.via.array.ptr[7] = msgpack::object(v.template get<7>(), o.zone);
-    o.via.array.ptr[8] = msgpack::object(v.template get<8>(), o.zone);
-    o.via.array.ptr[9] = msgpack::object(v.template get<9>(), o.zone);
-    o.via.array.ptr[10] = msgpack::object(v.template get<10>(), o.zone);
-    o.via.array.ptr[11] = msgpack::object(v.template get<11>(), o.zone);
-    o.via.array.ptr[12] = msgpack::object(v.template get<12>(), o.zone);
-    o.via.array.ptr[13] = msgpack::object(v.template get<13>(), o.zone);
-    o.via.array.ptr[14] = msgpack::object(v.template get<14>(), o.zone);
-    o.via.array.ptr[15] = msgpack::object(v.template get<15>(), o.zone);
-}
+struct pack<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15> > {
+    template <typename Stream>
+    msgpack::packer<Stream>& operator()(
+        msgpack::packer<Stream>& o,
+        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15>& v) const {
+        o.pack_array(16);
+        
+        o.pack(v.template get<0>());
+        o.pack(v.template get<1>());
+        o.pack(v.template get<2>());
+        o.pack(v.template get<3>());
+        o.pack(v.template get<4>());
+        o.pack(v.template get<5>());
+        o.pack(v.template get<6>());
+        o.pack(v.template get<7>());
+        o.pack(v.template get<8>());
+        o.pack(v.template get<9>());
+        o.pack(v.template get<10>());
+        o.pack(v.template get<11>());
+        o.pack(v.template get<12>());
+        o.pack(v.template get<13>());
+        o.pack(v.template get<14>());
+        o.pack(v.template get<15>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16>
-inline void operator<< (
-        msgpack::object::with_zone& o,
-        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16>& v) {
-    o.type = msgpack::type::ARRAY;
-    o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*17));
-    o.via.array.size = 17;
-    
-    o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
-    o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
-    o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
-    o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
-    o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
-    o.via.array.ptr[5] = msgpack::object(v.template get<5>(), o.zone);
-    o.via.array.ptr[6] = msgpack::object(v.template get<6>(), o.zone);
-    o.via.array.ptr[7] = msgpack::object(v.template get<7>(), o.zone);
-    o.via.array.ptr[8] = msgpack::object(v.template get<8>(), o.zone);
-    o.via.array.ptr[9] = msgpack::object(v.template get<9>(), o.zone);
-    o.via.array.ptr[10] = msgpack::object(v.template get<10>(), o.zone);
-    o.via.array.ptr[11] = msgpack::object(v.template get<11>(), o.zone);
-    o.via.array.ptr[12] = msgpack::object(v.template get<12>(), o.zone);
-    o.via.array.ptr[13] = msgpack::object(v.template get<13>(), o.zone);
-    o.via.array.ptr[14] = msgpack::object(v.template get<14>(), o.zone);
-    o.via.array.ptr[15] = msgpack::object(v.template get<15>(), o.zone);
-    o.via.array.ptr[16] = msgpack::object(v.template get<16>(), o.zone);
-}
+struct pack<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16> > {
+    template <typename Stream>
+    msgpack::packer<Stream>& operator()(
+        msgpack::packer<Stream>& o,
+        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16>& v) const {
+        o.pack_array(17);
+        
+        o.pack(v.template get<0>());
+        o.pack(v.template get<1>());
+        o.pack(v.template get<2>());
+        o.pack(v.template get<3>());
+        o.pack(v.template get<4>());
+        o.pack(v.template get<5>());
+        o.pack(v.template get<6>());
+        o.pack(v.template get<7>());
+        o.pack(v.template get<8>());
+        o.pack(v.template get<9>());
+        o.pack(v.template get<10>());
+        o.pack(v.template get<11>());
+        o.pack(v.template get<12>());
+        o.pack(v.template get<13>());
+        o.pack(v.template get<14>());
+        o.pack(v.template get<15>());
+        o.pack(v.template get<16>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17>
-inline void operator<< (
-        msgpack::object::with_zone& o,
-        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17>& v) {
-    o.type = msgpack::type::ARRAY;
-    o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*18));
-    o.via.array.size = 18;
-    
-    o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
-    o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
-    o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
-    o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
-    o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
-    o.via.array.ptr[5] = msgpack::object(v.template get<5>(), o.zone);
-    o.via.array.ptr[6] = msgpack::object(v.template get<6>(), o.zone);
-    o.via.array.ptr[7] = msgpack::object(v.template get<7>(), o.zone);
-    o.via.array.ptr[8] = msgpack::object(v.template get<8>(), o.zone);
-    o.via.array.ptr[9] = msgpack::object(v.template get<9>(), o.zone);
-    o.via.array.ptr[10] = msgpack::object(v.template get<10>(), o.zone);
-    o.via.array.ptr[11] = msgpack::object(v.template get<11>(), o.zone);
-    o.via.array.ptr[12] = msgpack::object(v.template get<12>(), o.zone);
-    o.via.array.ptr[13] = msgpack::object(v.template get<13>(), o.zone);
-    o.via.array.ptr[14] = msgpack::object(v.template get<14>(), o.zone);
-    o.via.array.ptr[15] = msgpack::object(v.template get<15>(), o.zone);
-    o.via.array.ptr[16] = msgpack::object(v.template get<16>(), o.zone);
-    o.via.array.ptr[17] = msgpack::object(v.template get<17>(), o.zone);
-}
+struct pack<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17> > {
+    template <typename Stream>
+    msgpack::packer<Stream>& operator()(
+        msgpack::packer<Stream>& o,
+        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17>& v) const {
+        o.pack_array(18);
+        
+        o.pack(v.template get<0>());
+        o.pack(v.template get<1>());
+        o.pack(v.template get<2>());
+        o.pack(v.template get<3>());
+        o.pack(v.template get<4>());
+        o.pack(v.template get<5>());
+        o.pack(v.template get<6>());
+        o.pack(v.template get<7>());
+        o.pack(v.template get<8>());
+        o.pack(v.template get<9>());
+        o.pack(v.template get<10>());
+        o.pack(v.template get<11>());
+        o.pack(v.template get<12>());
+        o.pack(v.template get<13>());
+        o.pack(v.template get<14>());
+        o.pack(v.template get<15>());
+        o.pack(v.template get<16>());
+        o.pack(v.template get<17>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18>
-inline void operator<< (
-        msgpack::object::with_zone& o,
-        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18>& v) {
-    o.type = msgpack::type::ARRAY;
-    o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*19));
-    o.via.array.size = 19;
-    
-    o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
-    o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
-    o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
-    o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
-    o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
-    o.via.array.ptr[5] = msgpack::object(v.template get<5>(), o.zone);
-    o.via.array.ptr[6] = msgpack::object(v.template get<6>(), o.zone);
-    o.via.array.ptr[7] = msgpack::object(v.template get<7>(), o.zone);
-    o.via.array.ptr[8] = msgpack::object(v.template get<8>(), o.zone);
-    o.via.array.ptr[9] = msgpack::object(v.template get<9>(), o.zone);
-    o.via.array.ptr[10] = msgpack::object(v.template get<10>(), o.zone);
-    o.via.array.ptr[11] = msgpack::object(v.template get<11>(), o.zone);
-    o.via.array.ptr[12] = msgpack::object(v.template get<12>(), o.zone);
-    o.via.array.ptr[13] = msgpack::object(v.template get<13>(), o.zone);
-    o.via.array.ptr[14] = msgpack::object(v.template get<14>(), o.zone);
-    o.via.array.ptr[15] = msgpack::object(v.template get<15>(), o.zone);
-    o.via.array.ptr[16] = msgpack::object(v.template get<16>(), o.zone);
-    o.via.array.ptr[17] = msgpack::object(v.template get<17>(), o.zone);
-    o.via.array.ptr[18] = msgpack::object(v.template get<18>(), o.zone);
-}
+struct pack<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18> > {
+    template <typename Stream>
+    msgpack::packer<Stream>& operator()(
+        msgpack::packer<Stream>& o,
+        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18>& v) const {
+        o.pack_array(19);
+        
+        o.pack(v.template get<0>());
+        o.pack(v.template get<1>());
+        o.pack(v.template get<2>());
+        o.pack(v.template get<3>());
+        o.pack(v.template get<4>());
+        o.pack(v.template get<5>());
+        o.pack(v.template get<6>());
+        o.pack(v.template get<7>());
+        o.pack(v.template get<8>());
+        o.pack(v.template get<9>());
+        o.pack(v.template get<10>());
+        o.pack(v.template get<11>());
+        o.pack(v.template get<12>());
+        o.pack(v.template get<13>());
+        o.pack(v.template get<14>());
+        o.pack(v.template get<15>());
+        o.pack(v.template get<16>());
+        o.pack(v.template get<17>());
+        o.pack(v.template get<18>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19>
-inline void operator<< (
-        msgpack::object::with_zone& o,
-        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19>& v) {
-    o.type = msgpack::type::ARRAY;
-    o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*20));
-    o.via.array.size = 20;
-    
-    o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
-    o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
-    o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
-    o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
-    o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
-    o.via.array.ptr[5] = msgpack::object(v.template get<5>(), o.zone);
-    o.via.array.ptr[6] = msgpack::object(v.template get<6>(), o.zone);
-    o.via.array.ptr[7] = msgpack::object(v.template get<7>(), o.zone);
-    o.via.array.ptr[8] = msgpack::object(v.template get<8>(), o.zone);
-    o.via.array.ptr[9] = msgpack::object(v.template get<9>(), o.zone);
-    o.via.array.ptr[10] = msgpack::object(v.template get<10>(), o.zone);
-    o.via.array.ptr[11] = msgpack::object(v.template get<11>(), o.zone);
-    o.via.array.ptr[12] = msgpack::object(v.template get<12>(), o.zone);
-    o.via.array.ptr[13] = msgpack::object(v.template get<13>(), o.zone);
-    o.via.array.ptr[14] = msgpack::object(v.template get<14>(), o.zone);
-    o.via.array.ptr[15] = msgpack::object(v.template get<15>(), o.zone);
-    o.via.array.ptr[16] = msgpack::object(v.template get<16>(), o.zone);
-    o.via.array.ptr[17] = msgpack::object(v.template get<17>(), o.zone);
-    o.via.array.ptr[18] = msgpack::object(v.template get<18>(), o.zone);
-    o.via.array.ptr[19] = msgpack::object(v.template get<19>(), o.zone);
-}
+struct pack<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19> > {
+    template <typename Stream>
+    msgpack::packer<Stream>& operator()(
+        msgpack::packer<Stream>& o,
+        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19>& v) const {
+        o.pack_array(20);
+        
+        o.pack(v.template get<0>());
+        o.pack(v.template get<1>());
+        o.pack(v.template get<2>());
+        o.pack(v.template get<3>());
+        o.pack(v.template get<4>());
+        o.pack(v.template get<5>());
+        o.pack(v.template get<6>());
+        o.pack(v.template get<7>());
+        o.pack(v.template get<8>());
+        o.pack(v.template get<9>());
+        o.pack(v.template get<10>());
+        o.pack(v.template get<11>());
+        o.pack(v.template get<12>());
+        o.pack(v.template get<13>());
+        o.pack(v.template get<14>());
+        o.pack(v.template get<15>());
+        o.pack(v.template get<16>());
+        o.pack(v.template get<17>());
+        o.pack(v.template get<18>());
+        o.pack(v.template get<19>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20>
-inline void operator<< (
-        msgpack::object::with_zone& o,
-        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20>& v) {
-    o.type = msgpack::type::ARRAY;
-    o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*21));
-    o.via.array.size = 21;
-    
-    o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
-    o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
-    o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
-    o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
-    o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
-    o.via.array.ptr[5] = msgpack::object(v.template get<5>(), o.zone);
-    o.via.array.ptr[6] = msgpack::object(v.template get<6>(), o.zone);
-    o.via.array.ptr[7] = msgpack::object(v.template get<7>(), o.zone);
-    o.via.array.ptr[8] = msgpack::object(v.template get<8>(), o.zone);
-    o.via.array.ptr[9] = msgpack::object(v.template get<9>(), o.zone);
-    o.via.array.ptr[10] = msgpack::object(v.template get<10>(), o.zone);
-    o.via.array.ptr[11] = msgpack::object(v.template get<11>(), o.zone);
-    o.via.array.ptr[12] = msgpack::object(v.template get<12>(), o.zone);
-    o.via.array.ptr[13] = msgpack::object(v.template get<13>(), o.zone);
-    o.via.array.ptr[14] = msgpack::object(v.template get<14>(), o.zone);
-    o.via.array.ptr[15] = msgpack::object(v.template get<15>(), o.zone);
-    o.via.array.ptr[16] = msgpack::object(v.template get<16>(), o.zone);
-    o.via.array.ptr[17] = msgpack::object(v.template get<17>(), o.zone);
-    o.via.array.ptr[18] = msgpack::object(v.template get<18>(), o.zone);
-    o.via.array.ptr[19] = msgpack::object(v.template get<19>(), o.zone);
-    o.via.array.ptr[20] = msgpack::object(v.template get<20>(), o.zone);
-}
+struct pack<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20> > {
+    template <typename Stream>
+    msgpack::packer<Stream>& operator()(
+        msgpack::packer<Stream>& o,
+        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20>& v) const {
+        o.pack_array(21);
+        
+        o.pack(v.template get<0>());
+        o.pack(v.template get<1>());
+        o.pack(v.template get<2>());
+        o.pack(v.template get<3>());
+        o.pack(v.template get<4>());
+        o.pack(v.template get<5>());
+        o.pack(v.template get<6>());
+        o.pack(v.template get<7>());
+        o.pack(v.template get<8>());
+        o.pack(v.template get<9>());
+        o.pack(v.template get<10>());
+        o.pack(v.template get<11>());
+        o.pack(v.template get<12>());
+        o.pack(v.template get<13>());
+        o.pack(v.template get<14>());
+        o.pack(v.template get<15>());
+        o.pack(v.template get<16>());
+        o.pack(v.template get<17>());
+        o.pack(v.template get<18>());
+        o.pack(v.template get<19>());
+        o.pack(v.template get<20>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21>
-inline void operator<< (
-        msgpack::object::with_zone& o,
-        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21>& v) {
-    o.type = msgpack::type::ARRAY;
-    o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*22));
-    o.via.array.size = 22;
-    
-    o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
-    o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
-    o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
-    o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
-    o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
-    o.via.array.ptr[5] = msgpack::object(v.template get<5>(), o.zone);
-    o.via.array.ptr[6] = msgpack::object(v.template get<6>(), o.zone);
-    o.via.array.ptr[7] = msgpack::object(v.template get<7>(), o.zone);
-    o.via.array.ptr[8] = msgpack::object(v.template get<8>(), o.zone);
-    o.via.array.ptr[9] = msgpack::object(v.template get<9>(), o.zone);
-    o.via.array.ptr[10] = msgpack::object(v.template get<10>(), o.zone);
-    o.via.array.ptr[11] = msgpack::object(v.template get<11>(), o.zone);
-    o.via.array.ptr[12] = msgpack::object(v.template get<12>(), o.zone);
-    o.via.array.ptr[13] = msgpack::object(v.template get<13>(), o.zone);
-    o.via.array.ptr[14] = msgpack::object(v.template get<14>(), o.zone);
-    o.via.array.ptr[15] = msgpack::object(v.template get<15>(), o.zone);
-    o.via.array.ptr[16] = msgpack::object(v.template get<16>(), o.zone);
-    o.via.array.ptr[17] = msgpack::object(v.template get<17>(), o.zone);
-    o.via.array.ptr[18] = msgpack::object(v.template get<18>(), o.zone);
-    o.via.array.ptr[19] = msgpack::object(v.template get<19>(), o.zone);
-    o.via.array.ptr[20] = msgpack::object(v.template get<20>(), o.zone);
-    o.via.array.ptr[21] = msgpack::object(v.template get<21>(), o.zone);
-}
+struct pack<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21> > {
+    template <typename Stream>
+    msgpack::packer<Stream>& operator()(
+        msgpack::packer<Stream>& o,
+        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21>& v) const {
+        o.pack_array(22);
+        
+        o.pack(v.template get<0>());
+        o.pack(v.template get<1>());
+        o.pack(v.template get<2>());
+        o.pack(v.template get<3>());
+        o.pack(v.template get<4>());
+        o.pack(v.template get<5>());
+        o.pack(v.template get<6>());
+        o.pack(v.template get<7>());
+        o.pack(v.template get<8>());
+        o.pack(v.template get<9>());
+        o.pack(v.template get<10>());
+        o.pack(v.template get<11>());
+        o.pack(v.template get<12>());
+        o.pack(v.template get<13>());
+        o.pack(v.template get<14>());
+        o.pack(v.template get<15>());
+        o.pack(v.template get<16>());
+        o.pack(v.template get<17>());
+        o.pack(v.template get<18>());
+        o.pack(v.template get<19>());
+        o.pack(v.template get<20>());
+        o.pack(v.template get<21>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22>
-inline void operator<< (
-        msgpack::object::with_zone& o,
-        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22>& v) {
-    o.type = msgpack::type::ARRAY;
-    o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*23));
-    o.via.array.size = 23;
-    
-    o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
-    o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
-    o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
-    o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
-    o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
-    o.via.array.ptr[5] = msgpack::object(v.template get<5>(), o.zone);
-    o.via.array.ptr[6] = msgpack::object(v.template get<6>(), o.zone);
-    o.via.array.ptr[7] = msgpack::object(v.template get<7>(), o.zone);
-    o.via.array.ptr[8] = msgpack::object(v.template get<8>(), o.zone);
-    o.via.array.ptr[9] = msgpack::object(v.template get<9>(), o.zone);
-    o.via.array.ptr[10] = msgpack::object(v.template get<10>(), o.zone);
-    o.via.array.ptr[11] = msgpack::object(v.template get<11>(), o.zone);
-    o.via.array.ptr[12] = msgpack::object(v.template get<12>(), o.zone);
-    o.via.array.ptr[13] = msgpack::object(v.template get<13>(), o.zone);
-    o.via.array.ptr[14] = msgpack::object(v.template get<14>(), o.zone);
-    o.via.array.ptr[15] = msgpack::object(v.template get<15>(), o.zone);
-    o.via.array.ptr[16] = msgpack::object(v.template get<16>(), o.zone);
-    o.via.array.ptr[17] = msgpack::object(v.template get<17>(), o.zone);
-    o.via.array.ptr[18] = msgpack::object(v.template get<18>(), o.zone);
-    o.via.array.ptr[19] = msgpack::object(v.template get<19>(), o.zone);
-    o.via.array.ptr[20] = msgpack::object(v.template get<20>(), o.zone);
-    o.via.array.ptr[21] = msgpack::object(v.template get<21>(), o.zone);
-    o.via.array.ptr[22] = msgpack::object(v.template get<22>(), o.zone);
-}
+struct pack<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22> > {
+    template <typename Stream>
+    msgpack::packer<Stream>& operator()(
+        msgpack::packer<Stream>& o,
+        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22>& v) const {
+        o.pack_array(23);
+        
+        o.pack(v.template get<0>());
+        o.pack(v.template get<1>());
+        o.pack(v.template get<2>());
+        o.pack(v.template get<3>());
+        o.pack(v.template get<4>());
+        o.pack(v.template get<5>());
+        o.pack(v.template get<6>());
+        o.pack(v.template get<7>());
+        o.pack(v.template get<8>());
+        o.pack(v.template get<9>());
+        o.pack(v.template get<10>());
+        o.pack(v.template get<11>());
+        o.pack(v.template get<12>());
+        o.pack(v.template get<13>());
+        o.pack(v.template get<14>());
+        o.pack(v.template get<15>());
+        o.pack(v.template get<16>());
+        o.pack(v.template get<17>());
+        o.pack(v.template get<18>());
+        o.pack(v.template get<19>());
+        o.pack(v.template get<20>());
+        o.pack(v.template get<21>());
+        o.pack(v.template get<22>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23>
-inline void operator<< (
-        msgpack::object::with_zone& o,
-        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23>& v) {
-    o.type = msgpack::type::ARRAY;
-    o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*24));
-    o.via.array.size = 24;
-    
-    o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
-    o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
-    o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
-    o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
-    o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
-    o.via.array.ptr[5] = msgpack::object(v.template get<5>(), o.zone);
-    o.via.array.ptr[6] = msgpack::object(v.template get<6>(), o.zone);
-    o.via.array.ptr[7] = msgpack::object(v.template get<7>(), o.zone);
-    o.via.array.ptr[8] = msgpack::object(v.template get<8>(), o.zone);
-    o.via.array.ptr[9] = msgpack::object(v.template get<9>(), o.zone);
-    o.via.array.ptr[10] = msgpack::object(v.template get<10>(), o.zone);
-    o.via.array.ptr[11] = msgpack::object(v.template get<11>(), o.zone);
-    o.via.array.ptr[12] = msgpack::object(v.template get<12>(), o.zone);
-    o.via.array.ptr[13] = msgpack::object(v.template get<13>(), o.zone);
-    o.via.array.ptr[14] = msgpack::object(v.template get<14>(), o.zone);
-    o.via.array.ptr[15] = msgpack::object(v.template get<15>(), o.zone);
-    o.via.array.ptr[16] = msgpack::object(v.template get<16>(), o.zone);
-    o.via.array.ptr[17] = msgpack::object(v.template get<17>(), o.zone);
-    o.via.array.ptr[18] = msgpack::object(v.template get<18>(), o.zone);
-    o.via.array.ptr[19] = msgpack::object(v.template get<19>(), o.zone);
-    o.via.array.ptr[20] = msgpack::object(v.template get<20>(), o.zone);
-    o.via.array.ptr[21] = msgpack::object(v.template get<21>(), o.zone);
-    o.via.array.ptr[22] = msgpack::object(v.template get<22>(), o.zone);
-    o.via.array.ptr[23] = msgpack::object(v.template get<23>(), o.zone);
-}
+struct pack<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23> > {
+    template <typename Stream>
+    msgpack::packer<Stream>& operator()(
+        msgpack::packer<Stream>& o,
+        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23>& v) const {
+        o.pack_array(24);
+        
+        o.pack(v.template get<0>());
+        o.pack(v.template get<1>());
+        o.pack(v.template get<2>());
+        o.pack(v.template get<3>());
+        o.pack(v.template get<4>());
+        o.pack(v.template get<5>());
+        o.pack(v.template get<6>());
+        o.pack(v.template get<7>());
+        o.pack(v.template get<8>());
+        o.pack(v.template get<9>());
+        o.pack(v.template get<10>());
+        o.pack(v.template get<11>());
+        o.pack(v.template get<12>());
+        o.pack(v.template get<13>());
+        o.pack(v.template get<14>());
+        o.pack(v.template get<15>());
+        o.pack(v.template get<16>());
+        o.pack(v.template get<17>());
+        o.pack(v.template get<18>());
+        o.pack(v.template get<19>());
+        o.pack(v.template get<20>());
+        o.pack(v.template get<21>());
+        o.pack(v.template get<22>());
+        o.pack(v.template get<23>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24>
-inline void operator<< (
-        msgpack::object::with_zone& o,
-        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24>& v) {
-    o.type = msgpack::type::ARRAY;
-    o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*25));
-    o.via.array.size = 25;
-    
-    o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
-    o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
-    o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
-    o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
-    o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
-    o.via.array.ptr[5] = msgpack::object(v.template get<5>(), o.zone);
-    o.via.array.ptr[6] = msgpack::object(v.template get<6>(), o.zone);
-    o.via.array.ptr[7] = msgpack::object(v.template get<7>(), o.zone);
-    o.via.array.ptr[8] = msgpack::object(v.template get<8>(), o.zone);
-    o.via.array.ptr[9] = msgpack::object(v.template get<9>(), o.zone);
-    o.via.array.ptr[10] = msgpack::object(v.template get<10>(), o.zone);
-    o.via.array.ptr[11] = msgpack::object(v.template get<11>(), o.zone);
-    o.via.array.ptr[12] = msgpack::object(v.template get<12>(), o.zone);
-    o.via.array.ptr[13] = msgpack::object(v.template get<13>(), o.zone);
-    o.via.array.ptr[14] = msgpack::object(v.template get<14>(), o.zone);
-    o.via.array.ptr[15] = msgpack::object(v.template get<15>(), o.zone);
-    o.via.array.ptr[16] = msgpack::object(v.template get<16>(), o.zone);
-    o.via.array.ptr[17] = msgpack::object(v.template get<17>(), o.zone);
-    o.via.array.ptr[18] = msgpack::object(v.template get<18>(), o.zone);
-    o.via.array.ptr[19] = msgpack::object(v.template get<19>(), o.zone);
-    o.via.array.ptr[20] = msgpack::object(v.template get<20>(), o.zone);
-    o.via.array.ptr[21] = msgpack::object(v.template get<21>(), o.zone);
-    o.via.array.ptr[22] = msgpack::object(v.template get<22>(), o.zone);
-    o.via.array.ptr[23] = msgpack::object(v.template get<23>(), o.zone);
-    o.via.array.ptr[24] = msgpack::object(v.template get<24>(), o.zone);
-}
+struct pack<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24> > {
+    template <typename Stream>
+    msgpack::packer<Stream>& operator()(
+        msgpack::packer<Stream>& o,
+        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24>& v) const {
+        o.pack_array(25);
+        
+        o.pack(v.template get<0>());
+        o.pack(v.template get<1>());
+        o.pack(v.template get<2>());
+        o.pack(v.template get<3>());
+        o.pack(v.template get<4>());
+        o.pack(v.template get<5>());
+        o.pack(v.template get<6>());
+        o.pack(v.template get<7>());
+        o.pack(v.template get<8>());
+        o.pack(v.template get<9>());
+        o.pack(v.template get<10>());
+        o.pack(v.template get<11>());
+        o.pack(v.template get<12>());
+        o.pack(v.template get<13>());
+        o.pack(v.template get<14>());
+        o.pack(v.template get<15>());
+        o.pack(v.template get<16>());
+        o.pack(v.template get<17>());
+        o.pack(v.template get<18>());
+        o.pack(v.template get<19>());
+        o.pack(v.template get<20>());
+        o.pack(v.template get<21>());
+        o.pack(v.template get<22>());
+        o.pack(v.template get<23>());
+        o.pack(v.template get<24>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25>
-inline void operator<< (
-        msgpack::object::with_zone& o,
-        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25>& v) {
-    o.type = msgpack::type::ARRAY;
-    o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*26));
-    o.via.array.size = 26;
-    
-    o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
-    o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
-    o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
-    o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
-    o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
-    o.via.array.ptr[5] = msgpack::object(v.template get<5>(), o.zone);
-    o.via.array.ptr[6] = msgpack::object(v.template get<6>(), o.zone);
-    o.via.array.ptr[7] = msgpack::object(v.template get<7>(), o.zone);
-    o.via.array.ptr[8] = msgpack::object(v.template get<8>(), o.zone);
-    o.via.array.ptr[9] = msgpack::object(v.template get<9>(), o.zone);
-    o.via.array.ptr[10] = msgpack::object(v.template get<10>(), o.zone);
-    o.via.array.ptr[11] = msgpack::object(v.template get<11>(), o.zone);
-    o.via.array.ptr[12] = msgpack::object(v.template get<12>(), o.zone);
-    o.via.array.ptr[13] = msgpack::object(v.template get<13>(), o.zone);
-    o.via.array.ptr[14] = msgpack::object(v.template get<14>(), o.zone);
-    o.via.array.ptr[15] = msgpack::object(v.template get<15>(), o.zone);
-    o.via.array.ptr[16] = msgpack::object(v.template get<16>(), o.zone);
-    o.via.array.ptr[17] = msgpack::object(v.template get<17>(), o.zone);
-    o.via.array.ptr[18] = msgpack::object(v.template get<18>(), o.zone);
-    o.via.array.ptr[19] = msgpack::object(v.template get<19>(), o.zone);
-    o.via.array.ptr[20] = msgpack::object(v.template get<20>(), o.zone);
-    o.via.array.ptr[21] = msgpack::object(v.template get<21>(), o.zone);
-    o.via.array.ptr[22] = msgpack::object(v.template get<22>(), o.zone);
-    o.via.array.ptr[23] = msgpack::object(v.template get<23>(), o.zone);
-    o.via.array.ptr[24] = msgpack::object(v.template get<24>(), o.zone);
-    o.via.array.ptr[25] = msgpack::object(v.template get<25>(), o.zone);
-}
+struct pack<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25> > {
+    template <typename Stream>
+    msgpack::packer<Stream>& operator()(
+        msgpack::packer<Stream>& o,
+        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25>& v) const {
+        o.pack_array(26);
+        
+        o.pack(v.template get<0>());
+        o.pack(v.template get<1>());
+        o.pack(v.template get<2>());
+        o.pack(v.template get<3>());
+        o.pack(v.template get<4>());
+        o.pack(v.template get<5>());
+        o.pack(v.template get<6>());
+        o.pack(v.template get<7>());
+        o.pack(v.template get<8>());
+        o.pack(v.template get<9>());
+        o.pack(v.template get<10>());
+        o.pack(v.template get<11>());
+        o.pack(v.template get<12>());
+        o.pack(v.template get<13>());
+        o.pack(v.template get<14>());
+        o.pack(v.template get<15>());
+        o.pack(v.template get<16>());
+        o.pack(v.template get<17>());
+        o.pack(v.template get<18>());
+        o.pack(v.template get<19>());
+        o.pack(v.template get<20>());
+        o.pack(v.template get<21>());
+        o.pack(v.template get<22>());
+        o.pack(v.template get<23>());
+        o.pack(v.template get<24>());
+        o.pack(v.template get<25>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25, typename A26>
-inline void operator<< (
-        msgpack::object::with_zone& o,
-        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26>& v) {
-    o.type = msgpack::type::ARRAY;
-    o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*27));
-    o.via.array.size = 27;
-    
-    o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
-    o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
-    o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
-    o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
-    o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
-    o.via.array.ptr[5] = msgpack::object(v.template get<5>(), o.zone);
-    o.via.array.ptr[6] = msgpack::object(v.template get<6>(), o.zone);
-    o.via.array.ptr[7] = msgpack::object(v.template get<7>(), o.zone);
-    o.via.array.ptr[8] = msgpack::object(v.template get<8>(), o.zone);
-    o.via.array.ptr[9] = msgpack::object(v.template get<9>(), o.zone);
-    o.via.array.ptr[10] = msgpack::object(v.template get<10>(), o.zone);
-    o.via.array.ptr[11] = msgpack::object(v.template get<11>(), o.zone);
-    o.via.array.ptr[12] = msgpack::object(v.template get<12>(), o.zone);
-    o.via.array.ptr[13] = msgpack::object(v.template get<13>(), o.zone);
-    o.via.array.ptr[14] = msgpack::object(v.template get<14>(), o.zone);
-    o.via.array.ptr[15] = msgpack::object(v.template get<15>(), o.zone);
-    o.via.array.ptr[16] = msgpack::object(v.template get<16>(), o.zone);
-    o.via.array.ptr[17] = msgpack::object(v.template get<17>(), o.zone);
-    o.via.array.ptr[18] = msgpack::object(v.template get<18>(), o.zone);
-    o.via.array.ptr[19] = msgpack::object(v.template get<19>(), o.zone);
-    o.via.array.ptr[20] = msgpack::object(v.template get<20>(), o.zone);
-    o.via.array.ptr[21] = msgpack::object(v.template get<21>(), o.zone);
-    o.via.array.ptr[22] = msgpack::object(v.template get<22>(), o.zone);
-    o.via.array.ptr[23] = msgpack::object(v.template get<23>(), o.zone);
-    o.via.array.ptr[24] = msgpack::object(v.template get<24>(), o.zone);
-    o.via.array.ptr[25] = msgpack::object(v.template get<25>(), o.zone);
-    o.via.array.ptr[26] = msgpack::object(v.template get<26>(), o.zone);
-}
+struct pack<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26> > {
+    template <typename Stream>
+    msgpack::packer<Stream>& operator()(
+        msgpack::packer<Stream>& o,
+        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26>& v) const {
+        o.pack_array(27);
+        
+        o.pack(v.template get<0>());
+        o.pack(v.template get<1>());
+        o.pack(v.template get<2>());
+        o.pack(v.template get<3>());
+        o.pack(v.template get<4>());
+        o.pack(v.template get<5>());
+        o.pack(v.template get<6>());
+        o.pack(v.template get<7>());
+        o.pack(v.template get<8>());
+        o.pack(v.template get<9>());
+        o.pack(v.template get<10>());
+        o.pack(v.template get<11>());
+        o.pack(v.template get<12>());
+        o.pack(v.template get<13>());
+        o.pack(v.template get<14>());
+        o.pack(v.template get<15>());
+        o.pack(v.template get<16>());
+        o.pack(v.template get<17>());
+        o.pack(v.template get<18>());
+        o.pack(v.template get<19>());
+        o.pack(v.template get<20>());
+        o.pack(v.template get<21>());
+        o.pack(v.template get<22>());
+        o.pack(v.template get<23>());
+        o.pack(v.template get<24>());
+        o.pack(v.template get<25>());
+        o.pack(v.template get<26>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25, typename A26, typename A27>
-inline void operator<< (
-        msgpack::object::with_zone& o,
-        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27>& v) {
-    o.type = msgpack::type::ARRAY;
-    o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*28));
-    o.via.array.size = 28;
-    
-    o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
-    o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
-    o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
-    o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
-    o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
-    o.via.array.ptr[5] = msgpack::object(v.template get<5>(), o.zone);
-    o.via.array.ptr[6] = msgpack::object(v.template get<6>(), o.zone);
-    o.via.array.ptr[7] = msgpack::object(v.template get<7>(), o.zone);
-    o.via.array.ptr[8] = msgpack::object(v.template get<8>(), o.zone);
-    o.via.array.ptr[9] = msgpack::object(v.template get<9>(), o.zone);
-    o.via.array.ptr[10] = msgpack::object(v.template get<10>(), o.zone);
-    o.via.array.ptr[11] = msgpack::object(v.template get<11>(), o.zone);
-    o.via.array.ptr[12] = msgpack::object(v.template get<12>(), o.zone);
-    o.via.array.ptr[13] = msgpack::object(v.template get<13>(), o.zone);
-    o.via.array.ptr[14] = msgpack::object(v.template get<14>(), o.zone);
-    o.via.array.ptr[15] = msgpack::object(v.template get<15>(), o.zone);
-    o.via.array.ptr[16] = msgpack::object(v.template get<16>(), o.zone);
-    o.via.array.ptr[17] = msgpack::object(v.template get<17>(), o.zone);
-    o.via.array.ptr[18] = msgpack::object(v.template get<18>(), o.zone);
-    o.via.array.ptr[19] = msgpack::object(v.template get<19>(), o.zone);
-    o.via.array.ptr[20] = msgpack::object(v.template get<20>(), o.zone);
-    o.via.array.ptr[21] = msgpack::object(v.template get<21>(), o.zone);
-    o.via.array.ptr[22] = msgpack::object(v.template get<22>(), o.zone);
-    o.via.array.ptr[23] = msgpack::object(v.template get<23>(), o.zone);
-    o.via.array.ptr[24] = msgpack::object(v.template get<24>(), o.zone);
-    o.via.array.ptr[25] = msgpack::object(v.template get<25>(), o.zone);
-    o.via.array.ptr[26] = msgpack::object(v.template get<26>(), o.zone);
-    o.via.array.ptr[27] = msgpack::object(v.template get<27>(), o.zone);
-}
+struct pack<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27> > {
+    template <typename Stream>
+    msgpack::packer<Stream>& operator()(
+        msgpack::packer<Stream>& o,
+        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27>& v) const {
+        o.pack_array(28);
+        
+        o.pack(v.template get<0>());
+        o.pack(v.template get<1>());
+        o.pack(v.template get<2>());
+        o.pack(v.template get<3>());
+        o.pack(v.template get<4>());
+        o.pack(v.template get<5>());
+        o.pack(v.template get<6>());
+        o.pack(v.template get<7>());
+        o.pack(v.template get<8>());
+        o.pack(v.template get<9>());
+        o.pack(v.template get<10>());
+        o.pack(v.template get<11>());
+        o.pack(v.template get<12>());
+        o.pack(v.template get<13>());
+        o.pack(v.template get<14>());
+        o.pack(v.template get<15>());
+        o.pack(v.template get<16>());
+        o.pack(v.template get<17>());
+        o.pack(v.template get<18>());
+        o.pack(v.template get<19>());
+        o.pack(v.template get<20>());
+        o.pack(v.template get<21>());
+        o.pack(v.template get<22>());
+        o.pack(v.template get<23>());
+        o.pack(v.template get<24>());
+        o.pack(v.template get<25>());
+        o.pack(v.template get<26>());
+        o.pack(v.template get<27>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25, typename A26, typename A27, typename A28>
-inline void operator<< (
-        msgpack::object::with_zone& o,
-        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28>& v) {
-    o.type = msgpack::type::ARRAY;
-    o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*29));
-    o.via.array.size = 29;
-    
-    o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
-    o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
-    o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
-    o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
-    o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
-    o.via.array.ptr[5] = msgpack::object(v.template get<5>(), o.zone);
-    o.via.array.ptr[6] = msgpack::object(v.template get<6>(), o.zone);
-    o.via.array.ptr[7] = msgpack::object(v.template get<7>(), o.zone);
-    o.via.array.ptr[8] = msgpack::object(v.template get<8>(), o.zone);
-    o.via.array.ptr[9] = msgpack::object(v.template get<9>(), o.zone);
-    o.via.array.ptr[10] = msgpack::object(v.template get<10>(), o.zone);
-    o.via.array.ptr[11] = msgpack::object(v.template get<11>(), o.zone);
-    o.via.array.ptr[12] = msgpack::object(v.template get<12>(), o.zone);
-    o.via.array.ptr[13] = msgpack::object(v.template get<13>(), o.zone);
-    o.via.array.ptr[14] = msgpack::object(v.template get<14>(), o.zone);
-    o.via.array.ptr[15] = msgpack::object(v.template get<15>(), o.zone);
-    o.via.array.ptr[16] = msgpack::object(v.template get<16>(), o.zone);
-    o.via.array.ptr[17] = msgpack::object(v.template get<17>(), o.zone);
-    o.via.array.ptr[18] = msgpack::object(v.template get<18>(), o.zone);
-    o.via.array.ptr[19] = msgpack::object(v.template get<19>(), o.zone);
-    o.via.array.ptr[20] = msgpack::object(v.template get<20>(), o.zone);
-    o.via.array.ptr[21] = msgpack::object(v.template get<21>(), o.zone);
-    o.via.array.ptr[22] = msgpack::object(v.template get<22>(), o.zone);
-    o.via.array.ptr[23] = msgpack::object(v.template get<23>(), o.zone);
-    o.via.array.ptr[24] = msgpack::object(v.template get<24>(), o.zone);
-    o.via.array.ptr[25] = msgpack::object(v.template get<25>(), o.zone);
-    o.via.array.ptr[26] = msgpack::object(v.template get<26>(), o.zone);
-    o.via.array.ptr[27] = msgpack::object(v.template get<27>(), o.zone);
-    o.via.array.ptr[28] = msgpack::object(v.template get<28>(), o.zone);
-}
+struct pack<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28> > {
+    template <typename Stream>
+    msgpack::packer<Stream>& operator()(
+        msgpack::packer<Stream>& o,
+        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28>& v) const {
+        o.pack_array(29);
+        
+        o.pack(v.template get<0>());
+        o.pack(v.template get<1>());
+        o.pack(v.template get<2>());
+        o.pack(v.template get<3>());
+        o.pack(v.template get<4>());
+        o.pack(v.template get<5>());
+        o.pack(v.template get<6>());
+        o.pack(v.template get<7>());
+        o.pack(v.template get<8>());
+        o.pack(v.template get<9>());
+        o.pack(v.template get<10>());
+        o.pack(v.template get<11>());
+        o.pack(v.template get<12>());
+        o.pack(v.template get<13>());
+        o.pack(v.template get<14>());
+        o.pack(v.template get<15>());
+        o.pack(v.template get<16>());
+        o.pack(v.template get<17>());
+        o.pack(v.template get<18>());
+        o.pack(v.template get<19>());
+        o.pack(v.template get<20>());
+        o.pack(v.template get<21>());
+        o.pack(v.template get<22>());
+        o.pack(v.template get<23>());
+        o.pack(v.template get<24>());
+        o.pack(v.template get<25>());
+        o.pack(v.template get<26>());
+        o.pack(v.template get<27>());
+        o.pack(v.template get<28>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25, typename A26, typename A27, typename A28, typename A29>
-inline void operator<< (
-        msgpack::object::with_zone& o,
-        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29>& v) {
-    o.type = msgpack::type::ARRAY;
-    o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*30));
-    o.via.array.size = 30;
-    
-    o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
-    o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
-    o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
-    o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
-    o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
-    o.via.array.ptr[5] = msgpack::object(v.template get<5>(), o.zone);
-    o.via.array.ptr[6] = msgpack::object(v.template get<6>(), o.zone);
-    o.via.array.ptr[7] = msgpack::object(v.template get<7>(), o.zone);
-    o.via.array.ptr[8] = msgpack::object(v.template get<8>(), o.zone);
-    o.via.array.ptr[9] = msgpack::object(v.template get<9>(), o.zone);
-    o.via.array.ptr[10] = msgpack::object(v.template get<10>(), o.zone);
-    o.via.array.ptr[11] = msgpack::object(v.template get<11>(), o.zone);
-    o.via.array.ptr[12] = msgpack::object(v.template get<12>(), o.zone);
-    o.via.array.ptr[13] = msgpack::object(v.template get<13>(), o.zone);
-    o.via.array.ptr[14] = msgpack::object(v.template get<14>(), o.zone);
-    o.via.array.ptr[15] = msgpack::object(v.template get<15>(), o.zone);
-    o.via.array.ptr[16] = msgpack::object(v.template get<16>(), o.zone);
-    o.via.array.ptr[17] = msgpack::object(v.template get<17>(), o.zone);
-    o.via.array.ptr[18] = msgpack::object(v.template get<18>(), o.zone);
-    o.via.array.ptr[19] = msgpack::object(v.template get<19>(), o.zone);
-    o.via.array.ptr[20] = msgpack::object(v.template get<20>(), o.zone);
-    o.via.array.ptr[21] = msgpack::object(v.template get<21>(), o.zone);
-    o.via.array.ptr[22] = msgpack::object(v.template get<22>(), o.zone);
-    o.via.array.ptr[23] = msgpack::object(v.template get<23>(), o.zone);
-    o.via.array.ptr[24] = msgpack::object(v.template get<24>(), o.zone);
-    o.via.array.ptr[25] = msgpack::object(v.template get<25>(), o.zone);
-    o.via.array.ptr[26] = msgpack::object(v.template get<26>(), o.zone);
-    o.via.array.ptr[27] = msgpack::object(v.template get<27>(), o.zone);
-    o.via.array.ptr[28] = msgpack::object(v.template get<28>(), o.zone);
-    o.via.array.ptr[29] = msgpack::object(v.template get<29>(), o.zone);
-}
+struct pack<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29> > {
+    template <typename Stream>
+    msgpack::packer<Stream>& operator()(
+        msgpack::packer<Stream>& o,
+        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29>& v) const {
+        o.pack_array(30);
+        
+        o.pack(v.template get<0>());
+        o.pack(v.template get<1>());
+        o.pack(v.template get<2>());
+        o.pack(v.template get<3>());
+        o.pack(v.template get<4>());
+        o.pack(v.template get<5>());
+        o.pack(v.template get<6>());
+        o.pack(v.template get<7>());
+        o.pack(v.template get<8>());
+        o.pack(v.template get<9>());
+        o.pack(v.template get<10>());
+        o.pack(v.template get<11>());
+        o.pack(v.template get<12>());
+        o.pack(v.template get<13>());
+        o.pack(v.template get<14>());
+        o.pack(v.template get<15>());
+        o.pack(v.template get<16>());
+        o.pack(v.template get<17>());
+        o.pack(v.template get<18>());
+        o.pack(v.template get<19>());
+        o.pack(v.template get<20>());
+        o.pack(v.template get<21>());
+        o.pack(v.template get<22>());
+        o.pack(v.template get<23>());
+        o.pack(v.template get<24>());
+        o.pack(v.template get<25>());
+        o.pack(v.template get<26>());
+        o.pack(v.template get<27>());
+        o.pack(v.template get<28>());
+        o.pack(v.template get<29>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25, typename A26, typename A27, typename A28, typename A29, typename A30>
-inline void operator<< (
-        msgpack::object::with_zone& o,
-        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30>& v) {
-    o.type = msgpack::type::ARRAY;
-    o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*31));
-    o.via.array.size = 31;
-    
-    o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
-    o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
-    o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
-    o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
-    o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
-    o.via.array.ptr[5] = msgpack::object(v.template get<5>(), o.zone);
-    o.via.array.ptr[6] = msgpack::object(v.template get<6>(), o.zone);
-    o.via.array.ptr[7] = msgpack::object(v.template get<7>(), o.zone);
-    o.via.array.ptr[8] = msgpack::object(v.template get<8>(), o.zone);
-    o.via.array.ptr[9] = msgpack::object(v.template get<9>(), o.zone);
-    o.via.array.ptr[10] = msgpack::object(v.template get<10>(), o.zone);
-    o.via.array.ptr[11] = msgpack::object(v.template get<11>(), o.zone);
-    o.via.array.ptr[12] = msgpack::object(v.template get<12>(), o.zone);
-    o.via.array.ptr[13] = msgpack::object(v.template get<13>(), o.zone);
-    o.via.array.ptr[14] = msgpack::object(v.template get<14>(), o.zone);
-    o.via.array.ptr[15] = msgpack::object(v.template get<15>(), o.zone);
-    o.via.array.ptr[16] = msgpack::object(v.template get<16>(), o.zone);
-    o.via.array.ptr[17] = msgpack::object(v.template get<17>(), o.zone);
-    o.via.array.ptr[18] = msgpack::object(v.template get<18>(), o.zone);
-    o.via.array.ptr[19] = msgpack::object(v.template get<19>(), o.zone);
-    o.via.array.ptr[20] = msgpack::object(v.template get<20>(), o.zone);
-    o.via.array.ptr[21] = msgpack::object(v.template get<21>(), o.zone);
-    o.via.array.ptr[22] = msgpack::object(v.template get<22>(), o.zone);
-    o.via.array.ptr[23] = msgpack::object(v.template get<23>(), o.zone);
-    o.via.array.ptr[24] = msgpack::object(v.template get<24>(), o.zone);
-    o.via.array.ptr[25] = msgpack::object(v.template get<25>(), o.zone);
-    o.via.array.ptr[26] = msgpack::object(v.template get<26>(), o.zone);
-    o.via.array.ptr[27] = msgpack::object(v.template get<27>(), o.zone);
-    o.via.array.ptr[28] = msgpack::object(v.template get<28>(), o.zone);
-    o.via.array.ptr[29] = msgpack::object(v.template get<29>(), o.zone);
-    o.via.array.ptr[30] = msgpack::object(v.template get<30>(), o.zone);
-}
+struct pack<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30> > {
+    template <typename Stream>
+    msgpack::packer<Stream>& operator()(
+        msgpack::packer<Stream>& o,
+        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30>& v) const {
+        o.pack_array(31);
+        
+        o.pack(v.template get<0>());
+        o.pack(v.template get<1>());
+        o.pack(v.template get<2>());
+        o.pack(v.template get<3>());
+        o.pack(v.template get<4>());
+        o.pack(v.template get<5>());
+        o.pack(v.template get<6>());
+        o.pack(v.template get<7>());
+        o.pack(v.template get<8>());
+        o.pack(v.template get<9>());
+        o.pack(v.template get<10>());
+        o.pack(v.template get<11>());
+        o.pack(v.template get<12>());
+        o.pack(v.template get<13>());
+        o.pack(v.template get<14>());
+        o.pack(v.template get<15>());
+        o.pack(v.template get<16>());
+        o.pack(v.template get<17>());
+        o.pack(v.template get<18>());
+        o.pack(v.template get<19>());
+        o.pack(v.template get<20>());
+        o.pack(v.template get<21>());
+        o.pack(v.template get<22>());
+        o.pack(v.template get<23>());
+        o.pack(v.template get<24>());
+        o.pack(v.template get<25>());
+        o.pack(v.template get<26>());
+        o.pack(v.template get<27>());
+        o.pack(v.template get<28>());
+        o.pack(v.template get<29>());
+        o.pack(v.template get<30>());
+        return o;
+    }
+};
 
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25, typename A26, typename A27, typename A28, typename A29, typename A30, typename A31>
-inline void operator<< (
-        msgpack::object::with_zone& o,
-        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30, A31>& v) {
-    o.type = msgpack::type::ARRAY;
-    o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*32));
-    o.via.array.size = 32;
-    
-    o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
-    o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
-    o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
-    o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
-    o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
-    o.via.array.ptr[5] = msgpack::object(v.template get<5>(), o.zone);
-    o.via.array.ptr[6] = msgpack::object(v.template get<6>(), o.zone);
-    o.via.array.ptr[7] = msgpack::object(v.template get<7>(), o.zone);
-    o.via.array.ptr[8] = msgpack::object(v.template get<8>(), o.zone);
-    o.via.array.ptr[9] = msgpack::object(v.template get<9>(), o.zone);
-    o.via.array.ptr[10] = msgpack::object(v.template get<10>(), o.zone);
-    o.via.array.ptr[11] = msgpack::object(v.template get<11>(), o.zone);
-    o.via.array.ptr[12] = msgpack::object(v.template get<12>(), o.zone);
-    o.via.array.ptr[13] = msgpack::object(v.template get<13>(), o.zone);
-    o.via.array.ptr[14] = msgpack::object(v.template get<14>(), o.zone);
-    o.via.array.ptr[15] = msgpack::object(v.template get<15>(), o.zone);
-    o.via.array.ptr[16] = msgpack::object(v.template get<16>(), o.zone);
-    o.via.array.ptr[17] = msgpack::object(v.template get<17>(), o.zone);
-    o.via.array.ptr[18] = msgpack::object(v.template get<18>(), o.zone);
-    o.via.array.ptr[19] = msgpack::object(v.template get<19>(), o.zone);
-    o.via.array.ptr[20] = msgpack::object(v.template get<20>(), o.zone);
-    o.via.array.ptr[21] = msgpack::object(v.template get<21>(), o.zone);
-    o.via.array.ptr[22] = msgpack::object(v.template get<22>(), o.zone);
-    o.via.array.ptr[23] = msgpack::object(v.template get<23>(), o.zone);
-    o.via.array.ptr[24] = msgpack::object(v.template get<24>(), o.zone);
-    o.via.array.ptr[25] = msgpack::object(v.template get<25>(), o.zone);
-    o.via.array.ptr[26] = msgpack::object(v.template get<26>(), o.zone);
-    o.via.array.ptr[27] = msgpack::object(v.template get<27>(), o.zone);
-    o.via.array.ptr[28] = msgpack::object(v.template get<28>(), o.zone);
-    o.via.array.ptr[29] = msgpack::object(v.template get<29>(), o.zone);
-    o.via.array.ptr[30] = msgpack::object(v.template get<30>(), o.zone);
-    o.via.array.ptr[31] = msgpack::object(v.template get<31>(), o.zone);
-}
+struct pack<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30, A31> > {
+    template <typename Stream>
+    msgpack::packer<Stream>& operator()(
+        msgpack::packer<Stream>& o,
+        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30, A31>& v) const {
+        o.pack_array(32);
+        
+        o.pack(v.template get<0>());
+        o.pack(v.template get<1>());
+        o.pack(v.template get<2>());
+        o.pack(v.template get<3>());
+        o.pack(v.template get<4>());
+        o.pack(v.template get<5>());
+        o.pack(v.template get<6>());
+        o.pack(v.template get<7>());
+        o.pack(v.template get<8>());
+        o.pack(v.template get<9>());
+        o.pack(v.template get<10>());
+        o.pack(v.template get<11>());
+        o.pack(v.template get<12>());
+        o.pack(v.template get<13>());
+        o.pack(v.template get<14>());
+        o.pack(v.template get<15>());
+        o.pack(v.template get<16>());
+        o.pack(v.template get<17>());
+        o.pack(v.template get<18>());
+        o.pack(v.template get<19>());
+        o.pack(v.template get<20>());
+        o.pack(v.template get<21>());
+        o.pack(v.template get<22>());
+        o.pack(v.template get<23>());
+        o.pack(v.template get<24>());
+        o.pack(v.template get<25>());
+        o.pack(v.template get<26>());
+        o.pack(v.template get<27>());
+        o.pack(v.template get<28>());
+        o.pack(v.template get<29>());
+        o.pack(v.template get<30>());
+        o.pack(v.template get<31>());
+        return o;
+    }
+};
 
+
+template <>
+struct object_with_zone<type::tuple<> > {
+    void operator()(
+        msgpack::object::with_zone& o,
+        const type::tuple<>&) const {
+        o.type = msgpack::type::ARRAY;
+        o.via.array.ptr = nullptr;
+        o.via.array.size = 0;
+    }
+};
+
+
+template <typename A0>
+struct object_with_zone<type::tuple<A0> > {
+    void operator()(
+        msgpack::object::with_zone& o,
+        const type::tuple<A0>& v) const {
+        o.type = msgpack::type::ARRAY;
+        o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*1));
+        o.via.array.size = 1;
+        
+        o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
+    }
+};
+
+template <typename A0, typename A1>
+struct object_with_zone<type::tuple<A0, A1> > {
+    void operator()(
+        msgpack::object::with_zone& o,
+        const type::tuple<A0, A1>& v) const {
+        o.type = msgpack::type::ARRAY;
+        o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*2));
+        o.via.array.size = 2;
+        
+        o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
+        o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
+    }
+};
+
+template <typename A0, typename A1, typename A2>
+struct object_with_zone<type::tuple<A0, A1, A2> > {
+    void operator()(
+        msgpack::object::with_zone& o,
+        const type::tuple<A0, A1, A2>& v) const {
+        o.type = msgpack::type::ARRAY;
+        o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*3));
+        o.via.array.size = 3;
+        
+        o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
+        o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
+        o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
+    }
+};
+
+template <typename A0, typename A1, typename A2, typename A3>
+struct object_with_zone<type::tuple<A0, A1, A2, A3> > {
+    void operator()(
+        msgpack::object::with_zone& o,
+        const type::tuple<A0, A1, A2, A3>& v) const {
+        o.type = msgpack::type::ARRAY;
+        o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*4));
+        o.via.array.size = 4;
+        
+        o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
+        o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
+        o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
+        o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
+    }
+};
+
+template <typename A0, typename A1, typename A2, typename A3, typename A4>
+struct object_with_zone<type::tuple<A0, A1, A2, A3, A4> > {
+    void operator()(
+        msgpack::object::with_zone& o,
+        const type::tuple<A0, A1, A2, A3, A4>& v) const {
+        o.type = msgpack::type::ARRAY;
+        o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*5));
+        o.via.array.size = 5;
+        
+        o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
+        o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
+        o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
+        o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
+        o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
+    }
+};
+
+template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5>
+struct object_with_zone<type::tuple<A0, A1, A2, A3, A4, A5> > {
+    void operator()(
+        msgpack::object::with_zone& o,
+        const type::tuple<A0, A1, A2, A3, A4, A5>& v) const {
+        o.type = msgpack::type::ARRAY;
+        o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*6));
+        o.via.array.size = 6;
+        
+        o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
+        o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
+        o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
+        o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
+        o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
+        o.via.array.ptr[5] = msgpack::object(v.template get<5>(), o.zone);
+    }
+};
+
+template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6>
+struct object_with_zone<type::tuple<A0, A1, A2, A3, A4, A5, A6> > {
+    void operator()(
+        msgpack::object::with_zone& o,
+        const type::tuple<A0, A1, A2, A3, A4, A5, A6>& v) const {
+        o.type = msgpack::type::ARRAY;
+        o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*7));
+        o.via.array.size = 7;
+        
+        o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
+        o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
+        o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
+        o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
+        o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
+        o.via.array.ptr[5] = msgpack::object(v.template get<5>(), o.zone);
+        o.via.array.ptr[6] = msgpack::object(v.template get<6>(), o.zone);
+    }
+};
+
+template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7>
+struct object_with_zone<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7> > {
+    void operator()(
+        msgpack::object::with_zone& o,
+        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7>& v) const {
+        o.type = msgpack::type::ARRAY;
+        o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*8));
+        o.via.array.size = 8;
+        
+        o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
+        o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
+        o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
+        o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
+        o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
+        o.via.array.ptr[5] = msgpack::object(v.template get<5>(), o.zone);
+        o.via.array.ptr[6] = msgpack::object(v.template get<6>(), o.zone);
+        o.via.array.ptr[7] = msgpack::object(v.template get<7>(), o.zone);
+    }
+};
+
+template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8>
+struct object_with_zone<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8> > {
+    void operator()(
+        msgpack::object::with_zone& o,
+        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8>& v) const {
+        o.type = msgpack::type::ARRAY;
+        o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*9));
+        o.via.array.size = 9;
+        
+        o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
+        o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
+        o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
+        o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
+        o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
+        o.via.array.ptr[5] = msgpack::object(v.template get<5>(), o.zone);
+        o.via.array.ptr[6] = msgpack::object(v.template get<6>(), o.zone);
+        o.via.array.ptr[7] = msgpack::object(v.template get<7>(), o.zone);
+        o.via.array.ptr[8] = msgpack::object(v.template get<8>(), o.zone);
+    }
+};
+
+template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9>
+struct object_with_zone<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9> > {
+    void operator()(
+        msgpack::object::with_zone& o,
+        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9>& v) const {
+        o.type = msgpack::type::ARRAY;
+        o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*10));
+        o.via.array.size = 10;
+        
+        o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
+        o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
+        o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
+        o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
+        o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
+        o.via.array.ptr[5] = msgpack::object(v.template get<5>(), o.zone);
+        o.via.array.ptr[6] = msgpack::object(v.template get<6>(), o.zone);
+        o.via.array.ptr[7] = msgpack::object(v.template get<7>(), o.zone);
+        o.via.array.ptr[8] = msgpack::object(v.template get<8>(), o.zone);
+        o.via.array.ptr[9] = msgpack::object(v.template get<9>(), o.zone);
+    }
+};
+
+template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10>
+struct object_with_zone<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10> > {
+    void operator()(
+        msgpack::object::with_zone& o,
+        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10>& v) const {
+        o.type = msgpack::type::ARRAY;
+        o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*11));
+        o.via.array.size = 11;
+        
+        o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
+        o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
+        o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
+        o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
+        o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
+        o.via.array.ptr[5] = msgpack::object(v.template get<5>(), o.zone);
+        o.via.array.ptr[6] = msgpack::object(v.template get<6>(), o.zone);
+        o.via.array.ptr[7] = msgpack::object(v.template get<7>(), o.zone);
+        o.via.array.ptr[8] = msgpack::object(v.template get<8>(), o.zone);
+        o.via.array.ptr[9] = msgpack::object(v.template get<9>(), o.zone);
+        o.via.array.ptr[10] = msgpack::object(v.template get<10>(), o.zone);
+    }
+};
+
+template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11>
+struct object_with_zone<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11> > {
+    void operator()(
+        msgpack::object::with_zone& o,
+        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11>& v) const {
+        o.type = msgpack::type::ARRAY;
+        o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*12));
+        o.via.array.size = 12;
+        
+        o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
+        o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
+        o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
+        o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
+        o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
+        o.via.array.ptr[5] = msgpack::object(v.template get<5>(), o.zone);
+        o.via.array.ptr[6] = msgpack::object(v.template get<6>(), o.zone);
+        o.via.array.ptr[7] = msgpack::object(v.template get<7>(), o.zone);
+        o.via.array.ptr[8] = msgpack::object(v.template get<8>(), o.zone);
+        o.via.array.ptr[9] = msgpack::object(v.template get<9>(), o.zone);
+        o.via.array.ptr[10] = msgpack::object(v.template get<10>(), o.zone);
+        o.via.array.ptr[11] = msgpack::object(v.template get<11>(), o.zone);
+    }
+};
+
+template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12>
+struct object_with_zone<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12> > {
+    void operator()(
+        msgpack::object::with_zone& o,
+        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12>& v) const {
+        o.type = msgpack::type::ARRAY;
+        o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*13));
+        o.via.array.size = 13;
+        
+        o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
+        o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
+        o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
+        o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
+        o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
+        o.via.array.ptr[5] = msgpack::object(v.template get<5>(), o.zone);
+        o.via.array.ptr[6] = msgpack::object(v.template get<6>(), o.zone);
+        o.via.array.ptr[7] = msgpack::object(v.template get<7>(), o.zone);
+        o.via.array.ptr[8] = msgpack::object(v.template get<8>(), o.zone);
+        o.via.array.ptr[9] = msgpack::object(v.template get<9>(), o.zone);
+        o.via.array.ptr[10] = msgpack::object(v.template get<10>(), o.zone);
+        o.via.array.ptr[11] = msgpack::object(v.template get<11>(), o.zone);
+        o.via.array.ptr[12] = msgpack::object(v.template get<12>(), o.zone);
+    }
+};
+
+template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13>
+struct object_with_zone<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13> > {
+    void operator()(
+        msgpack::object::with_zone& o,
+        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13>& v) const {
+        o.type = msgpack::type::ARRAY;
+        o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*14));
+        o.via.array.size = 14;
+        
+        o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
+        o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
+        o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
+        o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
+        o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
+        o.via.array.ptr[5] = msgpack::object(v.template get<5>(), o.zone);
+        o.via.array.ptr[6] = msgpack::object(v.template get<6>(), o.zone);
+        o.via.array.ptr[7] = msgpack::object(v.template get<7>(), o.zone);
+        o.via.array.ptr[8] = msgpack::object(v.template get<8>(), o.zone);
+        o.via.array.ptr[9] = msgpack::object(v.template get<9>(), o.zone);
+        o.via.array.ptr[10] = msgpack::object(v.template get<10>(), o.zone);
+        o.via.array.ptr[11] = msgpack::object(v.template get<11>(), o.zone);
+        o.via.array.ptr[12] = msgpack::object(v.template get<12>(), o.zone);
+        o.via.array.ptr[13] = msgpack::object(v.template get<13>(), o.zone);
+    }
+};
+
+template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14>
+struct object_with_zone<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14> > {
+    void operator()(
+        msgpack::object::with_zone& o,
+        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14>& v) const {
+        o.type = msgpack::type::ARRAY;
+        o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*15));
+        o.via.array.size = 15;
+        
+        o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
+        o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
+        o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
+        o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
+        o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
+        o.via.array.ptr[5] = msgpack::object(v.template get<5>(), o.zone);
+        o.via.array.ptr[6] = msgpack::object(v.template get<6>(), o.zone);
+        o.via.array.ptr[7] = msgpack::object(v.template get<7>(), o.zone);
+        o.via.array.ptr[8] = msgpack::object(v.template get<8>(), o.zone);
+        o.via.array.ptr[9] = msgpack::object(v.template get<9>(), o.zone);
+        o.via.array.ptr[10] = msgpack::object(v.template get<10>(), o.zone);
+        o.via.array.ptr[11] = msgpack::object(v.template get<11>(), o.zone);
+        o.via.array.ptr[12] = msgpack::object(v.template get<12>(), o.zone);
+        o.via.array.ptr[13] = msgpack::object(v.template get<13>(), o.zone);
+        o.via.array.ptr[14] = msgpack::object(v.template get<14>(), o.zone);
+    }
+};
+
+template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15>
+struct object_with_zone<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15> > {
+    void operator()(
+        msgpack::object::with_zone& o,
+        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15>& v) const {
+        o.type = msgpack::type::ARRAY;
+        o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*16));
+        o.via.array.size = 16;
+        
+        o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
+        o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
+        o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
+        o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
+        o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
+        o.via.array.ptr[5] = msgpack::object(v.template get<5>(), o.zone);
+        o.via.array.ptr[6] = msgpack::object(v.template get<6>(), o.zone);
+        o.via.array.ptr[7] = msgpack::object(v.template get<7>(), o.zone);
+        o.via.array.ptr[8] = msgpack::object(v.template get<8>(), o.zone);
+        o.via.array.ptr[9] = msgpack::object(v.template get<9>(), o.zone);
+        o.via.array.ptr[10] = msgpack::object(v.template get<10>(), o.zone);
+        o.via.array.ptr[11] = msgpack::object(v.template get<11>(), o.zone);
+        o.via.array.ptr[12] = msgpack::object(v.template get<12>(), o.zone);
+        o.via.array.ptr[13] = msgpack::object(v.template get<13>(), o.zone);
+        o.via.array.ptr[14] = msgpack::object(v.template get<14>(), o.zone);
+        o.via.array.ptr[15] = msgpack::object(v.template get<15>(), o.zone);
+    }
+};
+
+template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16>
+struct object_with_zone<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16> > {
+    void operator()(
+        msgpack::object::with_zone& o,
+        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16>& v) const {
+        o.type = msgpack::type::ARRAY;
+        o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*17));
+        o.via.array.size = 17;
+        
+        o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
+        o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
+        o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
+        o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
+        o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
+        o.via.array.ptr[5] = msgpack::object(v.template get<5>(), o.zone);
+        o.via.array.ptr[6] = msgpack::object(v.template get<6>(), o.zone);
+        o.via.array.ptr[7] = msgpack::object(v.template get<7>(), o.zone);
+        o.via.array.ptr[8] = msgpack::object(v.template get<8>(), o.zone);
+        o.via.array.ptr[9] = msgpack::object(v.template get<9>(), o.zone);
+        o.via.array.ptr[10] = msgpack::object(v.template get<10>(), o.zone);
+        o.via.array.ptr[11] = msgpack::object(v.template get<11>(), o.zone);
+        o.via.array.ptr[12] = msgpack::object(v.template get<12>(), o.zone);
+        o.via.array.ptr[13] = msgpack::object(v.template get<13>(), o.zone);
+        o.via.array.ptr[14] = msgpack::object(v.template get<14>(), o.zone);
+        o.via.array.ptr[15] = msgpack::object(v.template get<15>(), o.zone);
+        o.via.array.ptr[16] = msgpack::object(v.template get<16>(), o.zone);
+    }
+};
+
+template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17>
+struct object_with_zone<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17> > {
+    void operator()(
+        msgpack::object::with_zone& o,
+        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17>& v) const {
+        o.type = msgpack::type::ARRAY;
+        o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*18));
+        o.via.array.size = 18;
+        
+        o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
+        o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
+        o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
+        o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
+        o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
+        o.via.array.ptr[5] = msgpack::object(v.template get<5>(), o.zone);
+        o.via.array.ptr[6] = msgpack::object(v.template get<6>(), o.zone);
+        o.via.array.ptr[7] = msgpack::object(v.template get<7>(), o.zone);
+        o.via.array.ptr[8] = msgpack::object(v.template get<8>(), o.zone);
+        o.via.array.ptr[9] = msgpack::object(v.template get<9>(), o.zone);
+        o.via.array.ptr[10] = msgpack::object(v.template get<10>(), o.zone);
+        o.via.array.ptr[11] = msgpack::object(v.template get<11>(), o.zone);
+        o.via.array.ptr[12] = msgpack::object(v.template get<12>(), o.zone);
+        o.via.array.ptr[13] = msgpack::object(v.template get<13>(), o.zone);
+        o.via.array.ptr[14] = msgpack::object(v.template get<14>(), o.zone);
+        o.via.array.ptr[15] = msgpack::object(v.template get<15>(), o.zone);
+        o.via.array.ptr[16] = msgpack::object(v.template get<16>(), o.zone);
+        o.via.array.ptr[17] = msgpack::object(v.template get<17>(), o.zone);
+    }
+};
+
+template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18>
+struct object_with_zone<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18> > {
+    void operator()(
+        msgpack::object::with_zone& o,
+        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18>& v) const {
+        o.type = msgpack::type::ARRAY;
+        o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*19));
+        o.via.array.size = 19;
+        
+        o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
+        o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
+        o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
+        o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
+        o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
+        o.via.array.ptr[5] = msgpack::object(v.template get<5>(), o.zone);
+        o.via.array.ptr[6] = msgpack::object(v.template get<6>(), o.zone);
+        o.via.array.ptr[7] = msgpack::object(v.template get<7>(), o.zone);
+        o.via.array.ptr[8] = msgpack::object(v.template get<8>(), o.zone);
+        o.via.array.ptr[9] = msgpack::object(v.template get<9>(), o.zone);
+        o.via.array.ptr[10] = msgpack::object(v.template get<10>(), o.zone);
+        o.via.array.ptr[11] = msgpack::object(v.template get<11>(), o.zone);
+        o.via.array.ptr[12] = msgpack::object(v.template get<12>(), o.zone);
+        o.via.array.ptr[13] = msgpack::object(v.template get<13>(), o.zone);
+        o.via.array.ptr[14] = msgpack::object(v.template get<14>(), o.zone);
+        o.via.array.ptr[15] = msgpack::object(v.template get<15>(), o.zone);
+        o.via.array.ptr[16] = msgpack::object(v.template get<16>(), o.zone);
+        o.via.array.ptr[17] = msgpack::object(v.template get<17>(), o.zone);
+        o.via.array.ptr[18] = msgpack::object(v.template get<18>(), o.zone);
+    }
+};
+
+template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19>
+struct object_with_zone<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19> > {
+    void operator()(
+        msgpack::object::with_zone& o,
+        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19>& v) const {
+        o.type = msgpack::type::ARRAY;
+        o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*20));
+        o.via.array.size = 20;
+        
+        o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
+        o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
+        o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
+        o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
+        o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
+        o.via.array.ptr[5] = msgpack::object(v.template get<5>(), o.zone);
+        o.via.array.ptr[6] = msgpack::object(v.template get<6>(), o.zone);
+        o.via.array.ptr[7] = msgpack::object(v.template get<7>(), o.zone);
+        o.via.array.ptr[8] = msgpack::object(v.template get<8>(), o.zone);
+        o.via.array.ptr[9] = msgpack::object(v.template get<9>(), o.zone);
+        o.via.array.ptr[10] = msgpack::object(v.template get<10>(), o.zone);
+        o.via.array.ptr[11] = msgpack::object(v.template get<11>(), o.zone);
+        o.via.array.ptr[12] = msgpack::object(v.template get<12>(), o.zone);
+        o.via.array.ptr[13] = msgpack::object(v.template get<13>(), o.zone);
+        o.via.array.ptr[14] = msgpack::object(v.template get<14>(), o.zone);
+        o.via.array.ptr[15] = msgpack::object(v.template get<15>(), o.zone);
+        o.via.array.ptr[16] = msgpack::object(v.template get<16>(), o.zone);
+        o.via.array.ptr[17] = msgpack::object(v.template get<17>(), o.zone);
+        o.via.array.ptr[18] = msgpack::object(v.template get<18>(), o.zone);
+        o.via.array.ptr[19] = msgpack::object(v.template get<19>(), o.zone);
+    }
+};
+
+template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20>
+struct object_with_zone<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20> > {
+    void operator()(
+        msgpack::object::with_zone& o,
+        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20>& v) const {
+        o.type = msgpack::type::ARRAY;
+        o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*21));
+        o.via.array.size = 21;
+        
+        o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
+        o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
+        o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
+        o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
+        o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
+        o.via.array.ptr[5] = msgpack::object(v.template get<5>(), o.zone);
+        o.via.array.ptr[6] = msgpack::object(v.template get<6>(), o.zone);
+        o.via.array.ptr[7] = msgpack::object(v.template get<7>(), o.zone);
+        o.via.array.ptr[8] = msgpack::object(v.template get<8>(), o.zone);
+        o.via.array.ptr[9] = msgpack::object(v.template get<9>(), o.zone);
+        o.via.array.ptr[10] = msgpack::object(v.template get<10>(), o.zone);
+        o.via.array.ptr[11] = msgpack::object(v.template get<11>(), o.zone);
+        o.via.array.ptr[12] = msgpack::object(v.template get<12>(), o.zone);
+        o.via.array.ptr[13] = msgpack::object(v.template get<13>(), o.zone);
+        o.via.array.ptr[14] = msgpack::object(v.template get<14>(), o.zone);
+        o.via.array.ptr[15] = msgpack::object(v.template get<15>(), o.zone);
+        o.via.array.ptr[16] = msgpack::object(v.template get<16>(), o.zone);
+        o.via.array.ptr[17] = msgpack::object(v.template get<17>(), o.zone);
+        o.via.array.ptr[18] = msgpack::object(v.template get<18>(), o.zone);
+        o.via.array.ptr[19] = msgpack::object(v.template get<19>(), o.zone);
+        o.via.array.ptr[20] = msgpack::object(v.template get<20>(), o.zone);
+    }
+};
+
+template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21>
+struct object_with_zone<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21> > {
+    void operator()(
+        msgpack::object::with_zone& o,
+        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21>& v) const {
+        o.type = msgpack::type::ARRAY;
+        o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*22));
+        o.via.array.size = 22;
+        
+        o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
+        o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
+        o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
+        o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
+        o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
+        o.via.array.ptr[5] = msgpack::object(v.template get<5>(), o.zone);
+        o.via.array.ptr[6] = msgpack::object(v.template get<6>(), o.zone);
+        o.via.array.ptr[7] = msgpack::object(v.template get<7>(), o.zone);
+        o.via.array.ptr[8] = msgpack::object(v.template get<8>(), o.zone);
+        o.via.array.ptr[9] = msgpack::object(v.template get<9>(), o.zone);
+        o.via.array.ptr[10] = msgpack::object(v.template get<10>(), o.zone);
+        o.via.array.ptr[11] = msgpack::object(v.template get<11>(), o.zone);
+        o.via.array.ptr[12] = msgpack::object(v.template get<12>(), o.zone);
+        o.via.array.ptr[13] = msgpack::object(v.template get<13>(), o.zone);
+        o.via.array.ptr[14] = msgpack::object(v.template get<14>(), o.zone);
+        o.via.array.ptr[15] = msgpack::object(v.template get<15>(), o.zone);
+        o.via.array.ptr[16] = msgpack::object(v.template get<16>(), o.zone);
+        o.via.array.ptr[17] = msgpack::object(v.template get<17>(), o.zone);
+        o.via.array.ptr[18] = msgpack::object(v.template get<18>(), o.zone);
+        o.via.array.ptr[19] = msgpack::object(v.template get<19>(), o.zone);
+        o.via.array.ptr[20] = msgpack::object(v.template get<20>(), o.zone);
+        o.via.array.ptr[21] = msgpack::object(v.template get<21>(), o.zone);
+    }
+};
+
+template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22>
+struct object_with_zone<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22> > {
+    void operator()(
+        msgpack::object::with_zone& o,
+        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22>& v) const {
+        o.type = msgpack::type::ARRAY;
+        o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*23));
+        o.via.array.size = 23;
+        
+        o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
+        o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
+        o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
+        o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
+        o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
+        o.via.array.ptr[5] = msgpack::object(v.template get<5>(), o.zone);
+        o.via.array.ptr[6] = msgpack::object(v.template get<6>(), o.zone);
+        o.via.array.ptr[7] = msgpack::object(v.template get<7>(), o.zone);
+        o.via.array.ptr[8] = msgpack::object(v.template get<8>(), o.zone);
+        o.via.array.ptr[9] = msgpack::object(v.template get<9>(), o.zone);
+        o.via.array.ptr[10] = msgpack::object(v.template get<10>(), o.zone);
+        o.via.array.ptr[11] = msgpack::object(v.template get<11>(), o.zone);
+        o.via.array.ptr[12] = msgpack::object(v.template get<12>(), o.zone);
+        o.via.array.ptr[13] = msgpack::object(v.template get<13>(), o.zone);
+        o.via.array.ptr[14] = msgpack::object(v.template get<14>(), o.zone);
+        o.via.array.ptr[15] = msgpack::object(v.template get<15>(), o.zone);
+        o.via.array.ptr[16] = msgpack::object(v.template get<16>(), o.zone);
+        o.via.array.ptr[17] = msgpack::object(v.template get<17>(), o.zone);
+        o.via.array.ptr[18] = msgpack::object(v.template get<18>(), o.zone);
+        o.via.array.ptr[19] = msgpack::object(v.template get<19>(), o.zone);
+        o.via.array.ptr[20] = msgpack::object(v.template get<20>(), o.zone);
+        o.via.array.ptr[21] = msgpack::object(v.template get<21>(), o.zone);
+        o.via.array.ptr[22] = msgpack::object(v.template get<22>(), o.zone);
+    }
+};
+
+template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23>
+struct object_with_zone<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23> > {
+    void operator()(
+        msgpack::object::with_zone& o,
+        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23>& v) const {
+        o.type = msgpack::type::ARRAY;
+        o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*24));
+        o.via.array.size = 24;
+        
+        o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
+        o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
+        o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
+        o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
+        o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
+        o.via.array.ptr[5] = msgpack::object(v.template get<5>(), o.zone);
+        o.via.array.ptr[6] = msgpack::object(v.template get<6>(), o.zone);
+        o.via.array.ptr[7] = msgpack::object(v.template get<7>(), o.zone);
+        o.via.array.ptr[8] = msgpack::object(v.template get<8>(), o.zone);
+        o.via.array.ptr[9] = msgpack::object(v.template get<9>(), o.zone);
+        o.via.array.ptr[10] = msgpack::object(v.template get<10>(), o.zone);
+        o.via.array.ptr[11] = msgpack::object(v.template get<11>(), o.zone);
+        o.via.array.ptr[12] = msgpack::object(v.template get<12>(), o.zone);
+        o.via.array.ptr[13] = msgpack::object(v.template get<13>(), o.zone);
+        o.via.array.ptr[14] = msgpack::object(v.template get<14>(), o.zone);
+        o.via.array.ptr[15] = msgpack::object(v.template get<15>(), o.zone);
+        o.via.array.ptr[16] = msgpack::object(v.template get<16>(), o.zone);
+        o.via.array.ptr[17] = msgpack::object(v.template get<17>(), o.zone);
+        o.via.array.ptr[18] = msgpack::object(v.template get<18>(), o.zone);
+        o.via.array.ptr[19] = msgpack::object(v.template get<19>(), o.zone);
+        o.via.array.ptr[20] = msgpack::object(v.template get<20>(), o.zone);
+        o.via.array.ptr[21] = msgpack::object(v.template get<21>(), o.zone);
+        o.via.array.ptr[22] = msgpack::object(v.template get<22>(), o.zone);
+        o.via.array.ptr[23] = msgpack::object(v.template get<23>(), o.zone);
+    }
+};
+
+template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24>
+struct object_with_zone<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24> > {
+    void operator()(
+        msgpack::object::with_zone& o,
+        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24>& v) const {
+        o.type = msgpack::type::ARRAY;
+        o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*25));
+        o.via.array.size = 25;
+        
+        o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
+        o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
+        o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
+        o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
+        o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
+        o.via.array.ptr[5] = msgpack::object(v.template get<5>(), o.zone);
+        o.via.array.ptr[6] = msgpack::object(v.template get<6>(), o.zone);
+        o.via.array.ptr[7] = msgpack::object(v.template get<7>(), o.zone);
+        o.via.array.ptr[8] = msgpack::object(v.template get<8>(), o.zone);
+        o.via.array.ptr[9] = msgpack::object(v.template get<9>(), o.zone);
+        o.via.array.ptr[10] = msgpack::object(v.template get<10>(), o.zone);
+        o.via.array.ptr[11] = msgpack::object(v.template get<11>(), o.zone);
+        o.via.array.ptr[12] = msgpack::object(v.template get<12>(), o.zone);
+        o.via.array.ptr[13] = msgpack::object(v.template get<13>(), o.zone);
+        o.via.array.ptr[14] = msgpack::object(v.template get<14>(), o.zone);
+        o.via.array.ptr[15] = msgpack::object(v.template get<15>(), o.zone);
+        o.via.array.ptr[16] = msgpack::object(v.template get<16>(), o.zone);
+        o.via.array.ptr[17] = msgpack::object(v.template get<17>(), o.zone);
+        o.via.array.ptr[18] = msgpack::object(v.template get<18>(), o.zone);
+        o.via.array.ptr[19] = msgpack::object(v.template get<19>(), o.zone);
+        o.via.array.ptr[20] = msgpack::object(v.template get<20>(), o.zone);
+        o.via.array.ptr[21] = msgpack::object(v.template get<21>(), o.zone);
+        o.via.array.ptr[22] = msgpack::object(v.template get<22>(), o.zone);
+        o.via.array.ptr[23] = msgpack::object(v.template get<23>(), o.zone);
+        o.via.array.ptr[24] = msgpack::object(v.template get<24>(), o.zone);
+    }
+};
+
+template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25>
+struct object_with_zone<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25> > {
+    void operator()(
+        msgpack::object::with_zone& o,
+        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25>& v) const {
+        o.type = msgpack::type::ARRAY;
+        o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*26));
+        o.via.array.size = 26;
+        
+        o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
+        o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
+        o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
+        o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
+        o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
+        o.via.array.ptr[5] = msgpack::object(v.template get<5>(), o.zone);
+        o.via.array.ptr[6] = msgpack::object(v.template get<6>(), o.zone);
+        o.via.array.ptr[7] = msgpack::object(v.template get<7>(), o.zone);
+        o.via.array.ptr[8] = msgpack::object(v.template get<8>(), o.zone);
+        o.via.array.ptr[9] = msgpack::object(v.template get<9>(), o.zone);
+        o.via.array.ptr[10] = msgpack::object(v.template get<10>(), o.zone);
+        o.via.array.ptr[11] = msgpack::object(v.template get<11>(), o.zone);
+        o.via.array.ptr[12] = msgpack::object(v.template get<12>(), o.zone);
+        o.via.array.ptr[13] = msgpack::object(v.template get<13>(), o.zone);
+        o.via.array.ptr[14] = msgpack::object(v.template get<14>(), o.zone);
+        o.via.array.ptr[15] = msgpack::object(v.template get<15>(), o.zone);
+        o.via.array.ptr[16] = msgpack::object(v.template get<16>(), o.zone);
+        o.via.array.ptr[17] = msgpack::object(v.template get<17>(), o.zone);
+        o.via.array.ptr[18] = msgpack::object(v.template get<18>(), o.zone);
+        o.via.array.ptr[19] = msgpack::object(v.template get<19>(), o.zone);
+        o.via.array.ptr[20] = msgpack::object(v.template get<20>(), o.zone);
+        o.via.array.ptr[21] = msgpack::object(v.template get<21>(), o.zone);
+        o.via.array.ptr[22] = msgpack::object(v.template get<22>(), o.zone);
+        o.via.array.ptr[23] = msgpack::object(v.template get<23>(), o.zone);
+        o.via.array.ptr[24] = msgpack::object(v.template get<24>(), o.zone);
+        o.via.array.ptr[25] = msgpack::object(v.template get<25>(), o.zone);
+    }
+};
+
+template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25, typename A26>
+struct object_with_zone<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26> > {
+    void operator()(
+        msgpack::object::with_zone& o,
+        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26>& v) const {
+        o.type = msgpack::type::ARRAY;
+        o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*27));
+        o.via.array.size = 27;
+        
+        o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
+        o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
+        o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
+        o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
+        o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
+        o.via.array.ptr[5] = msgpack::object(v.template get<5>(), o.zone);
+        o.via.array.ptr[6] = msgpack::object(v.template get<6>(), o.zone);
+        o.via.array.ptr[7] = msgpack::object(v.template get<7>(), o.zone);
+        o.via.array.ptr[8] = msgpack::object(v.template get<8>(), o.zone);
+        o.via.array.ptr[9] = msgpack::object(v.template get<9>(), o.zone);
+        o.via.array.ptr[10] = msgpack::object(v.template get<10>(), o.zone);
+        o.via.array.ptr[11] = msgpack::object(v.template get<11>(), o.zone);
+        o.via.array.ptr[12] = msgpack::object(v.template get<12>(), o.zone);
+        o.via.array.ptr[13] = msgpack::object(v.template get<13>(), o.zone);
+        o.via.array.ptr[14] = msgpack::object(v.template get<14>(), o.zone);
+        o.via.array.ptr[15] = msgpack::object(v.template get<15>(), o.zone);
+        o.via.array.ptr[16] = msgpack::object(v.template get<16>(), o.zone);
+        o.via.array.ptr[17] = msgpack::object(v.template get<17>(), o.zone);
+        o.via.array.ptr[18] = msgpack::object(v.template get<18>(), o.zone);
+        o.via.array.ptr[19] = msgpack::object(v.template get<19>(), o.zone);
+        o.via.array.ptr[20] = msgpack::object(v.template get<20>(), o.zone);
+        o.via.array.ptr[21] = msgpack::object(v.template get<21>(), o.zone);
+        o.via.array.ptr[22] = msgpack::object(v.template get<22>(), o.zone);
+        o.via.array.ptr[23] = msgpack::object(v.template get<23>(), o.zone);
+        o.via.array.ptr[24] = msgpack::object(v.template get<24>(), o.zone);
+        o.via.array.ptr[25] = msgpack::object(v.template get<25>(), o.zone);
+        o.via.array.ptr[26] = msgpack::object(v.template get<26>(), o.zone);
+    }
+};
+
+template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25, typename A26, typename A27>
+struct object_with_zone<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27> > {
+    void operator()(
+        msgpack::object::with_zone& o,
+        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27>& v) const {
+        o.type = msgpack::type::ARRAY;
+        o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*28));
+        o.via.array.size = 28;
+        
+        o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
+        o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
+        o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
+        o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
+        o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
+        o.via.array.ptr[5] = msgpack::object(v.template get<5>(), o.zone);
+        o.via.array.ptr[6] = msgpack::object(v.template get<6>(), o.zone);
+        o.via.array.ptr[7] = msgpack::object(v.template get<7>(), o.zone);
+        o.via.array.ptr[8] = msgpack::object(v.template get<8>(), o.zone);
+        o.via.array.ptr[9] = msgpack::object(v.template get<9>(), o.zone);
+        o.via.array.ptr[10] = msgpack::object(v.template get<10>(), o.zone);
+        o.via.array.ptr[11] = msgpack::object(v.template get<11>(), o.zone);
+        o.via.array.ptr[12] = msgpack::object(v.template get<12>(), o.zone);
+        o.via.array.ptr[13] = msgpack::object(v.template get<13>(), o.zone);
+        o.via.array.ptr[14] = msgpack::object(v.template get<14>(), o.zone);
+        o.via.array.ptr[15] = msgpack::object(v.template get<15>(), o.zone);
+        o.via.array.ptr[16] = msgpack::object(v.template get<16>(), o.zone);
+        o.via.array.ptr[17] = msgpack::object(v.template get<17>(), o.zone);
+        o.via.array.ptr[18] = msgpack::object(v.template get<18>(), o.zone);
+        o.via.array.ptr[19] = msgpack::object(v.template get<19>(), o.zone);
+        o.via.array.ptr[20] = msgpack::object(v.template get<20>(), o.zone);
+        o.via.array.ptr[21] = msgpack::object(v.template get<21>(), o.zone);
+        o.via.array.ptr[22] = msgpack::object(v.template get<22>(), o.zone);
+        o.via.array.ptr[23] = msgpack::object(v.template get<23>(), o.zone);
+        o.via.array.ptr[24] = msgpack::object(v.template get<24>(), o.zone);
+        o.via.array.ptr[25] = msgpack::object(v.template get<25>(), o.zone);
+        o.via.array.ptr[26] = msgpack::object(v.template get<26>(), o.zone);
+        o.via.array.ptr[27] = msgpack::object(v.template get<27>(), o.zone);
+    }
+};
+
+template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25, typename A26, typename A27, typename A28>
+struct object_with_zone<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28> > {
+    void operator()(
+        msgpack::object::with_zone& o,
+        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28>& v) const {
+        o.type = msgpack::type::ARRAY;
+        o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*29));
+        o.via.array.size = 29;
+        
+        o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
+        o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
+        o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
+        o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
+        o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
+        o.via.array.ptr[5] = msgpack::object(v.template get<5>(), o.zone);
+        o.via.array.ptr[6] = msgpack::object(v.template get<6>(), o.zone);
+        o.via.array.ptr[7] = msgpack::object(v.template get<7>(), o.zone);
+        o.via.array.ptr[8] = msgpack::object(v.template get<8>(), o.zone);
+        o.via.array.ptr[9] = msgpack::object(v.template get<9>(), o.zone);
+        o.via.array.ptr[10] = msgpack::object(v.template get<10>(), o.zone);
+        o.via.array.ptr[11] = msgpack::object(v.template get<11>(), o.zone);
+        o.via.array.ptr[12] = msgpack::object(v.template get<12>(), o.zone);
+        o.via.array.ptr[13] = msgpack::object(v.template get<13>(), o.zone);
+        o.via.array.ptr[14] = msgpack::object(v.template get<14>(), o.zone);
+        o.via.array.ptr[15] = msgpack::object(v.template get<15>(), o.zone);
+        o.via.array.ptr[16] = msgpack::object(v.template get<16>(), o.zone);
+        o.via.array.ptr[17] = msgpack::object(v.template get<17>(), o.zone);
+        o.via.array.ptr[18] = msgpack::object(v.template get<18>(), o.zone);
+        o.via.array.ptr[19] = msgpack::object(v.template get<19>(), o.zone);
+        o.via.array.ptr[20] = msgpack::object(v.template get<20>(), o.zone);
+        o.via.array.ptr[21] = msgpack::object(v.template get<21>(), o.zone);
+        o.via.array.ptr[22] = msgpack::object(v.template get<22>(), o.zone);
+        o.via.array.ptr[23] = msgpack::object(v.template get<23>(), o.zone);
+        o.via.array.ptr[24] = msgpack::object(v.template get<24>(), o.zone);
+        o.via.array.ptr[25] = msgpack::object(v.template get<25>(), o.zone);
+        o.via.array.ptr[26] = msgpack::object(v.template get<26>(), o.zone);
+        o.via.array.ptr[27] = msgpack::object(v.template get<27>(), o.zone);
+        o.via.array.ptr[28] = msgpack::object(v.template get<28>(), o.zone);
+    }
+};
+
+template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25, typename A26, typename A27, typename A28, typename A29>
+struct object_with_zone<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29> > {
+    void operator()(
+        msgpack::object::with_zone& o,
+        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29>& v) const {
+        o.type = msgpack::type::ARRAY;
+        o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*30));
+        o.via.array.size = 30;
+        
+        o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
+        o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
+        o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
+        o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
+        o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
+        o.via.array.ptr[5] = msgpack::object(v.template get<5>(), o.zone);
+        o.via.array.ptr[6] = msgpack::object(v.template get<6>(), o.zone);
+        o.via.array.ptr[7] = msgpack::object(v.template get<7>(), o.zone);
+        o.via.array.ptr[8] = msgpack::object(v.template get<8>(), o.zone);
+        o.via.array.ptr[9] = msgpack::object(v.template get<9>(), o.zone);
+        o.via.array.ptr[10] = msgpack::object(v.template get<10>(), o.zone);
+        o.via.array.ptr[11] = msgpack::object(v.template get<11>(), o.zone);
+        o.via.array.ptr[12] = msgpack::object(v.template get<12>(), o.zone);
+        o.via.array.ptr[13] = msgpack::object(v.template get<13>(), o.zone);
+        o.via.array.ptr[14] = msgpack::object(v.template get<14>(), o.zone);
+        o.via.array.ptr[15] = msgpack::object(v.template get<15>(), o.zone);
+        o.via.array.ptr[16] = msgpack::object(v.template get<16>(), o.zone);
+        o.via.array.ptr[17] = msgpack::object(v.template get<17>(), o.zone);
+        o.via.array.ptr[18] = msgpack::object(v.template get<18>(), o.zone);
+        o.via.array.ptr[19] = msgpack::object(v.template get<19>(), o.zone);
+        o.via.array.ptr[20] = msgpack::object(v.template get<20>(), o.zone);
+        o.via.array.ptr[21] = msgpack::object(v.template get<21>(), o.zone);
+        o.via.array.ptr[22] = msgpack::object(v.template get<22>(), o.zone);
+        o.via.array.ptr[23] = msgpack::object(v.template get<23>(), o.zone);
+        o.via.array.ptr[24] = msgpack::object(v.template get<24>(), o.zone);
+        o.via.array.ptr[25] = msgpack::object(v.template get<25>(), o.zone);
+        o.via.array.ptr[26] = msgpack::object(v.template get<26>(), o.zone);
+        o.via.array.ptr[27] = msgpack::object(v.template get<27>(), o.zone);
+        o.via.array.ptr[28] = msgpack::object(v.template get<28>(), o.zone);
+        o.via.array.ptr[29] = msgpack::object(v.template get<29>(), o.zone);
+    }
+};
+
+template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25, typename A26, typename A27, typename A28, typename A29, typename A30>
+struct object_with_zone<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30> > {
+    void operator()(
+        msgpack::object::with_zone& o,
+        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30>& v) const {
+        o.type = msgpack::type::ARRAY;
+        o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*31));
+        o.via.array.size = 31;
+        
+        o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
+        o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
+        o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
+        o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
+        o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
+        o.via.array.ptr[5] = msgpack::object(v.template get<5>(), o.zone);
+        o.via.array.ptr[6] = msgpack::object(v.template get<6>(), o.zone);
+        o.via.array.ptr[7] = msgpack::object(v.template get<7>(), o.zone);
+        o.via.array.ptr[8] = msgpack::object(v.template get<8>(), o.zone);
+        o.via.array.ptr[9] = msgpack::object(v.template get<9>(), o.zone);
+        o.via.array.ptr[10] = msgpack::object(v.template get<10>(), o.zone);
+        o.via.array.ptr[11] = msgpack::object(v.template get<11>(), o.zone);
+        o.via.array.ptr[12] = msgpack::object(v.template get<12>(), o.zone);
+        o.via.array.ptr[13] = msgpack::object(v.template get<13>(), o.zone);
+        o.via.array.ptr[14] = msgpack::object(v.template get<14>(), o.zone);
+        o.via.array.ptr[15] = msgpack::object(v.template get<15>(), o.zone);
+        o.via.array.ptr[16] = msgpack::object(v.template get<16>(), o.zone);
+        o.via.array.ptr[17] = msgpack::object(v.template get<17>(), o.zone);
+        o.via.array.ptr[18] = msgpack::object(v.template get<18>(), o.zone);
+        o.via.array.ptr[19] = msgpack::object(v.template get<19>(), o.zone);
+        o.via.array.ptr[20] = msgpack::object(v.template get<20>(), o.zone);
+        o.via.array.ptr[21] = msgpack::object(v.template get<21>(), o.zone);
+        o.via.array.ptr[22] = msgpack::object(v.template get<22>(), o.zone);
+        o.via.array.ptr[23] = msgpack::object(v.template get<23>(), o.zone);
+        o.via.array.ptr[24] = msgpack::object(v.template get<24>(), o.zone);
+        o.via.array.ptr[25] = msgpack::object(v.template get<25>(), o.zone);
+        o.via.array.ptr[26] = msgpack::object(v.template get<26>(), o.zone);
+        o.via.array.ptr[27] = msgpack::object(v.template get<27>(), o.zone);
+        o.via.array.ptr[28] = msgpack::object(v.template get<28>(), o.zone);
+        o.via.array.ptr[29] = msgpack::object(v.template get<29>(), o.zone);
+        o.via.array.ptr[30] = msgpack::object(v.template get<30>(), o.zone);
+    }
+};
+
+template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25, typename A26, typename A27, typename A28, typename A29, typename A30, typename A31>
+struct object_with_zone<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30, A31> > {
+    void operator()(
+        msgpack::object::with_zone& o,
+        const type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30, A31>& v) const {
+        o.type = msgpack::type::ARRAY;
+        o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*32));
+        o.via.array.size = 32;
+        
+        o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
+        o.via.array.ptr[1] = msgpack::object(v.template get<1>(), o.zone);
+        o.via.array.ptr[2] = msgpack::object(v.template get<2>(), o.zone);
+        o.via.array.ptr[3] = msgpack::object(v.template get<3>(), o.zone);
+        o.via.array.ptr[4] = msgpack::object(v.template get<4>(), o.zone);
+        o.via.array.ptr[5] = msgpack::object(v.template get<5>(), o.zone);
+        o.via.array.ptr[6] = msgpack::object(v.template get<6>(), o.zone);
+        o.via.array.ptr[7] = msgpack::object(v.template get<7>(), o.zone);
+        o.via.array.ptr[8] = msgpack::object(v.template get<8>(), o.zone);
+        o.via.array.ptr[9] = msgpack::object(v.template get<9>(), o.zone);
+        o.via.array.ptr[10] = msgpack::object(v.template get<10>(), o.zone);
+        o.via.array.ptr[11] = msgpack::object(v.template get<11>(), o.zone);
+        o.via.array.ptr[12] = msgpack::object(v.template get<12>(), o.zone);
+        o.via.array.ptr[13] = msgpack::object(v.template get<13>(), o.zone);
+        o.via.array.ptr[14] = msgpack::object(v.template get<14>(), o.zone);
+        o.via.array.ptr[15] = msgpack::object(v.template get<15>(), o.zone);
+        o.via.array.ptr[16] = msgpack::object(v.template get<16>(), o.zone);
+        o.via.array.ptr[17] = msgpack::object(v.template get<17>(), o.zone);
+        o.via.array.ptr[18] = msgpack::object(v.template get<18>(), o.zone);
+        o.via.array.ptr[19] = msgpack::object(v.template get<19>(), o.zone);
+        o.via.array.ptr[20] = msgpack::object(v.template get<20>(), o.zone);
+        o.via.array.ptr[21] = msgpack::object(v.template get<21>(), o.zone);
+        o.via.array.ptr[22] = msgpack::object(v.template get<22>(), o.zone);
+        o.via.array.ptr[23] = msgpack::object(v.template get<23>(), o.zone);
+        o.via.array.ptr[24] = msgpack::object(v.template get<24>(), o.zone);
+        o.via.array.ptr[25] = msgpack::object(v.template get<25>(), o.zone);
+        o.via.array.ptr[26] = msgpack::object(v.template get<26>(), o.zone);
+        o.via.array.ptr[27] = msgpack::object(v.template get<27>(), o.zone);
+        o.via.array.ptr[28] = msgpack::object(v.template get<28>(), o.zone);
+        o.via.array.ptr[29] = msgpack::object(v.template get<29>(), o.zone);
+        o.via.array.ptr[30] = msgpack::object(v.template get<30>(), o.zone);
+        o.via.array.ptr[31] = msgpack::object(v.template get<31>(), o.zone);
+    }
+};
+
+
+} // namespace adaptor
 
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 
 }  // namespace msgpack
-
-
-//inline std::ostream& operator<< (std::ostream& o, const msgpack::type::tuple<>& v) {
-//  return o << "[]";
-//}
-//
-//template <typename A0>
-//inline std::ostream& operator<< (std::ostream& o,
-//      const msgpack::type::tuple<A0>& v) {
-//  return o << "["
-//  
-//  << v.template get<0>()
-//  << "]";
-//}
-//
-//template <typename A0, typename A1>
-//inline std::ostream& operator<< (std::ostream& o,
-//      const msgpack::type::tuple<A0, A1>& v) {
-//  return o << "["
-//  
-//  << v.template get<0>()
-//  << ", " << v.template get<1>()
-//  << "]";
-//}
-//
-//template <typename A0, typename A1, typename A2>
-//inline std::ostream& operator<< (std::ostream& o,
-//      const msgpack::type::tuple<A0, A1, A2>& v) {
-//  return o << "["
-//  
-//  << v.template get<0>()
-//  << ", " << v.template get<1>()
-//  << ", " << v.template get<2>()
-//  << "]";
-//}
-//
-//template <typename A0, typename A1, typename A2, typename A3>
-//inline std::ostream& operator<< (std::ostream& o,
-//      const msgpack::type::tuple<A0, A1, A2, A3>& v) {
-//  return o << "["
-//  
-//  << v.template get<0>()
-//  << ", " << v.template get<1>()
-//  << ", " << v.template get<2>()
-//  << ", " << v.template get<3>()
-//  << "]";
-//}
-//
-//template <typename A0, typename A1, typename A2, typename A3, typename A4>
-//inline std::ostream& operator<< (std::ostream& o,
-//      const msgpack::type::tuple<A0, A1, A2, A3, A4>& v) {
-//  return o << "["
-//  
-//  << v.template get<0>()
-//  << ", " << v.template get<1>()
-//  << ", " << v.template get<2>()
-//  << ", " << v.template get<3>()
-//  << ", " << v.template get<4>()
-//  << "]";
-//}
-//
-//template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5>
-//inline std::ostream& operator<< (std::ostream& o,
-//      const msgpack::type::tuple<A0, A1, A2, A3, A4, A5>& v) {
-//  return o << "["
-//  
-//  << v.template get<0>()
-//  << ", " << v.template get<1>()
-//  << ", " << v.template get<2>()
-//  << ", " << v.template get<3>()
-//  << ", " << v.template get<4>()
-//  << ", " << v.template get<5>()
-//  << "]";
-//}
-//
-//template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6>
-//inline std::ostream& operator<< (std::ostream& o,
-//      const msgpack::type::tuple<A0, A1, A2, A3, A4, A5, A6>& v) {
-//  return o << "["
-//  
-//  << v.template get<0>()
-//  << ", " << v.template get<1>()
-//  << ", " << v.template get<2>()
-//  << ", " << v.template get<3>()
-//  << ", " << v.template get<4>()
-//  << ", " << v.template get<5>()
-//  << ", " << v.template get<6>()
-//  << "]";
-//}
-//
-//template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7>
-//inline std::ostream& operator<< (std::ostream& o,
-//      const msgpack::type::tuple<A0, A1, A2, A3, A4, A5, A6, A7>& v) {
-//  return o << "["
-//  
-//  << v.template get<0>()
-//  << ", " << v.template get<1>()
-//  << ", " << v.template get<2>()
-//  << ", " << v.template get<3>()
-//  << ", " << v.template get<4>()
-//  << ", " << v.template get<5>()
-//  << ", " << v.template get<6>()
-//  << ", " << v.template get<7>()
-//  << "]";
-//}
-//
-//template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8>
-//inline std::ostream& operator<< (std::ostream& o,
-//      const msgpack::type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8>& v) {
-//  return o << "["
-//  
-//  << v.template get<0>()
-//  << ", " << v.template get<1>()
-//  << ", " << v.template get<2>()
-//  << ", " << v.template get<3>()
-//  << ", " << v.template get<4>()
-//  << ", " << v.template get<5>()
-//  << ", " << v.template get<6>()
-//  << ", " << v.template get<7>()
-//  << ", " << v.template get<8>()
-//  << "]";
-//}
-//
-//template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9>
-//inline std::ostream& operator<< (std::ostream& o,
-//      const msgpack::type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9>& v) {
-//  return o << "["
-//  
-//  << v.template get<0>()
-//  << ", " << v.template get<1>()
-//  << ", " << v.template get<2>()
-//  << ", " << v.template get<3>()
-//  << ", " << v.template get<4>()
-//  << ", " << v.template get<5>()
-//  << ", " << v.template get<6>()
-//  << ", " << v.template get<7>()
-//  << ", " << v.template get<8>()
-//  << ", " << v.template get<9>()
-//  << "]";
-//}
-//
-//template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10>
-//inline std::ostream& operator<< (std::ostream& o,
-//      const msgpack::type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10>& v) {
-//  return o << "["
-//  
-//  << v.template get<0>()
-//  << ", " << v.template get<1>()
-//  << ", " << v.template get<2>()
-//  << ", " << v.template get<3>()
-//  << ", " << v.template get<4>()
-//  << ", " << v.template get<5>()
-//  << ", " << v.template get<6>()
-//  << ", " << v.template get<7>()
-//  << ", " << v.template get<8>()
-//  << ", " << v.template get<9>()
-//  << ", " << v.template get<10>()
-//  << "]";
-//}
-//
-//template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11>
-//inline std::ostream& operator<< (std::ostream& o,
-//      const msgpack::type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11>& v) {
-//  return o << "["
-//  
-//  << v.template get<0>()
-//  << ", " << v.template get<1>()
-//  << ", " << v.template get<2>()
-//  << ", " << v.template get<3>()
-//  << ", " << v.template get<4>()
-//  << ", " << v.template get<5>()
-//  << ", " << v.template get<6>()
-//  << ", " << v.template get<7>()
-//  << ", " << v.template get<8>()
-//  << ", " << v.template get<9>()
-//  << ", " << v.template get<10>()
-//  << ", " << v.template get<11>()
-//  << "]";
-//}
-//
-//template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12>
-//inline std::ostream& operator<< (std::ostream& o,
-//      const msgpack::type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12>& v) {
-//  return o << "["
-//  
-//  << v.template get<0>()
-//  << ", " << v.template get<1>()
-//  << ", " << v.template get<2>()
-//  << ", " << v.template get<3>()
-//  << ", " << v.template get<4>()
-//  << ", " << v.template get<5>()
-//  << ", " << v.template get<6>()
-//  << ", " << v.template get<7>()
-//  << ", " << v.template get<8>()
-//  << ", " << v.template get<9>()
-//  << ", " << v.template get<10>()
-//  << ", " << v.template get<11>()
-//  << ", " << v.template get<12>()
-//  << "]";
-//}
-//
-//template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13>
-//inline std::ostream& operator<< (std::ostream& o,
-//      const msgpack::type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13>& v) {
-//  return o << "["
-//  
-//  << v.template get<0>()
-//  << ", " << v.template get<1>()
-//  << ", " << v.template get<2>()
-//  << ", " << v.template get<3>()
-//  << ", " << v.template get<4>()
-//  << ", " << v.template get<5>()
-//  << ", " << v.template get<6>()
-//  << ", " << v.template get<7>()
-//  << ", " << v.template get<8>()
-//  << ", " << v.template get<9>()
-//  << ", " << v.template get<10>()
-//  << ", " << v.template get<11>()
-//  << ", " << v.template get<12>()
-//  << ", " << v.template get<13>()
-//  << "]";
-//}
-//
-//template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14>
-//inline std::ostream& operator<< (std::ostream& o,
-//      const msgpack::type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14>& v) {
-//  return o << "["
-//  
-//  << v.template get<0>()
-//  << ", " << v.template get<1>()
-//  << ", " << v.template get<2>()
-//  << ", " << v.template get<3>()
-//  << ", " << v.template get<4>()
-//  << ", " << v.template get<5>()
-//  << ", " << v.template get<6>()
-//  << ", " << v.template get<7>()
-//  << ", " << v.template get<8>()
-//  << ", " << v.template get<9>()
-//  << ", " << v.template get<10>()
-//  << ", " << v.template get<11>()
-//  << ", " << v.template get<12>()
-//  << ", " << v.template get<13>()
-//  << ", " << v.template get<14>()
-//  << "]";
-//}
-//
-//template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15>
-//inline std::ostream& operator<< (std::ostream& o,
-//      const msgpack::type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15>& v) {
-//  return o << "["
-//  
-//  << v.template get<0>()
-//  << ", " << v.template get<1>()
-//  << ", " << v.template get<2>()
-//  << ", " << v.template get<3>()
-//  << ", " << v.template get<4>()
-//  << ", " << v.template get<5>()
-//  << ", " << v.template get<6>()
-//  << ", " << v.template get<7>()
-//  << ", " << v.template get<8>()
-//  << ", " << v.template get<9>()
-//  << ", " << v.template get<10>()
-//  << ", " << v.template get<11>()
-//  << ", " << v.template get<12>()
-//  << ", " << v.template get<13>()
-//  << ", " << v.template get<14>()
-//  << ", " << v.template get<15>()
-//  << "]";
-//}
-//
-//template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16>
-//inline std::ostream& operator<< (std::ostream& o,
-//      const msgpack::type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16>& v) {
-//  return o << "["
-//  
-//  << v.template get<0>()
-//  << ", " << v.template get<1>()
-//  << ", " << v.template get<2>()
-//  << ", " << v.template get<3>()
-//  << ", " << v.template get<4>()
-//  << ", " << v.template get<5>()
-//  << ", " << v.template get<6>()
-//  << ", " << v.template get<7>()
-//  << ", " << v.template get<8>()
-//  << ", " << v.template get<9>()
-//  << ", " << v.template get<10>()
-//  << ", " << v.template get<11>()
-//  << ", " << v.template get<12>()
-//  << ", " << v.template get<13>()
-//  << ", " << v.template get<14>()
-//  << ", " << v.template get<15>()
-//  << ", " << v.template get<16>()
-//  << "]";
-//}
-//
-//template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17>
-//inline std::ostream& operator<< (std::ostream& o,
-//      const msgpack::type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17>& v) {
-//  return o << "["
-//  
-//  << v.template get<0>()
-//  << ", " << v.template get<1>()
-//  << ", " << v.template get<2>()
-//  << ", " << v.template get<3>()
-//  << ", " << v.template get<4>()
-//  << ", " << v.template get<5>()
-//  << ", " << v.template get<6>()
-//  << ", " << v.template get<7>()
-//  << ", " << v.template get<8>()
-//  << ", " << v.template get<9>()
-//  << ", " << v.template get<10>()
-//  << ", " << v.template get<11>()
-//  << ", " << v.template get<12>()
-//  << ", " << v.template get<13>()
-//  << ", " << v.template get<14>()
-//  << ", " << v.template get<15>()
-//  << ", " << v.template get<16>()
-//  << ", " << v.template get<17>()
-//  << "]";
-//}
-//
-//template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18>
-//inline std::ostream& operator<< (std::ostream& o,
-//      const msgpack::type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18>& v) {
-//  return o << "["
-//  
-//  << v.template get<0>()
-//  << ", " << v.template get<1>()
-//  << ", " << v.template get<2>()
-//  << ", " << v.template get<3>()
-//  << ", " << v.template get<4>()
-//  << ", " << v.template get<5>()
-//  << ", " << v.template get<6>()
-//  << ", " << v.template get<7>()
-//  << ", " << v.template get<8>()
-//  << ", " << v.template get<9>()
-//  << ", " << v.template get<10>()
-//  << ", " << v.template get<11>()
-//  << ", " << v.template get<12>()
-//  << ", " << v.template get<13>()
-//  << ", " << v.template get<14>()
-//  << ", " << v.template get<15>()
-//  << ", " << v.template get<16>()
-//  << ", " << v.template get<17>()
-//  << ", " << v.template get<18>()
-//  << "]";
-//}
-//
-//template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19>
-//inline std::ostream& operator<< (std::ostream& o,
-//      const msgpack::type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19>& v) {
-//  return o << "["
-//  
-//  << v.template get<0>()
-//  << ", " << v.template get<1>()
-//  << ", " << v.template get<2>()
-//  << ", " << v.template get<3>()
-//  << ", " << v.template get<4>()
-//  << ", " << v.template get<5>()
-//  << ", " << v.template get<6>()
-//  << ", " << v.template get<7>()
-//  << ", " << v.template get<8>()
-//  << ", " << v.template get<9>()
-//  << ", " << v.template get<10>()
-//  << ", " << v.template get<11>()
-//  << ", " << v.template get<12>()
-//  << ", " << v.template get<13>()
-//  << ", " << v.template get<14>()
-//  << ", " << v.template get<15>()
-//  << ", " << v.template get<16>()
-//  << ", " << v.template get<17>()
-//  << ", " << v.template get<18>()
-//  << ", " << v.template get<19>()
-//  << "]";
-//}
-//
-//template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20>
-//inline std::ostream& operator<< (std::ostream& o,
-//      const msgpack::type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20>& v) {
-//  return o << "["
-//  
-//  << v.template get<0>()
-//  << ", " << v.template get<1>()
-//  << ", " << v.template get<2>()
-//  << ", " << v.template get<3>()
-//  << ", " << v.template get<4>()
-//  << ", " << v.template get<5>()
-//  << ", " << v.template get<6>()
-//  << ", " << v.template get<7>()
-//  << ", " << v.template get<8>()
-//  << ", " << v.template get<9>()
-//  << ", " << v.template get<10>()
-//  << ", " << v.template get<11>()
-//  << ", " << v.template get<12>()
-//  << ", " << v.template get<13>()
-//  << ", " << v.template get<14>()
-//  << ", " << v.template get<15>()
-//  << ", " << v.template get<16>()
-//  << ", " << v.template get<17>()
-//  << ", " << v.template get<18>()
-//  << ", " << v.template get<19>()
-//  << ", " << v.template get<20>()
-//  << "]";
-//}
-//
-//template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21>
-//inline std::ostream& operator<< (std::ostream& o,
-//      const msgpack::type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21>& v) {
-//  return o << "["
-//  
-//  << v.template get<0>()
-//  << ", " << v.template get<1>()
-//  << ", " << v.template get<2>()
-//  << ", " << v.template get<3>()
-//  << ", " << v.template get<4>()
-//  << ", " << v.template get<5>()
-//  << ", " << v.template get<6>()
-//  << ", " << v.template get<7>()
-//  << ", " << v.template get<8>()
-//  << ", " << v.template get<9>()
-//  << ", " << v.template get<10>()
-//  << ", " << v.template get<11>()
-//  << ", " << v.template get<12>()
-//  << ", " << v.template get<13>()
-//  << ", " << v.template get<14>()
-//  << ", " << v.template get<15>()
-//  << ", " << v.template get<16>()
-//  << ", " << v.template get<17>()
-//  << ", " << v.template get<18>()
-//  << ", " << v.template get<19>()
-//  << ", " << v.template get<20>()
-//  << ", " << v.template get<21>()
-//  << "]";
-//}
-//
-//template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22>
-//inline std::ostream& operator<< (std::ostream& o,
-//      const msgpack::type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22>& v) {
-//  return o << "["
-//  
-//  << v.template get<0>()
-//  << ", " << v.template get<1>()
-//  << ", " << v.template get<2>()
-//  << ", " << v.template get<3>()
-//  << ", " << v.template get<4>()
-//  << ", " << v.template get<5>()
-//  << ", " << v.template get<6>()
-//  << ", " << v.template get<7>()
-//  << ", " << v.template get<8>()
-//  << ", " << v.template get<9>()
-//  << ", " << v.template get<10>()
-//  << ", " << v.template get<11>()
-//  << ", " << v.template get<12>()
-//  << ", " << v.template get<13>()
-//  << ", " << v.template get<14>()
-//  << ", " << v.template get<15>()
-//  << ", " << v.template get<16>()
-//  << ", " << v.template get<17>()
-//  << ", " << v.template get<18>()
-//  << ", " << v.template get<19>()
-//  << ", " << v.template get<20>()
-//  << ", " << v.template get<21>()
-//  << ", " << v.template get<22>()
-//  << "]";
-//}
-//
-//template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23>
-//inline std::ostream& operator<< (std::ostream& o,
-//      const msgpack::type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23>& v) {
-//  return o << "["
-//  
-//  << v.template get<0>()
-//  << ", " << v.template get<1>()
-//  << ", " << v.template get<2>()
-//  << ", " << v.template get<3>()
-//  << ", " << v.template get<4>()
-//  << ", " << v.template get<5>()
-//  << ", " << v.template get<6>()
-//  << ", " << v.template get<7>()
-//  << ", " << v.template get<8>()
-//  << ", " << v.template get<9>()
-//  << ", " << v.template get<10>()
-//  << ", " << v.template get<11>()
-//  << ", " << v.template get<12>()
-//  << ", " << v.template get<13>()
-//  << ", " << v.template get<14>()
-//  << ", " << v.template get<15>()
-//  << ", " << v.template get<16>()
-//  << ", " << v.template get<17>()
-//  << ", " << v.template get<18>()
-//  << ", " << v.template get<19>()
-//  << ", " << v.template get<20>()
-//  << ", " << v.template get<21>()
-//  << ", " << v.template get<22>()
-//  << ", " << v.template get<23>()
-//  << "]";
-//}
-//
-//template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24>
-//inline std::ostream& operator<< (std::ostream& o,
-//      const msgpack::type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24>& v) {
-//  return o << "["
-//  
-//  << v.template get<0>()
-//  << ", " << v.template get<1>()
-//  << ", " << v.template get<2>()
-//  << ", " << v.template get<3>()
-//  << ", " << v.template get<4>()
-//  << ", " << v.template get<5>()
-//  << ", " << v.template get<6>()
-//  << ", " << v.template get<7>()
-//  << ", " << v.template get<8>()
-//  << ", " << v.template get<9>()
-//  << ", " << v.template get<10>()
-//  << ", " << v.template get<11>()
-//  << ", " << v.template get<12>()
-//  << ", " << v.template get<13>()
-//  << ", " << v.template get<14>()
-//  << ", " << v.template get<15>()
-//  << ", " << v.template get<16>()
-//  << ", " << v.template get<17>()
-//  << ", " << v.template get<18>()
-//  << ", " << v.template get<19>()
-//  << ", " << v.template get<20>()
-//  << ", " << v.template get<21>()
-//  << ", " << v.template get<22>()
-//  << ", " << v.template get<23>()
-//  << ", " << v.template get<24>()
-//  << "]";
-//}
-//
-//template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25>
-//inline std::ostream& operator<< (std::ostream& o,
-//      const msgpack::type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25>& v) {
-//  return o << "["
-//  
-//  << v.template get<0>()
-//  << ", " << v.template get<1>()
-//  << ", " << v.template get<2>()
-//  << ", " << v.template get<3>()
-//  << ", " << v.template get<4>()
-//  << ", " << v.template get<5>()
-//  << ", " << v.template get<6>()
-//  << ", " << v.template get<7>()
-//  << ", " << v.template get<8>()
-//  << ", " << v.template get<9>()
-//  << ", " << v.template get<10>()
-//  << ", " << v.template get<11>()
-//  << ", " << v.template get<12>()
-//  << ", " << v.template get<13>()
-//  << ", " << v.template get<14>()
-//  << ", " << v.template get<15>()
-//  << ", " << v.template get<16>()
-//  << ", " << v.template get<17>()
-//  << ", " << v.template get<18>()
-//  << ", " << v.template get<19>()
-//  << ", " << v.template get<20>()
-//  << ", " << v.template get<21>()
-//  << ", " << v.template get<22>()
-//  << ", " << v.template get<23>()
-//  << ", " << v.template get<24>()
-//  << ", " << v.template get<25>()
-//  << "]";
-//}
-//
-//template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25, typename A26>
-//inline std::ostream& operator<< (std::ostream& o,
-//      const msgpack::type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26>& v) {
-//  return o << "["
-//  
-//  << v.template get<0>()
-//  << ", " << v.template get<1>()
-//  << ", " << v.template get<2>()
-//  << ", " << v.template get<3>()
-//  << ", " << v.template get<4>()
-//  << ", " << v.template get<5>()
-//  << ", " << v.template get<6>()
-//  << ", " << v.template get<7>()
-//  << ", " << v.template get<8>()
-//  << ", " << v.template get<9>()
-//  << ", " << v.template get<10>()
-//  << ", " << v.template get<11>()
-//  << ", " << v.template get<12>()
-//  << ", " << v.template get<13>()
-//  << ", " << v.template get<14>()
-//  << ", " << v.template get<15>()
-//  << ", " << v.template get<16>()
-//  << ", " << v.template get<17>()
-//  << ", " << v.template get<18>()
-//  << ", " << v.template get<19>()
-//  << ", " << v.template get<20>()
-//  << ", " << v.template get<21>()
-//  << ", " << v.template get<22>()
-//  << ", " << v.template get<23>()
-//  << ", " << v.template get<24>()
-//  << ", " << v.template get<25>()
-//  << ", " << v.template get<26>()
-//  << "]";
-//}
-//
-//template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25, typename A26, typename A27>
-//inline std::ostream& operator<< (std::ostream& o,
-//      const msgpack::type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27>& v) {
-//  return o << "["
-//  
-//  << v.template get<0>()
-//  << ", " << v.template get<1>()
-//  << ", " << v.template get<2>()
-//  << ", " << v.template get<3>()
-//  << ", " << v.template get<4>()
-//  << ", " << v.template get<5>()
-//  << ", " << v.template get<6>()
-//  << ", " << v.template get<7>()
-//  << ", " << v.template get<8>()
-//  << ", " << v.template get<9>()
-//  << ", " << v.template get<10>()
-//  << ", " << v.template get<11>()
-//  << ", " << v.template get<12>()
-//  << ", " << v.template get<13>()
-//  << ", " << v.template get<14>()
-//  << ", " << v.template get<15>()
-//  << ", " << v.template get<16>()
-//  << ", " << v.template get<17>()
-//  << ", " << v.template get<18>()
-//  << ", " << v.template get<19>()
-//  << ", " << v.template get<20>()
-//  << ", " << v.template get<21>()
-//  << ", " << v.template get<22>()
-//  << ", " << v.template get<23>()
-//  << ", " << v.template get<24>()
-//  << ", " << v.template get<25>()
-//  << ", " << v.template get<26>()
-//  << ", " << v.template get<27>()
-//  << "]";
-//}
-//
-//template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25, typename A26, typename A27, typename A28>
-//inline std::ostream& operator<< (std::ostream& o,
-//      const msgpack::type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28>& v) {
-//  return o << "["
-//  
-//  << v.template get<0>()
-//  << ", " << v.template get<1>()
-//  << ", " << v.template get<2>()
-//  << ", " << v.template get<3>()
-//  << ", " << v.template get<4>()
-//  << ", " << v.template get<5>()
-//  << ", " << v.template get<6>()
-//  << ", " << v.template get<7>()
-//  << ", " << v.template get<8>()
-//  << ", " << v.template get<9>()
-//  << ", " << v.template get<10>()
-//  << ", " << v.template get<11>()
-//  << ", " << v.template get<12>()
-//  << ", " << v.template get<13>()
-//  << ", " << v.template get<14>()
-//  << ", " << v.template get<15>()
-//  << ", " << v.template get<16>()
-//  << ", " << v.template get<17>()
-//  << ", " << v.template get<18>()
-//  << ", " << v.template get<19>()
-//  << ", " << v.template get<20>()
-//  << ", " << v.template get<21>()
-//  << ", " << v.template get<22>()
-//  << ", " << v.template get<23>()
-//  << ", " << v.template get<24>()
-//  << ", " << v.template get<25>()
-//  << ", " << v.template get<26>()
-//  << ", " << v.template get<27>()
-//  << ", " << v.template get<28>()
-//  << "]";
-//}
-//
-//template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25, typename A26, typename A27, typename A28, typename A29>
-//inline std::ostream& operator<< (std::ostream& o,
-//      const msgpack::type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29>& v) {
-//  return o << "["
-//  
-//  << v.template get<0>()
-//  << ", " << v.template get<1>()
-//  << ", " << v.template get<2>()
-//  << ", " << v.template get<3>()
-//  << ", " << v.template get<4>()
-//  << ", " << v.template get<5>()
-//  << ", " << v.template get<6>()
-//  << ", " << v.template get<7>()
-//  << ", " << v.template get<8>()
-//  << ", " << v.template get<9>()
-//  << ", " << v.template get<10>()
-//  << ", " << v.template get<11>()
-//  << ", " << v.template get<12>()
-//  << ", " << v.template get<13>()
-//  << ", " << v.template get<14>()
-//  << ", " << v.template get<15>()
-//  << ", " << v.template get<16>()
-//  << ", " << v.template get<17>()
-//  << ", " << v.template get<18>()
-//  << ", " << v.template get<19>()
-//  << ", " << v.template get<20>()
-//  << ", " << v.template get<21>()
-//  << ", " << v.template get<22>()
-//  << ", " << v.template get<23>()
-//  << ", " << v.template get<24>()
-//  << ", " << v.template get<25>()
-//  << ", " << v.template get<26>()
-//  << ", " << v.template get<27>()
-//  << ", " << v.template get<28>()
-//  << ", " << v.template get<29>()
-//  << "]";
-//}
-//
-//template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25, typename A26, typename A27, typename A28, typename A29, typename A30>
-//inline std::ostream& operator<< (std::ostream& o,
-//      const msgpack::type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30>& v) {
-//  return o << "["
-//  
-//  << v.template get<0>()
-//  << ", " << v.template get<1>()
-//  << ", " << v.template get<2>()
-//  << ", " << v.template get<3>()
-//  << ", " << v.template get<4>()
-//  << ", " << v.template get<5>()
-//  << ", " << v.template get<6>()
-//  << ", " << v.template get<7>()
-//  << ", " << v.template get<8>()
-//  << ", " << v.template get<9>()
-//  << ", " << v.template get<10>()
-//  << ", " << v.template get<11>()
-//  << ", " << v.template get<12>()
-//  << ", " << v.template get<13>()
-//  << ", " << v.template get<14>()
-//  << ", " << v.template get<15>()
-//  << ", " << v.template get<16>()
-//  << ", " << v.template get<17>()
-//  << ", " << v.template get<18>()
-//  << ", " << v.template get<19>()
-//  << ", " << v.template get<20>()
-//  << ", " << v.template get<21>()
-//  << ", " << v.template get<22>()
-//  << ", " << v.template get<23>()
-//  << ", " << v.template get<24>()
-//  << ", " << v.template get<25>()
-//  << ", " << v.template get<26>()
-//  << ", " << v.template get<27>()
-//  << ", " << v.template get<28>()
-//  << ", " << v.template get<29>()
-//  << ", " << v.template get<30>()
-//  << "]";
-//}
-//
-//template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25, typename A26, typename A27, typename A28, typename A29, typename A30, typename A31>
-//inline std::ostream& operator<< (std::ostream& o,
-//      const msgpack::type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30, A31>& v) {
-//  return o << "["
-//  
-//  << v.template get<0>()
-//  << ", " << v.template get<1>()
-//  << ", " << v.template get<2>()
-//  << ", " << v.template get<3>()
-//  << ", " << v.template get<4>()
-//  << ", " << v.template get<5>()
-//  << ", " << v.template get<6>()
-//  << ", " << v.template get<7>()
-//  << ", " << v.template get<8>()
-//  << ", " << v.template get<9>()
-//  << ", " << v.template get<10>()
-//  << ", " << v.template get<11>()
-//  << ", " << v.template get<12>()
-//  << ", " << v.template get<13>()
-//  << ", " << v.template get<14>()
-//  << ", " << v.template get<15>()
-//  << ", " << v.template get<16>()
-//  << ", " << v.template get<17>()
-//  << ", " << v.template get<18>()
-//  << ", " << v.template get<19>()
-//  << ", " << v.template get<20>()
-//  << ", " << v.template get<21>()
-//  << ", " << v.template get<22>()
-//  << ", " << v.template get<23>()
-//  << ", " << v.template get<24>()
-//  << ", " << v.template get<25>()
-//  << ", " << v.template get<26>()
-//  << ", " << v.template get<27>()
-//  << ", " << v.template get<28>()
-//  << ", " << v.template get<29>()
-//  << ", " << v.template get<30>()
-//  << ", " << v.template get<31>()
-//  << "]";
-//}
-//
 
 #endif // MSGPACK_CPP03_MSGPACK_TUPLE_HPP

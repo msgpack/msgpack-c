@@ -1,4 +1,4 @@
-#include <msgpack_fwd.hpp>
+#include <msgpack.hpp>
 #include <gtest/gtest.h>
 
 
@@ -33,10 +33,6 @@ struct outer_enum_class {
 MSGPACK_ADD_ENUM(outer_enum_class::enum_class_test);
 
 #endif // !defined(MSGPACK_USE_CPP03)
-
-
-
-#include <msgpack.hpp>
 
 struct myclass {
     myclass() : num(0), str("default") { }

@@ -19,6 +19,7 @@
 #define MSGPACK_PACK_HPP
 
 #include "msgpack/versioning.hpp"
+#include "msgpack/cpp_config.hpp"
 
 #include <stdexcept>
 #include <limits>
@@ -80,16 +81,16 @@ public:
 
     packer<Stream>& pack_array(uint32_t n);
 
-	packer<Stream>& pack_map(uint32_t n);
+    packer<Stream>& pack_map(uint32_t n);
 
-	packer<Stream>& pack_str(uint32_t l);
-	packer<Stream>& pack_str_body(const char* b, uint32_t l);
+    packer<Stream>& pack_str(uint32_t l);
+    packer<Stream>& pack_str_body(const char* b, uint32_t l);
 
-	packer<Stream>& pack_bin(uint32_t l);
-	packer<Stream>& pack_bin_body(const char* b, uint32_t l);
+    packer<Stream>& pack_bin(uint32_t l);
+    packer<Stream>& pack_bin_body(const char* b, uint32_t l);
 
     packer<Stream>& pack_ext(size_t l, int8_t type);
-	packer<Stream>& pack_ext_body(const char* b, uint32_t l);
+    packer<Stream>& pack_ext_body(const char* b, uint32_t l);
 
 private:
     template <typename T>
@@ -119,11 +120,13 @@ private:
 private:
     packer(const packer&);
     packer& operator=(const packer&);
+    packer();
 #else  // defined(MSGPACK_USE_CPP03)
+public:
     packer(const packer&) = delete;
     packer& operator=(const packer&) = delete;
+    packer() = delete;
 #endif // defined(MSGPACK_USE_CPP03)
-    packer();
 };
 
 
@@ -138,14 +141,6 @@ inline void pack(Stream& s, const T& v)
 {
     packer<Stream>(s).pack(v);
 }
-
-// serialize operator
-template <typename Stream, typename T>
-inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const T& v)
-{
-    return detail::packer_serializer<Stream, T>::pack(o, v);
-}
-
 
 
 #if defined(__LITTLE_ENDIAN__)

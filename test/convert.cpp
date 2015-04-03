@@ -1,4 +1,4 @@
-#include <msgpack_fwd.hpp>
+#include <msgpack.hpp>
 #include <gtest/gtest.h>
 
 class enum_member {
@@ -16,8 +16,6 @@ public:
 };
 
 MSGPACK_ADD_ENUM(enum_member::flags_t);
-
-#include <msgpack.hpp>
 
 class compatibility {
 public:

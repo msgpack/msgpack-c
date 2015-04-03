@@ -119,14 +119,21 @@ struct MsgpackTuplePacker<Stream, Tuple, 0> {
     }
 };
 
-template <typename Stream, typename... Args>
-const msgpack::packer<Stream>& operator<< (
-    msgpack::packer<Stream>& o,
-    const type::tuple<Args...>& v) {
-    o.pack_array(sizeof...(Args));
-    MsgpackTuplePacker<Stream, decltype(v), sizeof...(Args)>::pack(o, v);
-    return o;
-}
+namespace adaptor {
+
+template <typename... Args>
+struct pack<type::tuple<Args...>> {
+    template <typename Stream>
+    msgpack::packer<Stream>& operator()(
+        msgpack::packer<Stream>& o,
+        const type::tuple<Args...>& v) const {
+        o.pack_array(sizeof...(Args));
+        MsgpackTuplePacker<Stream, decltype(v), sizeof...(Args)>::pack(o, v);
+        return o;
+    }
+};
+
+} // namespace adaptor
 
 // --- Convert from tuple to object ---
 
@@ -157,15 +164,21 @@ struct MsgpackTupleConverter<Tuple, 0> {
     }
 };
 
+namespace adaptor {
+
 template <typename... Args>
-msgpack::object const& operator>> (
-    msgpack::object const& o,
-    type::tuple<Args...>& v) {
-    if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-    if(o.via.array.size < sizeof...(Args)) { throw msgpack::type_error(); }
-    MsgpackTupleConverter<decltype(v), sizeof...(Args)>::convert(o, v);
-    return o;
-}
+struct convert<type::tuple<Args...>> {
+    msgpack::object const& operator()(
+        msgpack::object const& o,
+        type::tuple<Args...>& v) const {
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.via.array.size < sizeof...(Args)) { throw msgpack::type_error(); }
+        MsgpackTupleConverter<decltype(v), sizeof...(Args)>::convert(o, v);
+        return o;
+    }
+};
+
+} // namespace adaptor
 
 // --- Convert from tuple to object with zone ---
 template <typename Tuple, std::size_t N>
@@ -195,15 +208,21 @@ struct MsgpackTupleToObjectWithZone<Tuple, 0> {
     }
 };
 
+namespace adaptor {
+
 template <typename... Args>
-inline void operator<< (
+    struct object_with_zone<type::tuple<Args...>> {
+    void operator()(
         msgpack::object::with_zone& o,
-        type::tuple<Args...> const& v) {
-    o.type = msgpack::type::ARRAY;
-    o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*sizeof...(Args)));
-    o.via.array.size = sizeof...(Args);
-    MsgpackTupleToObjectWithZone<decltype(v), sizeof...(Args)>::convert(o, v);
-}
+        type::tuple<Args...> const& v) const {
+        o.type = msgpack::type::ARRAY;
+        o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*sizeof...(Args)));
+        o.via.array.size = sizeof...(Args);
+        MsgpackTupleToObjectWithZone<decltype(v), sizeof...(Args)>::convert(o, v);
+    }
+};
+
+}  // namespace adaptor
 
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 
