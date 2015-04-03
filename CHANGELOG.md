@@ -1,4 +1,19 @@
-2015-3-22 version 1.0.1:
+2015-04-03 version 1.1.0
+  << breaking change >>
+  * Remove msgpack_fwd.hpp
+  * Improve user types adaptation mechanism (#262)
+    Since version 1.0.0, users need to obey the correct include order.
+    However, it is very difficult to maintain the correct order in big
+    projects. version 1.1.0 removed this order. Users don't need to
+    care about include order. Migration guide from 1.0.x to 1.1.0 has
+    been written. See https://github.com/msgpack/msgpack-c/wiki
+
+  * Fix vector<bool> size check (#251)
+  * Fix inttypes.h inclusion on MSVC (#257)
+  * Support documents generation by Doxygen (#259)
+  * Remove C99 style variable declaration (#253)
+  * Improve documents (https://github.com/msgpack/msgpack-c/wiki)
+2015-03-22 version 1.0.1:
   * Fix compilation error on Mac 10.9 (#244)
   * Fix typos in documents (#240)
   * Update CHANGELOG.md for version 1.0.0 (#242)
