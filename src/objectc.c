@@ -20,7 +20,15 @@
 #include <stdio.h>
 #include <string.h>
 
-#if !defined(_MSC_VER) || _MSC_VER >= 1800
+#if defined(_MSC_VER)
+#if _MSC_VER >= 1800
+#include <inttypes.h>
+#else
+#define PRIu64 "I64u"
+#define PRIi64 "I64i"
+#define PRIi8 "i"
+#endif
+#else
 #include <inttypes.h>
 #endif
 
