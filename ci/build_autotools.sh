@@ -9,20 +9,26 @@ fi
 
 if [ $1 = "cpp11" ]
 then
-    if [ $2 = "32" ]
-    then
-        ./configure CFLAGS="-m32" CXXFLAGS="-std=c++11 -m32"
-    else
-        ./configure CXXFLAGS="-std=c++11"
-    fi
+    cpp11="-std=c++11"
 else
-    if [ $2 = "32" ]
-    then
-        ./configure CFLAGS="-m32" CXXFLAGS="-m32"
-    else
-        ./configure
-    fi
+    cpp11=""
 fi
+
+if [ $2 = "32" ]
+then
+    bit32="-m32"
+else
+    bit32=""
+fi
+
+if [ $3 = "boost" ]
+then
+    boost="-DMSGPACK_USE_BOOST"
+else
+    boost=""
+fi
+
+./configure CFLAGS="$bit32" CXXFLAGS="$bit32 $cpp11 $boost -I$4"
 
 ret=$?
 if [ $ret -ne 0 ]

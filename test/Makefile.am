@@ -26,7 +26,8 @@ check_PROGRAMS = \
 		reference_cpp11 \
 		reference \
 		limit \
-		iterator_cpp11
+		iterator_cpp11 \
+		boost_optional
 
 TESTS = $(check_PROGRAMS)
 
@@ -78,5 +79,7 @@ reference_cpp11_SOURCES = reference_cpp11.cpp
 limit_SOURCES = limit.cpp
 
 iterator_cpp11_SOURCES = iterator_cpp11.cpp
+
+boost_optional_SOURCES = boost_optional.cpp
 
 EXTRA_DIST = cases.mpac cases_compact.mpac

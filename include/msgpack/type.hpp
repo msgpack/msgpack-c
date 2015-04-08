@@ -33,3 +33,9 @@
 #include "adaptor/cpp11/unordered_set.hpp"
 
 #endif // defined(MSGPACK_USE_CPP03)
+
+#if defined(MSGPACK_USE_BOOST)
+
+#include "adaptor/boost/optional.hpp"
+
+#endif // defined(MSGPACK_USE_BOOST)

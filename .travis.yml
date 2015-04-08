@@ -19,16 +19,25 @@ install:
   - sudo apt-get install -y lib32z1-dev
   - sudo apt-get install -y lib32stdc++6
   - wget https://googletest.googlecode.com/files/gtest-1.7.0.zip
-  - unzip gtest-1.7.0.zip && cd gtest-1.7.0 && sudo cp -r include/gtest /usr/local/include && g++ src/gtest-all.cc -I. -Iinclude -c && g++ src/gtest_main.cc -I. -Iinclude -c && ar -rv libgtest.a gtest-all.o && ar -rv libgtest_main.a gtest_main.o && sudo mv *.a /usr/local/lib && g++ -m32 src/gtest-all.cc -I. -Iinclude -c && g++ -m32 src/gtest_main.cc -I. -Iinclude -c && ar -rv libgtest.a gtest-all.o && ar -rv libgtest_main.a gtest_main.o && sudo mkdir /usr/local/lib32 && sudo mv *.a /usr/local/lib32 && cd ..
+  - wget http://sourceforge.net/projects/boost/files/boost/1.57.0/
+  - unzip -q gtest-1.7.0.zip && cd gtest-1.7.0 && sudo cp -r include/gtest /usr/local/include && g++ src/gtest-all.cc -I. -Iinclude -c && g++ src/gtest_main.cc -I. -Iinclude -c && ar -rv libgtest.a gtest-all.o && ar -rv libgtest_main.a gtest_main.o && sudo mv *.a /usr/local/lib && g++ -m32 src/gtest-all.cc -I. -Iinclude -c && g++ -m32 src/gtest_main.cc -I. -Iinclude -c && ar -rv libgtest.a gtest-all.o && ar -rv libgtest_main.a gtest_main.o && sudo mkdir /usr/local/lib32 && sudo mv *.a /usr/local/lib32 && cd .. &&  wget http://sourceforge.net/projects/boost/files/boost/1.57.0/boost_1_57_0.zip && unzip -q boost_1_57_0.zip && sudo mkdir /usr/local/boost && sudo cp -r boost_1_57_0/boost /usr/local/boost/
 env:
-  - ACTION="ci/build_autotools.sh" VERSION="cpp11" ARCH="64" LIBPATH="/usr/local/lib"
-  - ACTION="ci/build_autotools.sh" VERSION="cpp11" ARCH="32" LIBPATH="/usr/local/lib32"
-  - ACTION="ci/build_autotools.sh" VERSION="cpp03" ARCH="64" LIBPATH="/usr/local/lib"
-  - ACTION="ci/build_autotools.sh" VERSION="cpp03" ARCH="32" LIBPATH="/usr/local/lib32"
-  - ACTION="ci/build_cmake.sh"     VERSION="cpp11" ARCH="64" LIBPATH="/usr/local/lib"
-  - ACTION="ci/build_cmake.sh"     VERSION="cpp11" ARCH="32" LIBPATH="/usr/local/lib32"
-  - ACTION="ci/build_cmake.sh"     VERSION="cpp03" ARCH="64" LIBPATH="/usr/local/lib"
-  - ACTION="ci/build_cmake.sh"     VERSION="cpp03" ARCH="32" LIBPATH="/usr/local/lib32"
+  - ACTION="ci/build_autotools.sh" VERSION="cpp11" ARCH="64" LIBPATH="/usr/local/lib"   BOOST="boost" BOOST_INC="/usr/local/boost"
+  - ACTION="ci/build_autotools.sh" VERSION="cpp11" ARCH="64" LIBPATH="/usr/local/lib"   BOOST=""
+  - ACTION="ci/build_autotools.sh" VERSION="cpp11" ARCH="32" LIBPATH="/usr/local/lib32" BOOST="boost" BOOST_INC="/usr/local/boost"
+  - ACTION="ci/build_autotools.sh" VERSION="cpp11" ARCH="32" LIBPATH="/usr/local/lib32" BOOST=""
+  - ACTION="ci/build_autotools.sh" VERSION="cpp03" ARCH="64" LIBPATH="/usr/local/lib"   BOOST="boost" BOOST_INC="/usr/local/boost"
+  - ACTION="ci/build_autotools.sh" VERSION="cpp03" ARCH="64" LIBPATH="/usr/local/lib"   BOOST=""
+  - ACTION="ci/build_autotools.sh" VERSION="cpp03" ARCH="32" LIBPATH="/usr/local/lib32" BOOST="boost" BOOST_INC="/usr/local/boost"
+  - ACTION="ci/build_autotools.sh" VERSION="cpp03" ARCH="32" LIBPATH="/usr/local/lib32" BOOST=""
+  - ACTION="ci/build_cmake.sh"     VERSION="cpp11" ARCH="64" LIBPATH="/usr/local/lib"   BOOST="boost" BOOST_INC="/usr/local/boost"
+  - ACTION="ci/build_cmake.sh"     VERSION="cpp11" ARCH="64" LIBPATH="/usr/local/lib"   BOOST=""
+  - ACTION="ci/build_cmake.sh"     VERSION="cpp11" ARCH="32" LIBPATH="/usr/local/lib32" BOOST="boost" BOOST_INC="/usr/local/boost"
+  - ACTION="ci/build_cmake.sh"     VERSION="cpp11" ARCH="32" LIBPATH="/usr/local/lib32" BOOST=""
+  - ACTION="ci/build_cmake.sh"     VERSION="cpp03" ARCH="64" LIBPATH="/usr/local/lib"   BOOST="boost" BOOST_INC="/usr/local/boost"
+  - ACTION="ci/build_cmake.sh"     VERSION="cpp03" ARCH="64" LIBPATH="/usr/local/lib"   BOOST=""
+  - ACTION="ci/build_cmake.sh"     VERSION="cpp03" ARCH="32" LIBPATH="/usr/local/lib32" BOOST="boost" BOOST_INC="/usr/local/boost"
+  - ACTION="ci/build_cmake.sh"     VERSION="cpp03" ARCH="32" LIBPATH="/usr/local/lib32" BOOST=""
 
 script:
-  - git clean -xdf && CMAKE_LIBRARY_PATH=${LIBPATH} ${ACTION} ${VERSION} ${ARCH}
+  - git clean -xdf && CMAKE_LIBRARY_PATH=${LIBPATH} ${ACTION} ${VERSION} ${ARCH} ${BOOST} ${BOOST_INC}
