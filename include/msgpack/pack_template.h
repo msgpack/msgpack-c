@@ -757,10 +757,12 @@ msgpack_pack_inline_func(_str)(msgpack_pack_user x, size_t l)
     if(l < 32) {
         unsigned char d = 0xa0 | (uint8_t)l;
         msgpack_pack_append_buffer(x, &TAKE8_8(d), 1);
+#if !defined(MSGPACK_PACK_STR_AS_V4)
     } else if(l < 256) {
         unsigned char buf[2];
         buf[0] = 0xd9; buf[1] = (uint8_t)l;
         msgpack_pack_append_buffer(x, buf, 2);
+#endif // !defined(MSGPACK_PACK_STR_AS_V4)
     } else if(l < 65536) {
         unsigned char buf[3];
         buf[0] = 0xda; _msgpack_store16(&buf[1], (uint16_t)l);

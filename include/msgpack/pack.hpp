@@ -687,10 +687,12 @@ inline packer<Stream>& packer<Stream>::pack_str(uint32_t l)
         unsigned char d = 0xa0u | static_cast<uint8_t>(l);
         char buf = take8_8(d);
         append_buffer(&buf, 1);
+#if !defined(MSGPACK_PACK_STR_AS_V4)
     } else if(l < 256) {
         char buf[2];
         buf[0] = static_cast<char>(0xd9u); buf[1] = static_cast<uint8_t>(l);
         append_buffer(buf, 2);
+#endif // !defined(MSGPACK_PACK_STR_AS_V4)
     } else if(l < 65536) {
         char buf[3];
         buf[0] = static_cast<char>(0xdau); _msgpack_store16(&buf[1], static_cast<uint16_t>(l));
