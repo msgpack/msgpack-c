@@ -608,7 +608,10 @@ inline packer<Stream>& packer<Stream>::pack_double(double d)
     mem.f = d;
     char buf[9];
     buf[0] = static_cast<char>(0xcbu);
-#if defined(__arm__) && !(__ARM_EABI__) // arm-oabi
+
+#if defined(TARGET_OS_IPHONE)
+    // ok
+#elif defined(__arm__) && !(__ARM_EABI__) // arm-oabi
     // https://github.com/msgpack/msgpack-perl/pull/1
     mem.i = (mem.i & 0xFFFFFFFFUL) << 32UL | (mem.i >> 32UL);
 #endif

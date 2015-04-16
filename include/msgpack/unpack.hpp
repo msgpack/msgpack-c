@@ -721,7 +721,9 @@ inline int context::execute(const char* data, std::size_t len, std::size_t& off)
             case MSGPACK_CS_DOUBLE: {
                 union { uint64_t i; double f; } mem;
                 load<uint64_t>(mem.i, n);
-#if defined(__arm__) && !(__ARM_EABI__) // arm-oabi
+#if defined(TARGET_OS_IPHONE)
+                // ok
+#elif defined(__arm__) && !(__ARM_EABI__) // arm-oabi
                 // https://github.com/msgpack/msgpack-perl/pull/1
                 mem.i = (mem.i & 0xFFFFFFFFUL) << 32UL | (mem.i >> 32UL);
 #endif
