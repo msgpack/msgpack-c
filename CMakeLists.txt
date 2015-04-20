@@ -17,6 +17,7 @@ SET (includedir "\${prefix}/include")
 
 OPTION (MSGPACK_CXX11 "Using c++11 compiler" OFF)
 OPTION (MSGPACK_32BIT "32bit compile" OFF)
+OPTION (MSGPACK_BOOST "Using boost libraries" OFF)
 
 IF (MSGPACK_CXX11)
    IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
@@ -38,6 +39,10 @@ IF (MSGPACK_32BIT)
       SET (CMAKE_C_FLAGS "-m32 ${CMAKE_C_FLAGS}")
       SET (CMAKE_EXE_LINKER_FLAGS "-m32 ${CMAKE_EXE_LINKER_FLAGS}")
    ENDIF ()
+ENDIF ()
+
+IF (MSGPACK_BOOST)
+   SET (CMAKE_CXX_FLAGS "-DMSGPACK_USE_BOOST ${CMAKE_CXX_FLAGS}")
 ENDIF ()
 
 FIND_PACKAGE (GTest)
@@ -100,6 +105,7 @@ IF (MSGPACK_ENABLE_CXX)
         include/msgpack.hpp
         include/msgpack/adaptor/adaptor_base.hpp
         include/msgpack/adaptor/bool.hpp
+        include/msgpack/adaptor/boost/optional.hpp
         include/msgpack/adaptor/char_ptr.hpp
         include/msgpack/adaptor/check_container_size.hpp
         include/msgpack/adaptor/cpp11/array.hpp
@@ -162,6 +168,7 @@ INCLUDE_DIRECTORIES (
     ./
     include/
     ${CMAKE_CURRENT_BINARY_DIR}/include/
+    ${MSGPACK_BOOST_DIR}
 )
 
 ADD_LIBRARY (msgpack SHARED

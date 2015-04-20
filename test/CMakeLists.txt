@@ -31,6 +31,12 @@ LIST (APPEND check_PROGRAMS
     limit.cpp
 )
 
+IF (MSGPACK_BOOST)
+    LIST (APPEND check_PROGRAMS
+        boost_optional.cpp
+    )
+ENDIF ()
+
 IF (MSGPACK_CXX11)
     LIST (APPEND check_PROGRAMS
         msgpack_cpp11.cpp
