@@ -584,7 +584,7 @@ inline std::ostream& operator<< (std::ostream& s, const msgpack::object& o)
 
     case msgpack::type::STR:
         s << '"';
-        for (int i = 0; i < o.via.str.size; ++i) {
+        for (uint32_t i = 0; i < o.via.str.size; ++i) {
             char c = o.via.str.ptr[i];
             switch (c) {
             case '\\':
