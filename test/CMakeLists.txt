@@ -29,6 +29,7 @@ LIST (APPEND check_PROGRAMS
     msgpack_c.cpp
     reference.cpp
     limit.cpp
+    json.cpp
 )
 
 IF (MSGPACK_BOOST)

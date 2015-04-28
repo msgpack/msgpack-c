@@ -583,7 +583,40 @@ inline std::ostream& operator<< (std::ostream& s, const msgpack::object& o)
         break;
 
     case msgpack::type::STR:
-        (s << '"').write(o.via.str.ptr, o.via.str.size) << '"';
+        s << '"';
+        for (uint32_t i = 0; i < o.via.str.size; ++i) {
+            char c = o.via.str.ptr[i];
+            switch (c) {
+            case '\\':
+                s << "\\\\";
+                break;
+            case '"':
+                s << "\\\"";
+                break;
+            case '/':
+                s << "\\/";
+                break;
+            case '\b':
+                s << "\\b";
+                break;
+            case '\f':
+                s << "\\f";
+                break;
+            case '\n':
+                s << "\\n";
+                break;
+            case '\r':
+                s << "\\r";
+                break;
+            case '\t':
+                s << "\\t";
+                break;
+            default:
+                s << c;
+                break;
+            }
+        }
+        s << '"';
         break;
 
     case msgpack::type::BIN:
@@ -612,11 +645,11 @@ inline std::ostream& operator<< (std::ostream& s, const msgpack::object& o)
         s << "{";
         if(o.via.map.size != 0) {
             msgpack::object_kv* p(o.via.map.ptr);
-            s << p->key << "=>" << p->val;
+            s << p->key << ':' << p->val;
             ++p;
             for(msgpack::object_kv* const pend(o.via.map.ptr + o.via.map.size);
                     p < pend; ++p) {
-                s << ", " << p->key << "=>" << p->val;
+                s << ", " << p->key << ':' << p->val;
             }
         }
         s << "}";
