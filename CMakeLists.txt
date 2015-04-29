@@ -187,9 +187,10 @@ SET_TARGET_PROPERTIES (msgpack PROPERTIES SOVERSION 3 VERSION 4.0.0)
 
 IF (MSGPACK_BUILD_TESTS)
     ENABLE_TESTING ()
-    SET(CTEST_MEMORYCHECK_COMMAND "/usr/bin/valgrind")
+    # MEMORYCHECK_COMMAND_OPTIONS needs to place prior to CTEST_MEMORYCHECK_COMMAND
+    SET (MEMORYCHECK_COMMAND_OPTIONS "--leak-check=full --show-leak-kinds=definite,possible --error-exitcode=1")
+    FIND_PROGRAM(CTEST_MEMORYCHECK_COMMAND NAMES valgrind)
     INCLUDE(Dart)
-    SET(MEMORYCHECK_COMMAND_OPTIONS "--leak-check=full --error-exitcode=1")
     ADD_SUBDIRECTORY (test)
 ENDIF ()
 
