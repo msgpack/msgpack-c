@@ -43,7 +43,7 @@ struct convert<std::unordered_set<T>> {
             --p;
             tmp.insert(p->as<T>());
         }
-        tmp.swap(v);
+        v = std::move(tmp);
         return o;
     }
 };
@@ -97,7 +97,7 @@ struct convert<std::unordered_multiset<T>> {
             --p;
             tmp.insert(p->as<T>());
         }
-        tmp.swap(v);
+        v = std::move(tmp);
         return o;
     }
 };
