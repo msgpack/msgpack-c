@@ -28,7 +28,8 @@ check_PROGRAMS = \
 		limit \
 		json \
 		iterator_cpp11 \
-		boost_optional
+		boost_optional \
+		boost_string_ref
 
 TESTS = $(check_PROGRAMS)
 
@@ -84,5 +85,7 @@ json_SOURCES = json.cpp
 iterator_cpp11_SOURCES = iterator_cpp11.cpp
 
 boost_optional_SOURCES = boost_optional.cpp
+
+boost_string_ref_SOURCES = boost_string_ref.cpp
 
 EXTRA_DIST = cases.mpac cases_compact.mpac
