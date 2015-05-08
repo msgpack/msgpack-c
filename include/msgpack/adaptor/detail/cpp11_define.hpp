@@ -43,18 +43,7 @@
         msgpack::type::make_define(__VA_ARGS__).msgpack_object(o, z); \
     }
 
-#define MSGPACK_BASE(base) \
-    static_cast<base &>( \
-        const_cast< \
-            std::add_lvalue_reference< \
-                std::remove_const< \
-                    std::remove_pointer< \
-                        decltype(this) \
-                    >::type \
-                >::type \
-            >::type \
-        >(*this) \
-    )
+#define MSGPACK_BASE(base) (*const_cast<base *>(static_cast<base const*>(this)))
 
 // MSGPACK_ADD_ENUM must be used in the global namespace.
 #define MSGPACK_ADD_ENUM(enum_name) \
