@@ -115,16 +115,17 @@ struct convert<std::map<K, V> > {
         for(; p != pend; ++p) {
             K key;
             p->key.convert(key);
-            typename std::map<K,V>::iterator it(tmp.lower_bound(key));
-            if(it != tmp.end() && !(key < it->first)) {
-                p->val.convert(it->second);
-            } else {
-                V val;
-                p->val.convert(val);
-                tmp.insert(it, std::pair<K,V>(key, val));
-            }
+#if __cplusplus >= 201103L
+            p->val.convert(tmp[std::move(key)]);
+#else
+            p->val.convert(tmp[key]);
+#endif
         }
+#if __cplusplus >= 201103L
+        v = std::move(tmp);
+#else
         tmp.swap(v);
+#endif
         return o;
     }
 };
@@ -180,9 +181,17 @@ struct convert<std::multimap<K, V> > {
             std::pair<K, V> value;
             p->key.convert(value.first);
             p->val.convert(value.second);
+#if __cplusplus >= 201103L
+            tmp.insert(std::move(value));
+#else
             tmp.insert(value);
+#endif
         }
+#if __cplusplus >= 201103L
+        v = std::move(tmp);
+#else
         tmp.swap(v);
+#endif
         return o;
     }
 };

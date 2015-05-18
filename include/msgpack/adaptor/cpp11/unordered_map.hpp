@@ -42,9 +42,9 @@ struct convert<std::unordered_map<K, V>> {
         for(; p != pend; ++p) {
             K key;
             p->key.convert(key);
-            p->val.convert(tmp[key]);
+            p->val.convert(tmp[std::move(key)]);
         }
-        tmp.swap(v);
+        v = std::move(tmp);
         return o;
     }
 };
@@ -100,9 +100,9 @@ struct convert<std::unordered_multimap<K, V>> {
             std::pair<K, V> value;
             p->key.convert(value.first);
             p->val.convert(value.second);
-            tmp.insert(value);
+            tmp.insert(std::move(value));
         }
-        tmp.swap(v);
+        v = std::move(tmp);
         return o;
     }
 };

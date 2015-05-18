@@ -43,7 +43,11 @@ struct convert<std::set<T> > {
             --p;
             tmp.insert(p->as<T>());
         }
+#if __cplusplus >= 201103L
+        v = std::move(tmp);
+#else
         tmp.swap(v);
+#endif
         return o;
     }
 };
@@ -96,7 +100,11 @@ struct convert<std::multiset<T> > {
             --p;
             tmp.insert(p->as<T>());
         }
+#if __cplusplus >= 201103L
+        v = std::move(tmp);
+#else
         tmp.swap(v);
+#endif
         return o;
     }
 };
