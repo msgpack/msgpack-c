@@ -62,16 +62,16 @@
 
 #define MSGPACK_PP_IS_NS_ENABLED(ns) MSGPACK_PP_CHECK(MSGPACK_PP_NS_ENABLED_PROBE(ns))
 
-#if __cplusplus < 201103
+#if __cplusplus < 201103L
 #define MSGPACK_API_VERSION_NAMESPACE(ns) MSGPACK_PP_IIF(MSGPACK_PP_IS_NS_ENABLED(ns)) \
     (namespace ns{}; using namespace ns; namespace ns, \
      namespace ns)
 
-#else  // __cplusplus < 201103
+#else  // __cplusplus < 201103L
 
 #define MSGPACK_API_VERSION_NAMESPACE(ns) MSGPACK_PP_IIF(MSGPACK_PP_IS_NS_ENABLED(ns)) \
     (inline namespace ns, namespace ns)
 
-#endif // __cplusplus < 201103
+#endif // __cplusplus < 201103L
 
 #endif // MSGPACK_VERSIONING_HPP
