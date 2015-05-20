@@ -353,6 +353,12 @@ inline void zone::undo_allocate(size_t size)
     m_chunk_list.m_free += size;
 }
 
+inline std::size_t aligned_size(
+    std::size_t size,
+    std::size_t align = MSGPACK_ZONE_ALIGN) {
+    return (size + align - 1) / align * align;
+}
+
 /// @cond
 
 template <typename T>
