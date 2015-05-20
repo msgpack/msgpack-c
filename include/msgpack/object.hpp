@@ -368,7 +368,7 @@ inline bool operator!=(const msgpack::object& x, const msgpack::object& y)
 { return !(x == y); }
 
 template <typename T>
-inline bool operator==(const T& y, const msgpack::object x)
+inline bool operator==(const T& y, const msgpack::object& x)
 { return x == y; }
 
 template <typename T>
