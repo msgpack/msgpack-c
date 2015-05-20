@@ -36,6 +36,87 @@ namespace msgpack {
 MSGPACK_API_VERSION_NAMESPACE(v1) {
 /// @endcond
 
+class object_handle {
+public:
+    object_handle() {}
+
+    object_handle(msgpack::object const& obj, msgpack::unique_ptr<msgpack::zone> z) :
+        m_obj(obj), m_zone(msgpack::move(z)) { }
+
+    // deprecated
+    void set(msgpack::object const& obj)
+        { m_obj = obj; }
+
+    const msgpack::object& get() const
+        { return m_obj; }
+
+    msgpack::unique_ptr<msgpack::zone>& zone()
+        { return m_zone; }
+
+    const msgpack::unique_ptr<msgpack::zone>& zone() const
+        { return m_zone; }
+
+private:
+    msgpack::object m_obj;
+    msgpack::unique_ptr<msgpack::zone> m_zone;
+};
+
+namespace detail {
+
+template <std::size_t N>
+inline std::size_t add_ext_type_size(std::size_t size) {
+    return size + 1;
+}
+
+template <>
+inline std::size_t add_ext_type_size<4>(std::size_t size) {
+    return size == 0xffffffff ? size : size + 1;
+}
+
+} // namespace detail
+
+inline std::size_t aligned_size(msgpack::object const& obj) {
+    std::size_t s = sizeof(obj);
+    switch (obj.type) {
+    case msgpack::type::ARRAY:
+        for (uint32_t i = 0; i < obj.via.array.size; ++i) {
+            s += msgpack::aligned_size(obj.via.array.ptr[i]);
+        }
+        break;
+    case msgpack::type::MAP:
+        for (uint32_t i = 0; i < obj.via.map.size; ++i) {
+            s += msgpack::aligned_size(obj.via.map.ptr[i].key);
+            s += msgpack::aligned_size(obj.via.map.ptr[i].val);
+        }
+        break;
+    case msgpack::type::EXT:
+        s += msgpack::aligned_size(
+            detail::add_ext_type_size<sizeof(std::size_t)>(obj.via.ext.size));
+        break;
+    case msgpack::type::STR:
+        s += msgpack::aligned_size(obj.via.str.size);
+        break;
+    case msgpack::type::BIN:
+        s += msgpack::aligned_size(obj.via.bin.size);
+        break;
+    default:
+        break;
+    }
+    return s;
+}
+
+inline object_handle clone(msgpack::object const& obj) {
+    std::size_t size = msgpack::aligned_size(obj);
+    msgpack::unique_ptr<msgpack::zone> z(new msgpack::zone(size));
+    msgpack::object newobj(obj, *z);
+#if __cplusplus < 201103L
+    object_handle oh(newobj, msgpack::move(z));
+    return oh;
+#else  // __cplusplus < 201103L
+    return object_handle(newobj, msgpack::move(z));
+#endif // __cplusplus < 201103L
+}
+
 struct object::implicit_type {
     implicit_type(object const& o) : obj(o) { }
     ~implicit_type() { }

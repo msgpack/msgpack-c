@@ -340,3 +340,18 @@ TEST(object, construct_class_enum_outer)
 }
 
 #endif // !defined(MSGPACK_USE_CPP03)
+
+TEST(object, clone_size)
+{
+    msgpack::zone z;
+    std::string s = "123456789";
+    msgpack::object obj(s, z);
+    std::size_t sz1 = msgpack::aligned_size(obj);
+#if __cplusplus < 201103L
+    msgpack::object_handle h = msgpack::move(msgpack::clone(obj));
+#else  // __cplusplus < 201103L
+    msgpack::object_handle h = msgpack::clone(obj);
+#endif // __cplusplus < 201103L
+    EXPECT_EQ(h.get(), obj);
+    EXPECT_EQ(sz1, msgpack::aligned_size(h.get()));
+}

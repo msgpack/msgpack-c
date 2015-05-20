@@ -991,30 +991,7 @@ inline int context::execute(const char* data, std::size_t len, std::size_t& off)
 } // detail
 
 
-class unpacked {
-public:
-    unpacked() {}
-
-    unpacked(msgpack::object const& obj, msgpack::unique_ptr<msgpack::zone> z) :
-        m_obj(obj), m_zone(msgpack::move(z)) { }
-
-    void set(msgpack::object const& obj)
-        { m_obj = obj; }
-
-    const msgpack::object& get() const
-        { return m_obj; }
-
-    msgpack::unique_ptr<msgpack::zone>& zone()
-        { return m_zone; }
-
-    const msgpack::unique_ptr<msgpack::zone>& zone() const
-        { return m_zone; }
-
-private:
-    msgpack::object m_obj;
-    msgpack::unique_ptr<msgpack::zone> m_zone;
-};
-
+typedef object_handle unpacked;
 
 class unpacker {
 public:
