@@ -63,9 +63,9 @@ T& move(T& t)
 }
 
 template <typename T>
-T const& move(T const& t)
+T& move(T const& t)
 {
-    return t;
+    return const_cast<T&>(t);
 }
 
 template <bool P, typename T = void>
