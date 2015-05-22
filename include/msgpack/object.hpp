@@ -56,6 +56,39 @@ public:
     const msgpack::unique_ptr<msgpack::zone>& zone() const
         { return m_zone; }
 
+#if defined(MSGPACK_USE_CPP03)
+    struct object_handle_ref {
+        object_handle_ref(object_handle* oh):m_oh(oh) {}
+        object_handle* m_oh;
+    };
+
+    object_handle(object_handle& other):
+        m_obj(other.m_obj),
+        m_zone(msgpack::move(other.m_zone)) {
+    }
+
+    object_handle(object_handle_ref ref):
+        m_obj(ref.m_oh->m_obj),
+        m_zone(msgpack::move(ref.m_oh->m_zone)) {
+    }
+
+    object_handle& operator=(object_handle& other) {
+        m_obj = other.m_obj;
+        m_zone = msgpack::move(other.m_zone);
+        return *this;
+    }
+
+    object_handle& operator=(object_handle_ref ref) {
+        m_obj = ref.m_oh->m_obj;
+        m_zone = msgpack::move(ref.m_oh->m_zone);
+        return *this;
+    }
+
+    operator object_handle_ref() {
+        return object_handle_ref(this);
+    }
+#endif // defined(MSGPACK_USE_CPP03)
+
 private:
     msgpack::object m_obj;
     msgpack::unique_ptr<msgpack::zone> m_zone;
@@ -110,13 +143,8 @@ inline std::size_t aligned_zone_size(msgpack::object const& obj) {
 inline object_handle clone(msgpack::object const& obj) {
     std::size_t size = msgpack::aligned_zone_size(obj);
     msgpack::unique_ptr<msgpack::zone> z(size == 0 ? nullptr : new msgpack::zone(size));
-#if defined(MSGPACK_USE_CPP03)
-    msgpack::object newobj = z.get() ? msgpack::move(msgpack::object(obj, *z)) : msgpack::move(obj);
-    return msgpack::move(object_handle(newobj, msgpack::move(z)));
-#else  // defined(MSGPACK_USE_CPP03)
-    msgpack::object newobj = z ? msgpack::object(obj, *z) : obj;
+    msgpack::object newobj = z.get() ? msgpack::object(obj, *z) : obj;
     return object_handle(newobj, msgpack::move(z));
-#endif // defined(MSGPACK_USE_CPP03)
 }
 
 struct object::implicit_type {
