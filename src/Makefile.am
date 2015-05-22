@@ -72,6 +72,7 @@ nobase_include_HEADERS += \
 		../include/msgpack/adaptor/detail/cpp03_msgpack_tuple.hpp \
 		../include/msgpack/adaptor/detail/cpp11_define.hpp \
 		../include/msgpack/adaptor/detail/cpp11_msgpack_tuple.hpp \
+		../include/msgpack/adaptor/ext.hpp \
 		../include/msgpack/adaptor/fixint.hpp \
 		../include/msgpack/adaptor/float.hpp \
 		../include/msgpack/adaptor/int.hpp \
