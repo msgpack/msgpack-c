@@ -47,7 +47,7 @@ struct raw_ref {
 
     bool operator!= (const raw_ref& x) const
     {
-        return !(*this != x);
+        return !(*this == x);
     }
 
     bool operator< (const raw_ref& x) const
