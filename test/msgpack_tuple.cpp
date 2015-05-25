@@ -30,7 +30,7 @@ TEST(msgpack_tuple, non_member_get)
     EXPECT_EQ("DEFG", msgpack::type::get<2>(t1));
 }
 
-#if __cplusplus >= 201103
+#if __cplusplus >= 201103L
 TEST(msgpack_tuple, std_non_member_get)
 {
     msgpack::type::tuple<int, bool, std::string> t1(42, true, "ABC");
