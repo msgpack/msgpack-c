@@ -352,9 +352,6 @@ TEST(object, clone_int)
     h = msgpack::clone(obj);
     EXPECT_EQ(h.get(), obj);
     EXPECT_EQ(sz1, msgpack::aligned_zone_size(h.get()));
-    h = msgpack::move(h);
-    EXPECT_EQ(h.get(), obj);
-    EXPECT_EQ(sz1, msgpack::aligned_zone_size(h.get()));
 }
 
 TEST(object, clone_str)
@@ -367,9 +364,6 @@ TEST(object, clone_str)
     EXPECT_EQ(h.get(), obj);
     EXPECT_EQ(sz1, msgpack::aligned_zone_size(h.get()));
     h = msgpack::clone(obj);
-    EXPECT_EQ(h.get(), obj);
-    EXPECT_EQ(sz1, msgpack::aligned_zone_size(h.get()));
-    h = msgpack::move(h);
     EXPECT_EQ(h.get(), obj);
     EXPECT_EQ(sz1, msgpack::aligned_zone_size(h.get()));
 }
@@ -389,9 +383,6 @@ TEST(object, clone_bin)
     h = msgpack::clone(obj);
     EXPECT_EQ(h.get(), obj);
     EXPECT_EQ(sz1, msgpack::aligned_zone_size(h.get()));
-    h = msgpack::move(h);
-    EXPECT_EQ(h.get(), obj);
-    EXPECT_EQ(sz1, msgpack::aligned_zone_size(h.get()));
 }
 
 TEST(object, clone_array)
@@ -409,9 +400,6 @@ TEST(object, clone_array)
     h = msgpack::clone(obj);
     EXPECT_EQ(h.get(), obj);
     EXPECT_EQ(sz1, msgpack::aligned_zone_size(h.get()));
-    h = msgpack::move(h);
-    EXPECT_EQ(h.get(), obj);
-    EXPECT_EQ(sz1, msgpack::aligned_zone_size(h.get()));
 }
 
 TEST(object, clone_map)
@@ -427,9 +415,6 @@ TEST(object, clone_map)
     EXPECT_EQ(h.get(), obj);
     EXPECT_EQ(sz1, msgpack::aligned_zone_size(h.get()));
     h = msgpack::clone(obj);
-    EXPECT_EQ(h.get(), obj);
-    EXPECT_EQ(sz1, msgpack::aligned_zone_size(h.get()));
-    h = msgpack::move(h);
     EXPECT_EQ(h.get(), obj);
     EXPECT_EQ(sz1, msgpack::aligned_zone_size(h.get()));
 }
