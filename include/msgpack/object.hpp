@@ -386,15 +386,17 @@ inline msgpack::object::implicit_type object::convert() const
 }
 
 template <typename T>
-inline void object::convert(T& v) const
+inline T& object::convert(T& v) const
 {
     msgpack::operator>>(*this, v);
+    return v;
 }
 
 template <typename T>
-inline void object::convert(T* v) const
+inline T* object::convert(T* v) const
 {
     convert(*v);
+    return v;
 }
 
 template <typename T>
