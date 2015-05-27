@@ -106,9 +106,9 @@ struct object {
     T as() const;
 
     template <typename T>
-    void convert(T& v) const;
+    T& convert(T& v) const;
     template <typename T>
-    void convert(T* v) const;
+    T* convert(T* v) const;
 
     object();
 
