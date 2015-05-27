@@ -72,3 +72,24 @@ TEST(convert, enum_member)
 
     EXPECT_EQ(enum_member::B, to.flag);
 }
+
+TEST(convert, return_value_ptr)
+{
+    msgpack::zone z;
+    msgpack::object obj(1, z);
+
+    int i;
+    EXPECT_EQ(obj.convert(&i), &i);
+    EXPECT_EQ(1, i);
+}
+
+TEST(convert, return_value_ref)
+{
+    msgpack::zone z;
+    msgpack::object obj(1, z);
+
+    int i;
+    int const& j = obj.convert(i);
+    EXPECT_EQ(&i, &j);
+    EXPECT_EQ(i, j);
+}
