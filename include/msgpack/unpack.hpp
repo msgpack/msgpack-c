@@ -991,6 +991,8 @@ inline int context::execute(const char* data, std::size_t len, std::size_t& off)
 } // detail
 
 
+typedef object_handle unpacked;
+
 class unpacker {
 public:
     unpacker(unpack_reference_func f = &unpacker::default_reference_func,

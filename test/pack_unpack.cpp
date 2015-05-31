@@ -309,8 +309,6 @@ TEST(unpack, convert_to_object_handle_direct)
 
 }
 
-#if !defined(MSGPACK_USE_CPP03)
-
 TEST(unpack, convert_to_object_handle_direct_implicit)
 {
     msgpack::sbuffer sbuf;
@@ -319,4 +317,3 @@ TEST(unpack, convert_to_object_handle_direct_implicit)
     EXPECT_EQ(1, oh.get().as<int>());
 
 }
-#endif // !defined(MSGPACK_USE_CPP03)

@@ -36,73 +36,16 @@ namespace msgpack {
 MSGPACK_API_VERSION_NAMESPACE(v1) {
 /// @endcond
 
-#if defined(MSGPACK_USE_CPP03)
-class unpacked;
-struct unpacked_ref {
-    unpacked_ref(unpacked* unp):m_unp(unp) {}
-    unpacked* m_unp;
-};
-#endif // defined(MSGPACK_USE_CPP03)
-
-// obsolete (use object_handle)
-class unpacked {
-public:
-    unpacked() {}
-
-    unpacked(msgpack::object const& obj, msgpack::unique_ptr<msgpack::zone> z) :
-        m_obj(obj), m_zone(msgpack::move(z)) { }
-
-    void set(msgpack::object const& obj)
-        { m_obj = obj; }
-
-    const msgpack::object& get() const
-        { return m_obj; }
-
-    msgpack::unique_ptr<msgpack::zone>& zone()
-        { return m_zone; }
-
-    const msgpack::unique_ptr<msgpack::zone>& zone() const
-        { return m_zone; }
-
-#if defined(MSGPACK_USE_CPP03)
-    unpacked(unpacked& other):
-        m_obj(other.m_obj),
-        m_zone(msgpack::move(other.m_zone)) {
-    }
-
-    unpacked(unpacked_ref ref):
-        m_obj(ref.m_unp->m_obj),
-        m_zone(msgpack::move(ref.m_unp->m_zone)) {
-    }
-
-    unpacked& operator=(unpacked& other) {
-        m_obj = other.m_obj;
-        m_zone = msgpack::move(other.m_zone);
-        return *this;
-    }
-
-    unpacked& operator=(unpacked_ref ref) {
-        m_obj = ref.m_unp->m_obj;
-        m_zone = msgpack::move(ref.m_unp->m_zone);
-        return *this;
-    }
-
-    operator msgpack::unpacked_ref() {
-        return msgpack::unpacked_ref(this);
-    }
-#endif // defined(MSGPACK_USE_CPP03)
-
-private:
-    msgpack::object m_obj;
-    msgpack::unique_ptr<msgpack::zone> m_zone;
-};
-
 class object_handle {
 public:
     object_handle() {}
 
     object_handle(msgpack::object const& obj, msgpack::unique_ptr<msgpack::zone> z) :
         m_obj(obj), m_zone(msgpack::move(z)) { }
+
+    // obsolete
+    void set(msgpack::object const& obj)
+        { m_obj = obj; }
 
     const msgpack::object& get() const
         { return m_obj; }
@@ -129,11 +72,6 @@ public:
         m_zone(msgpack::move(ref.m_oh->m_zone)) {
     }
 
-    object_handle(msgpack::unpacked_ref ref):
-        m_obj(ref.m_unp->get()),
-        m_zone(msgpack::move(ref.m_unp->zone())) {
-    }
-
     object_handle& operator=(object_handle& other) {
         m_obj = other.m_obj;
         m_zone = msgpack::move(other.m_zone);
@@ -146,17 +84,9 @@ public:
         return *this;
     }
 
-    object_handle& operator=(msgpack::unpacked_ref ref) {
-        m_obj = ref.m_unp->get();
-        m_zone = msgpack::move(ref.m_unp->zone());
-        return *this;
-    }
-
     operator object_handle_ref() {
         return object_handle_ref(this);
     }
-#else  // defined(MSGPACK_USE_CPP03)
-    object_handle(msgpack::unpacked&& unp): m_obj(unp.get()), m_zone(std::move(unp.zone())) {}
 #endif // defined(MSGPACK_USE_CPP03)
 
 private:
