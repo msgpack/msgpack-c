@@ -991,30 +991,7 @@ inline int context::execute(const char* data, std::size_t len, std::size_t& off)
 } // detail
 
 
-class unpacked {
-public:
-    unpacked() {}
-
-    unpacked(msgpack::object const& obj, msgpack::unique_ptr<msgpack::zone> z) :
-        m_obj(obj), m_zone(msgpack::move(z)) { }
-
-    void set(msgpack::object const& obj)
-        { m_obj = obj; }
-
-    const msgpack::object& get() const
-        { return m_obj; }
-
-    msgpack::unique_ptr<msgpack::zone>& zone()
-        { return m_zone; }
-
-    const msgpack::unique_ptr<msgpack::zone>& zone() const
-        { return m_zone; }
-
-private:
-    msgpack::object m_obj;
-    msgpack::unique_ptr<msgpack::zone> m_zone;
-};
-
+typedef object_handle unpacked;
 
 class unpacker {
 public:
@@ -1143,8 +1120,6 @@ private:
 #endif // defined(MSGPACK_USE_CPP03)
 };
 
-#if !defined(MSGPACK_USE_CPP03)
-
 unpacked unpack(
     const char* data, std::size_t len, std::size_t& off, bool& referenced,
     unpack_reference_func f = nullptr, void* user_data = nullptr,
@@ -1161,8 +1136,6 @@ unpacked unpack(
     const char* data, std::size_t len,
     unpack_reference_func f = nullptr, void* user_data = nullptr,
     unpack_limit const& limit = unpack_limit());
-
-#endif // !defined(MSGPACK_USE_CPP03)
 
 
 void unpack(unpacked& result,
@@ -1554,8 +1527,6 @@ unpack_imp(const char* data, std::size_t len, std::size_t& off,
 
 // reference version
 
-#if !defined(MSGPACK_USE_CPP03)
-
 inline unpacked unpack(
     const char* data, std::size_t len, std::size_t& off, bool& referenced,
     unpack_reference_func f, void* user_data, unpack_limit const& limit)
@@ -1604,8 +1575,6 @@ inline unpacked unpack(
     std::size_t off = 0;
     return unpack(data, len, off, referenced, f, user_data, limit);
 }
-
-#endif // !defined(MSGPACK_USE_CPP03)
 
 inline void unpack(unpacked& result,
                    const char* data, std::size_t len, std::size_t& off, bool& referenced,
