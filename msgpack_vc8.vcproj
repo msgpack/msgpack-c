@@ -26,12 +26,6 @@
 				Name="VCPreBuildEventTool"
 			/>
 			<Tool
-				Name="VCCustomBuildTool"
-				Description="Gathering header files"
-				CommandLine="msgpack_vc.postbuild.bat"
-				Outputs="include"
-			/>
-			<Tool
 				Name="VCXMLDataGeneratorTool"
 			/>
 			<Tool
@@ -92,12 +86,6 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-				Description="Gathering header files"
-				CommandLine="msgpack_vc.postbuild.bat"
-				Outputs="include"
 			/>
 			<Tool
 				Name="VCXMLDataGeneratorTool"
