@@ -26,12 +26,6 @@
 				Name="VCPreBuildEventTool"
 			/>
 			<Tool
-				Name="VCCustomBuildTool"
-				Description="Gathering header files"
-				CommandLine="msgpack_vc.postbuild.bat"
-				Outputs="include"
-			/>
-			<Tool
 				Name="VCXMLDataGeneratorTool"
 			/>
 			<Tool
@@ -43,7 +37,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="."
+				AdditionalIncludeDirectories=".;include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="1"
@@ -94,12 +88,6 @@
 				Name="VCPreBuildEventTool"
 			/>
 			<Tool
-				Name="VCCustomBuildTool"
-				Description="Gathering header files"
-				CommandLine="msgpack_vc.postbuild.bat"
-				Outputs="include"
-			/>
-			<Tool
 				Name="VCXMLDataGeneratorTool"
 			/>
 			<Tool
@@ -110,7 +98,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="."
+				AdditionalIncludeDirectories=".;include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -176,10 +164,6 @@
 				RelativePath=".\src\zone.c"
 				>
 			</File>
-			<File
-				RelativePath=".\src\object.cpp"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -187,23 +171,7 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\src\msgpack\pack_define.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\msgpack\pack_template.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\msgpack\sysdep.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\msgpack\unpack_define.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\msgpack\unpack_template.h"
+				RelativePath=".\include\msgpack.hpp"
 				>
 			</File>
 		</Filter>
