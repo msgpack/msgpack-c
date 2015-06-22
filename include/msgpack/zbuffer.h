@@ -131,7 +131,7 @@ int msgpack_zbuffer_write(void* data, const char* buf, size_t len)
     zbuf->stream.next_in = (Bytef*)buf;
     zbuf->stream.avail_in = len;
 
-    do {
+    while(zbuf->stream.avail_in > 0) {
         if(zbuf->stream.avail_out < MSGPACK_ZBUFFER_RESERVE_SIZE) {
             if(!msgpack_zbuffer_expand(zbuf)) {
                 return -1;
@@ -141,7 +141,7 @@ int msgpack_zbuffer_write(void* data, const char* buf, size_t len)
         if(deflate(&zbuf->stream, Z_NO_FLUSH) != Z_OK) {
             return -1;
         }
-    } while(zbuf->stream.avail_in > 0);
+    }
 
     return 0;
 }
