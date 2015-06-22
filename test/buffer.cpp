@@ -85,6 +85,8 @@ TEST(buffer, zbuffer_c)
     EXPECT_EQ(0, msgpack_zbuffer_write(&zbuf, "", 0));
 
     EXPECT_TRUE(msgpack_zbuffer_flush(&zbuf) != NULL);
+
+    msgpack_zbuffer_destroy(&zbuf);
 }
 
 
