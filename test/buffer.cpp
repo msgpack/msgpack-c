@@ -2,6 +2,7 @@
 #include <msgpack/fbuffer.hpp>
 #include <msgpack/fbuffer.h>
 #include <msgpack/zbuffer.hpp>
+#include <msgpack/zbuffer.h>
 #include <gtest/gtest.h>
 #include <string.h>
 
@@ -68,8 +69,22 @@ TEST(buffer, zbuffer)
     zbuf.write("a", 1);
     zbuf.write("a", 1);
     zbuf.write("a", 1);
+    zbuf.write("", 0);
 
     zbuf.flush();
+}
+
+
+TEST(buffer, zbuffer_c)
+{
+    msgpack_zbuffer zbuf;
+    EXPECT_TRUE(msgpack_zbuffer_init(&zbuf, 1, MSGPACK_ZBUFFER_INIT_SIZE));
+    EXPECT_EQ(0, msgpack_zbuffer_write(&zbuf, "a", 1));
+    EXPECT_EQ(0, msgpack_zbuffer_write(&zbuf, "a", 1));
+    EXPECT_EQ(0, msgpack_zbuffer_write(&zbuf, "a", 1));
+    EXPECT_EQ(0, msgpack_zbuffer_write(&zbuf, "", 0));
+
+    EXPECT_TRUE(msgpack_zbuffer_flush(&zbuf) != NULL);
 }
 
 
