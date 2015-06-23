@@ -65,7 +65,7 @@ public:
         m_stream.next_in = reinterpret_cast<Bytef*>(const_cast<char*>(buf));
         m_stream.avail_in = len;
 
-        do {
+        while(m_stream.avail_in > 0) {
             if(m_stream.avail_out < MSGPACK_ZBUFFER_RESERVE_SIZE) {
                 if(!expand()) {
                     throw std::bad_alloc();
@@ -75,7 +75,7 @@ public:
             if(deflate(&m_stream, Z_NO_FLUSH) != Z_OK) {
                 throw std::bad_alloc();
             }
-        } while(m_stream.avail_in > 0);
+        }
     }
 
     char* flush()
