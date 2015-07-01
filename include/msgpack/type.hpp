@@ -36,6 +36,7 @@
 
 #if defined(MSGPACK_USE_BOOST)
 
+#include "adaptor/boost/fusion.hpp"
 #include "adaptor/boost/optional.hpp"
 #include "adaptor/boost/string_ref.hpp"
 

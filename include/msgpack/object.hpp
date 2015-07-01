@@ -169,26 +169,26 @@ struct packer_serializer {
 } // namespace detail
 
 // Adaptor functors' member functions definitions.
-template <typename T>
+template <typename T, typename Enabler>
 inline
 msgpack::object const&
-msgpack::adaptor::convert<T>::operator()(msgpack::object const& o, T& v) const {
+msgpack::adaptor::convert<T, Enabler>::operator()(msgpack::object const& o, T& v) const {
     v.msgpack_unpack(o.convert());
     return o;
 }
 
-template <typename T>
+template <typename T, typename Enabler>
 template <typename Stream>
 inline
 msgpack::packer<Stream>&
-msgpack::adaptor::pack<T>::operator()(msgpack::packer<Stream>& o, T const& v) const {
+msgpack::adaptor::pack<T, Enabler>::operator()(msgpack::packer<Stream>& o, T const& v) const {
     return detail::packer_serializer<Stream, T>::pack(o, v);
 }
 
-template <typename T>
+template <typename T, typename Enabler>
 inline
 void
-msgpack::adaptor::object_with_zone<T>::operator()(msgpack::object::with_zone& o, T const& v) const {
+msgpack::adaptor::object_with_zone<T, Enabler>::operator()(msgpack::object::with_zone& o, T const& v) const {
     v.msgpack_object(static_cast<msgpack::object*>(&o), o.zone);
 }
 
