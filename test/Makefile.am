@@ -27,6 +27,7 @@ check_PROGRAMS = \
 		reference \
 		limit \
 		json \
+		user_class \
 		iterator_cpp11 \
 		boost_optional \
 		boost_string_ref
@@ -81,6 +82,8 @@ reference_cpp11_SOURCES = reference_cpp11.cpp
 limit_SOURCES = limit.cpp
 
 json_SOURCES = json.cpp
+
+user_class_SOURCES = user_class.cpp
 
 iterator_cpp11_SOURCES = iterator_cpp11.cpp
 

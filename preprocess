@@ -1,17 +1,18 @@
 #!/bin/sh
 
 preprocess() {
-	ruby -r erb -e 'puts ERB.new(ARGF.read).result' $1.erb > $1.tmp
-	if [ "$?" != 0 ]; then
-		echo ""
-		echo "** preprocess failed **"
-		echo ""
-		exit 1
-	else
-		mv $1.tmp $2
-	fi
+    ruby -r erb -e 'puts ERB.new(ARGF.read).result' $1.erb > $1.tmp
+    if [ "$?" != 0 ]; then
+        echo ""
+        echo "** preprocess failed **"
+        echo ""
+        exit 1
+    else
+        mv $1.tmp $2
+    fi
 }
 
 preprocess erb/cpp03_msgpack_tuple.hpp include/msgpack/adaptor/detail/cpp03_msgpack_tuple.hpp
-preprocess erb/cpp03_define.hpp include/msgpack/adaptor/detail/cpp03_define.hpp
+preprocess erb/cpp03_define_array.hpp include/msgpack/adaptor/detail/cpp03_define_array.hpp
+preprocess erb/cpp03_define_map.hpp include/msgpack/adaptor/detail/cpp03_define_map.hpp
 preprocess erb/cpp03_zone.hpp include/msgpack/detail/cpp03_zone.hpp

@@ -117,9 +117,11 @@ IF (MSGPACK_ENABLE_CXX)
         include/msgpack/adaptor/cpp11/unordered_set.hpp
         include/msgpack/adaptor/define.hpp
         include/msgpack/adaptor/deque.hpp
-        include/msgpack/adaptor/detail/cpp03_define.hpp
+        include/msgpack/adaptor/detail/cpp03_define_array.hpp
+        include/msgpack/adaptor/detail/cpp03_define_map.hpp
         include/msgpack/adaptor/detail/cpp03_msgpack_tuple.hpp
-        include/msgpack/adaptor/detail/cpp11_define.hpp
+        include/msgpack/adaptor/detail/cpp11_define_array.hpp
+        include/msgpack/adaptor/detail/cpp11_define_map.hpp
         include/msgpack/adaptor/detail/cpp11_msgpack_tuple.hpp
         include/msgpack/adaptor/fixint.hpp
         include/msgpack/adaptor/float.hpp
