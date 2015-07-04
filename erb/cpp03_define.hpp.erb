@@ -164,7 +164,7 @@ inline define<> make_define()
 /// @cond
 <%0.upto(GENERATION_LIMIT) {|i|%>
 template <typename A0<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
-define<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> make_define(A0& a0<%1.upto(i) {|j|%>, A<%=j%>& a<%=j%><%}%>)
+inline define<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> make_define(A0& a0<%1.upto(i) {|j|%>, A<%=j%>& a<%=j%><%}%>)
 {
     return define<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>>(a0<%1.upto(i) {|j|%>, a<%=j%><%}%>);
 }

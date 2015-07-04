@@ -187,7 +187,7 @@ inline define<> make_define()
 }
 
 template <typename... Args>
-define<Args...> make_define(Args&... args)
+inline define<Args...> make_define(Args&... args)
 {
     return define<Args...>(args...);
 }
