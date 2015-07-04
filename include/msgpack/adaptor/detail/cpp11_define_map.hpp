@@ -20,6 +20,10 @@
 
 #if defined(MSGPACK_USE_BOOST)
 
+// BOOST_PP_VARIADICS is defined in boost/preprocessor/config/config.hpp
+// http://www.boost.org/libs/preprocessor/doc/ref/variadics.html
+// However, supporting compiler detection is not complete. msgpack-c requires
+// variadic macro arguments support. So BOOST_PP_VARIADICS is defined here explicitly.
 #define BOOST_PP_VARIADICS
 #include <boost/preprocessor.hpp>
 
