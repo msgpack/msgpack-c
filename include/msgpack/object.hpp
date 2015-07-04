@@ -29,6 +29,7 @@
 #include <limits>
 #include <ostream>
 #include <typeinfo>
+#include <iomanip>
 
 namespace msgpack {
 
@@ -724,9 +725,15 @@ inline std::ostream& operator<< (std::ostream& s, const msgpack::object& o)
             case '\t':
                 s << "\\t";
                 break;
-            default:
-                s << c;
-                break;
+            default: {
+                unsigned int code = static_cast<unsigned int>(c);
+                if (code < 0x20 || code == 0x7f) {
+                    s << "\\u" << std::hex << std::setw(4) << std::setfill('0') << (code & 0xff);
+                }
+                else {
+                    s << c;
+                }
+            } break;
             }
         }
         s << '"';
