@@ -183,7 +183,7 @@ private:
     friend struct msgpack::adaptor::object<msgpack::type::ext_ref>;
 };
 
-ext::ext(ext_ref const& x) {
+inline ext::ext(ext_ref const& x) {
     // size limit has aleady been checked at ext_ref's constructor
     m_data.reserve(x.size() + 1);
 
