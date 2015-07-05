@@ -81,6 +81,33 @@ struct object_ext {
     const char* ptr;
 };
 
+
+#if !defined(MSGPACK_USE_CPP03)
+struct object;
+
+namespace adaptor {
+template <typename T>
+struct as;
+} // namespace adaptor
+
+template <typename T>
+struct has_as {
+private:
+    template <typename U>
+    static auto check(U*) ->
+        typename std::is_same<
+            decltype(msgpack::adaptor::as<U>()(std::declval<msgpack::object>())),
+            T>::type;
+    template <typename>
+    static std::false_type check(...);
+    using type = decltype(check<T>(nullptr));
+public:
+    static constexpr bool value = type::value;
+};
+
+#endif // !defined(MSGPACK_USE_CPP03)
+
+
 struct object {
     union union_type {
         bool boolean;
@@ -102,8 +129,20 @@ struct object {
 
     bool is_nil() const { return type == msgpack::type::NIL; }
 
+#if defined(MSGPACK_USE_CPP03)
+
     template <typename T>
     T as() const;
+
+#else  // defined(MSGPACK_USE_CPP03)
+
+    template <typename T>
+    typename std::enable_if<msgpack::has_as<T>::value, T>::type as() const;
+
+    template <typename T>
+    typename std::enable_if<!msgpack::has_as<T>::value, T>::type as() const;
+
+#endif // defined(MSGPACK_USE_CPP03)
 
     template <typename T>
     T& convert(T& v) const;

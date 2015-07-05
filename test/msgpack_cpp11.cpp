@@ -185,4 +185,103 @@ TEST(MSGPACK_USER_DEFINED, simple_buffer_enum_class_member)
     EXPECT_EQ(val1.t3, val2.t3);
 }
 
+struct no_def_con {
+    no_def_con() = delete;
+    no_def_con(int i):i(i) {}
+    int i;
+    MSGPACK_DEFINE(i);
+};
+
+namespace msgpack {
+MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS) {
+namespace adaptor {
+template <>
+struct as<no_def_con> {
+    no_def_con operator()(msgpack::object const& o) const {
+        if (o.type != msgpack::type::ARRAY) throw msgpack::type_error();
+        if (o.via.array.size != 1) throw msgpack::type_error();
+        return no_def_con(o.via.array.ptr[0].as<int>());
+    }
+};
+} // adaptor
+} // MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS)
+} // msgpack
+
+TEST(MSGPACK_NO_DEF_CON, simple_buffer)
+{
+    no_def_con val1(42);
+    msgpack::sbuffer sbuf;
+    msgpack::pack(sbuf, val1);
+    msgpack::unpacked ret;
+    msgpack::unpack(ret, sbuf.data(), sbuf.size());
+
+    no_def_con val2 = ret.get().as<no_def_con>();
+    EXPECT_EQ(val1.i, val2.i);
+}
+
+struct no_def_con_composite {
+    no_def_con_composite() = delete;
+    no_def_con_composite(no_def_con const& a):ndc(a) {}
+    no_def_con ndc;
+    MSGPACK_DEFINE(ndc);
+};
+
+namespace msgpack {
+MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS) {
+namespace adaptor {
+template <>
+struct as<no_def_con_composite> {
+    no_def_con_composite operator()(msgpack::object const& o) const {
+        if (o.type != msgpack::type::ARRAY) throw msgpack::type_error();
+        if (o.via.array.size != 1) throw msgpack::type_error();
+        return no_def_con_composite(o.via.array.ptr[0].as<no_def_con>());
+    }
+};
+} // adaptor
+} // MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS)
+} // msgpack
+
+TEST(MSGPACK_NO_DEF_CON_COMPOSITE, simple_buffer)
+{
+    no_def_con_composite val1(42);
+    msgpack::sbuffer sbuf;
+    msgpack::pack(sbuf, val1);
+    msgpack::unpacked ret;
+    msgpack::unpack(ret, sbuf.data(), sbuf.size());
+    no_def_con_composite val2 = ret.get().as<no_def_con_composite>();
+    EXPECT_EQ(val1.ndc.i, val2.ndc.i);
+}
+
+struct no_def_con_inherit : no_def_con {
+    no_def_con_inherit() = delete;
+    no_def_con_inherit(no_def_con const& a):no_def_con(a) {}
+    MSGPACK_DEFINE(MSGPACK_BASE(no_def_con));
+};
+
+namespace msgpack {
+MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS) {
+namespace adaptor {
+template <>
+struct as<no_def_con_inherit> {
+    no_def_con_inherit operator()(msgpack::object const& o) const {
+        if (o.type != msgpack::type::ARRAY) throw msgpack::type_error();
+        if (o.via.array.size != 1) throw msgpack::type_error();
+        return no_def_con_inherit(o.via.array.ptr[0].as<no_def_con>());
+    }
+};
+} // adaptor
+} // MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS)
+} // msgpack
+
+TEST(MSGPACK_NO_DEF_CON_INHERIT, simple_buffer)
+{
+    no_def_con_inherit val1(42);
+    msgpack::sbuffer sbuf;
+    msgpack::pack(sbuf, val1);
+    msgpack::unpacked ret;
+    msgpack::unpack(ret, sbuf.data(), sbuf.size());
+    no_def_con_inherit val2 = ret.get().as<no_def_con_inherit>();
+    EXPECT_EQ(val1.i, val2.i);
+}
+
 #endif // !defined(MSGPACK_USE_CPP03)

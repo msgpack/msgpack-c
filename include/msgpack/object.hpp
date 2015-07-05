@@ -511,6 +511,8 @@ inline T* object::convert(T* v) const
     return v;
 }
 
+#if defined(MSGPACK_USE_CPP03)
+
 template <typename T>
 inline T object::as() const
 {
@@ -519,6 +521,21 @@ inline T object::as() const
     return v;
 }
 
+#else  // defined(MSGPACK_USE_CPP03)
+
+template <typename T>
+inline typename std::enable_if<msgpack::has_as<T>::value, T>::type object::as() const {
+    return msgpack::adaptor::as<T>()(*this);
+}
+
+template <typename T>
+inline typename std::enable_if<!msgpack::has_as<T>::value, T>::type object::as() const {
+    T v;
+    convert(v);
+    return v;
+}
+
+#endif // defined(MSGPACK_USE_CPP03)
 
 inline object::object()
 {
