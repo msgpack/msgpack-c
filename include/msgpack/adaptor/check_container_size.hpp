@@ -47,6 +47,16 @@ template <>
 inline void check_container_size<4>(std::size_t /*size*/) {
 }
 
+template <std::size_t N>
+inline void check_container_size_for_ext(std::size_t size) {
+    if (size > 0xffffffff) throw container_size_overflow("container size overflow");
+}
+
+template <>
+inline void check_container_size_for_ext<4>(std::size_t size) {
+    if (size > 0xfffffffe) throw container_size_overflow("container size overflow");
+}
+
 } // namespace detail
 
 template <typename T>

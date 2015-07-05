@@ -2,6 +2,7 @@
 #include "adaptor/bool.hpp"
 #include "adaptor/char_ptr.hpp"
 #include "adaptor/deque.hpp"
+#include "adaptor/ext.hpp"
 #include "adaptor/fixint.hpp"
 #include "adaptor/float.hpp"
 #include "adaptor/int.hpp"

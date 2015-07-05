@@ -864,3 +864,51 @@ TEST(object_with_zone, tuple_empty)
 }
 
 #endif // !defined(MSGPACK_USE_CPP03)
+
+TEST(object_with_zone, ext_empty)
+{
+    msgpack::type::ext v;
+    msgpack::zone z;
+    msgpack::object obj(v, z);
+    EXPECT_EQ(obj.as<msgpack::type::ext>(), v);
+    EXPECT_EQ(obj.as<msgpack::type::ext_ref>(), v);
+}
+
+TEST(object_with_zone, ext)
+{
+    msgpack::type::ext v(42, 10);
+    for (int i = 0; i < 10; ++i) v.data()[i] = i;
+    msgpack::zone z;
+    msgpack::object obj(v, z);
+    EXPECT_EQ(obj.as<msgpack::type::ext>(), v);
+    EXPECT_EQ(obj.as<msgpack::type::ext_ref>(), v);
+}
+
+TEST(object_with_zone, ext_from_buf)
+{
+    char const buf[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    msgpack::type::ext v(42, buf, sizeof(buf));
+    msgpack::zone z;
+    msgpack::object obj(v, z);
+    EXPECT_EQ(obj.as<msgpack::type::ext>(), v);
+    EXPECT_EQ(obj.as<msgpack::type::ext_ref>(), v);
+}
+
+TEST(object_with_zone, ext_ref_empty)
+{
+    msgpack::type::ext_ref v;
+    msgpack::zone z;
+    msgpack::object obj(v, z);
+    EXPECT_EQ(obj.as<msgpack::type::ext>(), v);
+    EXPECT_EQ(obj.as<msgpack::type::ext_ref>(), v);
+}
+
+TEST(object_with_zone, ext_ref_from_buf)
+{
+    char const buf[] = { 77, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    msgpack::type::ext_ref v(buf, sizeof(buf));
+    msgpack::zone z;
+    msgpack::object obj(v, z);
+    EXPECT_EQ(obj.as<msgpack::type::ext>(), v);
+    EXPECT_EQ(obj.as<msgpack::type::ext_ref>(), v);
+}
