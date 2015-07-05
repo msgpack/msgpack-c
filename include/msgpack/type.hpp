@@ -10,6 +10,7 @@
 #include "adaptor/nil.hpp"
 #include "adaptor/pair.hpp"
 #include "adaptor/raw.hpp"
+#include "adaptor/v4raw.hpp"
 #include "adaptor/set.hpp"
 #include "adaptor/string.hpp"
 #include "adaptor/vector.hpp"

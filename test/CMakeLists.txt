@@ -30,6 +30,7 @@ LIST (APPEND check_PROGRAMS
     reference.cpp
     limit.cpp
     json.cpp
+    raw.cpp
 )
 
 IF (MSGPACK_BOOST)

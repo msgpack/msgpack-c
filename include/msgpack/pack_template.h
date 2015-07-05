@@ -780,6 +780,31 @@ msgpack_pack_inline_func(_str_body)(msgpack_pack_user x, const void* b, size_t l
 }
 
 /*
+ * Raw (V4)
+ */
+
+msgpack_pack_inline_func(_v4raw)(msgpack_pack_user x, size_t l)
+{
+    if(l < 32) {
+        unsigned char d = 0xa0 | (uint8_t)l;
+        msgpack_pack_append_buffer(x, &TAKE8_8(d), 1);
+    } else if(l < 65536) {
+        unsigned char buf[3];
+        buf[0] = 0xda; _msgpack_store16(&buf[1], (uint16_t)l);
+        msgpack_pack_append_buffer(x, buf, 3);
+    } else {
+        unsigned char buf[5];
+        buf[0] = 0xdb; _msgpack_store32(&buf[1], (uint32_t)l);
+        msgpack_pack_append_buffer(x, buf, 5);
+    }
+}
+
+msgpack_pack_inline_func(_v4raw_body)(msgpack_pack_user x, const void* b, size_t l)
+{
+    msgpack_pack_append_buffer(x, (const unsigned char*)b, l);
+}
+
+/*
  * Bin
  */
 
@@ -888,4 +913,3 @@ msgpack_pack_inline_func(_ext_body)(msgpack_pack_user x, const void* b, size_t l
 #undef msgpack_pack_real_int16
 #undef msgpack_pack_real_int32
 #undef msgpack_pack_real_int64
-

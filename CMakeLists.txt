@@ -130,6 +130,7 @@ IF (MSGPACK_ENABLE_CXX)
         include/msgpack/adaptor/nil.hpp
         include/msgpack/adaptor/pair.hpp
         include/msgpack/adaptor/raw.hpp
+        include/msgpack/adaptor/v4raw.hpp
         include/msgpack/adaptor/set.hpp
         include/msgpack/adaptor/string.hpp
         include/msgpack/adaptor/tr1/unordered_map.hpp

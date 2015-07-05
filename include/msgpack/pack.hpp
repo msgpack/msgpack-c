@@ -88,6 +88,10 @@ public:
     packer<Stream>& pack_str(uint32_t l);
     packer<Stream>& pack_str_body(const char* b, uint32_t l);
 
+    // v4
+    packer<Stream>& pack_v4raw(uint32_t l);
+    packer<Stream>& pack_v4raw_body(const char* b, uint32_t l);
+
     packer<Stream>& pack_bin(uint32_t l);
     packer<Stream>& pack_bin_body(const char* b, uint32_t l);
 
@@ -708,6 +712,34 @@ inline packer<Stream>& packer<Stream>::pack_str(uint32_t l)
 
 template <typename Stream>
 inline packer<Stream>& packer<Stream>::pack_str_body(const char* b, uint32_t l)
+{
+    append_buffer(b, l);
+    return *this;
+}
+
+// Raw (V4)
+
+template <typename Stream>
+inline packer<Stream>& packer<Stream>::pack_v4raw(uint32_t l)
+{
+    if(l < 32) {
+        unsigned char d = 0xa0u | static_cast<uint8_t>(l);
+        char buf = take8_8(d);
+        append_buffer(&buf, 1);
+    } else if(l < 65536) {
+        char buf[3];
+        buf[0] = static_cast<char>(0xdau); _msgpack_store16(&buf[1], static_cast<uint16_t>(l));
+        append_buffer(buf, 3);
+    } else {
+        char buf[5];
+        buf[0] = static_cast<char>(0xdbu); _msgpack_store32(&buf[1], static_cast<uint32_t>(l));
+        append_buffer(buf, 5);
+    }
+    return *this;
+}
+
+template <typename Stream>
+inline packer<Stream>& packer<Stream>::pack_v4raw_body(const char* b, uint32_t l)
 {
     append_buffer(b, l);
     return *this;
