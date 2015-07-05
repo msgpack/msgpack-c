@@ -29,6 +29,7 @@ check_PROGRAMS = \
 		json \
 		raw \
 		iterator_cpp11 \
+		boost_fusion \
 		boost_optional \
 		boost_string_ref
 
@@ -86,6 +87,8 @@ json_SOURCES = json.cpp
 raw_SOURCES = raw.cpp
 
 iterator_cpp11_SOURCES = iterator_cpp11.cpp
+
+boost_fusion_SOURCES = boost_fusion.cpp
 
 boost_optional_SOURCES = boost_optional.cpp
 

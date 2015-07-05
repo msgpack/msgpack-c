@@ -33,23 +33,23 @@ namespace adaptor {
 
 // Adaptor functors
 
-template <typename T>
+template <typename T, typename Enabler = void>
 struct convert {
     msgpack::object const& operator()(msgpack::object const& o, T& v) const;
 };
 
-template <typename T>
+template <typename T, typename Enabler = void>
 struct pack {
     template <typename Stream>
     msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, T const& v) const;
 };
 
-template <typename T>
+template <typename T, typename Enabler = void>
 struct object {
     void operator()(msgpack::object& o, T const& v) const;
 };
 
-template <typename T>
+template <typename T, typename Enabler = void>
 struct object_with_zone {
     void operator()(msgpack::object::with_zone& o, T const& v) const;
 };
