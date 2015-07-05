@@ -73,3 +73,9 @@ FOREACH (source_file ${check_PROGRAMS})
         ENDIF ()
     ENDIF ()
 ENDFOREACH ()
+
+ADD_EXECUTABLE (
+    multi_file
+    multi_file1.cpp multi_file2.cpp
+)
+ADD_TEST (multi_file multi_file)

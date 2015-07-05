@@ -23,6 +23,7 @@ check_PROGRAMS = \
 		msgpack_stream \
 		msgpack_vref \
 		msgpack_cpp11 \
+		multi_file \
 		reference_cpp11 \
 		reference \
 		limit \
@@ -87,6 +88,8 @@ json_SOURCES = json.cpp
 raw_SOURCES = raw.cpp
 
 iterator_cpp11_SOURCES = iterator_cpp11.cpp
+
+multi_file_SOURCES = multi_file1.cpp multi_file2.cpp
 
 boost_fusion_SOURCES = boost_fusion.cpp
 
