@@ -28,7 +28,11 @@ check_PROGRAMS = \
 		reference \
 		limit \
 		json \
+<<<<<<< HEAD
 		raw \
+=======
+		user_class \
+>>>>>>> 584bd8575f6a1625b7b4bc60b279537c52236756
 		iterator_cpp11 \
 		boost_fusion \
 		boost_optional \
@@ -86,6 +90,8 @@ limit_SOURCES = limit.cpp
 json_SOURCES = json.cpp
 
 raw_SOURCES = raw.cpp
+
+user_class_SOURCES = user_class.cpp
 
 iterator_cpp11_SOURCES = iterator_cpp11.cpp
 
