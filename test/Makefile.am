@@ -28,11 +28,8 @@ check_PROGRAMS = \
 		reference \
 		limit \
 		json \
-<<<<<<< HEAD
 		raw \
-=======
 		user_class \
->>>>>>> 584bd8575f6a1625b7b4bc60b279537c52236756
 		iterator_cpp11 \
 		boost_fusion \
 		boost_optional \
