@@ -16,16 +16,18 @@
  *    limitations under the License.
  */
 
-#if defined(__LITTLE_ENDIAN__)
+#if MSGPACK_ENDIAN_LITTLE_BYTE
 #define TAKE8_8(d)  ((uint8_t*)&d)[0]
 #define TAKE8_16(d) ((uint8_t*)&d)[0]
 #define TAKE8_32(d) ((uint8_t*)&d)[0]
 #define TAKE8_64(d) ((uint8_t*)&d)[0]
-#elif defined(__BIG_ENDIAN__)
+#elif MSGPACK_ENDIAN_BIG_BYTE
 #define TAKE8_8(d)  ((uint8_t*)&d)[0]
 #define TAKE8_16(d) ((uint8_t*)&d)[1]
 #define TAKE8_32(d) ((uint8_t*)&d)[3]
 #define TAKE8_64(d) ((uint8_t*)&d)[7]
+#else
+#error msgpack-c supports only big endian and little endian
 #endif
 
 #ifndef msgpack_pack_inline_func

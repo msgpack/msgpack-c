@@ -18,139 +18,131 @@
 #ifndef MSGPACK_SYSDEP_H
 #define MSGPACK_SYSDEP_H
 
+#include <msgpack/predef.h>
+
 #include <stdlib.h>
 #include <stddef.h>
 #if defined(_MSC_VER) && _MSC_VER < 1600
-typedef __int8 int8_t;
-typedef unsigned __int8 uint8_t;
-typedef __int16 int16_t;
-typedef unsigned __int16 uint16_t;
-typedef __int32 int32_t;
-typedef unsigned __int32 uint32_t;
-typedef __int64 int64_t;
-typedef unsigned __int64 uint64_t;
+    typedef __int8 int8_t;
+    typedef unsigned __int8 uint8_t;
+    typedef __int16 int16_t;
+    typedef unsigned __int16 uint16_t;
+    typedef __int32 int32_t;
+    typedef unsigned __int32 uint32_t;
+    typedef __int64 int64_t;
+    typedef unsigned __int64 uint64_t;
 #elif defined(_MSC_VER)  // && _MSC_VER >= 1600
-#include <stdint.h>
+#   include <stdint.h>
 #else
-#include <stdint.h>
-#include <stdbool.h>
+#   include <stdint.h>
+#   include <stdbool.h>
 #endif
 
 #if defined(_MSC_VER)
-#define MSGPACK_DLLEXPORT __declspec(dllexport)
+#   define MSGPACK_DLLEXPORT __declspec(dllexport)
 #else  /* _MSC_VER */
-#define MSGPACK_DLLEXPORT
+#   define MSGPACK_DLLEXPORT
 #endif /* _MSC_VER */
 
 #ifdef _WIN32
-#define _msgpack_atomic_counter_header <windows.h>
-typedef long _msgpack_atomic_counter_t;
-#define _msgpack_sync_decr_and_fetch(ptr) InterlockedDecrement(ptr)
-#define _msgpack_sync_incr_and_fetch(ptr) InterlockedIncrement(ptr)
+#   define _msgpack_atomic_counter_header <windows.h>
+    typedef long _msgpack_atomic_counter_t;
+#   define _msgpack_sync_decr_and_fetch(ptr) InterlockedDecrement(ptr)
+#   define _msgpack_sync_incr_and_fetch(ptr) InterlockedIncrement(ptr)
 #elif defined(__GNUC__) && ((__GNUC__*10 + __GNUC_MINOR__) < 41)
 
-#if defined(__cplusplus)
-#define _msgpack_atomic_counter_header "gcc_atomic.hpp"
-#else
-#define _msgpack_atomic_counter_header "gcc_atomic.h"
-#endif
+#   if defined(__cplusplus)
+#       define _msgpack_atomic_counter_header "gcc_atomic.hpp"
+#   else
+#       define _msgpack_atomic_counter_header "gcc_atomic.h"
+#   endif
 
 #else
-typedef unsigned int _msgpack_atomic_counter_t;
-#define _msgpack_sync_decr_and_fetch(ptr) __sync_sub_and_fetch(ptr, 1)
-#define _msgpack_sync_incr_and_fetch(ptr) __sync_add_and_fetch(ptr, 1)
+    typedef unsigned int _msgpack_atomic_counter_t;
+#   define _msgpack_sync_decr_and_fetch(ptr) __sync_sub_and_fetch(ptr, 1)
+#   define _msgpack_sync_incr_and_fetch(ptr) __sync_add_and_fetch(ptr, 1)
 #endif
 
 #ifdef _WIN32
 
-#ifdef __cplusplus
-/* numeric_limits<T>::min,max */
-#ifdef max
-#undef max
-#endif
-#ifdef min
-#undef min
-#endif
-#endif
+#   ifdef __cplusplus
+    /* numeric_limits<T>::min,max */
+#       ifdef max
+#           undef max
+#       endif
+#       ifdef min
+#           undef min
+#       endif
+#   endif
 
-#else
+#else /* _*/
 
 #include <arpa/inet.h>  /* __BYTE_ORDER */
-#  if !defined(__APPLE__) && !defined(__FreeBSD__) && !defined(__OpenBSD__) && \
-       !(defined(__sun) && defined(__SVR4))
-#    include <byteswap.h>
-#  endif
+#   if defined(linux)
+#       include <byteswap.h>
+#   endif
 
 #endif
 
-#if !defined(__LITTLE_ENDIAN__) && !defined(__BIG_ENDIAN__)
-#if __BYTE_ORDER == __LITTLE_ENDIAN
-#define __LITTLE_ENDIAN__
-#elif __BYTE_ORDER == __BIG_ENDIAN
-#define __BIG_ENDIAN__
-#elif _WIN32
-#define __LITTLE_ENDIAN__
-#endif
-#endif
+#ifdef MSGPACK_ENDIAN_LITTLE_BYTE
 
+#   ifdef _WIN32
+#       if defined(ntohs)
+#       define _msgpack_be16(x) ntohs(x)
+#        elif defined(_byteswap_ushort) || (defined(_MSC_VER) && _MSC_VER >= 1400)
+#            define _msgpack_be16(x) ((uint16_t)_byteswap_ushort((unsigned short)x))
+#        else
+#            define _msgpack_be16(x) ( \
+                 ((((uint16_t)x) <<  8) ) | \
+                 ((((uint16_t)x) >>  8) ) )
+#        endif
+#   else
+#        define _msgpack_be16(x) ntohs(x)
+#   endif
 
-#ifdef __LITTLE_ENDIAN__
+#   ifdef _WIN32
+#        if defined(ntohl)
+#            define _msgpack_be32(x) ntohl(x)
+#        elif defined(_byteswap_ulong) || (defined(_MSC_VER) && _MSC_VER >= 1400)
+#            define _msgpack_be32(x) ((uint32_t)_byteswap_ulong((unsigned long)x))
+#        else
+#            define _msgpack_be32(x) \
+                 ( ((((uint32_t)x) << 24)               ) | \
+                   ((((uint32_t)x) <<  8) & 0x00ff0000U ) | \
+                   ((((uint32_t)x) >>  8) & 0x0000ff00U ) | \
+                   ((((uint32_t)x) >> 24)               ) )
+#        endif
+#   else
+#        define _msgpack_be32(x) ntohl(x)
+#   endif
 
-#ifdef _WIN32
-#  if defined(ntohs)
-#    define _msgpack_be16(x) ntohs(x)
-#  elif defined(_byteswap_ushort) || (defined(_MSC_VER) && _MSC_VER >= 1400)
-#    define _msgpack_be16(x) ((uint16_t)_byteswap_ushort((unsigned short)x))
-#  else
-#    define _msgpack_be16(x) ( \
-        ((((uint16_t)x) <<  8) ) | \
-        ((((uint16_t)x) >>  8) ) )
-#  endif
+#   if defined(_byteswap_uint64) || (defined(_MSC_VER) && _MSC_VER >= 1400)
+#        define _msgpack_be64(x) (_byteswap_uint64(x))
+#   elif defined(bswap_64)
+#        define _msgpack_be64(x) bswap_64(x)
+#   elif defined(__DARWIN_OSSwapInt64)
+#        define _msgpack_be64(x) __DARWIN_OSSwapInt64(x)
+#   else
+#        define _msgpack_be64(x) \
+             ( ((((uint64_t)x) << 56)                         ) | \
+               ((((uint64_t)x) << 40) & 0x00ff000000000000ULL ) | \
+               ((((uint64_t)x) << 24) & 0x0000ff0000000000ULL ) | \
+               ((((uint64_t)x) <<  8) & 0x000000ff00000000ULL ) | \
+               ((((uint64_t)x) >>  8) & 0x00000000ff000000ULL ) | \
+               ((((uint64_t)x) >> 24) & 0x0000000000ff0000ULL ) | \
+               ((((uint64_t)x) >> 40) & 0x000000000000ff00ULL ) | \
+               ((((uint64_t)x) >> 56)                         ) )
+#   endif
+
+#elif MSGPACK_ENDIAN_BIG_BYTE
+
+#   define _msgpack_be16(x) (x)
+#   define _msgpack_be32(x) (x)
+#   define _msgpack_be64(x) (x)
+
 #else
-#  define _msgpack_be16(x) ntohs(x)
-#endif
-
-#ifdef _WIN32
-#  if defined(ntohl)
-#    define _msgpack_be32(x) ntohl(x)
-#  elif defined(_byteswap_ulong) || (defined(_MSC_VER) && _MSC_VER >= 1400)
-#    define _msgpack_be32(x) ((uint32_t)_byteswap_ulong((unsigned long)x))
-#  else
-#    define _msgpack_be32(x) \
-        ( ((((uint32_t)x) << 24)               ) | \
-          ((((uint32_t)x) <<  8) & 0x00ff0000U ) | \
-          ((((uint32_t)x) >>  8) & 0x0000ff00U ) | \
-          ((((uint32_t)x) >> 24)               ) )
-#  endif
-#else
-#  define _msgpack_be32(x) ntohl(x)
-#endif
-
-#if defined(_byteswap_uint64) || (defined(_MSC_VER) && _MSC_VER >= 1400)
-#  define _msgpack_be64(x) (_byteswap_uint64(x))
-#elif defined(bswap_64)
-#  define _msgpack_be64(x) bswap_64(x)
-#elif defined(__DARWIN_OSSwapInt64)
-#  define _msgpack_be64(x) __DARWIN_OSSwapInt64(x)
-#else
-#define _msgpack_be64(x) \
-    ( ((((uint64_t)x) << 56)                         ) | \
-      ((((uint64_t)x) << 40) & 0x00ff000000000000ULL ) | \
-      ((((uint64_t)x) << 24) & 0x0000ff0000000000ULL ) | \
-      ((((uint64_t)x) <<  8) & 0x000000ff00000000ULL ) | \
-      ((((uint64_t)x) >>  8) & 0x00000000ff000000ULL ) | \
-      ((((uint64_t)x) >> 24) & 0x0000000000ff0000ULL ) | \
-      ((((uint64_t)x) >> 40) & 0x000000000000ff00ULL ) | \
-      ((((uint64_t)x) >> 56)                         ) )
-#endif
-
-#else  /* __LITTLE_ENDIAN__ */
-
-#define _msgpack_be16(x) (x)
-#define _msgpack_be32(x) (x)
-#define _msgpack_be64(x) (x)
-
-#endif
+#   error msgpack-c supports only big endian and little endian
+#endif /* MSGPACK_ENDIAN_LITTLE_BYTE */
 
 #define _msgpack_load16(cast, from, to) do {       \
         memcpy((cast*)(to), (from), sizeof(cast)); \
