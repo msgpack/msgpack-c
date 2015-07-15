@@ -24,7 +24,10 @@
 // http://www.boost.org/libs/preprocessor/doc/ref/variadics.html
 // However, supporting compiler detection is not complete. msgpack-c requires
 // variadic macro arguments support. So BOOST_PP_VARIADICS is defined here explicitly.
+#if !defined(BOOST_PP_VARIADICS)
 #define BOOST_PP_VARIADICS
+#endif
+
 #include <boost/preprocessor.hpp>
 
 #include "msgpack/versioning.hpp"
