@@ -76,6 +76,11 @@ typedef unsigned int _msgpack_atomic_counter_t;
 #else
 
 #include <arpa/inet.h>  /* __BYTE_ORDER */
+
+#  ifndef __BYTE_ORDER
+#    include <sys/param.h>
+#  endif
+
 #  if !defined(__APPLE__) && !defined(__FreeBSD__) && !defined(__OpenBSD__) && \
        !(defined(__sun) && defined(__SVR4))
 #    include <byteswap.h>
