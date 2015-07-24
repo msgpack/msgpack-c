@@ -41,6 +41,11 @@ env:
   - ACTION="ci/build_cmake.sh"     VERSION="cpp03" ARCH="64" LIBPATH="/usr/local/lib"   BOOST=""
   - ACTION="ci/build_cmake.sh"     VERSION="cpp03" ARCH="32" LIBPATH="/usr/local/lib32" BOOST="boost" BOOST_INC="/usr/local/boost"
   - ACTION="ci/build_cmake.sh"     VERSION="cpp03" ARCH="32" LIBPATH="/usr/local/lib32" BOOST=""
+  - ACTION="ci/build_cmake.sh"     VERSION="cpp03" ARCH="64" LIBPATH="/usr/local/lib"   BOOST="boost" BOOST_INC="/usr/local/boost" SHARED="OFF"
+  - ACTION="ci/build_cmake.sh"     VERSION="cpp03" ARCH="64" LIBPATH="/usr/local/lib"   BOOST=""                                   SHARED="OFF"
+  - ACTION="ci/build_cmake.sh"     VERSION="cpp03" ARCH="32" LIBPATH="/usr/local/lib32" BOOST="boost" BOOST_INC="/usr/local/boost" SHARED="OFF"
+  - ACTION="ci/build_cmake.sh"     VERSION="cpp03" ARCH="32" LIBPATH="/usr/local/lib32" BOOST=""                                   SHARED="OFF"
+
 
 before_script:
  - export PATH=/usr/local/bin:$PATH
