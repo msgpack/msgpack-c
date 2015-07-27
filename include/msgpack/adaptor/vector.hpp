@@ -32,6 +32,25 @@ MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 namespace adaptor {
 
+#if !defined(MSGPACK_USE_CPP03)
+template <typename T>
+struct as<std::vector<T>> {
+    std::vector<T> operator()(const msgpack::object& o) const {
+        if (o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        std::vector<T> v;
+        if (o.via.array.size > 0) {
+            msgpack::object* p = o.via.array.ptr;
+            msgpack::object* const pend = o.via.array.ptr + o.via.array.size;
+            do {
+                v.emplace_back(p->as<T>());
+                ++p;
+            } while (p < pend);
+        }
+        return v;
+    }
+};
+#endif
+
 template <typename T>
 struct convert<std::vector<T> > {
     msgpack::object const& operator()(msgpack::object const& o, std::vector<T>& v) const {
