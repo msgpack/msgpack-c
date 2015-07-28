@@ -1,7 +1,7 @@
 //
 // MessagePack for C++ static resolution routine
 //
-// Copyright (C) 2008-2009 FURUHASHI Sadayuki
+// Copyright (C) 2008-2015 FURUHASHI Sadayuki and KONDO Takatoshi
 //
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -33,30 +33,33 @@ MSGPACK_API_VERSION_NAMESPACE(v1) {
 namespace adaptor {
 
 #if !defined(MSGPACK_USE_CPP03)
+
 template <typename T>
-struct as<std::vector<T>> {
+struct as<std::vector<T>, typename std::enable_if<msgpack::has_as<T>::value>::type> {
     std::vector<T> operator()(const msgpack::object& o) const {
         if (o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
         std::vector<T> v;
+        v.reserve(o.via.array.size);
         if (o.via.array.size > 0) {
             msgpack::object* p = o.via.array.ptr;
             msgpack::object* const pend = o.via.array.ptr + o.via.array.size;
             do {
-                v.emplace_back(p->as<T>());
+                v.push_back(p->as<T>());
                 ++p;
             } while (p < pend);
         }
         return v;
     }
 };
-#endif
+
+#endif // !defined(MSGPACK_USE_CPP03)
 
 template <typename T>
 struct convert<std::vector<T> > {
     msgpack::object const& operator()(msgpack::object const& o, std::vector<T>& v) const {
-        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if (o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
         v.resize(o.via.array.size);
-        if(o.via.array.size > 0) {
+        if (o.via.array.size > 0) {
             msgpack::object* p = o.via.array.ptr;
             msgpack::object* const pend = o.via.array.ptr + o.via.array.size;
             typename std::vector<T>::iterator it = v.begin();
@@ -76,7 +79,7 @@ struct pack<std::vector<T> > {
     msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const std::vector<T>& v) const {
         uint32_t size = checked_get_container_size(v.size());
         o.pack_array(size);
-        for(typename std::vector<T>::const_iterator it(v.begin()), it_end(v.end());
+        for (typename std::vector<T>::const_iterator it(v.begin()), it_end(v.end());
             it != it_end; ++it) {
             o.pack(*it);
         }
@@ -88,10 +91,11 @@ template <typename T>
 struct object_with_zone<std::vector<T> > {
     void operator()(msgpack::object::with_zone& o, const std::vector<T>& v) const {
         o.type = msgpack::type::ARRAY;
-        if(v.empty()) {
+        if (v.empty()) {
             o.via.array.ptr = nullptr;
             o.via.array.size = 0;
-        } else {
+        }
+        else {
             uint32_t size = checked_get_container_size(v.size());
             msgpack::object* p = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*size));
             msgpack::object* const pend = p + size;

@@ -21,6 +21,7 @@
 #include "msgpack/versioning.hpp"
 #include "msgpack/adaptor/adaptor_base.hpp"
 #include "msgpack/adaptor/check_container_size.hpp"
+#include "msgpack/meta.hpp"
 
 #include <tuple>
 
@@ -38,15 +39,6 @@ struct StdTuplePacker {
         const Tuple& v) {
         StdTuplePacker<Stream, Tuple, N-1>::pack(o, v);
         o.pack(std::get<N-1>(v));
-    }
-};
-
-template <typename Stream, typename Tuple>
-struct StdTuplePacker<Stream, Tuple, 1> {
-    static void pack (
-        msgpack::packer<Stream>& o,
-        const Tuple& v) {
-        o.pack(std::get<0>(v));
     }
 };
 
@@ -77,6 +69,32 @@ struct pack<std::tuple<Args...>> {
 
 // --- Convert from tuple to object ---
 
+template <typename... Args>
+struct StdTupleAs;
+
+template <typename T, typename... Args>
+struct StdTupleAsImpl {
+    static std::tuple<T, Args...> as(msgpack::object const& o) {
+        return std::tuple_cat(
+            std::make_tuple(o.via.array.ptr[o.via.array.size - sizeof...(Args) - 1].as<T>()),
+            StdTupleAs<Args...>::as(o));
+    }
+};
+
+template <typename... Args>
+struct StdTupleAs {
+    static std::tuple<Args...> as(msgpack::object const& o) {
+        return StdTupleAsImpl<Args...>::as(o);
+    }
+};
+
+template <>
+struct StdTupleAs<> {
+    static std::tuple<> as (msgpack::object const&) {
+        return std::tuple<>();
+    }
+};
+
 template <typename Tuple, std::size_t N>
 struct StdTupleConverter {
     static void convert(
@@ -84,15 +102,6 @@ struct StdTupleConverter {
         Tuple& v) {
         StdTupleConverter<Tuple, N-1>::convert(o, v);
         o.via.array.ptr[N-1].convert<typename std::remove_reference<decltype(std::get<N-1>(v))>::type>(std::get<N-1>(v));
-    }
-};
-
-template <typename Tuple>
-struct StdTupleConverter<Tuple, 1> {
-    static void convert (
-        msgpack::object const& o,
-        Tuple& v) {
-        o.via.array.ptr[0].convert<typename std::remove_reference<decltype(std::get<0>(v))>::type>(std::get<0>(v));
     }
 };
 
@@ -105,6 +114,16 @@ struct StdTupleConverter<Tuple, 0> {
 };
 
 namespace adaptor {
+
+template <typename... Args>
+struct as<std::tuple<Args...>, typename std::enable_if<msgpack::all_of<msgpack::has_as, Args...>::value>::type>  {
+    std::tuple<Args...> operator()(
+        msgpack::object const& o) const {
+        if (o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if (o.via.array.size < sizeof...(Args)) { throw msgpack::type_error(); }
+        return StdTupleAs<Args...>::as(o);
+    }
+};
 
 template <typename... Args>
 struct convert<std::tuple<Args...>> {
@@ -128,15 +147,6 @@ struct StdTupleToObjectWithZone {
         const Tuple& v) {
         StdTupleToObjectWithZone<Tuple, N-1>::convert(o, v);
         o.via.array.ptr[N-1] = msgpack::object(std::get<N-1>(v), o.zone);
-    }
-};
-
-template <typename Tuple>
-struct StdTupleToObjectWithZone<Tuple, 1> {
-    static void convert (
-        msgpack::object::with_zone& o,
-        const Tuple& v) {
-        o.via.array.ptr[0] = msgpack::object(std::get<0>(v), o.zone);
     }
 };
 

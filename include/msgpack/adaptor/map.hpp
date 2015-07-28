@@ -35,7 +35,11 @@ MSGPACK_API_VERSION_NAMESPACE(v1) {
 namespace type {
 
 template <typename K, typename V>
-class assoc_vector : public std::vector< std::pair<K, V> > {};
+class assoc_vector : public std::vector< std::pair<K, V> > {
+#if !defined(MSGPACK_USE_CPP03)
+    using std::vector<std::pair<K, V>>::vector;
+#endif // !defined(MSGPACK_USE_CPP03)
+};
 
 namespace detail {
     template <typename K, typename V>
@@ -49,15 +53,37 @@ namespace detail {
 
 namespace adaptor {
 
+#if !defined(MSGPACK_USE_CPP03)
+
+template <typename K, typename V>
+struct as<
+    type::assoc_vector<K, V>,
+    typename std::enable_if<msgpack::has_as<K>::value && msgpack::has_as<V>::value>::type> {
+    type::assoc_vector<K, V> operator()(msgpack::object const& o) const {
+        if (o.type != msgpack::type::MAP) { throw msgpack::type_error(); }
+        type::assoc_vector<K, V> v;
+        v.reserve(o.via.map.size);
+        msgpack::object_kv* p = o.via.map.ptr;
+        msgpack::object_kv* const pend = o.via.map.ptr + o.via.map.size;
+        for (; p < pend; ++p) {
+            v.emplace_back(p->key.as<K>(), p->val.as<V>());
+        }
+        std::sort(v.begin(), v.end(), type::detail::pair_first_less<K,V>());
+        return v;
+    }
+};
+
+#endif // !defined(MSGPACK_USE_CPP03)
+
 template <typename K, typename V>
 struct convert<type::assoc_vector<K, V> > {
     msgpack::object const& operator()(msgpack::object const& o, type::assoc_vector<K,V>& v) const {
-        if(o.type != msgpack::type::MAP) { throw msgpack::type_error(); }
+        if (o.type != msgpack::type::MAP) { throw msgpack::type_error(); }
         v.resize(o.via.map.size);
         msgpack::object_kv* p = o.via.map.ptr;
         msgpack::object_kv* const pend = o.via.map.ptr + o.via.map.size;
         std::pair<K, V>* it(&v.front());
-        for(; p < pend; ++p, ++it) {
+        for (; p < pend; ++p, ++it) {
             p->key.convert(it->first);
             p->val.convert(it->second);
         }
@@ -72,7 +98,7 @@ struct pack<type::assoc_vector<K, V> > {
     msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const type::assoc_vector<K,V>& v) const {
         uint32_t size = checked_get_container_size(v.size());
         o.pack_map(size);
-        for(typename type::assoc_vector<K,V>::const_iterator it(v.begin()), it_end(v.end());
+        for (typename type::assoc_vector<K,V>::const_iterator it(v.begin()), it_end(v.end());
             it != it_end; ++it) {
             o.pack(it->first);
             o.pack(it->second);
@@ -85,10 +111,11 @@ template <typename K, typename V>
 struct object_with_zone<type::assoc_vector<K, V> > {
     void operator()(msgpack::object::with_zone& o, const type::assoc_vector<K,V>& v) const {
         o.type = msgpack::type::MAP;
-        if(v.empty()) {
+        if (v.empty()) {
             o.via.map.ptr  = nullptr;
             o.via.map.size = 0;
-        } else {
+        }
+        else {
             uint32_t size = checked_get_container_size(v.size());
             msgpack::object_kv* p = static_cast<msgpack::object_kv*>(o.zone.allocate_align(sizeof(msgpack::object_kv)*size));
             msgpack::object_kv* const pend = p + size;
@@ -105,14 +132,34 @@ struct object_with_zone<type::assoc_vector<K, V> > {
     }
 };
 
+#if !defined(MSGPACK_USE_CPP03)
+
+template <typename K, typename V>
+struct as<
+    std::map<K, V>,
+    typename std::enable_if<msgpack::has_as<K>::value && msgpack::has_as<V>::value>::type> {
+    std::map<K, V> operator()(msgpack::object const& o) const {
+        if (o.type != msgpack::type::MAP) { throw msgpack::type_error(); }
+        msgpack::object_kv* p(o.via.map.ptr);
+        msgpack::object_kv* const pend(o.via.map.ptr + o.via.map.size);
+        std::map<K, V> v;
+        for (; p != pend; ++p) {
+            v.emplace(p->key.as<K>(), p->val.as<V>());
+        }
+        return v;
+    }
+};
+
+#endif // !defined(MSGPACK_USE_CPP03)
+
 template <typename K, typename V>
 struct convert<std::map<K, V> > {
     msgpack::object const& operator()(msgpack::object const& o, std::map<K, V>& v) const {
-        if(o.type != msgpack::type::MAP) { throw msgpack::type_error(); }
+        if (o.type != msgpack::type::MAP) { throw msgpack::type_error(); }
         msgpack::object_kv* p(o.via.map.ptr);
         msgpack::object_kv* const pend(o.via.map.ptr + o.via.map.size);
         std::map<K, V> tmp;
-        for(; p != pend; ++p) {
+        for (; p != pend; ++p) {
             K key;
             p->key.convert(key);
 #if __cplusplus >= 201103L
@@ -136,7 +183,7 @@ struct pack<std::map<K, V> > {
     msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const std::map<K,V>& v) const {
         uint32_t size = checked_get_container_size(v.size());
         o.pack_map(size);
-        for(typename std::map<K,V>::const_iterator it(v.begin()), it_end(v.end());
+        for (typename std::map<K,V>::const_iterator it(v.begin()), it_end(v.end());
             it != it_end; ++it) {
             o.pack(it->first);
             o.pack(it->second);
@@ -149,10 +196,11 @@ template <typename K, typename V>
 struct object_with_zone<std::map<K, V> > {
     void operator()(msgpack::object::with_zone& o, const std::map<K,V>& v) const {
         o.type = msgpack::type::MAP;
-        if(v.empty()) {
+        if (v.empty()) {
             o.via.map.ptr  = nullptr;
             o.via.map.size = 0;
-        } else {
+        }
+        else {
             uint32_t size = checked_get_container_size(v.size());
             msgpack::object_kv* p = static_cast<msgpack::object_kv*>(o.zone.allocate_align(sizeof(msgpack::object_kv)*size));
             msgpack::object_kv* const pend = p + size;
@@ -169,15 +217,34 @@ struct object_with_zone<std::map<K, V> > {
     }
 };
 
+#if !defined(MSGPACK_USE_CPP03)
+
+template <typename K, typename V>
+struct as<
+    std::multimap<K, V>,
+    typename std::enable_if<msgpack::has_as<K>::value && msgpack::has_as<V>::value>::type> {
+    std::multimap<K, V> operator()(msgpack::object const& o) const {
+        if (o.type != msgpack::type::MAP) { throw msgpack::type_error(); }
+        msgpack::object_kv* p(o.via.map.ptr);
+        msgpack::object_kv* const pend(o.via.map.ptr + o.via.map.size);
+        std::multimap<K, V> v;
+        for (; p != pend; ++p) {
+            v.emplace(p->key.as<K>(), p->val.as<V>());
+        }
+        return v;
+    }
+};
+
+#endif // !defined(MSGPACK_USE_CPP03)
 
 template <typename K, typename V>
 struct convert<std::multimap<K, V> > {
     msgpack::object const& operator()(msgpack::object const& o, std::multimap<K, V>& v) const {
-        if(o.type != msgpack::type::MAP) { throw msgpack::type_error(); }
+        if (o.type != msgpack::type::MAP) { throw msgpack::type_error(); }
         msgpack::object_kv* p(o.via.map.ptr);
         msgpack::object_kv* const pend(o.via.map.ptr + o.via.map.size);
         std::multimap<K, V> tmp;
-        for(; p != pend; ++p) {
+        for (; p != pend; ++p) {
             std::pair<K, V> value;
             p->key.convert(value.first);
             p->val.convert(value.second);
@@ -202,7 +269,7 @@ struct pack<std::multimap<K, V> > {
     msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const std::multimap<K,V>& v) const {
         uint32_t size = checked_get_container_size(v.size());
         o.pack_map(size);
-        for(typename std::multimap<K,V>::const_iterator it(v.begin()), it_end(v.end());
+        for (typename std::multimap<K,V>::const_iterator it(v.begin()), it_end(v.end());
             it != it_end; ++it) {
             o.pack(it->first);
             o.pack(it->second);
@@ -215,10 +282,11 @@ template <typename K, typename V>
 struct object_with_zone<std::multimap<K, V> > {
     void operator()(msgpack::object::with_zone& o, const std::multimap<K,V>& v) const {
         o.type = msgpack::type::MAP;
-        if(v.empty()) {
+        if (v.empty()) {
             o.via.map.ptr  = nullptr;
             o.via.map.size = 0;
-        } else {
+        }
+        else {
             uint32_t size = checked_get_container_size(v.size());
             msgpack::object_kv* p = static_cast<msgpack::object_kv*>(o.zone.allocate_align(sizeof(msgpack::object_kv)*size));
             msgpack::object_kv* const pend = p + size;

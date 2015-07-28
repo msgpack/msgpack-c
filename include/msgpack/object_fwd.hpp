@@ -86,7 +86,7 @@ struct object_ext {
 struct object;
 
 namespace adaptor {
-template <typename T>
+template <typename T, typename Enabler = void>
 struct as;
 } // namespace adaptor
 

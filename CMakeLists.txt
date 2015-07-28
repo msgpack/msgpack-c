@@ -146,6 +146,7 @@ IF (MSGPACK_ENABLE_CXX)
         include/msgpack/detail/cpp03_zone.hpp
         include/msgpack/detail/cpp11_zone.hpp
         include/msgpack/fbuffer.hpp
+        include/msgpack/meta.hpp
         include/msgpack/object.hpp
         include/msgpack/object_fwd.hpp
         include/msgpack/pack.hpp
@@ -201,8 +202,8 @@ IF (MSGPACK_BUILD_TESTS)
 ENDIF ()
 
 IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-    SET_PROPERTY (TARGET msgpack APPEND_STRING PROPERTY COMPILE_FLAGS "-Wall -Wextra -Werror -g -O3 -DPIC")
-    SET_PROPERTY (TARGET msgpack-static APPEND_STRING PROPERTY COMPILE_FLAGS "-Wall -Wextra -Werror -g -O3" )
+    SET_PROPERTY (TARGET msgpack APPEND_STRING PROPERTY COMPILE_FLAGS "-Wall -Wextra -Wno-mismatched-tags -Werror -g -O3 -DPIC")
+    SET_PROPERTY (TARGET msgpack-static APPEND_STRING PROPERTY COMPILE_FLAGS "-Wall -Wextra -Wno-mismatched-tags -Werror -g -O3" )
 ENDIF ()
 IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     IF (CMAKE_CXX_FLAGS MATCHES "/W[0-4]")

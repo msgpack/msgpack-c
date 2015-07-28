@@ -33,6 +33,21 @@ MSGPACK_API_VERSION_NAMESPACE(v1) {
 namespace adaptor {
 
 template <typename T>
+struct as<std::unordered_set<T>, typename std::enable_if<msgpack::has_as<T>::value>::type> {
+    std::unordered_set<T> operator()(msgpack::object const& o) const {
+        if (o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        msgpack::object* p = o.via.array.ptr + o.via.array.size;
+        msgpack::object* const pbegin = o.via.array.ptr;
+        std::unordered_set<T> v;
+        while (p > pbegin) {
+            --p;
+            v.insert(p->as<T>());
+        }
+        return v;
+    }
+};
+
+template <typename T>
 struct convert<std::unordered_set<T>> {
     msgpack::object const& operator()(msgpack::object const& o, std::unordered_set<T>& v) const {
         if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
@@ -85,6 +100,21 @@ struct object_with_zone<std::unordered_set<T>> {
     }
 };
 
+
+template <typename T>
+struct as<std::unordered_multiset<T>, typename std::enable_if<msgpack::has_as<T>::value>::type> {
+    std::unordered_multiset<T> operator()(msgpack::object const& o) const {
+        if (o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        msgpack::object* p = o.via.array.ptr + o.via.array.size;
+        msgpack::object* const pbegin = o.via.array.ptr;
+        std::unordered_multiset<T> v;
+        while (p > pbegin) {
+            --p;
+            v.insert(p->as<T>());
+        }
+        return v;
+    }
+};
 
 template <typename T>
 struct convert<std::unordered_multiset<T>> {
