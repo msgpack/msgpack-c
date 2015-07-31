@@ -40,6 +40,14 @@ template<bool...values> struct all_of_imp
 template<template <class> class T, class... U>
 using all_of = detail::all_of_imp<T<U>::value...>;
 
+template<std::size_t... Is> struct seq {};
+
+template<std::size_t N, std::size_t... Is>
+struct gen_seq : gen_seq<N-1, N-1, Is...> {};
+
+template<std::size_t... Is>
+struct gen_seq<0, Is...> : seq<Is...> {};
+
 /// @cond
 } // MSGPACK_API_VERSION_NAMESPACE(v1)
 /// @endcond
