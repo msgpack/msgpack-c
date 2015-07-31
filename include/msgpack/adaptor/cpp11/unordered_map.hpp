@@ -32,15 +32,15 @@ MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 namespace adaptor {
 
-template <typename K, typename V>
+template <typename K, typename V, typename... OtherTypes>
 struct as<
-    std::unordered_map<K, V>,
+    std::unordered_map<K, V, OtherTypes...>,
     typename std::enable_if<msgpack::has_as<K>::value && msgpack::has_as<V>::value>::type> {
-    std::unordered_map<K, V> operator()(msgpack::object const& o) const {
+    std::unordered_map<K, V, OtherTypes...> operator()(msgpack::object const& o) const {
         if (o.type != msgpack::type::MAP) { throw msgpack::type_error(); }
         msgpack::object_kv* p(o.via.map.ptr);
         msgpack::object_kv* const pend(o.via.map.ptr + o.via.map.size);
-        std::unordered_map<K, V> v;
+        std::unordered_map<K, V, OtherTypes...> v;
         for (; p != pend; ++p) {
             v.emplace(p->key.as<K>(), p->val.as<V>());
         }
@@ -48,13 +48,13 @@ struct as<
     }
 };
 
-template <typename K, typename V>
-struct convert<std::unordered_map<K, V>> {
-    msgpack::object const& operator()(msgpack::object const& o, std::unordered_map<K, V>& v) const {
+template <typename K, typename V, typename... OtherTypes>
+struct convert<std::unordered_map<K, V, OtherTypes...>> {
+    msgpack::object const& operator()(msgpack::object const& o, std::unordered_map<K, V, OtherTypes...>& v) const {
         if(o.type != msgpack::type::MAP) { throw msgpack::type_error(); }
         msgpack::object_kv* p(o.via.map.ptr);
         msgpack::object_kv* const pend(o.via.map.ptr + o.via.map.size);
-        std::unordered_map<K, V> tmp;
+        std::unordered_map<K, V, OtherTypes...> tmp;
         for(; p != pend; ++p) {
             K key;
             p->key.convert(key);
@@ -65,13 +65,13 @@ struct convert<std::unordered_map<K, V>> {
     }
 };
 
-template <typename K, typename V>
-struct pack<std::unordered_map<K, V>> {
+template <typename K, typename V, typename... OtherTypes>
+struct pack<std::unordered_map<K, V, OtherTypes...>> {
     template <typename Stream>
-        msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const std::unordered_map<K,V>& v) const {
+        msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const std::unordered_map<K, V, OtherTypes...>& v) const {
         uint32_t size = checked_get_container_size(v.size());
         o.pack_map(size);
-        for(typename std::unordered_map<K,V>::const_iterator it(v.begin()), it_end(v.end());
+        for(typename std::unordered_map<K, V, OtherTypes...>::const_iterator it(v.begin()), it_end(v.end());
             it != it_end; ++it) {
             o.pack(it->first);
             o.pack(it->second);
@@ -80,9 +80,9 @@ struct pack<std::unordered_map<K, V>> {
     }
 };
 
-template <typename K, typename V>
-struct object_with_zone<std::unordered_map<K, V>> {
-    void operator()(msgpack::object::with_zone& o, const std::unordered_map<K,V>& v) const {
+template <typename K, typename V, typename... OtherTypes>
+struct object_with_zone<std::unordered_map<K, V, OtherTypes...>> {
+    void operator()(msgpack::object::with_zone& o, const std::unordered_map<K, V, OtherTypes...>& v) const {
         o.type = msgpack::type::MAP;
         if(v.empty()) {
             o.via.map.ptr  = nullptr;
@@ -93,7 +93,7 @@ struct object_with_zone<std::unordered_map<K, V>> {
             msgpack::object_kv* const pend = p + size;
             o.via.map.ptr  = p;
             o.via.map.size = size;
-            typename std::unordered_map<K,V>::const_iterator it(v.begin());
+            typename std::unordered_map<K, V, OtherTypes...>::const_iterator it(v.begin());
             do {
                 p->key = msgpack::object(it->first, o.zone);
                 p->val = msgpack::object(it->second, o.zone);
@@ -105,15 +105,15 @@ struct object_with_zone<std::unordered_map<K, V>> {
 };
 
 
-template <typename K, typename V>
+template <typename K, typename V, typename... OtherTypes>
 struct as<
-    std::unordered_multimap<K, V>,
+    std::unordered_multimap<K, V, OtherTypes...>,
     typename std::enable_if<msgpack::has_as<K>::value && msgpack::has_as<V>::value>::type> {
-    std::unordered_multimap<K, V> operator()(msgpack::object const& o) const {
+    std::unordered_multimap<K, V, OtherTypes...> operator()(msgpack::object const& o) const {
         if (o.type != msgpack::type::MAP) { throw msgpack::type_error(); }
         msgpack::object_kv* p(o.via.map.ptr);
         msgpack::object_kv* const pend(o.via.map.ptr + o.via.map.size);
-        std::unordered_multimap<K, V> v;
+        std::unordered_multimap<K, V, OtherTypes...> v;
         for (; p != pend; ++p) {
             v.emplace(p->key.as<K>(), p->val.as<V>());
         }
@@ -121,13 +121,13 @@ struct as<
     }
 };
 
-template <typename K, typename V>
-struct convert<std::unordered_multimap<K, V>> {
-    msgpack::object const& operator()(msgpack::object const& o, std::unordered_multimap<K, V>& v) const {
+template <typename K, typename V, typename... OtherTypes>
+struct convert<std::unordered_multimap<K, V, OtherTypes...>> {
+    msgpack::object const& operator()(msgpack::object const& o, std::unordered_multimap<K, V, OtherTypes...>& v) const {
         if(o.type != msgpack::type::MAP) { throw msgpack::type_error(); }
         msgpack::object_kv* p(o.via.map.ptr);
         msgpack::object_kv* const pend(o.via.map.ptr + o.via.map.size);
-        std::unordered_multimap<K, V> tmp;
+        std::unordered_multimap<K, V, OtherTypes...> tmp;
         for(; p != pend; ++p) {
             std::pair<K, V> value;
             p->key.convert(value.first);
@@ -139,13 +139,13 @@ struct convert<std::unordered_multimap<K, V>> {
     }
 };
 
-template <typename K, typename V>
-struct pack<std::unordered_multimap<K, V>> {
+template <typename K, typename V, typename... OtherTypes>
+struct pack<std::unordered_multimap<K, V, OtherTypes...>> {
     template <typename Stream>
-        msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const std::unordered_multimap<K,V>& v) const {
+        msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const std::unordered_multimap<K, V, OtherTypes...>& v) const {
         uint32_t size = checked_get_container_size(v.size());
         o.pack_map(size);
-        for(typename std::unordered_multimap<K,V>::const_iterator it(v.begin()), it_end(v.end());
+        for(typename std::unordered_multimap<K, V, OtherTypes...>::const_iterator it(v.begin()), it_end(v.end());
             it != it_end; ++it) {
             o.pack(it->first);
             o.pack(it->second);
@@ -154,9 +154,9 @@ struct pack<std::unordered_multimap<K, V>> {
     }
 };
 
-template <typename K, typename V>
-struct object_with_zone<std::unordered_multimap<K, V>> {
-    void operator()(msgpack::object::with_zone& o, const std::unordered_multimap<K,V>& v) const {
+template <typename K, typename V, typename... OtherTypes>
+struct object_with_zone<std::unordered_multimap<K, V, OtherTypes...>> {
+    void operator()(msgpack::object::with_zone& o, const std::unordered_multimap<K, V, OtherTypes...>& v) const {
         o.type = msgpack::type::MAP;
         if(v.empty()) {
             o.via.map.ptr  = nullptr;
@@ -167,7 +167,7 @@ struct object_with_zone<std::unordered_multimap<K, V>> {
             msgpack::object_kv* const pend = p + size;
             o.via.map.ptr  = p;
             o.via.map.size = size;
-            typename std::unordered_multimap<K,V>::const_iterator it(v.begin());
+            typename std::unordered_multimap<K, V, OtherTypes...>::const_iterator it(v.begin());
             do {
                 p->key = msgpack::object(it->first, o.zone);
                 p->val = msgpack::object(it->second, o.zone);
