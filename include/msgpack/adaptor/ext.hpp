@@ -58,7 +58,7 @@ public:
         return &m_data[1];
     }
     uint32_t size() const {
-        return m_data.size() - 1;
+        return static_cast<uint32_t>(m_data.size()) - 1;
     }
     bool operator== (const ext& x) const {
         return m_data == x.m_data;
