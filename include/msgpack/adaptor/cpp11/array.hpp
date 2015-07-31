@@ -33,6 +33,56 @@ MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 namespace adaptor {
 
+namespace detail {
+
+template<std::size_t... Is> struct seq {};
+
+template<std::size_t N, std::size_t... Is>
+struct gen_seq : gen_seq<N-1, N-1, Is...> {};
+
+template<std::size_t... Is>
+struct gen_seq<0, Is...> : seq<Is...> {};
+
+template<typename T, std::size_t N1, std::size_t... I1, std::size_t N2, std::size_t... I2>
+inline std::array<T, N1+N2> concat(
+    std::array<T, N1>&& a1,
+    std::array<T, N2>&& a2,
+    seq<I1...>,
+    seq<I2...>) {
+    return {{ std::move(a1[I1])..., std::move(a2[I2])... }};
+}
+
+template<typename T, std::size_t N1, std::size_t N2>
+inline std::array<T, N1+N2> concat(std::array<T, N1>&& a1, std::array<T, N2>&& a2) {
+    return concat(std::move(a1), std::move(a2), gen_seq<N1>(), gen_seq<N2>());
+}
+
+template <typename T, std::size_t N>
+struct as_impl {
+    static std::array<T, N> as(msgpack::object const& o) {
+        msgpack::object* p = o.via.array.ptr + N - 1;
+        return concat(as_impl<T, N-1>::as(o), std::array<T, 1>{{p->as<T>()}});
+    }
+};
+
+template <typename T>
+struct as_impl<T, 0> {
+    static std::array<T, 0> as(msgpack::object const&) {
+        return std::array<T, 0>();
+    }
+};
+
+} // namespace detail
+
+template <typename T, std::size_t N>
+struct as<std::array<T, N>, typename std::enable_if<msgpack::has_as<T>::value>::type> {
+    std::array<T, N> operator()(msgpack::object const& o) const {
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if(o.via.array.size != N) { throw msgpack::type_error(); }
+        return detail::as_impl<T, N>::as(o);
+    }
+};
+
 template <typename T, std::size_t N>
 struct convert<std::array<T, N>> {
     msgpack::object const& operator()(msgpack::object const& o, std::array<T, N>& v) const {
