@@ -21,10 +21,18 @@
 #include "msgpack/versioning.hpp"
 #include "msgpack/adaptor/adaptor_base.hpp"
 #include "msgpack/adaptor/check_container_size.hpp"
+#include "msgpack/meta.hpp"
+
+#if !defined (MSGPACK_USE_CPP03)
+#include "msgpack/adaptor/cpp11/tuple.hpp"
+#endif // #if !defined (MSGPACK_USE_CPP03)
 
 #include <boost/fusion/support/is_sequence.hpp>
 #include <boost/fusion/sequence/intrinsic/size.hpp>
 #include <boost/fusion/algorithm/iteration/for_each.hpp>
+#include <boost/fusion/sequence/intrinsic/at.hpp>
+#include <boost/fusion/include/mpl.hpp>
+#include <boost/mpl/size.hpp>
 
 namespace msgpack {
 
@@ -34,11 +42,58 @@ MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 namespace adaptor {
 
+#if !defined (MSGPACK_USE_CPP03)
+
+template <typename T>
+struct as<
+    T,
+    typename msgpack::enable_if<
+        boost::fusion::traits::is_sequence<T>::value &&
+        boost::mpl::fold<
+            T,
+            boost::mpl::bool_<true>,
+            boost::mpl::if_ <
+                boost::mpl::and_<
+                    boost::mpl::_1,
+                    msgpack::has_as<boost::mpl::_2>
+                >,
+                boost::mpl::bool_<true>,
+                boost::mpl::bool_<false>
+            >
+        >::type::value
+    >::type
+> {
+    T operator()(msgpack::object const& o) const {
+        if (o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if (o.via.array.size != checked_get_container_size(boost::mpl::size<T>::value)) {
+            throw msgpack::type_error();
+        }
+        using tuple_t = decltype(to_tuple(std::declval<T>(), gen_seq<boost::mpl::size<T>::value>()));
+        return to_t(
+            o.as<tuple_t>(),
+            msgpack::gen_seq<boost::mpl::size<T>::value>());
+    }
+    template<std::size_t... Is, typename U>
+    static std::tuple<
+        typename std::remove_reference<
+            typename boost::fusion::result_of::at_c<T, Is>::type
+        >::type...>
+    to_tuple(U const& u, seq<Is...>) {
+        return std::make_tuple(boost::fusion::at_c<Is>(u)...);
+    }
+    template<std::size_t... Is, typename U>
+    static T to_t(U const& u, seq<Is...>) {
+        return T(std::get<Is>(u)...);
+    }
+};
+
+#endif // !defined (MSGPACK_USE_CPP03)
+
 template <typename T>
 struct convert<T, typename msgpack::enable_if<boost::fusion::traits::is_sequence<T>::value>::type > {
     msgpack::object const& operator()(msgpack::object const& o, T& v) const {
-        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-        if(o.via.array.size != checked_get_container_size(boost::fusion::size(v))) {
+        if (o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if (o.via.array.size != checked_get_container_size(boost::fusion::size(v))) {
             throw msgpack::type_error();
         }
         uint32_t index = 0;

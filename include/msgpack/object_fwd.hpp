@@ -100,8 +100,8 @@ private:
             T>::type;
     template <typename>
     static std::false_type check(...);
-    using type = decltype(check<T>(nullptr));
 public:
+    using type = decltype(check<T>(nullptr));
     static constexpr bool value = type::value;
 };
 

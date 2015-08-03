@@ -11,7 +11,7 @@ before_install:
   - sudo apt-get update
 install:
   - sudo apt-get install -qq gcc-4.8-multilib g++-4.8-multilib
-  - sudo apt-get install --allow-unauthenticated -qq clang-3.4
+  - sudo apt-get install --allow-unauthenticated -qq clang-3.5
   - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 90
   - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 90
   - sudo apt-get install -y lib32gcc1
@@ -21,9 +21,9 @@ install:
   - sudo apt-get install -y bzip2
   - sudo apt-get install -y libc6-dbg
   - wget https://googletest.googlecode.com/files/gtest-1.7.0.zip
-  - wget http://sourceforge.net/projects/boost/files/boost/1.57.0/
+  - wget http://sourceforge.net/projects/boost/files/boost/1.58.0/
   - wget http://valgrind.org/downloads/valgrind-3.10.1.tar.bz2 && tar xjf valgrind-3.10.1.tar.bz2 && cd valgrind-3.10.1 && ./configure && make && sudo make install && cd ..
-  - unzip -q gtest-1.7.0.zip && cd gtest-1.7.0 && sudo cp -r include/gtest /usr/local/include && g++ src/gtest-all.cc -I. -Iinclude -c && g++ src/gtest_main.cc -I. -Iinclude -c && ar -rv libgtest.a gtest-all.o && ar -rv libgtest_main.a gtest_main.o && sudo mv *.a /usr/local/lib && g++ -m32 src/gtest-all.cc -I. -Iinclude -c && g++ -m32 src/gtest_main.cc -I. -Iinclude -c && ar -rv libgtest.a gtest-all.o && ar -rv libgtest_main.a gtest_main.o && sudo mkdir /usr/local/lib32 && sudo mv *.a /usr/local/lib32 && cd .. &&  wget http://sourceforge.net/projects/boost/files/boost/1.57.0/boost_1_57_0.zip && unzip -q boost_1_57_0.zip && sudo mkdir /usr/local/boost && sudo cp -r boost_1_57_0/boost /usr/local/boost/
+  - unzip -q gtest-1.7.0.zip && cd gtest-1.7.0 && sudo cp -r include/gtest /usr/local/include && g++ src/gtest-all.cc -I. -Iinclude -c && g++ src/gtest_main.cc -I. -Iinclude -c && ar -rv libgtest.a gtest-all.o && ar -rv libgtest_main.a gtest_main.o && sudo mv *.a /usr/local/lib && g++ -m32 src/gtest-all.cc -I. -Iinclude -c && g++ -m32 src/gtest_main.cc -I. -Iinclude -c && ar -rv libgtest.a gtest-all.o && ar -rv libgtest_main.a gtest_main.o && sudo mkdir /usr/local/lib32 && sudo mv *.a /usr/local/lib32 && cd .. &&  wget http://sourceforge.net/projects/boost/files/boost/1.58.0/boost_1_58_0.zip && unzip -q boost_1_58_0.zip && sudo mkdir /usr/local/boost && sudo cp -r boost_1_58_0/boost /usr/local/boost/
 env:
   - ACTION="ci/build_autotools.sh" VERSION="cpp11" ARCH="64" LIBPATH="/usr/local/lib"   BOOST="boost" BOOST_INC="/usr/local/boost"
   - ACTION="ci/build_autotools.sh" VERSION="cpp11" ARCH="64" LIBPATH="/usr/local/lib"   BOOST=""

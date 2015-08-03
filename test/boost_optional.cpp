@@ -127,4 +127,49 @@ TEST(MSGPACK_BOOST, object_with_zone_vector_optional)
     EXPECT_TRUE(val1 == val2);
 }
 
+#if !defined(MSGPACK_USE_CPP03)
+
+struct no_def_con {
+    no_def_con() = delete;
+    no_def_con(int i):i(i) {}
+    int i;
+    MSGPACK_DEFINE(i);
+};
+
+inline bool operator==(no_def_con const& lhs, no_def_con const& rhs) {
+    return lhs.i == rhs.i;
+}
+
+inline bool operator!=(no_def_con const& lhs, no_def_con const& rhs) {
+    return !(lhs == rhs);
+}
+
+namespace msgpack {
+MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS) {
+namespace adaptor {
+template <>
+struct as<no_def_con> {
+    no_def_con operator()(msgpack::object const& o) const {
+        if (o.type != msgpack::type::ARRAY) throw msgpack::type_error();
+        if (o.via.array.size != 1) throw msgpack::type_error();
+        return no_def_con(o.via.array.ptr[0].as<int>());
+    }
+};
+} // adaptor
+} // MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS)
+} // msgpack
+
+TEST(MSGPACK_BOOST, pack_convert_no_def_con)
+{
+    std::stringstream ss;
+    boost::optional<no_def_con> val1 = no_def_con(1);
+    msgpack::pack(ss, val1);
+    msgpack::unpacked ret;
+    msgpack::unpack(ret, ss.str().data(), ss.str().size());
+    boost::optional<no_def_con> val2 = ret.get().as<boost::optional<no_def_con>>();
+    EXPECT_TRUE(val1 == val2);
+}
+
+#endif // !defined(MSGPACK_USE_CPP03
+
 #endif // defined(MSGPACK_USE_BOOST)

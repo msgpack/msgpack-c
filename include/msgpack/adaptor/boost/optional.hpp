@@ -22,7 +22,17 @@
 #include "msgpack/adaptor/adaptor_base.hpp"
 #include "msgpack/adaptor/check_container_size.hpp"
 
+// To supress warning on Boost.1.58.0
+#if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) || defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+#endif // (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) || defined(__clang__)
+
 #include <boost/optional.hpp>
+
+#if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) || defined(__clang__)
+#pragma GCC diagnostic pop
+#endif // (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) || defined(__clang__)
 
 namespace msgpack {
 
@@ -31,6 +41,18 @@ MSGPACK_API_VERSION_NAMESPACE(v1) {
 /// @endcond
 
 namespace adaptor {
+
+#if !defined (MSGPACK_USE_CPP03)
+
+template <typename T>
+struct as<boost::optional<T>, typename std::enable_if<msgpack::has_as<T>::value>::type> {
+    boost::optional<T> operator()(msgpack::object const& o) const {
+        if(o.is_nil()) return boost::none;
+        return o.as<T>();
+    }
+};
+
+#endif // !defined (MSGPACK_USE_CPP03)
 
 template <typename T>
 struct convert<boost::optional<T> > {
