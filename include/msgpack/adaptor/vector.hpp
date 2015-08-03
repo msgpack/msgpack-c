@@ -103,14 +103,14 @@ struct object_with_zone<std::vector<T> > {
             o.via.array.size = size;
             typename std::vector<T>::const_iterator it(v.begin());
             do {
-#if defined(__GNUC__) && !defined(__clang__)
+#if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) && !defined(__clang__)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
-#endif // defined(__GNUC__) && !defined(__clang__)
+#endif // (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) && !defined(__clang__)
                 *p = msgpack::object(*it, o.zone);
-#if defined(__GNUC__) && !defined(__clang__)
+#if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) && !defined(__clang__)
 #pragma GCC diagnostic pop
-#endif // defined(__GNUC__) && !defined(__clang__)
+#endif // (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) && !defined(__clang__)
                 ++p;
                 ++it;
             } while(p < pend);
