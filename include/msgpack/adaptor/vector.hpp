@@ -34,11 +34,11 @@ namespace adaptor {
 
 #if !defined(MSGPACK_USE_CPP03)
 
-template <typename T>
-struct as<std::vector<T>, typename std::enable_if<msgpack::has_as<T>::value>::type> {
-    std::vector<T> operator()(const msgpack::object& o) const {
+template <typename T, typename Alloc>
+struct as<std::vector<T, Alloc>, typename std::enable_if<msgpack::has_as<T>::value>::type> {
+    std::vector<T, Alloc> operator()(const msgpack::object& o) const {
         if (o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-        std::vector<T> v;
+        std::vector<T, Alloc> v;
         v.reserve(o.via.array.size);
         if (o.via.array.size > 0) {
             msgpack::object* p = o.via.array.ptr;
@@ -54,15 +54,15 @@ struct as<std::vector<T>, typename std::enable_if<msgpack::has_as<T>::value>::ty
 
 #endif // !defined(MSGPACK_USE_CPP03)
 
-template <typename T>
-struct convert<std::vector<T> > {
-    msgpack::object const& operator()(msgpack::object const& o, std::vector<T>& v) const {
+template <typename T, typename Alloc>
+struct convert<std::vector<T, Alloc> > {
+    msgpack::object const& operator()(msgpack::object const& o, std::vector<T, Alloc>& v) const {
         if (o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
         v.resize(o.via.array.size);
         if (o.via.array.size > 0) {
             msgpack::object* p = o.via.array.ptr;
             msgpack::object* const pend = o.via.array.ptr + o.via.array.size;
-            typename std::vector<T>::iterator it = v.begin();
+            typename std::vector<T, Alloc>::iterator it = v.begin();
             do {
                 p->convert(*it);
                 ++p;
@@ -73,13 +73,13 @@ struct convert<std::vector<T> > {
     }
 };
 
-template <typename T>
-struct pack<std::vector<T> > {
+template <typename T, typename Alloc>
+struct pack<std::vector<T, Alloc> > {
     template <typename Stream>
-    msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const std::vector<T>& v) const {
+    msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const std::vector<T, Alloc>& v) const {
         uint32_t size = checked_get_container_size(v.size());
         o.pack_array(size);
-        for (typename std::vector<T>::const_iterator it(v.begin()), it_end(v.end());
+        for (typename std::vector<T, Alloc>::const_iterator it(v.begin()), it_end(v.end());
             it != it_end; ++it) {
             o.pack(*it);
         }
@@ -87,9 +87,9 @@ struct pack<std::vector<T> > {
     }
 };
 
-template <typename T>
-struct object_with_zone<std::vector<T> > {
-    void operator()(msgpack::object::with_zone& o, const std::vector<T>& v) const {
+template <typename T, typename Alloc>
+struct object_with_zone<std::vector<T, Alloc> > {
+    void operator()(msgpack::object::with_zone& o, const std::vector<T, Alloc>& v) const {
         o.type = msgpack::type::ARRAY;
         if (v.empty()) {
             o.via.array.ptr = nullptr;
@@ -101,7 +101,7 @@ struct object_with_zone<std::vector<T> > {
             msgpack::object* const pend = p + size;
             o.via.array.ptr = p;
             o.via.array.size = size;
-            typename std::vector<T>::const_iterator it(v.begin());
+            typename std::vector<T, Alloc>::const_iterator it(v.begin());
             do {
 #if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) && !defined(__clang__)
 #pragma GCC diagnostic push

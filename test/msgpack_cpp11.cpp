@@ -93,83 +93,119 @@ TEST(MSGPACK_CPP11, simple_buffer_array_char)
     }
 }
 
+// strong typedefs
+namespace test {
+
+template <class Key>
+struct hash : std::hash<Key> {
+    using std::hash<Key>::hash;
+};
+
+template <class Key>
+struct equal_to : std::equal_to<Key> {
+    using std::equal_to<Key>::equal_to;
+};
+
+template <class Key>
+struct set_allocator : std::allocator<Key> {
+    using std::allocator<Key>::allocator;
+};
+
+template <class Key, class T>
+struct map_allocator : std::allocator<std::pair<const Key, T>> {
+    using std::allocator<std::pair<const Key, T>>::allocator;
+};
+
+template <class T>
+struct allocator : std::allocator<T> {
+    using std::allocator<T>::allocator;
+};
+
+} // namespace test
+
+
 TEST(MSGPACK_STL, simple_buffer_forward_list)
 {
+    using type = forward_list<int, test::allocator<int>>;
     for (unsigned int k = 0; k < kLoop; k++) {
-        forward_list<int> val1;
+        type val1;
         for (unsigned int i = 0; i < kElements; i++)
             val1.push_front(rand());
         msgpack::sbuffer sbuf;
         msgpack::pack(sbuf, val1);
         msgpack::unpacked ret;
         msgpack::unpack(ret, sbuf.data(), sbuf.size());
-        forward_list<int> val2 = ret.get().as<forward_list<int> >();
+        type val2 = ret.get().as<type >();
         EXPECT_EQ(val1, val2);
     }
 }
 
 TEST(MSGPACK_STL, simple_buffer_unordered_map)
 {
-  for (unsigned int k = 0; k < kLoop; k++) {
-    unordered_map<int, int> val1;
-    for (unsigned int i = 0; i < kElements; i++)
-      val1[rand()] = rand();
-    msgpack::sbuffer sbuf;
-    msgpack::pack(sbuf, val1);
-    msgpack::unpacked ret;
-    msgpack::unpack(ret, sbuf.data(), sbuf.size());
-    unordered_map<int, int> val2 = ret.get().as<unordered_map<int, int> >();
-    EXPECT_EQ(val1, val2);
-  }
+    using type = unordered_map<int, int, test::hash<int>, test::equal_to<int>, test::map_allocator<int, int>>;
+    for (unsigned int k = 0; k < kLoop; k++) {
+        type val1;
+        for (unsigned int i = 0; i < kElements; i++)
+            val1[rand()] = rand();
+        msgpack::sbuffer sbuf;
+        msgpack::pack(sbuf, val1);
+        msgpack::unpacked ret;
+        msgpack::unpack(ret, sbuf.data(), sbuf.size());
+        type val2 = ret.get().as<type >();
+        EXPECT_EQ(val1, val2);
+    }
 }
 
 TEST(MSGPACK_STL, simple_buffer_unordered_multimap)
 {
-  for (unsigned int k = 0; k < kLoop; k++) {
-    unordered_multimap<int, int> val1;
-    for (unsigned int i = 0; i < kElements; i++) {
-      int i1 = rand();
-      val1.insert(make_pair(i1, rand()));
-      val1.insert(make_pair(i1, rand()));
-    }
-    msgpack::sbuffer sbuf;
-    msgpack::pack(sbuf, val1);
-    msgpack::unpacked ret;
-    msgpack::unpack(ret, sbuf.data(), sbuf.size());
-    unordered_multimap<int, int> val2 = ret.get().as<unordered_multimap<int, int> >();
+    using type = unordered_multimap<int, int, test::hash<int>, test::equal_to<int>, test::map_allocator<int, int>>;
+    for (unsigned int k = 0; k < kLoop; k++) {
+        type val1;
+        for (unsigned int i = 0; i < kElements; i++) {
+            int i1 = rand();
+            val1.insert(make_pair(i1, rand()));
+            val1.insert(make_pair(i1, rand()));
+        }
+        msgpack::sbuffer sbuf;
+        msgpack::pack(sbuf, val1);
+        msgpack::unpacked ret;
+        msgpack::unpack(ret, sbuf.data(), sbuf.size());
+        type val2 = ret.get().as<type >();
 
-    EXPECT_EQ(val1, val2);
-  }
+        EXPECT_EQ(val1, val2);
+    }
 }
 
 TEST(MSGPACK_STL, simple_buffer_unordered_set)
 {
-  for (unsigned int k = 0; k < kLoop; k++) {
-    unordered_set<int> val1;
-    for (unsigned int i = 0; i < kElements; i++)
-      val1.insert(rand());
-    msgpack::sbuffer sbuf;
-    msgpack::pack(sbuf, val1);
-    msgpack::unpacked ret;
-    msgpack::unpack(ret, sbuf.data(), sbuf.size());
-    unordered_set<int> val2 = ret.get().as<unordered_set<int> >();
-    EXPECT_EQ(val1, val2);
-  }
+    using type = unordered_set<int, test::hash<int>, test::equal_to<int>, test::set_allocator<int>>;
+    for (unsigned int k = 0; k < kLoop; k++) {
+        type val1;
+        for (unsigned int i = 0; i < kElements; i++)
+            val1.insert(rand());
+        msgpack::sbuffer sbuf;
+        msgpack::pack(sbuf, val1);
+        msgpack::unpacked ret;
+        msgpack::unpack(ret, sbuf.data(), sbuf.size());
+        type val2 = ret.get().as<type>();
+        EXPECT_EQ(val1, val2);
+    }
 }
 
 TEST(MSGPACK_STL, simple_buffer_unordered_multiset)
 {
-  for (unsigned int k = 0; k < kLoop; k++) {
-    unordered_multiset<int> val1;
-    for (unsigned int i = 0; i < kElements; i++)
-      val1.insert(rand());
-    msgpack::sbuffer sbuf;
-    msgpack::pack(sbuf, val1);
-    msgpack::unpacked ret;
-    msgpack::unpack(ret, sbuf.data(), sbuf.size());
-    unordered_multiset<int> val2 = ret.get().as<unordered_multiset<int> >();
-    EXPECT_EQ(val1, val2);
-  }
+    using type = unordered_multiset<int, test::hash<int>, test::equal_to<int>, test::set_allocator<int>>;
+    for (unsigned int k = 0; k < kLoop; k++) {
+        type val1;
+        for (unsigned int i = 0; i < kElements; i++)
+            val1.insert(rand());
+        msgpack::sbuffer sbuf;
+        msgpack::pack(sbuf, val1);
+        msgpack::unpacked ret;
+        msgpack::unpack(ret, sbuf.data(), sbuf.size());
+        type val2 = ret.get().as<type >();
+        EXPECT_EQ(val1, val2);
+    }
 }
 
 TEST(MSGPACK_USER_DEFINED, simple_buffer_enum_class_member)
@@ -206,16 +242,16 @@ inline bool operator<(no_def_con const& lhs, no_def_con const& rhs) {
 
 namespace msgpack {
 MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS) {
-namespace adaptor {
-template <>
-struct as<no_def_con> {
-    no_def_con operator()(msgpack::object const& o) const {
-        if (o.type != msgpack::type::ARRAY) throw msgpack::type_error();
-        if (o.via.array.size != 1) throw msgpack::type_error();
-        return no_def_con(o.via.array.ptr[0].as<int>());
-    }
-};
-} // adaptor
+    namespace adaptor {
+    template <>
+    struct as<no_def_con> {
+        no_def_con operator()(msgpack::object const& o) const {
+            if (o.type != msgpack::type::ARRAY) throw msgpack::type_error();
+            if (o.via.array.size != 1) throw msgpack::type_error();
+            return no_def_con(o.via.array.ptr[0].as<int>());
+        }
+    };
+    } // adaptor
 } // MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS)
 } // msgpack
 
@@ -261,16 +297,16 @@ inline bool operator<(no_def_con_composite const& lhs, no_def_con_composite cons
 
 namespace msgpack {
 MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS) {
-namespace adaptor {
-template <>
-struct as<no_def_con_composite> {
-    no_def_con_composite operator()(msgpack::object const& o) const {
-        if (o.type != msgpack::type::ARRAY) throw msgpack::type_error();
-        if (o.via.array.size != 1) throw msgpack::type_error();
-        return no_def_con_composite(o.via.array.ptr[0].as<no_def_con>());
-    }
-};
-} // adaptor
+    namespace adaptor {
+    template <>
+    struct as<no_def_con_composite> {
+        no_def_con_composite operator()(msgpack::object const& o) const {
+            if (o.type != msgpack::type::ARRAY) throw msgpack::type_error();
+            if (o.via.array.size != 1) throw msgpack::type_error();
+            return no_def_con_composite(o.via.array.ptr[0].as<no_def_con>());
+        }
+    };
+    } // adaptor
 } // MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS)
 } // msgpack
 
@@ -293,16 +329,16 @@ struct no_def_con_inherit : no_def_con {
 
 namespace msgpack {
 MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS) {
-namespace adaptor {
-template <>
-struct as<no_def_con_inherit> {
-    no_def_con_inherit operator()(msgpack::object const& o) const {
-        if (o.type != msgpack::type::ARRAY) throw msgpack::type_error();
-        if (o.via.array.size != 1) throw msgpack::type_error();
-        return no_def_con_inherit(o.via.array.ptr[0].as<no_def_con>());
-    }
-};
-} // adaptor
+    namespace adaptor {
+    template <>
+    struct as<no_def_con_inherit> {
+        no_def_con_inherit operator()(msgpack::object const& o) const {
+            if (o.type != msgpack::type::ARRAY) throw msgpack::type_error();
+            if (o.via.array.size != 1) throw msgpack::type_error();
+            return no_def_con_inherit(o.via.array.ptr[0].as<no_def_con>());
+        }
+    };
+    } // adaptor
 } // MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS)
 } // msgpack
 

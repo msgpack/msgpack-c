@@ -9,6 +9,8 @@
 #include <list>
 #include <limits>
 
+#include "test_allocator.hpp"
+
 #include <gtest/gtest.h>
 
 #ifdef HAVE_CONFIG_H
@@ -21,187 +23,227 @@ using namespace std;
 const unsigned int kLoop = 1000;
 const unsigned int kElements = 100;
 
+// strong typedefs
+namespace test {
+
+template <class Key>
+struct equal_to : std::equal_to<Key> {
+};
+
+template <class Key>
+struct less : std::less<Key> {
+};
+
+} // namespace test
+
 TEST(MSGPACK_STL, simple_buffer_vector)
 {
-  for (unsigned int k = 0; k < kLoop; k++) {
-    vector<int> val1;
+    typedef vector<int, test::allocator<int> > type;
+    for (unsigned int k = 0; k < kLoop; k++) {
+        type val1;
+        for (unsigned int i = 0; i < kElements; i++)
+            val1.push_back(rand());
+        msgpack::sbuffer sbuf;
+        msgpack::pack(sbuf, val1);
+        msgpack::unpacked ret;
+        msgpack::unpack(ret, sbuf.data(), sbuf.size());
+        EXPECT_EQ(ret.get().type, msgpack::type::ARRAY);
+        type const& val2 = ret.get().as<type>();
+        EXPECT_EQ(val1.size(), val2.size());
+        EXPECT_TRUE(equal(val1.begin(), val1.end(), val2.begin()));
+    }
+}
+
+TEST(MSGPACK_STL, simple_buffer_vector_char)
+{
+    typedef vector<char, test::allocator<char> > type;
+    for (unsigned int k = 0; k < kLoop; k++) {
+        type val1;
+        for (unsigned int i = 0; i < kElements; i++)
+            val1.push_back(rand());
+        msgpack::sbuffer sbuf;
+        msgpack::pack(sbuf, val1);
+        msgpack::unpacked ret;
+        msgpack::unpack(ret, sbuf.data(), sbuf.size());
+        EXPECT_EQ(ret.get().type, msgpack::type::BIN);
+        type const& val2 = ret.get().as<type>();
+        EXPECT_EQ(val1.size(), val2.size());
+        EXPECT_TRUE(equal(val1.begin(), val1.end(), val2.begin()));
+    }
+}
+
+TEST(MSGPACK_STL, simple_buffer_vector_bool)
+{
+    typedef vector<bool, test::allocator<bool> > type;
+    type val1;
     for (unsigned int i = 0; i < kElements; i++)
-      val1.push_back(rand());
+        val1.push_back(i % 2 ? false : true);
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, val1);
     msgpack::unpacked ret;
     msgpack::unpack(ret, sbuf.data(), sbuf.size());
     EXPECT_EQ(ret.get().type, msgpack::type::ARRAY);
-    vector<int> val2 = ret.get().as<vector<int> >();
+    type const& val2 = ret.get().as<type>();
     EXPECT_EQ(val1.size(), val2.size());
     EXPECT_TRUE(equal(val1.begin(), val1.end(), val2.begin()));
-  }
 }
 
-TEST(MSGPACK_STL, simple_buffer_vector_char)
+
+TEST(MSGPACK_STL, simple_buffer_assoc_vector)
 {
-  for (unsigned int k = 0; k < kLoop; k++) {
-    vector<char> val1;
-    for (unsigned int i = 0; i < kElements; i++)
-      val1.push_back(rand());
-    msgpack::sbuffer sbuf;
-    msgpack::pack(sbuf, val1);
-    msgpack::unpacked ret;
-    msgpack::unpack(ret, sbuf.data(), sbuf.size());
-    EXPECT_EQ(ret.get().type, msgpack::type::BIN);
-    vector<char> val2 = ret.get().as<vector<char> >();
-    EXPECT_EQ(val1.size(), val2.size());
-    EXPECT_TRUE(equal(val1.begin(), val1.end(), val2.begin()));
-  }
+    typedef msgpack::type::assoc_vector<int, int, test::less<int>, test::allocator<std::pair<int, int> > >type;
+    for (unsigned int k = 0; k < kLoop; k++) {
+        type val1;
+        val1.push_back(std::make_pair(1, 2));
+        val1.push_back(std::make_pair(3, 4));
+        val1.push_back(std::make_pair(5, 6));
+        msgpack::sbuffer sbuf;
+        msgpack::pack(sbuf, val1);
+        msgpack::unpacked ret;
+        msgpack::unpack(ret, sbuf.data(), sbuf.size());
+        type const& val2 = ret.get().as<type>();
+        EXPECT_EQ(val1.size(), val2.size());
+        EXPECT_TRUE(equal(val1.begin(), val1.end(), val2.begin()));
+    }
 }
-
-TEST(MSGPACK_STL, simple_buffer_vector_bool)
-{
-  vector<bool> val1;
-  for (unsigned int i = 0; i < kElements; i++)
-    val1.push_back(i % 2 ? false : true);
-  msgpack::sbuffer sbuf;
-  msgpack::pack(sbuf, val1);
-  msgpack::unpacked ret;
-  msgpack::unpack(ret, sbuf.data(), sbuf.size());
-  EXPECT_EQ(ret.get().type, msgpack::type::ARRAY);
-  vector<bool> val2 = ret.get().as<vector<bool> >();
-  EXPECT_EQ(val1.size(), val2.size());
-  EXPECT_TRUE(equal(val1.begin(), val1.end(), val2.begin()));
-}
-
 
 TEST(MSGPACK_STL, simple_buffer_map)
 {
-  for (unsigned int k = 0; k < kLoop; k++) {
-    map<int, int> val1;
-    for (unsigned int i = 0; i < kElements; i++)
-      val1[rand()] = rand();
-    msgpack::sbuffer sbuf;
-    msgpack::pack(sbuf, val1);
-    msgpack::unpacked ret;
-    msgpack::unpack(ret, sbuf.data(), sbuf.size());
-    map<int, int> val2 = ret.get().as<map<int, int> >();
-    EXPECT_EQ(val1.size(), val2.size());
-    EXPECT_TRUE(equal(val1.begin(), val1.end(), val2.begin()));
-  }
+    typedef map<int, int, test::less<int>, test::allocator<std::pair<int, int> > > type;
+    for (unsigned int k = 0; k < kLoop; k++) {
+        type val1;
+        for (unsigned int i = 0; i < kElements; i++)
+            val1[rand()] = rand();
+        msgpack::sbuffer sbuf;
+        msgpack::pack(sbuf, val1);
+        msgpack::unpacked ret;
+        msgpack::unpack(ret, sbuf.data(), sbuf.size());
+        type const& val2 = ret.get().as<type>();
+        EXPECT_EQ(val1.size(), val2.size());
+        EXPECT_TRUE(equal(val1.begin(), val1.end(), val2.begin()));
+    }
 }
 
 TEST(MSGPACK_STL, simple_buffer_deque)
 {
-  for (unsigned int k = 0; k < kLoop; k++) {
-    deque<int> val1;
-    for (unsigned int i = 0; i < kElements; i++)
-      val1.push_back(rand());
-    msgpack::sbuffer sbuf;
-    msgpack::pack(sbuf, val1);
-    msgpack::unpacked ret;
-    msgpack::unpack(ret, sbuf.data(), sbuf.size());
-    deque<int> val2 = ret.get().as<deque<int> >();
-    EXPECT_EQ(val1.size(), val2.size());
-    EXPECT_TRUE(equal(val1.begin(), val1.end(), val2.begin()));
-  }
+    typedef deque<int, test::allocator<int> > type;
+    for (unsigned int k = 0; k < kLoop; k++) {
+        type val1;
+        for (unsigned int i = 0; i < kElements; i++)
+            val1.push_back(rand());
+        msgpack::sbuffer sbuf;
+        msgpack::pack(sbuf, val1);
+        msgpack::unpacked ret;
+        msgpack::unpack(ret, sbuf.data(), sbuf.size());
+        type const& val2 = ret.get().as<type>();
+        EXPECT_EQ(val1.size(), val2.size());
+        EXPECT_TRUE(equal(val1.begin(), val1.end(), val2.begin()));
+    }
 }
 
 TEST(MSGPACK_STL, simple_buffer_list)
 {
-  for (unsigned int k = 0; k < kLoop; k++) {
-    list<int> val1;
-    for (unsigned int i = 0; i < kElements; i++)
-      val1.push_back(rand());
-    msgpack::sbuffer sbuf;
-    msgpack::pack(sbuf, val1);
-    msgpack::unpacked ret;
-    msgpack::unpack(ret, sbuf.data(), sbuf.size());
-    list<int> val2 = ret.get().as<list<int> >();
-    EXPECT_EQ(val1.size(), val2.size());
-    EXPECT_TRUE(equal(val1.begin(), val1.end(), val2.begin()));
-  }
+    typedef list<int, test::allocator<int> > type;
+    for (unsigned int k = 0; k < kLoop; k++) {
+        type val1;
+        for (unsigned int i = 0; i < kElements; i++)
+            val1.push_back(rand());
+        msgpack::sbuffer sbuf;
+        msgpack::pack(sbuf, val1);
+        msgpack::unpacked ret;
+        msgpack::unpack(ret, sbuf.data(), sbuf.size());
+        type const& val2 = ret.get().as<type>();
+        EXPECT_EQ(val1.size(), val2.size());
+        EXPECT_TRUE(equal(val1.begin(), val1.end(), val2.begin()));
+    }
 }
 
 TEST(MSGPACK_STL, simple_buffer_set)
 {
-  for (unsigned int k = 0; k < kLoop; k++) {
-    set<int> val1;
-    for (unsigned int i = 0; i < kElements; i++)
-      val1.insert(rand());
-    msgpack::sbuffer sbuf;
-    msgpack::pack(sbuf, val1);
-    msgpack::unpacked ret;
-    msgpack::unpack(ret, sbuf.data(), sbuf.size());
-    set<int> val2 = ret.get().as<set<int> >();
-    EXPECT_EQ(val1.size(), val2.size());
-    EXPECT_TRUE(equal(val1.begin(), val1.end(), val2.begin()));
-  }
+    typedef set<int, test::less<int>, test::allocator<int> > type;
+    for (unsigned int k = 0; k < kLoop; k++) {
+        type val1;
+        for (unsigned int i = 0; i < kElements; i++)
+            val1.insert(rand());
+        msgpack::sbuffer sbuf;
+        msgpack::pack(sbuf, val1);
+        msgpack::unpacked ret;
+        msgpack::unpack(ret, sbuf.data(), sbuf.size());
+        type val2 = ret.get().as<type>();
+        EXPECT_EQ(val1.size(), val2.size());
+        EXPECT_TRUE(equal(val1.begin(), val1.end(), val2.begin()));
+    }
 }
 
 TEST(MSGPACK_STL, simple_buffer_pair)
 {
-  for (unsigned int k = 0; k < kLoop; k++) {
-    pair<int, int> val1 = make_pair(rand(), rand());
-    msgpack::sbuffer sbuf;
-    msgpack::pack(sbuf, val1);
-    msgpack::unpacked ret;
-    msgpack::unpack(ret, sbuf.data(), sbuf.size());
-    pair<int, int> val2 = ret.get().as<pair<int, int> >();
-    EXPECT_EQ(val1.first, val2.first);
-    EXPECT_EQ(val1.second, val2.second);
-  }
+    for (unsigned int k = 0; k < kLoop; k++) {
+        pair<int, int> val1 = make_pair(rand(), rand());
+        msgpack::sbuffer sbuf;
+        msgpack::pack(sbuf, val1);
+        msgpack::unpacked ret;
+        msgpack::unpack(ret, sbuf.data(), sbuf.size());
+        pair<int, int> val2 = ret.get().as<pair<int, int> >();
+        EXPECT_EQ(val1.first, val2.first);
+        EXPECT_EQ(val1.second, val2.second);
+    }
 }
 
 TEST(MSGPACK_STL, simple_buffer_multimap)
 {
-  for (unsigned int k = 0; k < kLoop; k++) {
-    multimap<int, int> val1;
-    for (unsigned int i = 0; i < kElements; i++) {
-      int i1 = rand();
-      val1.insert(make_pair(i1, rand()));
-      val1.insert(make_pair(i1, rand()));
-    }
-    msgpack::sbuffer sbuf;
-    msgpack::pack(sbuf, val1);
-    msgpack::unpacked ret;
-    msgpack::unpack(ret, sbuf.data(), sbuf.size());
-    multimap<int, int> val2 = ret.get().as<multimap<int, int> >();
+    typedef multimap<int, int, test::less<int>, test::allocator<std::pair<int, int> > > type;
+    for (unsigned int k = 0; k < kLoop; k++) {
+        type val1;
+        for (unsigned int i = 0; i < kElements; i++) {
+            int i1 = rand();
+            val1.insert(make_pair(i1, rand()));
+            val1.insert(make_pair(i1, rand()));
+        }
+        msgpack::sbuffer sbuf;
+        msgpack::pack(sbuf, val1);
+        msgpack::unpacked ret;
+        msgpack::unpack(ret, sbuf.data(), sbuf.size());
+        type val2 = ret.get().as<type>();
 
-    vector<pair<int, int> > v1, v2;
-    multimap<int, int>::const_iterator it;
-    for (it = val1.begin(); it != val1.end(); ++it)
-      v1.push_back(make_pair(it->first, it->second));
-    for (it = val2.begin(); it != val2.end(); ++it)
-      v2.push_back(make_pair(it->first, it->second));
-    EXPECT_EQ(val1.size(), val2.size());
-    EXPECT_EQ(v1.size(), v2.size());
-    sort(v1.begin(), v1.end());
-    sort(v2.begin(), v2.end());
-    EXPECT_TRUE(v1 == v2);
-  }
+        vector<pair<int, int> > v1, v2;
+        type::const_iterator it;
+        for (it = val1.begin(); it != val1.end(); ++it)
+            v1.push_back(make_pair(it->first, it->second));
+        for (it = val2.begin(); it != val2.end(); ++it)
+            v2.push_back(make_pair(it->first, it->second));
+        EXPECT_EQ(val1.size(), val2.size());
+        EXPECT_EQ(v1.size(), v2.size());
+        sort(v1.begin(), v1.end());
+        sort(v2.begin(), v2.end());
+        EXPECT_TRUE(v1 == v2);
+    }
 }
 
 TEST(MSGPACK_STL, simple_buffer_multiset)
 {
-  for (unsigned int k = 0; k < kLoop; k++) {
-    multiset<int> val1;
-    for (unsigned int i = 0; i < kElements; i++)
-      val1.insert(rand());
-    msgpack::sbuffer sbuf;
-    msgpack::pack(sbuf, val1);
-    msgpack::unpacked ret;
-    msgpack::unpack(ret, sbuf.data(), sbuf.size());
-    multiset<int> val2 = ret.get().as<multiset<int> >();
+    typedef multiset<int, test::less<int>, test::allocator<int> > type;
+    for (unsigned int k = 0; k < kLoop; k++) {
+        type val1;
+        for (unsigned int i = 0; i < kElements; i++)
+            val1.insert(rand());
+        msgpack::sbuffer sbuf;
+        msgpack::pack(sbuf, val1);
+        msgpack::unpacked ret;
+        msgpack::unpack(ret, sbuf.data(), sbuf.size());
+        type val2 = ret.get().as<type>();
 
-    vector<int> v1, v2;
-    multiset<int>::const_iterator it;
-    for (it = val1.begin(); it != val1.end(); ++it)
-      v1.push_back(*it);
-    for (it = val2.begin(); it != val2.end(); ++it)
-      v2.push_back(*it);
-    EXPECT_EQ(val1.size(), val2.size());
-    EXPECT_EQ(v1.size(), v2.size());
-    sort(v1.begin(), v1.end());
-    sort(v2.begin(), v2.end());
-    EXPECT_TRUE(v1 == v2);
-  }
+        vector<int> v1, v2;
+        type::const_iterator it;
+        for (it = val1.begin(); it != val1.end(); ++it)
+            v1.push_back(*it);
+        for (it = val2.begin(); it != val2.end(); ++it)
+            v2.push_back(*it);
+        EXPECT_EQ(val1.size(), val2.size());
+        EXPECT_EQ(v1.size(), v2.size());
+        sort(v1.begin(), v1.end());
+        sort(v2.begin(), v2.end());
+        EXPECT_TRUE(v1 == v2);
+    }
 }
 
 TEST(MSGPACK_TUPLE, simple_tuple)
@@ -233,56 +275,72 @@ TEST(MSGPACK_TUPLE, simple_tuple_empty)
 
 // TR1
 
+#if defined(MSGPACK_HAS_STD_TR1_UNORDERED_MAP) || defined(MSGPACK_HAS_STD_TR1_UNORDERED_SET)
+
+#include <tr1/functional>
+
+namespace test {
+
+template <class Key>
+struct tr1_hash : std::tr1::hash<Key> {
+};
+
+} // namespace test
+
+#endif // defined(MSGPACK_HAS_STD_TR1_UNORDERED_MAP) || defined(MSGPACK_HAS_STD_TR1_UNORDERED_SET)
+
 #ifdef MSGPACK_HAS_STD_TR1_UNORDERED_MAP
 #include <tr1/unordered_map>
 #include "msgpack/adaptor/tr1/unordered_map.hpp"
 TEST(MSGPACK_TR1, simple_buffer_tr1_unordered_map)
 {
-  for (unsigned int k = 0; k < kLoop; k++) {
-    tr1::unordered_map<int, int> val1;
-    for (unsigned int i = 0; i < kElements; i++)
-      val1[rand()] = rand();
-    msgpack::sbuffer sbuf;
-    msgpack::pack(sbuf, val1);
-    msgpack::unpacked ret;
-    msgpack::unpack(ret, sbuf.data(), sbuf.size());
-    tr1::unordered_map<int, int> val2 = ret.get().as<tr1::unordered_map<int, int> >();
-    EXPECT_EQ(val1.size(), val2.size());
-    tr1::unordered_map<int, int>::const_iterator it;
-    for (it = val1.begin(); it != val1.end(); ++it) {
-      EXPECT_TRUE(val2.find(it->first) != val2.end());
-      EXPECT_EQ(it->second, val2.find(it->first)->second);
+    typedef tr1::unordered_map<int, int, test::tr1_hash<int>, test::equal_to<int>, test::allocator<std::pair<int, int> > > type;
+    for (unsigned int k = 0; k < kLoop; k++) {
+        type val1;
+        for (unsigned int i = 0; i < kElements; i++)
+            val1[rand()] = rand();
+        msgpack::sbuffer sbuf;
+        msgpack::pack(sbuf, val1);
+        msgpack::unpacked ret;
+        msgpack::unpack(ret, sbuf.data(), sbuf.size());
+        type val2 = ret.get().as<type>();
+        EXPECT_EQ(val1.size(), val2.size());
+        type::const_iterator it;
+        for (it = val1.begin(); it != val1.end(); ++it) {
+            EXPECT_TRUE(val2.find(it->first) != val2.end());
+            EXPECT_EQ(it->second, val2.find(it->first)->second);
+        }
     }
-  }
 }
 
 TEST(MSGPACK_TR1, simple_buffer_tr1_unordered_multimap)
 {
-  for (unsigned int k = 0; k < kLoop; k++) {
-    tr1::unordered_multimap<int, int> val1;
-    for (unsigned int i = 0; i < kElements; i++) {
-      int i1 = rand();
-      val1.insert(make_pair(i1, rand()));
-      val1.insert(make_pair(i1, rand()));
-    }
-    msgpack::sbuffer sbuf;
-    msgpack::pack(sbuf, val1);
-    msgpack::unpacked ret;
-    msgpack::unpack(ret, sbuf.data(), sbuf.size());
-    tr1::unordered_multimap<int, int> val2 = ret.get().as<tr1::unordered_multimap<int, int> >();
+    typedef tr1::unordered_multimap<int, int, test::tr1_hash<int>, test::equal_to<int>, test::allocator<std::pair<int, int> > > type;
+    for (unsigned int k = 0; k < kLoop; k++) {
+        type val1;
+        for (unsigned int i = 0; i < kElements; i++) {
+            int i1 = rand();
+            val1.insert(make_pair(i1, rand()));
+            val1.insert(make_pair(i1, rand()));
+        }
+        msgpack::sbuffer sbuf;
+        msgpack::pack(sbuf, val1);
+        msgpack::unpacked ret;
+        msgpack::unpack(ret, sbuf.data(), sbuf.size());
+        type val2 = ret.get().as<type>();
 
-    vector<pair<int, int> > v1, v2;
-    tr1::unordered_multimap<int, int>::const_iterator it;
-    for (it = val1.begin(); it != val1.end(); ++it)
-      v1.push_back(make_pair(it->first, it->second));
-    for (it = val2.begin(); it != val2.end(); ++it)
-      v2.push_back(make_pair(it->first, it->second));
-    EXPECT_EQ(val1.size(), val2.size());
-    EXPECT_EQ(v1.size(), v2.size());
-    sort(v1.begin(), v1.end());
-    sort(v2.begin(), v2.end());
-    EXPECT_TRUE(v1 == v2);
-  }
+        vector<pair<int, int> > v1, v2;
+        type::const_iterator it;
+        for (it = val1.begin(); it != val1.end(); ++it)
+            v1.push_back(make_pair(it->first, it->second));
+        for (it = val2.begin(); it != val2.end(); ++it)
+            v2.push_back(make_pair(it->first, it->second));
+        EXPECT_EQ(val1.size(), val2.size());
+        EXPECT_EQ(v1.size(), v2.size());
+        sort(v1.begin(), v1.end());
+        sort(v2.begin(), v2.end());
+        EXPECT_TRUE(v1 == v2);
+    }
 }
 #endif
 
@@ -291,146 +349,167 @@ TEST(MSGPACK_TR1, simple_buffer_tr1_unordered_multimap)
 #include "msgpack/adaptor/tr1/unordered_set.hpp"
 TEST(MSGPACK_TR1, simple_buffer_tr1_unordered_set)
 {
-  for (unsigned int k = 0; k < kLoop; k++) {
-    tr1::unordered_set<int> val1;
-    for (unsigned int i = 0; i < kElements; i++)
-      val1.insert(rand());
-    msgpack::sbuffer sbuf;
-    msgpack::pack(sbuf, val1);
-    msgpack::unpacked ret;
-    msgpack::unpack(ret, sbuf.data(), sbuf.size());
-    tr1::unordered_set<int> val2 = ret.get().as<tr1::unordered_set<int> >();
-    EXPECT_EQ(val1.size(), val2.size());
-    tr1::unordered_set<int>::const_iterator it;
-    for (it = val1.begin(); it != val1.end(); ++it)
-      EXPECT_TRUE(val2.find(*it) != val2.end());
-  }
+    typedef tr1::unordered_set<int, test::tr1_hash<int>, test::equal_to<int>, test::allocator<int> > type;
+    for (unsigned int k = 0; k < kLoop; k++) {
+        type val1;
+        for (unsigned int i = 0; i < kElements; i++)
+            val1.insert(rand());
+        msgpack::sbuffer sbuf;
+        msgpack::pack(sbuf, val1);
+        msgpack::unpacked ret;
+        msgpack::unpack(ret, sbuf.data(), sbuf.size());
+        type val2 = ret.get().as<type>();
+        EXPECT_EQ(val1.size(), val2.size());
+        type::const_iterator it;
+        for (it = val1.begin(); it != val1.end(); ++it)
+            EXPECT_TRUE(val2.find(*it) != val2.end());
+    }
 }
 
 TEST(MSGPACK_TR1, simple_buffer_tr1_unordered_multiset)
 {
-  for (unsigned int k = 0; k < kLoop; k++) {
-    tr1::unordered_multiset<int> val1;
-    for (unsigned int i = 0; i < kElements; i++)
-      val1.insert(rand());
-    msgpack::sbuffer sbuf;
-    msgpack::pack(sbuf, val1);
-    msgpack::unpacked ret;
-    msgpack::unpack(ret, sbuf.data(), sbuf.size());
-    tr1::unordered_multiset<int> val2 = ret.get().as<tr1::unordered_multiset<int> >();
+    typedef tr1::unordered_multiset<int, test::tr1_hash<int>, test::equal_to<int>, test::allocator<int> > type;
+    for (unsigned int k = 0; k < kLoop; k++) {
+        type val1;
+        for (unsigned int i = 0; i < kElements; i++)
+            val1.insert(rand());
+        msgpack::sbuffer sbuf;
+        msgpack::pack(sbuf, val1);
+        msgpack::unpacked ret;
+        msgpack::unpack(ret, sbuf.data(), sbuf.size());
+        type val2 = ret.get().as<type>();
 
-    vector<int> v1, v2;
-    tr1::unordered_multiset<int>::const_iterator it;
-    for (it = val1.begin(); it != val1.end(); ++it)
-      v1.push_back(*it);
-    for (it = val2.begin(); it != val2.end(); ++it)
-      v2.push_back(*it);
-    EXPECT_EQ(val1.size(), val2.size());
-    EXPECT_EQ(v1.size(), v2.size());
-    sort(v1.begin(), v1.end());
-    sort(v2.begin(), v2.end());
-    EXPECT_TRUE(v1 == v2);
-  }
+        vector<int> v1, v2;
+        type::const_iterator it;
+        for (it = val1.begin(); it != val1.end(); ++it)
+            v1.push_back(*it);
+        for (it = val2.begin(); it != val2.end(); ++it)
+            v2.push_back(*it);
+        EXPECT_EQ(val1.size(), val2.size());
+        EXPECT_EQ(v1.size(), v2.size());
+        sort(v1.begin(), v1.end());
+        sort(v2.begin(), v2.end());
+        EXPECT_TRUE(v1 == v2);
+    }
 }
 #endif
+
+#if defined (MSGPACK_HAS_STD_UNORDERED_MAP) || defined (MSGPACK_HAS_STD_UNORDERED_SET)
+
+#include <functional>
+
+namespace test {
+
+template <class Key>
+struct hash : std::hash<Key> {
+};
+
+} // namespace test
+
+#endif // defined (MSGPACK_HAS_STD_UNORDERED_MAP) || defined (MSGPACK_HAS_STD_UNORDERED_SET)
 
 #ifdef MSGPACK_HAS_STD_UNORDERED_MAP
 #include <unordered_map>
 #include "msgpack/adaptor/tr1/unordered_map.hpp"
 TEST(MSGPACK_TR1, simple_buffer_unordered_map)
 {
-  for (unsigned int k = 0; k < kLoop; k++) {
-    unordered_map<int, int> val1;
-    for (unsigned int i = 0; i < kElements; i++)
-      val1[rand()] = rand();
-    msgpack::sbuffer sbuf;
-    msgpack::pack(sbuf, val1);
-    msgpack::unpacked ret;
-    msgpack::unpack(ret, sbuf.data(), sbuf.size());
-    unordered_map<int, int> val2 = ret.get().as<unordered_map<int, int> >();
-    EXPECT_EQ(val1.size(), val2.size());
-    unordered_map<int, int>::const_iterator it;
-    for (it = val1.begin(); it != val1.end(); ++it) {
-      EXPECT_TRUE(val2.find(it->first) != val2.end());
-      EXPECT_EQ(it->second, val2.find(it->first)->second);
+    typedef unordered_map<int, int, test::hash<int>, test::equal_to<int>, test::allocator<std::pair<int, int> > > type;
+    for (unsigned int k = 0; k < kLoop; k++) {
+        type val1;
+        for (unsigned int i = 0; i < kElements; i++)
+            val1[rand()] = rand();
+        msgpack::sbuffer sbuf;
+        msgpack::pack(sbuf, val1);
+        msgpack::unpacked ret;
+        msgpack::unpack(ret, sbuf.data(), sbuf.size());
+        type val2 = ret.get().as<type>();
+        EXPECT_EQ(val1.size(), val2.size());
+        type::const_iterator it;
+        for (it = val1.begin(); it != val1.end(); ++it) {
+            EXPECT_TRUE(val2.find(it->first) != val2.end());
+            EXPECT_EQ(it->second, val2.find(it->first)->second);
+        }
     }
-  }
 }
 
 TEST(MSGPACK_TR1, simple_buffer_unordered_multimap)
 {
-  for (unsigned int k = 0; k < kLoop; k++) {
-    unordered_multimap<int, int> val1;
-    for (unsigned int i = 0; i < kElements; i++) {
-      int i1 = rand();
-      val1.insert(make_pair(i1, rand()));
-      val1.insert(make_pair(i1, rand()));
-    }
-    msgpack::sbuffer sbuf;
-    msgpack::pack(sbuf, val1);
-    msgpack::unpacked ret;
-    msgpack::unpack(ret, sbuf.data(), sbuf.size());
-    unordered_multimap<int, int> val2 = ret.get().as<unordered_multimap<int, int> >();
+    typedef unordered_multimap<int, int, test::hash<int>, test::equal_to<int>, test::allocator<std::pair<int, int> > > type;
+    for (unsigned int k = 0; k < kLoop; k++) {
+        type val1;
+        for (unsigned int i = 0; i < kElements; i++) {
+            int i1 = rand();
+            val1.insert(make_pair(i1, rand()));
+            val1.insert(make_pair(i1, rand()));
+        }
+        msgpack::sbuffer sbuf;
+        msgpack::pack(sbuf, val1);
+        msgpack::unpacked ret;
+        msgpack::unpack(ret, sbuf.data(), sbuf.size());
+        type val2 = ret.get().as<type>();
 
-    vector<pair<int, int> > v1, v2;
-    unordered_multimap<int, int>::const_iterator it;
-    for (it = val1.begin(); it != val1.end(); ++it)
-      v1.push_back(make_pair(it->first, it->second));
-    for (it = val2.begin(); it != val2.end(); ++it)
-      v2.push_back(make_pair(it->first, it->second));
-    EXPECT_EQ(val1.size(), val2.size());
-    EXPECT_EQ(v1.size(), v2.size());
-    sort(v1.begin(), v1.end());
-    sort(v2.begin(), v2.end());
-    EXPECT_TRUE(v1 == v2);
-  }
+        vector<pair<int, int> > v1, v2;
+        type::const_iterator it;
+        for (it = val1.begin(); it != val1.end(); ++it)
+            v1.push_back(make_pair(it->first, it->second));
+        for (it = val2.begin(); it != val2.end(); ++it)
+            v2.push_back(make_pair(it->first, it->second));
+        EXPECT_EQ(val1.size(), val2.size());
+        EXPECT_EQ(v1.size(), v2.size());
+        sort(v1.begin(), v1.end());
+        sort(v2.begin(), v2.end());
+        EXPECT_TRUE(v1 == v2);
+    }
 }
 #endif
 
 #ifdef MSGPACK_HAS_STD_UNORDERED_SET
+
 #include <unordered_set>
 #include "msgpack/adaptor/tr1/unordered_set.hpp"
 TEST(MSGPACK_TR1, simple_buffer_unordered_set)
 {
-  for (unsigned int k = 0; k < kLoop; k++) {
-    unordered_set<int> val1;
-    for (unsigned int i = 0; i < kElements; i++)
-      val1.insert(rand());
-    msgpack::sbuffer sbuf;
-    msgpack::pack(sbuf, val1);
-    msgpack::unpacked ret;
-    msgpack::unpack(ret, sbuf.data(), sbuf.size());
-    unordered_set<int> val2 = ret.get().as<unordered_set<int> >();
-    EXPECT_EQ(val1.size(), val2.size());
-    unordered_set<int>::const_iterator it;
-    for (it = val1.begin(); it != val1.end(); ++it)
-      EXPECT_TRUE(val2.find(*it) != val2.end());
-  }
+    typedef unordered_set<int, test::hash<int>, test::equal_to<int>, test::allocator<int> > type;
+    for (unsigned int k = 0; k < kLoop; k++) {
+        type val1;
+        for (unsigned int i = 0; i < kElements; i++)
+            val1.insert(rand());
+        msgpack::sbuffer sbuf;
+        msgpack::pack(sbuf, val1);
+        msgpack::unpacked ret;
+        msgpack::unpack(ret, sbuf.data(), sbuf.size());
+        type val2 = ret.get().as<type>();
+        EXPECT_EQ(val1.size(), val2.size());
+        type::const_iterator it;
+        for (it = val1.begin(); it != val1.end(); ++it)
+            EXPECT_TRUE(val2.find(*it) != val2.end());
+    }
 }
 
 TEST(MSGPACK_TR1, simple_buffer_unordered_multiset)
 {
-  for (unsigned int k = 0; k < kLoop; k++) {
-    unordered_multiset<int> val1;
-    for (unsigned int i = 0; i < kElements; i++)
-      val1.insert(rand());
-    msgpack::sbuffer sbuf;
-    msgpack::pack(sbuf, val1);
-    msgpack::unpacked ret;
-    msgpack::unpack(ret, sbuf.data(), sbuf.size());
-    unordered_multiset<int> val2 = ret.get().as<unordered_multiset<int> >();
+    typedef unordered_multiset<int, test::hash<int>, test::equal_to<int>, test::allocator<int> > type;
+    for (unsigned int k = 0; k < kLoop; k++) {
+        type val1;
+        for (unsigned int i = 0; i < kElements; i++)
+            val1.insert(rand());
+        msgpack::sbuffer sbuf;
+        msgpack::pack(sbuf, val1);
+        msgpack::unpacked ret;
+        msgpack::unpack(ret, sbuf.data(), sbuf.size());
+        type val2 = ret.get().as<type>();
 
-    vector<int> v1, v2;
-    unordered_multiset<int>::const_iterator it;
-    for (it = val1.begin(); it != val1.end(); ++it)
-      v1.push_back(*it);
-    for (it = val2.begin(); it != val2.end(); ++it)
-      v2.push_back(*it);
-    EXPECT_EQ(val1.size(), val2.size());
-    EXPECT_EQ(v1.size(), v2.size());
-    sort(v1.begin(), v1.end());
-    sort(v2.begin(), v2.end());
-    EXPECT_TRUE(v1 == v2);
-  }
+        vector<int> v1, v2;
+        type::const_iterator it;
+        for (it = val1.begin(); it != val1.end(); ++it)
+            v1.push_back(*it);
+        for (it = val2.begin(); it != val2.end(); ++it)
+            v2.push_back(*it);
+        EXPECT_EQ(val1.size(), val2.size());
+        EXPECT_EQ(v1.size(), v2.size());
+        sort(v1.begin(), v1.end());
+        sort(v2.begin(), v2.end());
+        EXPECT_TRUE(v1 == v2);
+    }
 }
 #endif
