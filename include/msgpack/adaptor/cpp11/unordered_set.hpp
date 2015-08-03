@@ -32,44 +32,44 @@ MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 namespace adaptor {
 
-template <typename T>
-struct as<std::unordered_set<T>, typename std::enable_if<msgpack::has_as<T>::value>::type> {
-    std::unordered_set<T> operator()(msgpack::object const& o) const {
+template <typename Key, typename... OtherTypes>
+struct as<std::unordered_set<Key, OtherTypes...>, typename std::enable_if<msgpack::has_as<Key>::value>::type> {
+    std::unordered_set<Key, OtherTypes...> operator()(msgpack::object const& o) const {
         if (o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
         msgpack::object* p = o.via.array.ptr + o.via.array.size;
         msgpack::object* const pbegin = o.via.array.ptr;
-        std::unordered_set<T> v;
+        std::unordered_set<Key, OtherTypes...> v;
         while (p > pbegin) {
             --p;
-            v.insert(p->as<T>());
+            v.insert(p->as<Key>());
         }
         return v;
     }
 };
 
-template <typename T>
-struct convert<std::unordered_set<T>> {
-    msgpack::object const& operator()(msgpack::object const& o, std::unordered_set<T>& v) const {
+template <typename Key, typename... OtherTypes>
+struct convert<std::unordered_set<Key, OtherTypes...>> {
+    msgpack::object const& operator()(msgpack::object const& o, std::unordered_set<Key, OtherTypes...>& v) const {
         if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
         msgpack::object* p = o.via.array.ptr + o.via.array.size;
         msgpack::object* const pbegin = o.via.array.ptr;
-        std::unordered_set<T> tmp;
+        std::unordered_set<Key, OtherTypes...> tmp;
         while(p > pbegin) {
             --p;
-            tmp.insert(p->as<T>());
+            tmp.insert(p->as<Key>());
         }
         v = std::move(tmp);
         return o;
     }
 };
 
-template <typename T>
-struct pack<std::unordered_set<T>> {
+template <typename Key, typename... OtherTypes>
+struct pack<std::unordered_set<Key, OtherTypes...>> {
     template <typename Stream>
-        msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const std::unordered_set<T>& v) const {
+        msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const std::unordered_set<Key, OtherTypes...>& v) const {
         uint32_t size = checked_get_container_size(v.size());
         o.pack_array(size);
-        for(typename std::unordered_set<T>::const_iterator it(v.begin()), it_end(v.end());
+        for(typename std::unordered_set<Key, OtherTypes...>::const_iterator it(v.begin()), it_end(v.end());
             it != it_end; ++it) {
             o.pack(*it);
         }
@@ -77,9 +77,9 @@ struct pack<std::unordered_set<T>> {
     }
 };
 
-template <typename T>
-struct object_with_zone<std::unordered_set<T>> {
-    void operator()(msgpack::object::with_zone& o, const std::unordered_set<T>& v) const {
+template <typename Key, typename... OtherTypes>
+struct object_with_zone<std::unordered_set<Key, OtherTypes...>> {
+    void operator()(msgpack::object::with_zone& o, const std::unordered_set<Key, OtherTypes...>& v) const {
         o.type = msgpack::type::ARRAY;
         if(v.empty()) {
             o.via.array.ptr = nullptr;
@@ -90,7 +90,7 @@ struct object_with_zone<std::unordered_set<T>> {
             msgpack::object* const pend = p + size;
             o.via.array.ptr = p;
             o.via.array.size = size;
-            typename std::unordered_set<T>::const_iterator it(v.begin());
+            typename std::unordered_set<Key, OtherTypes...>::const_iterator it(v.begin());
             do {
                 *p = msgpack::object(*it, o.zone);
                 ++p;
@@ -101,44 +101,44 @@ struct object_with_zone<std::unordered_set<T>> {
 };
 
 
-template <typename T>
-struct as<std::unordered_multiset<T>, typename std::enable_if<msgpack::has_as<T>::value>::type> {
-    std::unordered_multiset<T> operator()(msgpack::object const& o) const {
+template <typename Key, typename... OtherTypes>
+struct as<std::unordered_multiset<Key, OtherTypes...>, typename std::enable_if<msgpack::has_as<Key>::value>::type> {
+    std::unordered_multiset<Key, OtherTypes...> operator()(msgpack::object const& o) const {
         if (o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
         msgpack::object* p = o.via.array.ptr + o.via.array.size;
         msgpack::object* const pbegin = o.via.array.ptr;
-        std::unordered_multiset<T> v;
+        std::unordered_multiset<Key, OtherTypes...> v;
         while (p > pbegin) {
             --p;
-            v.insert(p->as<T>());
+            v.insert(p->as<Key>());
         }
         return v;
     }
 };
 
-template <typename T>
-struct convert<std::unordered_multiset<T>> {
-    msgpack::object const& operator()(msgpack::object const& o, std::unordered_multiset<T>& v) const {
+template <typename Key, typename... OtherTypes>
+struct convert<std::unordered_multiset<Key, OtherTypes...>> {
+    msgpack::object const& operator()(msgpack::object const& o, std::unordered_multiset<Key, OtherTypes...>& v) const {
         if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
         msgpack::object* p = o.via.array.ptr + o.via.array.size;
         msgpack::object* const pbegin = o.via.array.ptr;
-        std::unordered_multiset<T> tmp;
+        std::unordered_multiset<Key, OtherTypes...> tmp;
         while(p > pbegin) {
             --p;
-            tmp.insert(p->as<T>());
+            tmp.insert(p->as<Key>());
         }
         v = std::move(tmp);
         return o;
     }
 };
 
-template <typename T>
-struct pack<std::unordered_multiset<T>> {
+template <typename Key, typename... OtherTypes>
+struct pack<std::unordered_multiset<Key, OtherTypes...>> {
     template <typename Stream>
-        msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const std::unordered_multiset<T>& v) const {
+        msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const std::unordered_multiset<Key, OtherTypes...>& v) const {
         uint32_t size = checked_get_container_size(v.size());
         o.pack_array(size);
-        for(typename std::unordered_multiset<T>::const_iterator it(v.begin()), it_end(v.end());
+        for(typename std::unordered_multiset<Key, OtherTypes...>::const_iterator it(v.begin()), it_end(v.end());
             it != it_end; ++it) {
             o.pack(*it);
         }
@@ -146,9 +146,9 @@ struct pack<std::unordered_multiset<T>> {
     }
 };
 
-template <typename T>
-struct object_with_zone<std::unordered_multiset<T>> {
-    void operator()(msgpack::object::with_zone& o, const std::unordered_multiset<T>& v) const {
+template <typename Key, typename... OtherTypes>
+struct object_with_zone<std::unordered_multiset<Key, OtherTypes...>> {
+    void operator()(msgpack::object::with_zone& o, const std::unordered_multiset<Key, OtherTypes...>& v) const {
         o.type = msgpack::type::ARRAY;
         if(v.empty()) {
             o.via.array.ptr = nullptr;
@@ -159,7 +159,7 @@ struct object_with_zone<std::unordered_multiset<T>> {
             msgpack::object* const pend = p + size;
             o.via.array.ptr = p;
             o.via.array.size = size;
-            typename std::unordered_multiset<T>::const_iterator it(v.begin());
+            typename std::unordered_multiset<Key, OtherTypes...>::const_iterator it(v.begin());
             do {
                 *p = msgpack::object(*it, o.zone);
                 ++p;
