@@ -34,18 +34,18 @@ MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 namespace type {
 
-template <typename K, typename V>
-class assoc_vector : public std::vector< std::pair<K, V> > {
+template <typename K, typename V, typename Compare = std::less<K>, typename Alloc = std::allocator<std::pair<K, V> > >
+class assoc_vector : public std::vector< std::pair<K, V>, Alloc > {
 #if !defined(MSGPACK_USE_CPP03)
-    using std::vector<std::pair<K, V>>::vector;
+    using std::vector<std::pair<K, V>, Alloc>::vector;
 #endif // !defined(MSGPACK_USE_CPP03)
 };
 
 namespace detail {
-    template <typename K, typename V>
+    template <typename K, typename V, typename Compare, typename Alloc>
     struct pair_first_less {
         bool operator() (const std::pair<K, V>& x, const std::pair<K, V>& y) const
-            { return x.first < y.first; }
+            { return Compare()(x.first, y.first); }
     };
 }
 
@@ -55,29 +55,29 @@ namespace adaptor {
 
 #if !defined(MSGPACK_USE_CPP03)
 
-template <typename K, typename V>
+template <typename K, typename V, typename Compare, typename Alloc>
 struct as<
-    type::assoc_vector<K, V>,
+    type::assoc_vector<K, V, Compare, Alloc>,
     typename std::enable_if<msgpack::has_as<K>::value && msgpack::has_as<V>::value>::type> {
-    type::assoc_vector<K, V> operator()(msgpack::object const& o) const {
+    type::assoc_vector<K, V, Compare, Alloc> operator()(msgpack::object const& o) const {
         if (o.type != msgpack::type::MAP) { throw msgpack::type_error(); }
-        type::assoc_vector<K, V> v;
+        type::assoc_vector<K, V, Compare, Alloc> v;
         v.reserve(o.via.map.size);
         msgpack::object_kv* p = o.via.map.ptr;
         msgpack::object_kv* const pend = o.via.map.ptr + o.via.map.size;
         for (; p < pend; ++p) {
             v.emplace_back(p->key.as<K>(), p->val.as<V>());
         }
-        std::sort(v.begin(), v.end(), type::detail::pair_first_less<K,V>());
+        std::sort(v.begin(), v.end(), type::detail::pair_first_less<K, V, Compare, Alloc>());
         return v;
     }
 };
 
 #endif // !defined(MSGPACK_USE_CPP03)
 
-template <typename K, typename V>
-struct convert<type::assoc_vector<K, V> > {
-    msgpack::object const& operator()(msgpack::object const& o, type::assoc_vector<K,V>& v) const {
+template <typename K, typename V, typename Compare, typename Alloc>
+struct convert<type::assoc_vector<K, V, Compare, Alloc> > {
+    msgpack::object const& operator()(msgpack::object const& o, type::assoc_vector<K, V, Compare, Alloc>& v) const {
         if (o.type != msgpack::type::MAP) { throw msgpack::type_error(); }
         v.resize(o.via.map.size);
         msgpack::object_kv* p = o.via.map.ptr;
@@ -87,18 +87,18 @@ struct convert<type::assoc_vector<K, V> > {
             p->key.convert(it->first);
             p->val.convert(it->second);
         }
-        std::sort(v.begin(), v.end(), type::detail::pair_first_less<K,V>());
+        std::sort(v.begin(), v.end(), type::detail::pair_first_less<K, V, Compare, Alloc>());
         return o;
     }
 };
 
-template <typename K, typename V>
-struct pack<type::assoc_vector<K, V> > {
+template <typename K, typename V, typename Compare, typename Alloc>
+struct pack<type::assoc_vector<K, V, Compare, Alloc> > {
     template <typename Stream>
-    msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const type::assoc_vector<K,V>& v) const {
+    msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const type::assoc_vector<K, V, Compare, Alloc>& v) const {
         uint32_t size = checked_get_container_size(v.size());
         o.pack_map(size);
-        for (typename type::assoc_vector<K,V>::const_iterator it(v.begin()), it_end(v.end());
+        for (typename type::assoc_vector<K, V, Compare, Alloc>::const_iterator it(v.begin()), it_end(v.end());
             it != it_end; ++it) {
             o.pack(it->first);
             o.pack(it->second);
@@ -107,9 +107,9 @@ struct pack<type::assoc_vector<K, V> > {
     }
 };
 
-template <typename K, typename V>
-struct object_with_zone<type::assoc_vector<K, V> > {
-    void operator()(msgpack::object::with_zone& o, const type::assoc_vector<K,V>& v) const {
+template <typename K, typename V, typename Compare, typename Alloc>
+struct object_with_zone<type::assoc_vector<K, V, Compare, Alloc> > {
+    void operator()(msgpack::object::with_zone& o, const type::assoc_vector<K, V, Compare, Alloc>& v) const {
         o.type = msgpack::type::MAP;
         if (v.empty()) {
             o.via.map.ptr  = nullptr;
@@ -121,7 +121,7 @@ struct object_with_zone<type::assoc_vector<K, V> > {
             msgpack::object_kv* const pend = p + size;
             o.via.map.ptr  = p;
             o.via.map.size = size;
-            typename type::assoc_vector<K,V>::const_iterator it(v.begin());
+            typename type::assoc_vector<K, V, Compare, Alloc>::const_iterator it(v.begin());
             do {
                 p->key = msgpack::object(it->first, o.zone);
                 p->val = msgpack::object(it->second, o.zone);
@@ -134,15 +134,15 @@ struct object_with_zone<type::assoc_vector<K, V> > {
 
 #if !defined(MSGPACK_USE_CPP03)
 
-template <typename K, typename V>
+template <typename K, typename V, typename Compare, typename Alloc>
 struct as<
-    std::map<K, V>,
+    std::map<K, V, Compare, Alloc>,
     typename std::enable_if<msgpack::has_as<K>::value && msgpack::has_as<V>::value>::type> {
-    std::map<K, V> operator()(msgpack::object const& o) const {
+    std::map<K, V, Compare, Alloc> operator()(msgpack::object const& o) const {
         if (o.type != msgpack::type::MAP) { throw msgpack::type_error(); }
         msgpack::object_kv* p(o.via.map.ptr);
         msgpack::object_kv* const pend(o.via.map.ptr + o.via.map.size);
-        std::map<K, V> v;
+        std::map<K, V, Compare, Alloc> v;
         for (; p != pend; ++p) {
             v.emplace(p->key.as<K>(), p->val.as<V>());
         }
@@ -152,13 +152,13 @@ struct as<
 
 #endif // !defined(MSGPACK_USE_CPP03)
 
-template <typename K, typename V>
-struct convert<std::map<K, V> > {
-    msgpack::object const& operator()(msgpack::object const& o, std::map<K, V>& v) const {
+template <typename K, typename V, typename Compare, typename Alloc>
+struct convert<std::map<K, V, Compare, Alloc> > {
+    msgpack::object const& operator()(msgpack::object const& o, std::map<K, V, Compare, Alloc>& v) const {
         if (o.type != msgpack::type::MAP) { throw msgpack::type_error(); }
         msgpack::object_kv* p(o.via.map.ptr);
         msgpack::object_kv* const pend(o.via.map.ptr + o.via.map.size);
-        std::map<K, V> tmp;
+        std::map<K, V, Compare, Alloc> tmp;
         for (; p != pend; ++p) {
             K key;
             p->key.convert(key);
@@ -177,13 +177,13 @@ struct convert<std::map<K, V> > {
     }
 };
 
-template <typename K, typename V>
-struct pack<std::map<K, V> > {
+template <typename K, typename V, typename Compare, typename Alloc>
+struct pack<std::map<K, V, Compare, Alloc> > {
     template <typename Stream>
-    msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const std::map<K,V>& v) const {
+    msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const std::map<K, V, Compare, Alloc>& v) const {
         uint32_t size = checked_get_container_size(v.size());
         o.pack_map(size);
-        for (typename std::map<K,V>::const_iterator it(v.begin()), it_end(v.end());
+        for (typename std::map<K, V, Compare, Alloc>::const_iterator it(v.begin()), it_end(v.end());
             it != it_end; ++it) {
             o.pack(it->first);
             o.pack(it->second);
@@ -192,9 +192,9 @@ struct pack<std::map<K, V> > {
     }
 };
 
-template <typename K, typename V>
-struct object_with_zone<std::map<K, V> > {
-    void operator()(msgpack::object::with_zone& o, const std::map<K,V>& v) const {
+template <typename K, typename V, typename Compare, typename Alloc>
+struct object_with_zone<std::map<K, V, Compare, Alloc> > {
+    void operator()(msgpack::object::with_zone& o, const std::map<K, V, Compare, Alloc>& v) const {
         o.type = msgpack::type::MAP;
         if (v.empty()) {
             o.via.map.ptr  = nullptr;
@@ -206,7 +206,7 @@ struct object_with_zone<std::map<K, V> > {
             msgpack::object_kv* const pend = p + size;
             o.via.map.ptr  = p;
             o.via.map.size = size;
-            typename std::map<K,V>::const_iterator it(v.begin());
+            typename std::map<K, V, Compare, Alloc>::const_iterator it(v.begin());
             do {
                 p->key = msgpack::object(it->first, o.zone);
                 p->val = msgpack::object(it->second, o.zone);
@@ -219,15 +219,15 @@ struct object_with_zone<std::map<K, V> > {
 
 #if !defined(MSGPACK_USE_CPP03)
 
-template <typename K, typename V>
+template <typename K, typename V, typename Compare, typename Alloc>
 struct as<
-    std::multimap<K, V>,
+    std::multimap<K, V, Compare, Alloc>,
     typename std::enable_if<msgpack::has_as<K>::value && msgpack::has_as<V>::value>::type> {
-    std::multimap<K, V> operator()(msgpack::object const& o) const {
+    std::multimap<K, V, Compare, Alloc> operator()(msgpack::object const& o) const {
         if (o.type != msgpack::type::MAP) { throw msgpack::type_error(); }
         msgpack::object_kv* p(o.via.map.ptr);
         msgpack::object_kv* const pend(o.via.map.ptr + o.via.map.size);
-        std::multimap<K, V> v;
+        std::multimap<K, V, Compare, Alloc> v;
         for (; p != pend; ++p) {
             v.emplace(p->key.as<K>(), p->val.as<V>());
         }
@@ -237,13 +237,13 @@ struct as<
 
 #endif // !defined(MSGPACK_USE_CPP03)
 
-template <typename K, typename V>
-struct convert<std::multimap<K, V> > {
-    msgpack::object const& operator()(msgpack::object const& o, std::multimap<K, V>& v) const {
+template <typename K, typename V, typename Compare, typename Alloc>
+struct convert<std::multimap<K, V, Compare, Alloc> > {
+    msgpack::object const& operator()(msgpack::object const& o, std::multimap<K, V, Compare, Alloc>& v) const {
         if (o.type != msgpack::type::MAP) { throw msgpack::type_error(); }
         msgpack::object_kv* p(o.via.map.ptr);
         msgpack::object_kv* const pend(o.via.map.ptr + o.via.map.size);
-        std::multimap<K, V> tmp;
+        std::multimap<K, V, Compare, Alloc> tmp;
         for (; p != pend; ++p) {
             std::pair<K, V> value;
             p->key.convert(value.first);
@@ -263,13 +263,13 @@ struct convert<std::multimap<K, V> > {
     }
 };
 
-template <typename K, typename V>
-struct pack<std::multimap<K, V> > {
+template <typename K, typename V, typename Compare, typename Alloc>
+struct pack<std::multimap<K, V, Compare, Alloc> > {
     template <typename Stream>
-    msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const std::multimap<K,V>& v) const {
+    msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const std::multimap<K, V, Compare, Alloc>& v) const {
         uint32_t size = checked_get_container_size(v.size());
         o.pack_map(size);
-        for (typename std::multimap<K,V>::const_iterator it(v.begin()), it_end(v.end());
+        for (typename std::multimap<K, V, Compare, Alloc>::const_iterator it(v.begin()), it_end(v.end());
             it != it_end; ++it) {
             o.pack(it->first);
             o.pack(it->second);
@@ -278,9 +278,9 @@ struct pack<std::multimap<K, V> > {
     }
 };
 
-template <typename K, typename V>
-struct object_with_zone<std::multimap<K, V> > {
-    void operator()(msgpack::object::with_zone& o, const std::multimap<K,V>& v) const {
+template <typename K, typename V, typename Compare, typename Alloc>
+struct object_with_zone<std::multimap<K, V, Compare, Alloc> > {
+    void operator()(msgpack::object::with_zone& o, const std::multimap<K, V, Compare, Alloc>& v) const {
         o.type = msgpack::type::MAP;
         if (v.empty()) {
             o.via.map.ptr  = nullptr;
@@ -292,7 +292,7 @@ struct object_with_zone<std::multimap<K, V> > {
             msgpack::object_kv* const pend = p + size;
             o.via.map.ptr  = p;
             o.via.map.size = size;
-            typename std::multimap<K,V>::const_iterator it(v.begin());
+            typename std::multimap<K, V, Compare, Alloc>::const_iterator it(v.begin());
             do {
                 p->key = msgpack::object(it->first, o.zone);
                 p->val = msgpack::object(it->second, o.zone);

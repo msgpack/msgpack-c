@@ -30,14 +30,14 @@ MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 namespace adaptor {
 
-template <>
-struct convert<std::vector<bool> > {
-    msgpack::object const& operator()(msgpack::object const& o, std::vector<bool>& v) const {
+template <typename Alloc>
+struct convert<std::vector<bool, Alloc> > {
+    msgpack::object const& operator()(msgpack::object const& o, std::vector<bool, Alloc>& v) const {
         if (o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
         if (o.via.array.size > 0) {
             v.resize(o.via.array.size);
             msgpack::object* p = o.via.array.ptr;
-            for (std::vector<bool>::iterator it = v.begin(), end = v.end();
+            for (typename std::vector<bool, Alloc>::iterator it = v.begin(), end = v.end();
                  it != end;
                  ++it) {
                 *it = p->as<bool>();
@@ -48,13 +48,13 @@ struct convert<std::vector<bool> > {
     }
 };
 
-template <>
-struct pack<std::vector<bool> > {
+template <typename Alloc>
+struct pack<std::vector<bool, Alloc> > {
     template <typename Stream>
-    msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const std::vector<bool>& v) const {
+    msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const std::vector<bool, Alloc>& v) const {
         uint32_t size = checked_get_container_size(v.size());
         o.pack_array(size);
-        for(std::vector<bool>::const_iterator it(v.begin()), it_end(v.end());
+        for(typename std::vector<bool, Alloc>::const_iterator it(v.begin()), it_end(v.end());
             it != it_end; ++it) {
             o.pack(static_cast<bool>(*it));
         }
@@ -62,9 +62,9 @@ struct pack<std::vector<bool> > {
     }
 };
 
-template <>
-struct object_with_zone<std::vector<bool> > {
-    void operator()(msgpack::object::with_zone& o, const std::vector<bool>& v) const {
+template <typename Alloc>
+struct object_with_zone<std::vector<bool, Alloc> > {
+    void operator()(msgpack::object::with_zone& o, const std::vector<bool, Alloc>& v) const {
         o.type = msgpack::type::ARRAY;
         if(v.empty()) {
             o.via.array.ptr = nullptr;
@@ -75,7 +75,7 @@ struct object_with_zone<std::vector<bool> > {
             msgpack::object* const pend = p + size;
             o.via.array.ptr = p;
             o.via.array.size = size;
-            std::vector<bool>::const_iterator it(v.begin());
+            typename std::vector<bool, Alloc>::const_iterator it(v.begin());
             do {
                 *p = msgpack::object(static_cast<bool>(*it), o.zone);
                 ++p;

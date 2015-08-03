@@ -32,14 +32,14 @@ MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 namespace adaptor {
 
-template <typename T>
-struct convert<std::deque<T> > {
-    msgpack::object const& operator()(msgpack::object const& o, std::deque<T>& v) const {
+template <typename T, typename Alloc>
+struct convert<std::deque<T, Alloc> > {
+    msgpack::object const& operator()(msgpack::object const& o, std::deque<T, Alloc>& v) const {
         if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
         v.resize(o.via.array.size);
         msgpack::object* p = o.via.array.ptr;
         msgpack::object* const pend = o.via.array.ptr + o.via.array.size;
-        typename std::deque<T>::iterator it = v.begin();
+        typename std::deque<T, Alloc>::iterator it = v.begin();
         for(; p < pend; ++p, ++it) {
             p->convert(*it);
         }
@@ -47,13 +47,13 @@ struct convert<std::deque<T> > {
     }
 };
 
-template <typename T>
-struct pack<std::deque<T> > {
+template <typename T, typename Alloc>
+struct pack<std::deque<T, Alloc> > {
     template <typename Stream>
-    msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const std::deque<T>& v) const {
+    msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const std::deque<T, Alloc>& v) const {
         uint32_t size = checked_get_container_size(v.size());
         o.pack_array(size);
-        for(typename std::deque<T>::const_iterator it(v.begin()), it_end(v.end());
+        for(typename std::deque<T, Alloc>::const_iterator it(v.begin()), it_end(v.end());
             it != it_end; ++it) {
             o.pack(*it);
         }
@@ -61,9 +61,9 @@ struct pack<std::deque<T> > {
     }
 };
 
-template <typename T>
-struct object_with_zone<std::deque<T> > {
-    void operator()(msgpack::object::with_zone& o, const std::deque<T>& v) const {
+template <typename T, typename Alloc>
+struct object_with_zone<std::deque<T, Alloc> > {
+    void operator()(msgpack::object::with_zone& o, const std::deque<T, Alloc>& v) const {
         o.type = msgpack::type::ARRAY;
         if(v.empty()) {
             o.via.array.ptr = nullptr;
@@ -74,7 +74,7 @@ struct object_with_zone<std::deque<T> > {
             msgpack::object* const pend = p + size;
             o.via.array.ptr = p;
             o.via.array.size = size;
-            typename std::deque<T>::const_iterator it(v.begin());
+            typename std::deque<T, Alloc>::const_iterator it(v.begin());
             do {
                 *p = msgpack::object(*it, o.zone);
                 ++p;
