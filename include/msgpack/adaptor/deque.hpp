@@ -32,6 +32,27 @@ MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 namespace adaptor {
 
+#if !defined(MSGPACK_USE_CPP03)
+
+template <typename T, typename Alloc>
+struct as<std::deque<T, Alloc>, typename std::enable_if<msgpack::has_as<T>::value>::type> {
+    std::deque<T, Alloc> operator()(const msgpack::object& o) const {
+        if (o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        std::deque<T, Alloc> v;
+        if (o.via.array.size > 0) {
+            msgpack::object* p = o.via.array.ptr;
+            msgpack::object* const pend = o.via.array.ptr + o.via.array.size;
+            do {
+                v.push_back(p->as<T>());
+                ++p;
+            } while (p < pend);
+        }
+        return v;
+    }
+};
+
+#endif // !defined(MSGPACK_USE_CPP03)
+
 template <typename T, typename Alloc>
 struct convert<std::deque<T, Alloc> > {
     msgpack::object const& operator()(msgpack::object const& o, std::deque<T, Alloc>& v) const {

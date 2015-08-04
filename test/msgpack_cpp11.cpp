@@ -433,6 +433,17 @@ TEST(MSGPACK_NO_DEF_CON_MULTIMAP, simple_buffer)
     EXPECT_EQ(val1, val2);
 }
 
+TEST(MSGPACK_NO_DEF_CON_DEQUE, simple_buffer)
+{
+    std::deque<no_def_con> val1 { 1, 2, 3 };
+    msgpack::sbuffer sbuf;
+    msgpack::pack(sbuf, val1);
+    msgpack::unpacked ret;
+    msgpack::unpack(ret, sbuf.data(), sbuf.size());
+    std::deque<no_def_con> val2 = ret.get().as<std::deque<no_def_con>>();
+    EXPECT_EQ(val1, val2);
+}
+
 TEST(MSGPACK_NO_DEF_CON_PAIR, simple_buffer)
 {
     std::pair<no_def_con, no_def_con_composite> val1 {1, 2};
