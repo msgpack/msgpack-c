@@ -294,7 +294,7 @@ struct tr1_hash : std::tr1::hash<Key> {
 #include "msgpack/adaptor/tr1/unordered_map.hpp"
 TEST(MSGPACK_TR1, simple_buffer_tr1_unordered_map)
 {
-    typedef tr1::unordered_map<int, int, test::tr1_hash<int>, test::equal_to<int>, test::allocator<std::pair<int, int> > > type;
+    typedef tr1::unordered_map<int, int, test::tr1_hash<int>, test::equal_to<int>, test::allocator<std::pair<const int, int> > > type;
     for (unsigned int k = 0; k < kLoop; k++) {
         type val1;
         for (unsigned int i = 0; i < kElements; i++)
@@ -413,7 +413,7 @@ struct hash : std::hash<Key> {
 #include "msgpack/adaptor/tr1/unordered_map.hpp"
 TEST(MSGPACK_TR1, simple_buffer_unordered_map)
 {
-    typedef unordered_map<int, int, test::hash<int>, test::equal_to<int>, test::allocator<std::pair<int, int> > > type;
+    typedef unordered_map<int, int, test::hash<int>, test::equal_to<int>, test::allocator<std::pair<const int, int> > > type;
     for (unsigned int k = 0; k < kLoop; k++) {
         type val1;
         for (unsigned int i = 0; i < kElements; i++)
@@ -434,7 +434,7 @@ TEST(MSGPACK_TR1, simple_buffer_unordered_map)
 
 TEST(MSGPACK_TR1, simple_buffer_unordered_multimap)
 {
-    typedef unordered_multimap<int, int, test::hash<int>, test::equal_to<int>, test::allocator<std::pair<int, int> > > type;
+    typedef unordered_multimap<int, int, test::hash<int>, test::equal_to<int>, test::allocator<std::pair<const int, int> > > type;
     for (unsigned int k = 0; k < kLoop; k++) {
         type val1;
         for (unsigned int i = 0; i < kElements; i++) {

@@ -61,6 +61,14 @@ struct as_impl {
 };
 
 template <typename T>
+struct as_impl<T, 1> {
+    static std::array<T, 1> as(msgpack::object const& o) {
+        msgpack::object* p = o.via.array.ptr;
+        return std::array<T, 1>{{p->as<T>()}};
+    }
+};
+
+template <typename T>
 struct as_impl<T, 0> {
     static std::array<T, 0> as(msgpack::object const&) {
         return std::array<T, 0>();
