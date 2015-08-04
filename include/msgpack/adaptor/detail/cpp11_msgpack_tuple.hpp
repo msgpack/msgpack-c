@@ -37,7 +37,6 @@ namespace type {
     using std::tuple_element;
     using std::uses_allocator;
     using std::ignore;
-    using std::tie;
     using std::swap;
 
     template< class... Types >
@@ -99,6 +98,10 @@ namespace type {
             std::tuple_cat(std::forward<typename std::remove_reference<Tuples>::type::base>(args)...)
         ) {
         return std::tuple_cat(std::forward<typename std::remove_reference<Tuples>::type::base>(args)...);
+    }
+    template <class... Args>
+    inline tuple<Args&...> tie(Args&... args) {
+        return tuple<Args&...>(args...);
     }
 } // namespace type
 
