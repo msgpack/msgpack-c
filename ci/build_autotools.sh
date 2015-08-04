@@ -52,7 +52,7 @@ then
     exit $ret
 fi
 
-make install DESTDIR=`pwd`/install
+make install DESTDIR=`pwd`/build/install
 
 ret=$?
 if [ $ret -ne 0 ]
