@@ -77,9 +77,6 @@ namespace type {
         typename tuple_element<I, base >::type const&
         get() const { return std::get<I>(*this); }
 
-        template< std::size_t I>
-        typename tuple_element<I, base >::type&&
-        get() && { return std::get<I>(*this); }
     };
 
     template <class... Args>
