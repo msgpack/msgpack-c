@@ -37,6 +37,7 @@ LIST (APPEND check_PROGRAMS
 IF (MSGPACK_BOOST)
     LIST (APPEND check_PROGRAMS
         boost_fusion.cpp
+        boost_variant.cpp
         boost_optional.cpp
         boost_string_ref.cpp
     )
