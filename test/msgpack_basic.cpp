@@ -310,7 +310,7 @@ TEST(MSGPACK, simple_buffer_fixext1)
   packer.pack_ext_body(buf, sizeof(buf));
   msgpack::unpacked ret;
   msgpack::unpack(ret, sbuf.data(), sbuf.size());
-  EXPECT_EQ(1, ret.get().via.ext.size);
+  EXPECT_EQ(1ul, ret.get().via.ext.size);
   EXPECT_EQ(1, ret.get().via.ext.type());
   EXPECT_EQ(2, ret.get().via.ext.data()[0]);
 }
@@ -325,7 +325,7 @@ TEST(MSGPACK, simple_buffer_fixext2)
   packer.pack_ext_body(buf, sizeof(buf));
   msgpack::unpacked ret;
   msgpack::unpack(ret, sbuf.data(), sbuf.size());
-  EXPECT_EQ(2, ret.get().via.ext.size);
+  EXPECT_EQ(2ul, ret.get().via.ext.size);
   EXPECT_EQ(0, ret.get().via.ext.type());
   EXPECT_TRUE(
       std::equal(buf, buf + sizeof(buf), ret.get().via.ext.data()));
@@ -341,7 +341,7 @@ TEST(MSGPACK, simple_buffer_fixext4)
   packer.pack_ext_body(buf, sizeof(buf));
   msgpack::unpacked ret;
   msgpack::unpack(ret, sbuf.data(), sbuf.size());
-  EXPECT_EQ(4, ret.get().via.ext.size);
+  EXPECT_EQ(4ul, ret.get().via.ext.size);
   EXPECT_EQ(1, ret.get().via.ext.type());
   EXPECT_TRUE(
       std::equal(buf, buf + sizeof(buf), ret.get().via.ext.data()));
@@ -357,7 +357,7 @@ TEST(MSGPACK, simple_buffer_fixext8)
   packer.pack_ext_body(buf, sizeof(buf));
   msgpack::unpacked ret;
   msgpack::unpack(ret, sbuf.data(), sbuf.size());
-  EXPECT_EQ(8, ret.get().via.ext.size);
+  EXPECT_EQ(8ul, ret.get().via.ext.size);
   EXPECT_EQ(1, ret.get().via.ext.type());
   EXPECT_TRUE(
       std::equal(buf, buf + sizeof(buf), ret.get().via.ext.data()));
@@ -373,7 +373,7 @@ TEST(MSGPACK, simple_buffer_fixext16)
   packer.pack_ext_body(buf, sizeof(buf));
   msgpack::unpacked ret;
   msgpack::unpack(ret, sbuf.data(), sbuf.size());
-  EXPECT_EQ(16, ret.get().via.ext.size);
+  EXPECT_EQ(16ul, ret.get().via.ext.size);
   EXPECT_EQ(1, ret.get().via.ext.type());
   EXPECT_TRUE(
       std::equal(buf, buf + sizeof(buf), ret.get().via.ext.data()));

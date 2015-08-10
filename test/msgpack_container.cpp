@@ -213,7 +213,7 @@ TEST(MSGPACK_TUPLE, simple_tuple)
     msgpack::unpack(ret, sbuf.data(), sbuf.size());
     msgpack::type::tuple<bool, std::string, double> val2
         = ret.get().as<msgpack::type::tuple<bool, std::string, double> >();
-    EXPECT_EQ(ret.get().via.array.size, 3);
+    EXPECT_EQ(ret.get().via.array.size, 3u);
     EXPECT_EQ(val1.get<0>(), val2.get<0>());
     EXPECT_EQ(val1.get<1>(), val2.get<1>());
     EXPECT_EQ(val1.get<2>(), val2.get<2>());
@@ -227,7 +227,7 @@ TEST(MSGPACK_TUPLE, simple_tuple_empty)
     msgpack::unpacked ret;
     msgpack::unpack(ret, sbuf.data(), sbuf.size());
     ret.get().as<msgpack::type::tuple<> >();
-    EXPECT_EQ(ret.get().via.array.size, 0);
+    EXPECT_EQ(ret.get().via.array.size, 0u);
 }
 
 

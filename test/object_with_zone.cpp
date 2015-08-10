@@ -147,7 +147,7 @@ TEST(object_with_zone, unsigned_int)
     msgpack::object obj(v, z);
     EXPECT_EQ(obj.as<unsigned int>(), v);
     v = 2;
-    EXPECT_EQ(obj.as<unsigned int>(), 1);
+    EXPECT_EQ(obj.as<unsigned int>(), 1u);
 }
 
 TEST(object_with_zone, unsigned_long)
@@ -157,7 +157,7 @@ TEST(object_with_zone, unsigned_long)
     msgpack::object obj(v, z);
     EXPECT_EQ(obj.as<unsigned long>(), v);
     v = 2;
-    EXPECT_EQ(obj.as<unsigned long>(), 1);
+    EXPECT_EQ(obj.as<unsigned long>(), 1u);
 }
 
 TEST(object_with_zone, unsigned_long_long)
@@ -167,7 +167,7 @@ TEST(object_with_zone, unsigned_long_long)
     msgpack::object obj(v, z);
     EXPECT_EQ(obj.as<unsigned long long>(), v);
     v = 2;
-    EXPECT_EQ(obj.as<unsigned long long>(), 1);
+    EXPECT_EQ(obj.as<unsigned long long>(), 1u);
 }
 
 // float
@@ -427,7 +427,7 @@ TEST(object_with_zone, msgpack_tuple_empty)
     test_t v;
     msgpack::zone z;
     msgpack::object obj(v, z);
-    EXPECT_EQ(obj.via.array.size, 0);
+    EXPECT_EQ(obj.via.array.size, 0u);
 }
 
 // TR1
