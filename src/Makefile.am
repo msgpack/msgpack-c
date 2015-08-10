@@ -1,4 +1,3 @@
-
 lib_LTLIBRARIES = libmsgpack.la
 
 libmsgpack_la_SOURCES = \
@@ -42,6 +41,7 @@ nobase_include_HEADERS = \
 		msgpack/unpack_define.h \
 		msgpack/unpack_template.h \
 		msgpack/sysdep.h \
+		gcc_atomic.h \
 		msgpack.h \
 		msgpack/sbuffer.h \
 		msgpack/version.h \
@@ -106,4 +106,3 @@ doxygen_cpp:
 	doxygen Doxyfile_cpp
 
 doxygen: doxygen_c doxygen_cpp
-
