@@ -45,7 +45,7 @@ const double kEPS = 1e-10;
         EXPECT_EQ(val, obj.via.i64);                            \
       } else {                                                  \
         EXPECT_EQ(MSGPACK_OBJECT_POSITIVE_INTEGER, obj.type);   \
-        EXPECT_EQ(val, obj.via.u64);                            \
+        EXPECT_EQ(static_cast<uint64_t>(val), obj.via.u64);     \
       }                                                         \
       msgpack_zone_destroy(&z);                                 \
       msgpack_sbuffer_destroy(&sbuf);                           \
@@ -388,7 +388,7 @@ TEST(MSGPACKC, simple_buffer_fixext1)
     msgpack_unpack(sbuf.data, sbuf.size, NULL, &z, &obj);
   EXPECT_EQ(MSGPACK_UNPACK_SUCCESS, ret);
   EXPECT_EQ(MSGPACK_OBJECT_EXT, obj.type);
-  EXPECT_EQ(1, obj.via.ext.size);
+  EXPECT_EQ(1u, obj.via.ext.size);
   EXPECT_EQ(1, obj.via.ext.type);
   EXPECT_EQ(2, obj.via.ext.ptr[0]);
   msgpack_zone_destroy(&z);
@@ -412,7 +412,7 @@ TEST(MSGPACKC, simple_buffer_fixext2)
     msgpack_unpack(sbuf.data, sbuf.size, NULL, &z, &obj);
   EXPECT_EQ(MSGPACK_UNPACK_SUCCESS, ret);
   EXPECT_EQ(MSGPACK_OBJECT_EXT, obj.type);
-  EXPECT_EQ(2, obj.via.ext.size);
+  EXPECT_EQ(2u, obj.via.ext.size);
   EXPECT_EQ(0, obj.via.ext.type);
   EXPECT_EQ(0, memcmp(buf, obj.via.ext.ptr, sizeof(buf)));
   msgpack_zone_destroy(&z);
@@ -436,7 +436,7 @@ TEST(MSGPACKC, simple_buffer_fixext4)
     msgpack_unpack(sbuf.data, sbuf.size, NULL, &z, &obj);
   EXPECT_EQ(MSGPACK_UNPACK_SUCCESS, ret);
   EXPECT_EQ(MSGPACK_OBJECT_EXT, obj.type);
-  EXPECT_EQ(4, obj.via.ext.size);
+  EXPECT_EQ(4u, obj.via.ext.size);
   EXPECT_EQ(1, obj.via.ext.type);
   EXPECT_EQ(0, memcmp(buf, obj.via.ext.ptr, sizeof(buf)));
   msgpack_zone_destroy(&z);
@@ -460,7 +460,7 @@ TEST(MSGPACKC, simple_buffer_fixext8)
     msgpack_unpack(sbuf.data, sbuf.size, NULL, &z, &obj);
   EXPECT_EQ(MSGPACK_UNPACK_SUCCESS, ret);
   EXPECT_EQ(MSGPACK_OBJECT_EXT, obj.type);
-  EXPECT_EQ(8, obj.via.ext.size);
+  EXPECT_EQ(8u, obj.via.ext.size);
   EXPECT_EQ(1, obj.via.ext.type);
   EXPECT_EQ(0, memcmp(buf, obj.via.ext.ptr, sizeof(buf)));
   msgpack_zone_destroy(&z);
@@ -484,7 +484,7 @@ TEST(MSGPACKC, simple_buffer_fixext16)
     msgpack_unpack(sbuf.data, sbuf.size, NULL, &z, &obj);
   EXPECT_EQ(MSGPACK_UNPACK_SUCCESS, ret);
   EXPECT_EQ(MSGPACK_OBJECT_EXT, obj.type);
-  EXPECT_EQ(16, obj.via.ext.size);
+  EXPECT_EQ(16u, obj.via.ext.size);
   EXPECT_EQ(1, obj.via.ext.type);
   EXPECT_EQ(0, memcmp(buf, obj.via.ext.ptr, sizeof(buf)));
   msgpack_zone_destroy(&z);
@@ -665,7 +665,7 @@ TEST(MSGPACKC, simple_buffer_array)
       break;
     case 3:
       EXPECT_EQ(MSGPACK_OBJECT_POSITIVE_INTEGER, o.type);
-      EXPECT_EQ(10, o.via.u64);
+      EXPECT_EQ(10u, o.via.u64);
       break;
     case 4:
       EXPECT_EQ(MSGPACK_OBJECT_NEGATIVE_INTEGER, o.type);
@@ -713,7 +713,7 @@ TEST(MSGPACKC, simple_buffer_map)
       break;
     case 1:
       EXPECT_EQ(MSGPACK_OBJECT_POSITIVE_INTEGER, key.type);
-      EXPECT_EQ(10, key.via.u64);
+      EXPECT_EQ(10u, key.via.u64);
       EXPECT_EQ(MSGPACK_OBJECT_NEGATIVE_INTEGER, val.type);
       EXPECT_EQ(-10, val.via.i64);
       break;
@@ -763,7 +763,7 @@ TEST(MSGPACKC, simple_buffer_str_fix_l)
   msgpack_packer_init(&pk, &sbuf, msgpack_sbuffer_write);
   msgpack_pack_str(&pk, str_size);
   msgpack_pack_str_body(&pk, str, str_size);
-  EXPECT_EQ(sbuf.size, 0x01);
+  EXPECT_EQ(sbuf.size, 0x01u);
   EXPECT_EQ(sbuf.data[0], static_cast<char>(0xa0u));
 
   msgpack_zone z;
@@ -790,7 +790,7 @@ TEST(MSGPACKC, simple_buffer_str_fix_h)
   msgpack_packer_init(&pk, &sbuf, msgpack_sbuffer_write);
   msgpack_pack_str(&pk, str_size);
   msgpack_pack_str_body(&pk, str, str_size);
-  EXPECT_EQ(sbuf.size, 0x1f+1);
+  EXPECT_EQ(sbuf.size, 0x1f+1u);
   EXPECT_EQ(sbuf.data[0], static_cast<char>(0xbfu));
 
   msgpack_zone z;
@@ -817,7 +817,7 @@ TEST(MSGPACKC, simple_buffer_str_8_l)
   msgpack_packer_init(&pk, &sbuf, msgpack_sbuffer_write);
   msgpack_pack_str(&pk, str_size);
   msgpack_pack_str_body(&pk, str, str_size);
-  EXPECT_EQ(sbuf.size, 0x1f+1+2);
+  EXPECT_EQ(sbuf.size, 0x1f+1+2u);
   EXPECT_EQ(sbuf.data[0], static_cast<char>(0xd9u));
   EXPECT_EQ(sbuf.data[1], static_cast<char>(0x20u));
 
@@ -845,7 +845,7 @@ TEST(MSGPACKC, simple_buffer_str_8_h)
   msgpack_packer_init(&pk, &sbuf, msgpack_sbuffer_write);
   msgpack_pack_str(&pk, str_size);
   msgpack_pack_str_body(&pk, str, str_size);
-  EXPECT_EQ(sbuf.size, 0xff+2);
+  EXPECT_EQ(sbuf.size, 0xff+2u);
   EXPECT_EQ(sbuf.data[0], static_cast<char>(0xd9u));
   EXPECT_EQ(sbuf.data[1], static_cast<char>(0xffu));
 
@@ -873,7 +873,7 @@ TEST(MSGPACKC, simple_buffer_str_16_l)
   msgpack_packer_init(&pk, &sbuf, msgpack_sbuffer_write);
   msgpack_pack_str(&pk, str_size);
   msgpack_pack_str_body(&pk, str, str_size);
-  EXPECT_EQ(sbuf.size, 0xff+1+3);
+  EXPECT_EQ(sbuf.size, 0xff+1+3u);
   EXPECT_EQ(sbuf.data[0], static_cast<char>(0xdau));
   EXPECT_EQ(sbuf.data[1], static_cast<char>(0x01u));
   EXPECT_EQ(sbuf.data[2], static_cast<char>(0x00u));
@@ -902,7 +902,7 @@ TEST(MSGPACKC, simple_buffer_str_16_h)
   msgpack_packer_init(&pk, &sbuf, msgpack_sbuffer_write);
   msgpack_pack_str(&pk, str_size);
   msgpack_pack_str_body(&pk, str, str_size);
-  EXPECT_EQ(sbuf.size, 0xffff+3);
+  EXPECT_EQ(sbuf.size, 0xffff+3u);
   EXPECT_EQ(sbuf.data[0], static_cast<char>(0xdau));
   EXPECT_EQ(sbuf.data[1], static_cast<char>(0xffu));
   EXPECT_EQ(sbuf.data[2], static_cast<char>(0xffu));
@@ -931,7 +931,7 @@ TEST(MSGPACKC, simple_buffer_str_32_l)
   msgpack_packer_init(&pk, &sbuf, msgpack_sbuffer_write);
   msgpack_pack_str(&pk, str_size);
   msgpack_pack_str_body(&pk, str, str_size);
-  EXPECT_EQ(sbuf.size, 0xffff+1+5);
+  EXPECT_EQ(sbuf.size, 0xffff+1+5u);
   EXPECT_EQ(sbuf.data[0], static_cast<char>(0xdbu));
   EXPECT_EQ(sbuf.data[1], static_cast<char>(0x00u));
   EXPECT_EQ(sbuf.data[2], static_cast<char>(0x01u));
@@ -962,7 +962,7 @@ TEST(MSGPACKC, simple_buffer_v4raw_fix_l)
   msgpack_packer_init(&pk, &sbuf, msgpack_sbuffer_write);
   msgpack_pack_v4raw(&pk, str_size);
   msgpack_pack_v4raw_body(&pk, str, str_size);
-  EXPECT_EQ(sbuf.size, 0x01);
+  EXPECT_EQ(sbuf.size, 0x01u);
   EXPECT_EQ(sbuf.data[0], static_cast<char>(0xa0u));
 
   msgpack_zone z;
@@ -989,7 +989,7 @@ TEST(MSGPACKC, simple_buffer_v4raw_fix_h)
   msgpack_packer_init(&pk, &sbuf, msgpack_sbuffer_write);
   msgpack_pack_v4raw(&pk, str_size);
   msgpack_pack_v4raw_body(&pk, str, str_size);
-  EXPECT_EQ(sbuf.size, 0x1f+1);
+  EXPECT_EQ(sbuf.size, 0x1f+1u);
   EXPECT_EQ(sbuf.data[0], static_cast<char>(0xbfu));
 
   msgpack_zone z;
@@ -1016,7 +1016,7 @@ TEST(MSGPACKC, simple_buffer_v4raw_16_l)
   msgpack_packer_init(&pk, &sbuf, msgpack_sbuffer_write);
   msgpack_pack_v4raw(&pk, str_size);
   msgpack_pack_v4raw_body(&pk, str, str_size);
-  EXPECT_EQ(sbuf.size, 0x1f+1+3);
+  EXPECT_EQ(sbuf.size, 0x1f+1+3u);
   EXPECT_EQ(sbuf.data[0], static_cast<char>(0xdau));
   EXPECT_EQ(sbuf.data[1], static_cast<char>(0x00u));
   EXPECT_EQ(sbuf.data[2], static_cast<char>(0x20u));
@@ -1045,7 +1045,7 @@ TEST(MSGPACKC, simple_buffer_v4raw_16_h)
   msgpack_packer_init(&pk, &sbuf, msgpack_sbuffer_write);
   msgpack_pack_v4raw(&pk, str_size);
   msgpack_pack_v4raw_body(&pk, str, str_size);
-  EXPECT_EQ(sbuf.size, 0xffff+3);
+  EXPECT_EQ(sbuf.size, 0xffff+3u);
   EXPECT_EQ(sbuf.data[0], static_cast<char>(0xdau));
   EXPECT_EQ(sbuf.data[1], static_cast<char>(0xffu));
   EXPECT_EQ(sbuf.data[2], static_cast<char>(0xffu));
@@ -1074,7 +1074,7 @@ TEST(MSGPACKC, simple_buffer_v4raw_32_l)
   msgpack_packer_init(&pk, &sbuf, msgpack_sbuffer_write);
   msgpack_pack_v4raw(&pk, str_size);
   msgpack_pack_v4raw_body(&pk, str, str_size);
-  EXPECT_EQ(sbuf.size, 0xffff+1+5);
+  EXPECT_EQ(sbuf.size, 0xffff+1+5u);
   EXPECT_EQ(sbuf.data[0], static_cast<char>(0xdbu));
   EXPECT_EQ(sbuf.data[1], static_cast<char>(0x00u));
   EXPECT_EQ(sbuf.data[2], static_cast<char>(0x01u));
@@ -1248,7 +1248,7 @@ TEST(MSGPACKC, unpack_array_uint64)
   ret = msgpack_unpack(buf, sizeof(buf), NULL, &z, &obj);
   EXPECT_EQ(MSGPACK_UNPACK_SUCCESS, ret);
   EXPECT_EQ(MSGPACK_OBJECT_ARRAY, obj.type);
-  EXPECT_EQ(1, obj.via.array.size);
+  EXPECT_EQ(1u, obj.via.array.size);
   EXPECT_EQ(MSGPACK_OBJECT_POSITIVE_INTEGER, obj.via.array.ptr[0].type);
   EXPECT_EQ(0xFFF0000000000001LL, obj.via.array.ptr[0].via.u64);
   msgpack_zone_destroy(&z);

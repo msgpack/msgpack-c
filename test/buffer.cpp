@@ -13,7 +13,7 @@ TEST(buffer, sbuffer)
     sbuf.write("a", 1);
     sbuf.write("a", 1);
 
-    EXPECT_EQ(3, sbuf.size());
+    EXPECT_EQ(3ul, sbuf.size());
     EXPECT_TRUE( memcmp(sbuf.data(), "aaa", 3) == 0 );
 
     sbuf.clear();
@@ -21,7 +21,7 @@ TEST(buffer, sbuffer)
     sbuf.write("a", 1);
     sbuf.write("a", 1);
 
-    EXPECT_EQ(3, sbuf.size());
+    EXPECT_EQ(3ul, sbuf.size());
     EXPECT_TRUE( memcmp(sbuf.data(), "aaa", 3) == 0 );
 }
 
@@ -41,7 +41,7 @@ TEST(buffer, vrefbuffer)
         sbuf.write((const char*)vec[i].iov_base, vec[i].iov_len);
     }
 
-    EXPECT_EQ(3, sbuf.size());
+    EXPECT_EQ(3ul, sbuf.size());
     EXPECT_TRUE( memcmp(sbuf.data(), "aaa", 3) == 0 );
 
 
@@ -58,7 +58,7 @@ TEST(buffer, vrefbuffer)
         sbuf.write((const char*)vec[i].iov_base, vec[i].iov_len);
     }
 
-    EXPECT_EQ(3, sbuf.size());
+    EXPECT_EQ(3ul, sbuf.size());
     EXPECT_TRUE( memcmp(sbuf.data(), "aaa", 3) == 0 );
 }
 

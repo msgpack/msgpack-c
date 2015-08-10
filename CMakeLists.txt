@@ -57,6 +57,16 @@ IF (MSGPACK_BOOST)
    SET (CMAKE_CXX_FLAGS "-DMSGPACK_USE_BOOST ${CMAKE_CXX_FLAGS}")
 ENDIF ()
 
+FILE (GLOB_RECURSE PREDEF_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/external/boost/predef/include/boost ${CMAKE_CURRENT_SOURCE_DIR}/external/boost/predef/include/boost/*.h)
+FOREACH (F ${PREDEF_FILES})
+   SET(M "Converting ${F}")
+   MESSAGE(STATUS ${M})
+   FILE (READ ${CMAKE_CURRENT_SOURCE_DIR}/external/boost/predef/include/boost/${F} CONTENT)
+   STRING(REPLACE "BOOST_" "MSGPACK_" CONTENT ${CONTENT})
+   STRING(REPLACE "boost/" "msgpack/" CONTENT ${CONTENT})
+   FILE (WRITE ${CMAKE_CURRENT_SOURCE_DIR}/include/msgpack/${F} ${CONTENT})
+ENDFOREACH ()
+
 FIND_PACKAGE (GTest)
 FIND_PACKAGE (ZLIB)
 FIND_PACKAGE (Threads)
@@ -113,6 +123,11 @@ LIST (APPEND msgpack_HEADERS
     include/msgpack/object.h
     include/msgpack/zone.h
 )
+
+FILE (GLOB_RECURSE PREDEF_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/include/msgpack/predef/*.h)
+
+LIST (APPEND msgpack_HEADERS ${PREDEF_FILES})
+LIST (APPEND msgpack_HEADERS include/msgpack/predef.h)
 
 IF (MSGPACK_ENABLE_CXX)
     LIST (APPEND msgpack_HEADERS

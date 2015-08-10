@@ -49,17 +49,17 @@ TEST(unpack, sequence)
     success = msgpack_unpack_next(&msg, sbuf->data, sbuf->size, &offset);
     EXPECT_EQ(MSGPACK_UNPACK_SUCCESS, success);
     EXPECT_EQ(MSGPACK_OBJECT_POSITIVE_INTEGER, msg.data.type);
-    EXPECT_EQ(1, msg.data.via.u64);
+    EXPECT_EQ(1u, msg.data.via.u64);
 
     success = msgpack_unpack_next(&msg, sbuf->data, sbuf->size, &offset);
     EXPECT_EQ(MSGPACK_UNPACK_SUCCESS, success);
     EXPECT_EQ(MSGPACK_OBJECT_POSITIVE_INTEGER, msg.data.type);
-    EXPECT_EQ(2, msg.data.via.u64);
+    EXPECT_EQ(2u, msg.data.via.u64);
 
     success = msgpack_unpack_next(&msg, sbuf->data, sbuf->size, &offset);
     EXPECT_EQ(MSGPACK_UNPACK_SUCCESS, success);
     EXPECT_EQ(MSGPACK_OBJECT_POSITIVE_INTEGER, msg.data.type);
-    EXPECT_EQ(3, msg.data.via.u64);
+    EXPECT_EQ(3u, msg.data.via.u64);
 
     success = msgpack_unpack_next(&msg, sbuf->data, sbuf->size, &offset);
     EXPECT_EQ(MSGPACK_UNPACK_CONTINUE, success);

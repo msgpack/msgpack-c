@@ -189,7 +189,7 @@ TEST(object, cross_zone_copy_ext)
 
     msgpack::object::with_zone obj2(z2);
     obj2 << obj1;
-    EXPECT_EQ(obj2.via.ext.size, 1);
+    EXPECT_EQ(obj2.via.ext.size, 1u);
     EXPECT_EQ(obj2.via.ext.ptr[0], 1);
     EXPECT_EQ(obj2.via.ext.ptr[1], 2);
     EXPECT_NE(
@@ -211,7 +211,7 @@ TEST(object, cross_zone_copy_construct_ext)
     obj1.via.ext.size = 1;
 
     msgpack::object obj2(obj1, z2);
-    EXPECT_EQ(obj2.via.ext.size, 1);
+    EXPECT_EQ(obj2.via.ext.size, 1u);
     EXPECT_EQ(obj2.via.ext.ptr[0], 1);
     EXPECT_EQ(obj2.via.ext.ptr[1], 2);
     EXPECT_NE(

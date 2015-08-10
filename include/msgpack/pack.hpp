@@ -149,7 +149,7 @@ inline void pack(Stream& s, const T& v)
 }
 
 
-#if defined(__LITTLE_ENDIAN__)
+#if MSGPACK_ENDIAN_LITTLE_BYTE
 template <typename T>
 inline char take8_8(T d) {
     return static_cast<char>(reinterpret_cast<uint8_t*>(&d)[0]);
@@ -167,7 +167,7 @@ inline char take8_64(T d) {
     return static_cast<char>(reinterpret_cast<uint8_t*>(&d)[0]);
 }
 
-#elif defined(__BIG_ENDIAN__)
+#elif MSGPACK_ENDIAN_BIG_BYTE
 
 template <typename T>
 inline char take8_8(T d) {
@@ -186,6 +186,8 @@ inline char take8_64(T d) {
     return static_cast<char>(reinterpret_cast<uint8_t*>(&d)[7]);
 }
 
+#else
+#error msgpack-c supports only big endian and little endian
 #endif
 
 template <typename Stream>

@@ -61,15 +61,15 @@ TEST(streaming, basic)
                 switch(count++) {
                 case 0:
                     EXPECT_EQ(MSGPACK_OBJECT_POSITIVE_INTEGER, obj.type);
-                    EXPECT_EQ(1, obj.via.u64);
+                    EXPECT_EQ(1u, obj.via.u64);
                     break;
                 case 1:
                     EXPECT_EQ(MSGPACK_OBJECT_POSITIVE_INTEGER, obj.type);
-                    EXPECT_EQ(2, obj.via.u64);
+                    EXPECT_EQ(2u, obj.via.u64);
                     break;
                 case 2:
                     EXPECT_EQ(MSGPACK_OBJECT_POSITIVE_INTEGER, obj.type);
-                    EXPECT_EQ(3, obj.via.u64);
+                    EXPECT_EQ(3u, obj.via.u64);
                     break;
                 case 3:
                     EXPECT_EQ(MSGPACK_OBJECT_STR, obj.type);
@@ -77,7 +77,7 @@ TEST(streaming, basic)
                     break;
                 case 4:
                     EXPECT_EQ(MSGPACK_OBJECT_ARRAY, obj.type);
-                    EXPECT_EQ(1, obj.via.array.size);
+                    EXPECT_EQ(1u, obj.via.array.size);
                     e = obj.via.array.ptr[0];
                     EXPECT_EQ(MSGPACK_OBJECT_STR, e.type);
                     EXPECT_EQ(std::string("str_data",8), std::string(e.via.str.ptr, e.via.str.size));
@@ -88,14 +88,14 @@ TEST(streaming, basic)
                     break;
                 case 6:
                     EXPECT_EQ(MSGPACK_OBJECT_ARRAY, obj.type);
-                    EXPECT_EQ(1, obj.via.array.size);
+                    EXPECT_EQ(1u, obj.via.array.size);
                     e = obj.via.array.ptr[0];
                     EXPECT_EQ(MSGPACK_OBJECT_BIN, e.type);
                     EXPECT_EQ(std::string("bin_data",8), std::string(e.via.bin.ptr, e.via.bin.size));
                     break;
                 case 7:
                     EXPECT_EQ(MSGPACK_OBJECT_MAP, obj.type);
-                    EXPECT_EQ(1, obj.via.map.size);
+                    EXPECT_EQ(1u, obj.via.map.size);
                     e = obj.via.map.ptr[0].key;
                     EXPECT_EQ(MSGPACK_OBJECT_FLOAT, e.type);
                     ASSERT_FLOAT_EQ(0.4f, static_cast<float>(e.via.f64));
