@@ -201,6 +201,10 @@ IF (MSGPACK_ENABLE_CXX)
         include/msgpack/zbuffer.hpp
         include/msgpack/zone.hpp
     )
+    FILE (GLOB_RECURSE PREPROCESSOR_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/include/msgpack/preprocessor/*.hpp)
+
+    LIST (APPEND msgpack_HEADERS ${PREPROCESSOR_FILES})
+    LIST (APPEND msgpack_HEADERS include/msgpack/preprocessor.hpp)
 ENDIF ()
 
 EXECUTE_PROCESS (
