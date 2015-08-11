@@ -18,17 +18,15 @@
 #ifndef MSGPACK_CPP03_DEFINE_MAP_HPP
 #define MSGPACK_CPP03_DEFINE_MAP_HPP
 
-#if defined(MSGPACK_USE_BOOST)
-
 // BOOST_PP_VARIADICS is defined in boost/preprocessor/config/config.hpp
 // http://www.boost.org/libs/preprocessor/doc/ref/variadics.html
 // However, supporting compiler detection is not complete. msgpack-c requires
 // variadic macro arguments support. So BOOST_PP_VARIADICS is defined here explicitly.
-#if !defined(BOOST_PP_VARIADICS)
-#define BOOST_PP_VARIADICS
+#if !defined(MSGPACK_PP_VARIADICS)
+#define MSGPACK_PP_VARIADICS
 #endif
 
-#include <boost/preprocessor.hpp>
+#include <msgpack/preprocessor.hpp>
 
 #include "msgpack/versioning.hpp"
 #include "msgpack/adaptor/msgpack_tuple.hpp"
@@ -36,18 +34,18 @@
 #include "msgpack/object_fwd.hpp"
 
 #define MSGPACK_DEFINE_MAP_EACH_PROC(r, data, elem) \
-    BOOST_PP_IF( \
-        BOOST_PP_IS_BEGIN_PARENS(elem), \
+    MSGPACK_PP_IF( \
+        MSGPACK_PP_IS_BEGIN_PARENS(elem), \
         elem, \
-        (BOOST_PP_STRINGIZE(elem))(elem) \
+        (MSGPACK_PP_STRINGIZE(elem))(elem) \
     )
 
 #define MSGPACK_DEFINE_MAP_IMPL(...) \
-    BOOST_PP_SEQ_TO_TUPLE( \
-        BOOST_PP_SEQ_FOR_EACH( \
+    MSGPACK_PP_SEQ_TO_TUPLE( \
+        MSGPACK_PP_SEQ_FOR_EACH( \
             MSGPACK_DEFINE_MAP_EACH_PROC, \
             0, \
-            BOOST_PP_VARIADIC_TO_SEQ(__VA_ARGS__) \
+            MSGPACK_PP_VARIADIC_TO_SEQ(__VA_ARGS__) \
         ) \
     )
 
@@ -74,7 +72,7 @@
     }
 
 #define MSGPACK_BASE_MAP(base) \
-    (BOOST_PP_STRINGIZE(base))(*const_cast<base *>(static_cast<base const*>(this)))
+    (MSGPACK_PP_STRINGIZE(base))(*const_cast<base *>(static_cast<base const*>(this)))
 
 namespace msgpack {
 /// @cond
@@ -2797,7 +2795,5 @@ inline define_map<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A1
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 /// @endcond
 }  // namespace msgpack
-
-#endif // defined(MSGPACK_USE_BOOST)
 
 #endif // MSGPACK_CPP03_DEFINE_MAP_HPP
