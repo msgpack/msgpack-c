@@ -350,8 +350,6 @@ TEST(MSGPACK_INHERIT, define_array_virtual)
 
 // define_map
 
-#if defined(MSGPACK_USE_BOOST)
-
 struct dm_top {
     int t;
     MSGPACK_DEFINE_MAP(t);
@@ -461,5 +459,3 @@ TEST(MSGPACK_MIGRATION, order_number_changed)
     EXPECT_EQ(v2.s, "foo"); // from v1
     EXPECT_EQ(v2.i, 42);    // from v1
 }
-
-#endif // defined(MSGPACK_USE_BOOST)

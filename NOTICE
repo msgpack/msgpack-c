@@ -1,6 +1,13 @@
 This product bundles Boost Predef, which is available under a
-Boost Software License - Version 1.0.  For details, see external/boost/predef,
-include/msgpack/predef.h, and include/msgpack/predef/*
+Boost Software License - Version 1.0.  For details, see the following files
+
+external/boost/predef
+include/msgpack/predef.h
+include/msgpack/predef/*
+
+external/boost/preprocessor
+include/msgpack/preprocessor.hpp
+include/msgpack/preprocessor/*
 
 ---------------------------------------------------------------------------
 Boost Software License - Version 1.0 - August 17th, 2003

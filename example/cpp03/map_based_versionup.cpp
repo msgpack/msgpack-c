@@ -21,7 +21,6 @@
 #include <sstream>
 #include <cassert>
 
-#define MSGPACK_USE_BOOST
 #include <msgpack.hpp>
 
 struct base1 {
