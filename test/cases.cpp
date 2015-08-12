@@ -11,7 +11,7 @@ static void feed_file(msgpack::unpacker& pac, const char* path)
         if(fin.bad()) {
             throw std::runtime_error("read failed");
         }
-        pac.buffer_consumed(fin.gcount());
+        pac.buffer_consumed(static_cast<size_t>(fin.gcount()));
         if(fin.fail()) {
             break;
         }
@@ -35,4 +35,3 @@ TEST(cases, format)
 
     EXPECT_FALSE( pac_compact.next(&result) );
 }
-

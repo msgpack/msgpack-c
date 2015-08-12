@@ -92,7 +92,12 @@ TEST(buffer, zbuffer_c)
 
 TEST(buffer, fbuffer)
 {
+#if defined(_MSC_VER)
+    FILE* file;
+    tmpfile_s(&file);
+#else  // defined(_MSC_VER)
     FILE* file = tmpfile();
+#endif // defined(_MSC_VER)
     EXPECT_TRUE( file != NULL );
 
     msgpack::fbuffer fbuf(file);
@@ -116,7 +121,13 @@ TEST(buffer, fbuffer)
 
 TEST(buffer, fbuffer_c)
 {
+#if defined(_MSC_VER)
+    FILE* file;
+    tmpfile_s(&file);
+#else  // defined(_MSC_VER)
     FILE* file = tmpfile();
+#endif // defined(_MSC_VER)
+
     void* fbuf = (void*)file;
 
     EXPECT_TRUE( file != NULL );

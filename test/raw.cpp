@@ -92,8 +92,8 @@ TEST(MSGPACK_RAW_REF, pack_unpack_16_h)
     msgpack::pack(ss, rr1);
     std::string packed_str = ss.str();
     EXPECT_EQ(packed_str[0], static_cast<char>(0xc5u));
-    EXPECT_EQ(packed_str[1], static_cast<char>(0xff));
-    EXPECT_EQ(packed_str[2], static_cast<char>(0xff));
+    EXPECT_EQ(packed_str[1], static_cast<char>(0xffu));
+    EXPECT_EQ(packed_str[2], static_cast<char>(0xffu));
     EXPECT_EQ(packed_str[3], 'A');
 
     msgpack::unpacked upd;
