@@ -29,7 +29,7 @@
 #include <msgpack.hpp>
 
 void array() {
-    std::array<int, 5> a { 1, 2, 3, 4, 5 };
+    std::array<int, 5> a { { 1, 2, 3, 4, 5 } };
     std::stringstream ss;
     msgpack::pack(ss, a);
 
@@ -77,7 +77,7 @@ void forward_list() {
 }
 
 void combi() {
-    std::array<int, 5>                   a { 1, 2, 3, 4, 5 };
+    std::array<int, 5>                   a { { 1, 2, 3, 4, 5 } };
     std::tuple<bool, std::string, int>   t {true, "ABC", 42};
     std::unordered_map<std::string, int> m { {"ABC", 1}, {"DEF", 3} };
     std::unordered_set<std::string>      s { "ABC", "DEF" };

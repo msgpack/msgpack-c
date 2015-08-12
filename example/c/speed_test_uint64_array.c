@@ -15,7 +15,7 @@ void test()
 
     msgpack_pack_array(pk, size);
     {
-        int idx = 0;
+        size_t idx = 0;
         for (; idx < size; ++idx)
             msgpack_pack_uint64(pk, test_u64);
     }
@@ -29,7 +29,7 @@ void test()
     msgpack_sbuffer_destroy(&buf);
 }
 
-int main(int argc, char **argv)
+int main(void)
 {
     int i = 0;
     for (; i < 10; ++i) test();

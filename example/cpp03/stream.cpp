@@ -122,7 +122,7 @@ private:
 int main(void)
 {
     int pair[2];
-    pipe(pair);
+    if (pipe(pair) != 0) return -1;
 
     // run server thread
     Server srv(pair[0]);
