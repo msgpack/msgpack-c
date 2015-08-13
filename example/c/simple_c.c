@@ -1,6 +1,14 @@
 #include <msgpack.h>
 #include <stdio.h>
 
+void print(char const* buf, unsigned int len)
+{
+    size_t i = 0;
+    for(; i < len ; ++i)
+        printf("%02x ", 0xff & buf[i]);
+    printf("\n");
+}
+
 int main(void)
 {
     msgpack_sbuffer sbuf;
@@ -20,6 +28,8 @@ int main(void)
     msgpack_pack_str(&pk, 7);
     msgpack_pack_str_body(&pk, "example", 7);
 
+    print(sbuf.data, sbuf.size);
+
     /* deserialize the buffer into msgpack_object instance. */
     /* deserialized object is valid during the msgpack_zone instance alive. */
     msgpack_zone_init(&mempool, 2048);
@@ -35,4 +45,3 @@ int main(void)
 
     return 0;
 }
-
