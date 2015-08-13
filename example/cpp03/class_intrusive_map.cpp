@@ -28,6 +28,9 @@ class my_class {
 public:
     my_class() {} // When you want to convert from msgpack::object to my_class,
                   // my_class should be default constractible.
+                  // If you use C++11, you can adapt non-default constructible
+                  // classes to msgpack::object.
+                  // See https://github.com/msgpack/msgpack-c/wiki/v1_1_cpp_adaptor#non-default-constructible-class-support-c11-only
     my_class(std::string const& name, int age):name_(name), age_(age) {}
 
     friend bool operator==(my_class const& lhs, my_class const& rhs) {
@@ -39,7 +42,7 @@ private:
     int age_;
 
 public:
-    MSGPACK_DEFINE(name_, age_);
+    MSGPACK_DEFINE_MAP(name_, age_);
 };
 
 void print(std::string const& buf) {

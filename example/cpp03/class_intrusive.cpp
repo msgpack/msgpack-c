@@ -21,10 +21,10 @@
 #include <sstream>
 #include <cassert>
 
-#if 0 // When you want to adapt map instead of array, you can enable these macro definition.
-#define MSGPACK_USE_DEFINE_MAP
-#define MSGPACK_USE_BOOST
-#endif
+// When you want to adapt map instead of array, you can enable these macro definition.
+//
+// #define MSGPACK_USE_DEFINE_MAP
+
 
 #include <msgpack.hpp>
 
@@ -100,6 +100,7 @@ int main() {
     }
     {   // create object with zone
         my_class my("John Smith", 42);
+        my.a = 123;
         my.set_b("ABC");
         my.set_c("DEF");
         msgpack::zone z;
