@@ -53,6 +53,12 @@ IF (MSGPACK_CXX11)
     )
 ENDIF ()
 
+IF (MSGPACK_ENABLE_SHARED)
+    SET (MSGPACK_TEST_LIB msgpack)
+ELSE ()
+    SET (MSGPACK_TEST_LIB msgpack-static)
+ENDIF ()
+
 FOREACH (source_file ${check_PROGRAMS})
     GET_FILENAME_COMPONENT (source_file_we ${source_file} NAME_WE)
     ADD_EXECUTABLE (
@@ -60,7 +66,7 @@ FOREACH (source_file ${check_PROGRAMS})
         ${source_file}
     )
     TARGET_LINK_LIBRARIES (${source_file_we}
-        msgpack
+        ${MSGPACK_TEST_LIB}
         ${GTEST_BOTH_LIBRARIES}
         ${ZLIB_LIBRARIES}
         ${CMAKE_THREAD_LIBS_INIT}
