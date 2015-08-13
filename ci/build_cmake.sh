@@ -44,7 +44,14 @@ else
     boost_dir=""
 fi
 
-cmake $cpp11 $bit32 $boost $boost_dir ..
+if [ "$5" = "OFF" ]
+then
+    shared="-DMSGPACK_ENABLE_SHARED=OFF"
+else
+    shared=""
+fi
+
+cmake $cpp11 $bit32 $boost $boost_dir $shared ..
 
 ret=$?
 if [ $ret -ne 0 ]
