@@ -156,7 +156,7 @@ public:
         while(true) {
             pac.reserve_buffer(32*1024);
 
-            size_t len = input.readsome(pac.buffer(), pac.buffer_capacity());
+            size_t len = static_cast<size_t>(input.readsome(pac.buffer(), pac.buffer_capacity()));
 
             if(len == 0) {
                 return;
@@ -226,7 +226,7 @@ TEST(streaming, basic_compat)
     while(count < 3) {
         pac.reserve_buffer(32*1024);
 
-        size_t len = input.readsome(pac.buffer(), pac.buffer_capacity());
+        size_t len = static_cast<size_t>(input.readsome(pac.buffer(), pac.buffer_capacity()));
         pac.buffer_consumed(len);
 
         while(pac.execute()) {
@@ -262,7 +262,7 @@ public:
         while(true) {
             pac.reserve_buffer(32*1024);
 
-            size_t len = input.readsome(pac.buffer(), pac.buffer_capacity());
+            size_t len = static_cast<size_t>(input.readsome(pac.buffer(), pac.buffer_capacity()));
 
             if(len == 0) {
                 return;

@@ -1,0 +1,107 @@
+LIST (APPEND exec_PROGRAMS
+    class_intrusive.cpp
+    class_intrusive_map.cpp
+    class_non_intrusive.cpp
+    custom.cpp
+    enum.cpp
+    map_based_versionup.cpp
+    protocol.cpp
+    protocol_new.cpp
+    reuse_zone.cpp
+    simple.cpp
+)
+
+IF (NOT MSVC)
+    LIST (APPEND with_pthread_PROGRAMS
+        stream.cpp
+    )
+ENDIF ()
+
+IF (MSGPACK_BOOST)
+    IF (NOT MSVC)
+        LIST (APPEND with_boost_lib_PROGRAMS
+            speed_test.cpp
+            speed_test_nested_array.cpp
+        )
+    ENDIF ()
+ENDIF ()
+
+FOREACH (source_file ${exec_PROGRAMS})
+    INCLUDE_DIRECTORIES (
+        ../include
+        ${MSGPACK_BOOST_DIR}
+    )
+    GET_FILENAME_COMPONENT (source_file_we ${source_file} NAME_WE)
+    ADD_EXECUTABLE (
+        ${source_file_we}
+        ${source_file}
+    )
+    IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+        SET_PROPERTY (TARGET ${source_file_we} APPEND_STRING PROPERTY COMPILE_FLAGS "-std=c++03 -Wall -Wextra -Werror -Wno-mismatched-tags -g -O3")
+    ENDIF ()
+    IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+        IF (CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
+            STRING(REGEX REPLACE "/W[0-4]" "/W3 /WX" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+        ELSE ()
+            SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W3 /WX")
+        ENDIF ()
+    ENDIF ()
+ENDFOREACH ()
+
+FOREACH (source_file ${with_pthread_PROGRAMS})
+    INCLUDE_DIRECTORIES (
+        ../include
+        ${MSGPACK_BOOST_DIR}
+    )
+    GET_FILENAME_COMPONENT (source_file_we ${source_file} NAME_WE)
+    ADD_EXECUTABLE (
+        ${source_file_we}
+        ${source_file}
+    )
+    TARGET_LINK_LIBRARIES (${source_file_we}
+        pthread
+    )
+    IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+        SET_PROPERTY (TARGET ${source_file_we} APPEND_STRING PROPERTY COMPILE_FLAGS "-std=c++03 -Wall -Wextra -Werror -Wno-mismatched-tags -g -O3 -pthread")
+    ENDIF ()
+    IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+        IF (CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
+            STRING(REGEX REPLACE "/W[0-4]" "/W3 /WX" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+        ELSE ()
+            SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W3 /WX")
+        ENDIF ()
+    ENDIF ()
+ENDFOREACH ()
+
+FOREACH (source_file ${with_boost_lib_PROGRAMS})
+    INCLUDE_DIRECTORIES (
+        ../include
+        ${Boost_INCLUDE_DIRS}
+    )
+    GET_FILENAME_COMPONENT (source_file_we ${source_file} NAME_WE)
+    ADD_EXECUTABLE (
+        ${source_file_we}
+        ${source_file}
+    )
+    LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
+    TARGET_LINK_LIBRARIES (${source_file_we}
+        ${Boost_TIMER_LIBRARY}
+        ${Boost_CHRONO_LIBRARY}
+        ${Boost_SYSTEM_LIBRARY}
+    )
+    IF (NOT MSVC AND NOT APPLE)
+        TARGET_LINK_LIBRARIES (${source_file_we}
+            rt
+        )
+    ENDIF ()
+    IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+        SET_PROPERTY (TARGET ${source_file_we} APPEND_STRING PROPERTY COMPILE_FLAGS "-std=c++03 -Wall -Wextra -Werror -Wno-mismatched-tags -g -O3")
+    ENDIF ()
+    IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+        IF (CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
+            STRING(REGEX REPLACE "/W[0-4]" "/W3 /WX" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+        ELSE ()
+            SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W3 /WX")
+        ENDIF ()
+    ENDIF ()
+ENDFOREACH ()

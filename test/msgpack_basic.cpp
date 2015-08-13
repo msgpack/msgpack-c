@@ -585,7 +585,7 @@ TEST(MSGPACK_STL, simple_buffer_non_const_cstring)
       val1 += 'a' + rand() % 26;
     msgpack::sbuffer sbuf;
     char* s = new char[val1.size() + 1];
-    std::strcpy(s, val1.c_str());
+    std::memcpy(s, val1.c_str(), val1.size() + 1);
     msgpack::pack(sbuf, s);
     delete [] s;
     msgpack::unpacked ret;
