@@ -24,7 +24,7 @@
   // If MSVC would support C++11 completely,
   // then 'defined(_MSC_VER)' would replace with
   // '_MSC_VER < XXXX'
-# if (__cplusplus < 201103L) || defined(_MSC_VER)
+# if (__cplusplus < 201103L) || (defined(_MSC_VER) && (_MSC_VER < 1900))
 #  define MSGPACK_USE_CPP03
 # endif
 #endif // MSGPACK_USE_CPP03
