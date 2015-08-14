@@ -27,10 +27,6 @@ IF (MSGPACK_BOOST)
 ENDIF ()
 
 FOREACH (source_file ${exec_PROGRAMS})
-    INCLUDE_DIRECTORIES (
-        ../include
-        ${MSGPACK_BOOST_DIR}
-    )
     GET_FILENAME_COMPONENT (source_file_we ${source_file} NAME_WE)
     ADD_EXECUTABLE (
         ${source_file_we}
@@ -49,10 +45,6 @@ FOREACH (source_file ${exec_PROGRAMS})
 ENDFOREACH ()
 
 FOREACH (source_file ${with_pthread_PROGRAMS})
-    INCLUDE_DIRECTORIES (
-        ../include
-        ${MSGPACK_BOOST_DIR}
-    )
     GET_FILENAME_COMPONENT (source_file_we ${source_file} NAME_WE)
     ADD_EXECUTABLE (
         ${source_file_we}
