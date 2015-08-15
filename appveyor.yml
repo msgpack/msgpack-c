@@ -2,8 +2,6 @@ version: 1.1.0.{build}
 before_build:
 - appveyor DownloadFile http://googletest.googlecode.com/files/gtest-1.7.0.zip -FileName gtest-1.7.0.zip
 - 7z x gtest-1.7.0.zip > NUL
-- appveyor DownloadFile http://sourceforge.net/projects/boost/files/boost/1.58.0/boost_1_58_0.zip
-- 7z x boost_1_58_0.zip > NUL
 - cd gtest-1.7.0
 - md build
 - cd build
@@ -36,7 +34,7 @@ environment:
 build_script:
 - md build
 - cd build
-- cmake %cpp11% %boost% -DMSGPACK_BOOST_DIR=%APPVEYOR_BUILD_FOLDER%\boost_1_58_0 -DGTEST_LIBRARY=%APPVEYOR_BUILD_FOLDER%\gtest-1.7.0\build\Release\gtest.lib -DGTEST_MAIN_LIBRARY=%APPVEYOR_BUILD_FOLDER%\gtest-1.7.0\build\Release\gtest_main.lib -DGTEST_INCLUDE_DIR=%APPVEYOR_BUILD_FOLDER%\gtest-1.7.0\include -DZLIB_LIBRARY=%APPVEYOR_BUILD_FOLDER%\zlib-1.2.8\build\Release\zlib.lib -DZLIB_INCLUDE_DIR=%APPVEYOR_BUILD_FOLDER%\zlib-1.2.8 ..
+- cmake %cpp11% %boost% -DMSGPACK_BOOST_DIR=C:\Libraries\\boost_1_58_0 -DGTEST_LIBRARY=%APPVEYOR_BUILD_FOLDER%\gtest-1.7.0\build\Release\gtest.lib -DGTEST_MAIN_LIBRARY=%APPVEYOR_BUILD_FOLDER%\gtest-1.7.0\build\Release\gtest_main.lib -DGTEST_INCLUDE_DIR=%APPVEYOR_BUILD_FOLDER%\gtest-1.7.0\include -DZLIB_LIBRARY=%APPVEYOR_BUILD_FOLDER%\zlib-1.2.8\build\Release\zlib.lib -DZLIB_INCLUDE_DIR=%APPVEYOR_BUILD_FOLDER%\zlib-1.2.8 ..
 - cmake --build . --config Release
 
 test_script:
