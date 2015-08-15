@@ -71,11 +71,11 @@ namespace type {
 
         template< std::size_t I>
         typename tuple_element<I, base >::type&
-        get() { return std::get<I>(*this); }
+        get() & { return std::get<I>(*this); }
 
         template< std::size_t I>
         typename tuple_element<I, base >::type const&
-        get() const { return std::get<I>(*this); }
+        get() const& { return std::get<I>(*this); }
 
         template< std::size_t I>
         typename tuple_element<I, base >::type&&

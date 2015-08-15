@@ -140,6 +140,11 @@ BOOST_FUSION_ADAPT_STRUCT(
     f3  // *3
     )
 
+#if !defined(_MSC_VER)
+
+// boost::fusion's adaptor uses std::tuple.
+// MSVC2015's std::tuple requires default constructor during 'as' process.
+// I don't know why...
 TEST(MSGPACK_BOOST, pack_convert_no_def_con)
 {
     std::stringstream ss;
@@ -151,6 +156,7 @@ TEST(MSGPACK_BOOST, pack_convert_no_def_con)
     EXPECT_TRUE(val1 == val2);
 }
 
+#endif // !defined(_MSC_VER)
 
 #endif // !defined(MSGPACK_USE_CPP03
 

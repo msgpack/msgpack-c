@@ -183,7 +183,7 @@ template <typename Stream>
 inline
 msgpack::packer<Stream>&
 msgpack::adaptor::pack<T, Enabler>::operator()(msgpack::packer<Stream>& o, T const& v) const {
-    return detail::packer_serializer<Stream, T>::pack(o, v);
+    return msgpack::detail::packer_serializer<Stream, T>::pack(o, v);
 }
 
 template <typename T, typename Enabler>
