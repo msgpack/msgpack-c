@@ -61,7 +61,6 @@ void unpack(receiver* r) {
     msgpack_unpacker* unp = msgpack_unpacker_new(100);
     msgpack_unpacked result;
     msgpack_unpack_return ret;
-    char* buf;
     size_t recv_len;
     int recv_count = 0;
     int i = 0;
