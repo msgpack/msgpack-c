@@ -46,7 +46,8 @@ size_t receiver_to_unpacker(receiver* r, size_t request_size,
 {
     // make sure there's enough room, or expand the unpacker accordingly
     if (msgpack_unpacker_buffer_capacity(unpacker) < request_size) {
-        assert(msgpack_unpacker_reserve_buffer(unpacker, request_size));
+        bool expanded = msgpack_unpacker_reserve_buffer(unpacker, request_size);
+        assert(expanded);
     }
     size_t recv_len = receiver_recv(r, msgpack_unpacker_buffer(unpacker),
                                     request_size);
@@ -66,9 +67,9 @@ void unpack(receiver* r) {
     int i = 0;
 
     msgpack_unpacked_init(&result);
-
-    recv_len = receiver_to_unpacker(r, EACH_RECV_SIZE, unp);
-    while (recv_len > 0) {
+    while (true) {
+        recv_len = receiver_to_unpacker(r, EACH_RECV_SIZE, unp);
+        if (recv_len == 0) break; // (reached end of input)
         printf("receive count: %d %zd bytes received.\n", recv_count++, recv_len);
         ret = msgpack_unpacker_next(unp, &result);
         while (ret == MSGPACK_UNPACK_SUCCESS) {
@@ -89,7 +90,6 @@ void unpack(receiver* r) {
             msgpack_unpacked_destroy(&result);
             return;
         }
-        recv_len = receiver_to_unpacker(r, EACH_RECV_SIZE, unp);
     }
     msgpack_unpacked_destroy(&result);
 }
