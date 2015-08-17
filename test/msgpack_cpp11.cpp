@@ -456,10 +456,13 @@ TEST(MSGPACK_NO_DEF_CON_PAIR, simple_buffer)
     EXPECT_EQ(val1, val2);
 }
 
-#if !defined(_MSC_VER)
+
 
 // MSVC2015's std::tuple requires default constructor during 'as' process.
-// I don't know why...
+// It doesn't support Expression SFINAE yet, then 'as' is fallbacked to 'convert'.
+// After MSVC would support Expression SFINAE, remove this guard.
+#if !defined(_MSC_VER)
+
 TEST(MSGPACK_NO_DEF_CON_TUPLE, simple_buffer)
 {
     std::tuple<no_def_con, no_def_con, no_def_con_composite> val1 {1, 2, 3};
