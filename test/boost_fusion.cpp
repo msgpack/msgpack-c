@@ -140,11 +140,12 @@ BOOST_FUSION_ADAPT_STRUCT(
     f3  // *3
     )
 
+
+// MSVC2015's std::tuple requires default constructor during 'as' process.
+// It doesn't support Expression SFINAE yet, then 'as' is fallbacked to 'convert'.
+// After MSVC would support Expression SFINAE, remove this guard.
 #if !defined(_MSC_VER)
 
-// boost::fusion's adaptor uses std::tuple.
-// MSVC2015's std::tuple requires default constructor during 'as' process.
-// I don't know why...
 TEST(MSGPACK_BOOST, pack_convert_no_def_con)
 {
     std::stringstream ss;
