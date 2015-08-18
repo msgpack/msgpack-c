@@ -72,6 +72,8 @@ public:
 
         other.m_size = other.m_alloc = 0;
         other.m_data = nullptr;
+
+        return *this;
     }
 #endif // !defined(MSGPACK_USE_CPP03)
 
