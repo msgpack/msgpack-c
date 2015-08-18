@@ -46,8 +46,8 @@ size_t receiver_to_unpacker(receiver* r, size_t request_size,
 {
     // make sure there's enough room, or expand the unpacker accordingly
     if (msgpack_unpacker_buffer_capacity(unpacker) < request_size) {
-        bool expanded = msgpack_unpacker_reserve_buffer(unpacker, request_size);
-        assert(expanded);
+        msgpack_unpacker_reserve_buffer(unpacker, request_size);
+        assert(msgpack_unpacker_buffer_capacity(unpacker) >= request_size);
     }
     size_t recv_len = receiver_recv(r, msgpack_unpacker_buffer(unpacker),
                                     request_size);
@@ -92,6 +92,7 @@ void unpack(receiver* r) {
         }
     }
     msgpack_unpacked_destroy(&result);
+    msgpack_unpacker_free(unp);
 }
 
 int main(void) {
