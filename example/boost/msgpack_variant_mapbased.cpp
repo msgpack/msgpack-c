@@ -51,11 +51,16 @@ struct proc:boost::static_visitor<void> {
             }
             else if (key == "age") {
                 // You can remove key-value pair from msgpack::type::variant_ref
+
 #if defined(MSGPACK_USE_CPP03)
                 v.erase(it++);
-#else
+#else  // defined(MSGPACK_USE_CPP03)
+#  if MSGPACK_LIB_STD_CXX
+                it = v.erase(std::multimap<msgpack::type::variant_ref, msgpack::type::variant_ref>::const_iterator(it));
+#  else  // MSGPACK_LIB_STD_CXX
                 it = v.erase(it);
-#endif
+#  endif // MSGPACK_LIB_STD_CXX
+#endif // defined(MSGPACK_USE_CPP03)
             }
             else if (key == "address") {
                 // When you want to append string
