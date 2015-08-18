@@ -15,7 +15,7 @@ IF (MSGPACK_CXX11)
             ${source_file}
         )
         IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-            SET_PROPERTY (TARGET ${source_file_we} APPEND_STRING PROPERTY COMPILE_FLAGS "-std=c++11 -Wall -Wextra -Werror -Wno-mismatched-tags -g -O3")
+            SET_PROPERTY (TARGET ${source_file_we} APPEND_STRING PROPERTY COMPILE_FLAGS "-Wall -Wextra -Werror -Wno-mismatched-tags -g -O3")
         ENDIF ()
         IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
             IF (CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
