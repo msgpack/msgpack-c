@@ -56,7 +56,7 @@ public:
     sbuffer& operator=(const sbuffer&) = delete;
 
     sbuffer(sbuffer&& other) :
-        m_size(other.m_size), m_alloc(other.m_alloc), m_data(other.m_data)
+        m_size(other.m_size), m_data(other.m_data), m_alloc(other.m_alloc)
     {
         other.m_size = other.m_alloc = 0;
         other.m_data = nullptr;
