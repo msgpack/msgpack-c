@@ -317,3 +317,58 @@ TEST(unpack, convert_to_object_handle_direct_implicit)
     EXPECT_EQ(1, oh.get().as<int>());
 
 }
+
+TEST(unpack, insufficient_bytes_ref)
+{
+    msgpack::sbuffer sbuf;
+    msgpack::pack(sbuf, 255); // uint8 (2bytes)
+
+    std::size_t off = 0;
+
+    msgpack::unpacked msg;
+    try {
+        msgpack::unpack(msg, sbuf.data(), 1, off);
+        EXPECT_TRUE(false);
+    }
+    catch (msgpack::insufficient_bytes const&) {
+        EXPECT_TRUE(true);
+        EXPECT_EQ(off, 0);
+    }
+}
+
+TEST(unpack, insufficient_bytes_object_handle)
+{
+    msgpack::sbuffer sbuf;
+    msgpack::pack(sbuf, 255); // uint8 (2bytes)
+
+    std::size_t off = 0;
+
+    msgpack::unpacked msg;
+    try {
+        msgpack::object_handle oh(msgpack::unpack(sbuf.data(), 1, off));
+        EXPECT_TRUE(false);
+    }
+    catch (msgpack::insufficient_bytes const&) {
+        EXPECT_TRUE(true);
+        EXPECT_EQ(off, 0);
+    }
+}
+
+TEST(unpack, insufficient_bytes_zone)
+{
+    msgpack::sbuffer sbuf;
+    msgpack::pack(sbuf, 255); // uint8 (2bytes)
+
+    std::size_t off = 0;
+
+    msgpack::unpacked msg;
+    try {
+        msgpack::zone z;
+        msgpack::unpack(z, sbuf.data(), 1, off);
+        EXPECT_TRUE(false);
+    }
+    catch (msgpack::insufficient_bytes const&) {
+        EXPECT_TRUE(true);
+        EXPECT_EQ(off, 0);
+    }
+}

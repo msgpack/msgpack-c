@@ -1534,13 +1534,16 @@ inline unpacked unpack(
     msgpack::object obj;
     msgpack::unique_ptr<msgpack::zone> z(new msgpack::zone);
     referenced = false;
+    std::size_t noff = off;
     unpack_return ret = detail::unpack_imp(
-        data, len, off, *z, obj, referenced, f, user_data, limit);
+        data, len, noff, *z, obj, referenced, f, user_data, limit);
 
     switch(ret) {
     case UNPACK_SUCCESS:
+        off = noff;
         return unpacked(obj, msgpack::move(z));
     case UNPACK_EXTRA_BYTES:
+        off = noff;
         return unpacked(obj, msgpack::move(z));
     case UNPACK_CONTINUE:
         throw msgpack::insufficient_bytes("insufficient bytes");
@@ -1583,15 +1586,18 @@ inline void unpack(unpacked& result,
     msgpack::object obj;
     msgpack::unique_ptr<msgpack::zone> z(new msgpack::zone);
     referenced = false;
+    std::size_t noff = off;
     unpack_return ret = detail::unpack_imp(
-        data, len, off, *z, obj, referenced, f, user_data, limit);
+        data, len, noff, *z, obj, referenced, f, user_data, limit);
 
     switch(ret) {
     case UNPACK_SUCCESS:
+        off = noff;
         result.set(obj);
         result.zone() = msgpack::move(z);
         return;
     case UNPACK_EXTRA_BYTES:
+        off = noff;
         result.set(obj);
         result.zone() = msgpack::move(z);
         return;
@@ -1635,14 +1641,17 @@ inline msgpack::object unpack(
     unpack_reference_func f, void* user_data, unpack_limit const& limit)
 {
     msgpack::object obj;
+    std::size_t noff = off;
     referenced = false;
     unpack_return ret = detail::unpack_imp(
-        data, len, off, z, obj, referenced, f, user_data, limit);
+        data, len, noff, z, obj, referenced, f, user_data, limit);
 
     switch(ret) {
     case UNPACK_SUCCESS:
+        off = noff;
         return obj;
     case UNPACK_EXTRA_BYTES:
+        off = noff;
         return obj;
     case UNPACK_CONTINUE:
         throw msgpack::insufficient_bytes("insufficient bytes");
