@@ -51,7 +51,32 @@ public:
         ::free(m_data);
     }
 
-public:
+#if !defined(MSGPACK_USE_CPP03)
+    sbuffer(const sbuffer&) = delete;
+    sbuffer& operator=(const sbuffer&) = delete;
+
+    sbuffer(sbuffer&& other) :
+        m_size(other.m_size), m_data(other.m_data), m_alloc(other.m_alloc)
+    {
+        other.m_size = other.m_alloc = 0;
+        other.m_data = nullptr;
+    }
+
+    sbuffer& operator=(sbuffer&& other)
+    {
+        ::free(m_data);
+
+        m_size = other.m_size;
+        m_alloc = other.m_alloc;
+        m_data = other.m_data;
+
+        other.m_size = other.m_alloc = 0;
+        other.m_data = nullptr;
+
+        return *this;
+    }
+#endif // !defined(MSGPACK_USE_CPP03)
+
     void write(const char* buf, size_t len)
     {
         if(m_alloc - m_size < len) {
@@ -118,10 +143,7 @@ private:
 private:
     sbuffer(const sbuffer&);
     sbuffer& operator=(const sbuffer&);
-#else  // defined(MSGPACK_USE_CPP03)
-    sbuffer(const sbuffer&) = delete;
-    sbuffer& operator=(const sbuffer&) = delete;
-#endif // defined(MSGPACK_USE_CPP03)
+#endif  // defined(MSGPACK_USE_CPP03)
 
 private:
     size_t m_size;
