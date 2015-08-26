@@ -618,11 +618,12 @@ msgpack_unpack_next(msgpack_unpacked* result,
             return MSGPACK_UNPACK_PARSE_ERROR;
         }
 
-        if(off != NULL) { *off = noff; }
 
         if(e == 0) {
             return MSGPACK_UNPACK_CONTINUE;
         }
+
+        if(off != NULL) { *off = noff; }
 
         result->data = template_data(&ctx);
 
