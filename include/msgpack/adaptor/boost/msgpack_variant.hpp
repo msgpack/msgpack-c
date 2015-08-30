@@ -37,6 +37,7 @@
 #include "msgpack/adaptor/map.hpp"
 
 #include <boost/variant.hpp>
+#include <boost/operators.hpp>
 
 namespace msgpack {
 
@@ -70,7 +71,7 @@ typedef boost::variant<
 
 } // namespace detail
 
-struct variant : detail::variant_imp {
+struct variant : detail::variant_imp, private boost::totally_ordered<variant> {
     typedef detail::variant_imp base;
     variant() {}
     template <typename T>
@@ -115,6 +116,7 @@ inline bool operator==(variant const& lhs, variant const& rhs) {
     return static_cast<variant::base const&>(lhs) == static_cast<variant::base const&>(rhs);
 }
 
+
 struct variant_ref;
 
 namespace detail {
@@ -139,7 +141,7 @@ typedef boost::variant<
 
 } // namespace detail
 
-struct variant_ref : detail::variant_ref_imp {
+struct variant_ref : detail::variant_ref_imp, private boost::totally_ordered<variant_ref>  {
     typedef detail::variant_ref_imp base;
     variant_ref() {}
     template <typename T>

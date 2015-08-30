@@ -87,6 +87,12 @@ TEST(MSGPACK_BOOST, pack_convert_variant_bool)
     msgpack::type::variant val2 = ret.get().as<msgpack::type::variant>();
     EXPECT_NO_THROW(boost::get<bool>(val2));
     EXPECT_TRUE(val1 == val2);
+    // Tests for totally ordered
+    EXPECT_FALSE(val1 != val2);
+    EXPECT_FALSE(val1 < val2);
+    EXPECT_FALSE(val1 > val2);
+    EXPECT_TRUE(val1 <= val2);
+    EXPECT_TRUE(val1 >= val2);
 }
 
 TEST(MSGPACK_BOOST, object_variant_bool)
