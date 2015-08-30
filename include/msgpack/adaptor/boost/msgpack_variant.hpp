@@ -351,7 +351,7 @@ struct convert<msgpack::type::basic_variant<STR, BIN, EXT> > {
 namespace detail {
 
 template <typename Stream>
-struct pack_imp:boost::static_visitor<void> {
+struct pack_imp : boost::static_visitor<void> {
     template <typename T>
     void operator()(T const& value) const {
         pack<T>()(o_, value);
@@ -373,7 +373,7 @@ struct pack<msgpack::type::basic_variant<STR, BIN, EXT> > {
 
 namespace detail {
 
-struct object_imp:boost::static_visitor<void> {
+struct object_imp : boost::static_visitor<void> {
     void operator()(msgpack::type::nil const& v) const {
         object<msgpack::type::nil>()(o_, v);
     }
@@ -408,7 +408,7 @@ struct object<msgpack::type::basic_variant<STR, BIN, EXT> > {
 
 namespace detail {
 
-struct object_with_zone_imp:boost::static_visitor<void> {
+struct object_with_zone_imp : boost::static_visitor<void> {
     template <typename T>
     void operator()(T const& v) const {
         object_with_zone<T>()(o_, v);
