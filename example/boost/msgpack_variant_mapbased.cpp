@@ -35,9 +35,9 @@ struct proc:boost::static_visitor<void> {
         std::multimap<msgpack::type::variant_ref, msgpack::type::variant_ref>::iterator it = v.begin();
         std::multimap<msgpack::type::variant_ref, msgpack::type::variant_ref>::iterator end = v.end();
         while(it != end) {
-            boost::string_ref const& key = boost::get<boost::string_ref>(it->first);
+            boost::string_ref const& key = it->first.as_boost_string_ref();
             if (key == "name") {
-                boost::string_ref const& value = boost::get<boost::string_ref>(it->second);
+                boost::string_ref const& value = it->second.as_boost_string_ref();
                 if (value == "Takatoshi Kondo") {
                     // You can add values to msgpack::type::variant_ref.
                     v.insert(
@@ -67,7 +67,7 @@ struct proc:boost::static_visitor<void> {
                 // "Tokyo" -> "Tokyo, JAPAN"
                 // Use msgpack::type::variant instead of msgpack::type::variant_ref
                 // or do as follows:
-                boost::string_ref const& value = boost::get<boost::string_ref>(it->second);
+                boost::string_ref const& value = it->second.as_boost_string_ref();
                 it->second = std::string(&value.front(), value.size()) + ", JAPAN";
                 ++it;
             }

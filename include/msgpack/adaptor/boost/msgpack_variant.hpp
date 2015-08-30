@@ -47,55 +47,189 @@ MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 namespace type {
 
-struct variant;
 
-namespace detail {
-typedef boost::variant<
-    nil,               // NIL
-    bool,              // BOOL
-    int64_t,           // NEGATIVE_INTEGER
-    uint64_t,          // POSITIVE_INTEGER
-    double,            // FLOAT
-    std::string,       // STR
+template <typename STR, typename BIN, typename EXT>
+struct basic_variant :
+    boost::variant<
+        nil,               // NIL
+        bool,              // BOOL
+        int64_t,           // NEGATIVE_INTEGER
+        uint64_t,          // POSITIVE_INTEGER
+        double,            // FLOAT
+        std::string,       // STR
 #if (BOOST_VERSION / 100000) >= 1 && ((BOOST_VERSION / 100) % 1000) >= 53
-    boost::string_ref, // STR
+        boost::string_ref, // STR
 #endif // (BOOST_VERSION / 100000) >= 1 && ((BOOST_VERSION / 100) % 1000) >= 53
-    std::vector<char>, // BIN
-    msgpack::type::raw_ref, // BIN
-    ext,               // EXT
-    ext_ref,           // EXT
-    boost::recursive_wrapper<std::vector<variant> >, // ARRAY
-    boost::recursive_wrapper<std::map<variant, variant> >, // MAP
-    boost::recursive_wrapper<std::multimap<variant, variant> >// MAP
-> variant_imp;
-
-} // namespace detail
-
-struct variant : detail::variant_imp, private boost::totally_ordered<variant> {
-    typedef detail::variant_imp base;
-    variant() {}
+        std::vector<char>, // BIN
+        msgpack::type::raw_ref, // BIN
+        ext,               // EXT
+        ext_ref,           // EXT
+        boost::recursive_wrapper<std::vector<basic_variant<STR, BIN, EXT> > >, // ARRAY
+        boost::recursive_wrapper<std::map<basic_variant<STR, BIN, EXT>, basic_variant<STR, BIN, EXT> > >, // MAP
+        boost::recursive_wrapper<std::multimap<basic_variant<STR, BIN, EXT>, basic_variant<STR, BIN, EXT> > >// MAP
+    >,
+    private boost::totally_ordered<basic_variant<STR, BIN, EXT> > {
+    typedef boost::variant<
+        nil,               // NIL
+        bool,              // BOOL
+        int64_t,           // NEGATIVE_INTEGER
+        uint64_t,          // POSITIVE_INTEGER
+        double,            // FLOAT
+        std::string,       // STR
+#if (BOOST_VERSION / 100000) >= 1 && ((BOOST_VERSION / 100) % 1000) >= 53
+        boost::string_ref, // STR
+#endif // (BOOST_VERSION / 100000) >= 1 && ((BOOST_VERSION / 100) % 1000) >= 53
+        std::vector<char>, // BIN
+        msgpack::type::raw_ref, // BIN
+        ext,               // EXT
+        ext_ref,           // EXT
+        boost::recursive_wrapper<std::vector<basic_variant<STR, BIN, EXT> > >, // ARRAY
+        boost::recursive_wrapper<std::map<basic_variant<STR, BIN, EXT>, basic_variant<STR, BIN, EXT> > >, // MAP
+        boost::recursive_wrapper<std::multimap<basic_variant<STR, BIN, EXT>, basic_variant<STR, BIN, EXT> > >// MAP
+    > base;
+    basic_variant() {}
     template <typename T>
-    variant(T const& t):base(t) {}
-    variant(char const* p):base(std::string(p)) {}
-    variant(char v) {
+    basic_variant(T const& t):base(t) {}
+    basic_variant(char const* p):base(std::string(p)) {}
+    basic_variant(char v) {
         int_init(v);
     }
-    variant(signed char v) {
+    basic_variant(signed char v) {
         int_init(v);
     }
-    variant(unsigned char v):base(uint64_t(v)) {}
-    variant(signed int v) {
+    basic_variant(unsigned char v):base(uint64_t(v)) {}
+    basic_variant(signed int v) {
         int_init(v);
     }
-    variant(unsigned int v):base(uint64_t(v)) {}
-    variant(signed long v) {
+    basic_variant(unsigned int v):base(uint64_t(v)) {}
+    basic_variant(signed long v) {
         int_init(v);
     }
-    variant(unsigned long v):base(uint64_t(v)) {}
-    variant(signed long long v) {
+    basic_variant(unsigned long v):base(uint64_t(v)) {}
+    basic_variant(signed long long v) {
         int_init(v);
     }
-    variant(unsigned long long v):base(uint64_t(v)) {}
+    basic_variant(unsigned long long v):base(uint64_t(v)) {}
+
+    bool is_nil() const {
+        return boost::get<nil>(this);
+    }
+    bool is_bool() const {
+        return boost::get<bool>(this);
+    }
+    bool is_int64_t() const {
+        return boost::get<int64_t>(this);
+    }
+    bool is_uint64_t() const {
+        return boost::get<uint64_t>(this);
+    }
+    bool is_double() const {
+        return boost::get<double>(this);
+    }
+    bool is_string() const {
+        return boost::get<std::string>(this);
+    }
+#if (BOOST_VERSION / 100000) >= 1 && ((BOOST_VERSION / 100) % 1000) >= 53
+    bool is_boost_string_ref() const {
+        return boost::get<boost::string_ref>(this);
+    }
+#endif // (BOOST_VERSION / 100000) >= 1 && ((BOOST_VERSION / 100) % 1000) >= 53
+    bool is_vector_char() const {
+        return boost::get<std::vector<char> >(this);
+    }
+    bool is_vector_char() {
+        return boost::get<std::vector<char> >(this);
+    }
+    bool is_raw_ref() const {
+        return boost::get<raw_ref>(this);
+    }
+    bool is_ext() const {
+        return boost::get<ext>(this);
+    }
+    bool is_ext_ref() const {
+        return boost::get<ext_ref>(this);
+    }
+    bool is_vector() const {
+        return boost::get<std::vector<basic_variant<STR, BIN, EXT> > >(this);
+    }
+    bool is_map() const {
+        return boost::get<std::map<basic_variant<STR, BIN, EXT>, basic_variant<STR, BIN, EXT> > >(this);
+    }
+    bool is_multimap() const {
+        return boost::get<std::multimap<basic_variant<STR, BIN, EXT>, basic_variant<STR, BIN, EXT> > >(this);
+    }
+
+    bool as_bool() const {
+        return boost::get<bool>(*this);
+    }
+    int64_t as_int64_t() const {
+        return boost::get<int64_t>(*this);
+    }
+    int64_t& as_int64_t() {
+        return boost::get<int64_t>(*this);
+    }
+    uint64_t as_uint64_t() const {
+        return boost::get<uint64_t>(*this);
+    }
+    uint64_t& as_uint64_t() {
+        return boost::get<uint64_t>(*this);
+    }
+    double as_double() const {
+        return boost::get<double>(*this);
+    }
+    double& as_double() {
+        return boost::get<double>(*this);
+    }
+    std::string const& as_string() const {
+        return boost::get<std::string>(*this);
+    }
+    std::string& as_string() {
+        return boost::get<std::string>(*this);
+    }
+#if (BOOST_VERSION / 100000) >= 1 && ((BOOST_VERSION / 100) % 1000) >= 53
+    boost::string_ref const& as_boost_string_ref() const {
+        return boost::get<boost::string_ref>(*this);
+    }
+    boost::string_ref& as_boost_string_ref() {
+        return boost::get<boost::string_ref>(*this);
+    }
+#endif // (BOOST_VERSION / 100000) >= 1 && ((BOOST_VERSION / 100) % 1000) >= 53
+    std::vector<char> const& as_vector_char() const {
+        return boost::get<std::vector<char> >(*this);
+    }
+    std::vector<char>& as_vector_char() {
+        return boost::get<std::vector<char> >(*this);
+    }
+    raw_ref const& as_raw_ref() const {
+        return boost::get<raw_ref>(*this);
+    }
+    ext const& as_ext() const {
+        return boost::get<ext>(*this);
+    }
+    ext& as_ext() {
+        return boost::get<ext>(*this);
+    }
+    ext_ref const& as_ext_ref() const {
+        return boost::get<ext_ref>(*this);
+    }
+    std::vector<basic_variant<STR, BIN, EXT> > const& as_vector() const {
+        return boost::get<std::vector<basic_variant<STR, BIN, EXT> > >(*this);
+    }
+    std::vector<basic_variant<STR, BIN, EXT> >& as_vector() {
+        return boost::get<std::vector<basic_variant<STR, BIN, EXT> > >(*this);
+    }
+    std::map<basic_variant<STR, BIN, EXT>, basic_variant<STR, BIN, EXT> > const& as_map() const {
+        return boost::get<std::map<basic_variant<STR, BIN, EXT>, basic_variant<STR, BIN, EXT> > >(*this);
+    }
+    std::map<basic_variant<STR, BIN, EXT>, basic_variant<STR, BIN, EXT> >& as_map() {
+        return boost::get<std::map<basic_variant<STR, BIN, EXT>, basic_variant<STR, BIN, EXT> > >(*this);
+    }
+    std::multimap<basic_variant<STR, BIN, EXT>, basic_variant<STR, BIN, EXT> > const& as_multimap() const {
+        return boost::get<std::multimap<basic_variant<STR, BIN, EXT>, basic_variant<STR, BIN, EXT> > >(*this);
+    }
+    std::multimap<basic_variant<STR, BIN, EXT>, basic_variant<STR, BIN, EXT> >& as_multimap() {
+        return boost::get<std::multimap<basic_variant<STR, BIN, EXT>, basic_variant<STR, BIN, EXT> > >(*this);
+    }
 private:
     template <typename T>
     void int_init(T v) {
@@ -108,94 +242,38 @@ private:
     }
 };
 
-inline bool operator<(variant const& lhs, variant const& rhs) {
-    return static_cast<variant::base const&>(lhs) < static_cast<variant::base const&>(rhs);
+template <typename STR, typename BIN, typename EXT>
+inline bool operator<(basic_variant<STR, BIN, EXT> const& lhs, basic_variant<STR, BIN, EXT> const& rhs) {
+    return
+        static_cast<typename basic_variant<STR, BIN, EXT>::base const&>(lhs) <
+        static_cast<typename basic_variant<STR, BIN, EXT>::base const&>(rhs);
 }
 
-inline bool operator==(variant const& lhs, variant const& rhs) {
-    return static_cast<variant::base const&>(lhs) == static_cast<variant::base const&>(rhs);
+template <typename STR, typename BIN, typename EXT>
+inline bool operator==(basic_variant<STR, BIN, EXT> const& lhs, basic_variant<STR, BIN, EXT> const& rhs) {
+    return
+        static_cast<typename basic_variant<STR, BIN, EXT>::base const&>(lhs) ==
+        static_cast<typename basic_variant<STR, BIN, EXT>::base const&>(rhs);
 }
 
-
-struct variant_ref;
-
-namespace detail {
-typedef boost::variant<
-    nil,               // NIL
-    bool,              // BOOL
-    int64_t,           // NEGATIVE_INTEGER
-    uint64_t,          // POSITIVE_INTEGER
-    double,            // FLOAT
-    std::string,       // STR
+typedef basic_variant<std::string, std::vector<char>, ext> variant;
+typedef basic_variant<
 #if (BOOST_VERSION / 100000) >= 1 && ((BOOST_VERSION / 100) % 1000) >= 53
-    boost::string_ref, // STR
+    boost::string_ref,
+#else  // (BOOST_VERSION / 100000) >= 1 && ((BOOST_VERSION / 100) % 1000) >= 53
+    std::string,
 #endif // (BOOST_VERSION / 100000) >= 1 && ((BOOST_VERSION / 100) % 1000) >= 53
-    std::vector<char>, // BIN
-    msgpack::type::raw_ref, // BIN
-    ext,               // EXT
-    ext_ref,           // EXT
-    boost::recursive_wrapper<std::vector<variant_ref> >, // ARRAY
-    boost::recursive_wrapper<std::map<variant_ref, variant_ref> >, // MAP
-    boost::recursive_wrapper<std::multimap<variant_ref, variant_ref> >// MAP
-> variant_ref_imp;
-
-} // namespace detail
-
-struct variant_ref : detail::variant_ref_imp, private boost::totally_ordered<variant_ref>  {
-    typedef detail::variant_ref_imp base;
-    variant_ref() {}
-    template <typename T>
-    variant_ref(T const& t):base(t) {}
-    variant_ref(char const* p):base(std::string(p)) {}
-    variant_ref(char v) {
-        int_init(v);
-    }
-    variant_ref(signed char v) {
-        int_init(v);
-    }
-    variant_ref(unsigned char v):base(uint64_t(v)) {}
-    variant_ref(signed int v) {
-        int_init(v);
-    }
-    variant_ref(unsigned int v):base(uint64_t(v)) {}
-    variant_ref(signed long v) {
-        int_init(v);
-    }
-    variant_ref(unsigned long v):base(uint64_t(v)) {}
-    variant_ref(signed long long v) {
-        int_init(v);
-    }
-    variant_ref(unsigned long long v):base(uint64_t(v)) {}
-private:
-    template <typename T>
-    void int_init(T v) {
-        if (v < 0) {
-            static_cast<base&>(*this) = int64_t(v);
-        }
-        else {
-            static_cast<base&>(*this) = uint64_t(v);
-        }
-    }
-};
-
-inline bool operator<(variant_ref const& lhs, variant_ref const& rhs) {
-    return static_cast<variant_ref::base const&>(lhs) < static_cast<variant_ref::base const&>(rhs);
-}
-
-inline bool operator==(variant_ref const& lhs, variant_ref const& rhs) {
-    return static_cast<variant_ref::base const&>(lhs) == static_cast<variant_ref::base const&>(rhs);
-}
+    raw_ref, ext_ref> variant_ref;
 
 } // namespace type
-
 
 namespace adaptor {
 
 #if !defined (MSGPACK_USE_CPP03)
 
-template <>
-struct as<msgpack::type::variant> {
-    msgpack::type::variant operator()(msgpack::object const& o) const {
+template <typename STR, typename BIN, typename EXT>
+struct as<msgpack::type::basic_variant<STR, BIN, EXT> > {
+    msgpack::type::basic_variant<STR, BIN, EXT> operator()(msgpack::object const& o) const {
         switch(o.type) {
         case type::NIL:
             return o.as<msgpack::type::nil>();
@@ -208,30 +286,30 @@ struct as<msgpack::type::variant> {
         case type::FLOAT:
             return o.as<double>();
         case type::STR:
-            return o.as<std::string>();
+            return o.as<STR>();
         case type::BIN:
-            return o.as<std::vector<char> >();
+            return o.as<BIN>();
         case type::EXT:
-            return o.as<msgpack::type::ext>();
+            return o.as<EXT>();
         case type::ARRAY:
-            return o.as<std::vector<msgpack::type::variant> >();
+            return o.as<std::vector<msgpack::type::basic_variant<STR, BIN, EXT> > >();
         case type::MAP:
-            return o.as<std::multimap<msgpack::type::variant, msgpack::type::variant> >();
+            return o.as<std::multimap<msgpack::type::basic_variant<STR, BIN, EXT>, msgpack::type::basic_variant<STR, BIN, EXT> > >();
         default:
             break;
         }
-        return msgpack::type::variant();
+        return msgpack::type::basic_variant<STR, BIN, EXT>();
     }
 };
 
 #endif // !defined (MSGPACK_USE_CPP03)
 
 
-template <>
-struct convert<msgpack::type::variant> {
+template <typename STR, typename BIN, typename EXT>
+struct convert<msgpack::type::basic_variant<STR, BIN, EXT> > {
     msgpack::object const& operator()(
         msgpack::object const& o,
-        msgpack::type::variant& v) const {
+        msgpack::type::basic_variant<STR, BIN, EXT>& v) const {
         switch(o.type) {
         case type::NIL:
             v = o.as<msgpack::type::nil>();
@@ -249,19 +327,19 @@ struct convert<msgpack::type::variant> {
             v = o.as<double>();
             break;
         case type::STR:
-            v = o.as<std::string>();
+            v = o.as<STR>();
             break;
         case type::BIN:
-            v = o.as<std::vector<char> >();
+            v = o.as<BIN>();
             break;
         case type::EXT:
-            v = o.as<msgpack::type::ext>();
+            v = o.as<EXT>();
             break;
         case type::ARRAY:
-            v = o.as<std::vector<msgpack::type::variant> >();
+            v = o.as<std::vector<msgpack::type::basic_variant<STR, BIN, EXT> > >();
             break;
         case type::MAP:
-            v = o.as<std::multimap<msgpack::type::variant, msgpack::type::variant> >();
+            v = o.as<std::multimap<msgpack::type::basic_variant<STR, BIN, EXT>, msgpack::type::basic_variant<STR, BIN, EXT> > >();
             break;
         default:
             break;
@@ -284,10 +362,10 @@ struct pack_imp:boost::static_visitor<void> {
 
 } // namespace detail
 
-template <>
-struct pack<msgpack::type::variant> {
+template <typename STR, typename BIN, typename EXT>
+struct pack<msgpack::type::basic_variant<STR, BIN, EXT> > {
     template <typename Stream>
-    msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const msgpack::type::variant& v) const {
+    msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const msgpack::type::basic_variant<STR, BIN, EXT>& v) const {
         boost::apply_visitor(detail::pack_imp<Stream>(o), v);
         return o;
     }
@@ -321,9 +399,9 @@ struct object_imp:boost::static_visitor<void> {
 
 } // namespace detail
 
-template <>
-struct object<msgpack::type::variant> {
-    void operator()(msgpack::object& o, const msgpack::type::variant& v) const {
+template <typename STR, typename BIN, typename EXT>
+struct object<msgpack::type::basic_variant<STR, BIN, EXT> > {
+    void operator()(msgpack::object& o, const msgpack::type::basic_variant<STR, BIN, EXT>& v) const {
         boost::apply_visitor(detail::object_imp(o), v);
     }
 };
@@ -341,119 +419,9 @@ struct object_with_zone_imp:boost::static_visitor<void> {
 
 } // namespace detail
 
-template <>
-struct object_with_zone<msgpack::type::variant> {
-    void operator()(msgpack::object::with_zone& o, const msgpack::type::variant& v) const {
-        boost::apply_visitor(detail::object_with_zone_imp(o), v);
-    }
-};
-
-#if !defined (MSGPACK_USE_CPP03)
-
-template <>
-struct as<msgpack::type::variant_ref> {
-    msgpack::type::variant_ref operator()(msgpack::object const& o) const {
-        switch(o.type) {
-        case type::NIL:
-            return o.as<msgpack::type::nil>();
-        case type::BOOLEAN:
-            return o.as<bool>();
-        case type::POSITIVE_INTEGER:
-            return o.as<uint64_t>();
-        case type::NEGATIVE_INTEGER:
-            return o.as<int64_t>();
-        case type::FLOAT:
-            return o.as<double>();
-        case type::STR:
-#if (BOOST_VERSION / 100000) >= 1 && ((BOOST_VERSION / 100) % 1000) >= 53
-            return o.as<boost::string_ref>();
-#else  // (BOOST_VERSION / 100000) >= 1 && ((BOOST_VERSION / 100) % 1000) >= 53
-            return o.as<std::string>();
-#endif // (BOOST_VERSION / 100000) >= 1 && ((BOOST_VERSION / 100) % 1000) >= 53
-        case type::BIN:
-            return o.as<msgpack::type::raw_ref>();
-        case type::EXT:
-            return o.as<msgpack::type::ext_ref>();
-        case type::ARRAY:
-            return o.as<std::vector<msgpack::type::variant_ref> >();
-        case type::MAP:
-            return o.as<std::multimap<msgpack::type::variant_ref, msgpack::type::variant_ref> >();
-        default:
-            break;
-        }
-        return msgpack::type::variant_ref();
-    }
-};
-
-#endif // !defined (MSGPACK_USE_CPP03)
-
-
-template <>
-struct convert<msgpack::type::variant_ref> {
-    msgpack::object const& operator()(
-        msgpack::object const& o,
-        msgpack::type::variant_ref& v) const {
-        switch(o.type) {
-        case type::NIL:
-            v = o.as<msgpack::type::nil>();
-            break;
-        case type::BOOLEAN:
-            v = o.as<bool>();
-            break;
-        case type::POSITIVE_INTEGER:
-            v = o.as<uint64_t>();
-            break;
-        case type::NEGATIVE_INTEGER:
-            v = o.as<int64_t>();
-            break;
-        case type::FLOAT:
-            v = o.as<double>();
-            break;
-        case type::STR:
-#if (BOOST_VERSION / 100000) >= 1 && ((BOOST_VERSION / 100) % 1000) >= 53
-            v = o.as<boost::string_ref>();
-#else  // (BOOST_VERSION / 100000) >= 1 && ((BOOST_VERSION / 100) % 1000) >= 53
-            v = o.as<std::string>();
-#endif // (BOOST_VERSION / 100000) >= 1 && ((BOOST_VERSION / 100) % 1000) >= 53
-            break;
-        case type::BIN:
-            v = o.as<msgpack::type::raw_ref>();
-            break;
-        case type::EXT:
-            v = o.as<msgpack::type::ext_ref>();
-            break;
-        case type::ARRAY:
-            v = o.as<std::vector<msgpack::type::variant_ref> >();
-            break;
-        case type::MAP:
-            v = o.as<std::multimap<msgpack::type::variant_ref, msgpack::type::variant_ref> >();
-            break;
-        default:
-            break;
-        }
-        return o;
-    }
-};
-
-template <>
-struct pack<msgpack::type::variant_ref> {
-    template <typename Stream>
-    msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const msgpack::type::variant_ref& v) const {
-        boost::apply_visitor(detail::pack_imp<Stream>(o), v);
-        return o;
-    }
-};
-
-template <>
-struct object<msgpack::type::variant_ref> {
-    void operator()(msgpack::object& o, const msgpack::type::variant_ref& v) const {
-        boost::apply_visitor(detail::object_imp(o), v);
-    }
-};
-
-template <>
-struct object_with_zone<msgpack::type::variant_ref> {
-    void operator()(msgpack::object::with_zone& o, const msgpack::type::variant_ref& v) const {
+template <typename STR, typename BIN, typename EXT>
+struct object_with_zone<msgpack::type::basic_variant<STR, BIN, EXT> > {
+    void operator()(msgpack::object::with_zone& o, const msgpack::type::basic_variant<STR, BIN, EXT>& v) const {
         boost::apply_visitor(detail::object_with_zone_imp(o), v);
     }
 };
