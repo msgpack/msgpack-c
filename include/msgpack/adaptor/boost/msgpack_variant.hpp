@@ -46,46 +46,10 @@ MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 namespace type {
 
-typedef boost::make_recursive_variant<
-    nil,               // NIL
-    bool,              // BOOL
-    int64_t,           // NEGATIVE_INTEGER
-    uint64_t,          // POSITIVE_INTEGER
-    double,            // FLOAT
-    std::string,       // STR
-#if (BOOST_VERSION / 100000) >= 1 && ((BOOST_VERSION / 100) % 1000) >= 53
-    boost::string_ref, // STR
-#endif // (BOOST_VERSION / 100000) >= 1 && ((BOOST_VERSION / 100) % 1000) >= 53
-    std::vector<char>, // BIN
-    msgpack::type::raw_ref, // BIN
-    ext,               // EXT
-    ext_ref,           // EXT
-    std::vector<boost::recursive_variant_>, // ARRAY
-    std::map<boost::recursive_variant_, boost::recursive_variant_>, // MAP
-    std::multimap<boost::recursive_variant_, boost::recursive_variant_> // MAP
->::type variant;
+struct variant;
 
 namespace detail {
-struct ref_tag {
-#if defined(MSGPACK_USE_CPP03)
-private:
-    ref_tag();
-#else  // defined(MSGPACK_USE_CPP03)
-    ref_tag() = delete;
-#endif // defined(MSGPACK_USE_CPP03)
-public:
-    MSGPACK_DEFINE();
-};
-
-inline bool operator<(ref_tag const& lhs, ref_tag const& rhs) {
-    return &lhs < &rhs;
-}
-inline bool operator==(ref_tag const& lhs, ref_tag const& rhs) {
-    return &lhs == &rhs;
-}
-} // namespace detail
-
-typedef boost::make_recursive_variant<
+typedef boost::variant<
     nil,               // NIL
     bool,              // BOOL
     int64_t,           // NEGATIVE_INTEGER
@@ -99,15 +63,128 @@ typedef boost::make_recursive_variant<
     msgpack::type::raw_ref, // BIN
     ext,               // EXT
     ext_ref,           // EXT
-    std::vector<boost::recursive_variant_>, // ARRAY
-    std::map<boost::recursive_variant_, boost::recursive_variant_>, // MAP
-    std::multimap<boost::recursive_variant_, boost::recursive_variant_>, // MAP
-    detail::ref_tag
->::type variant_ref;
+    boost::recursive_wrapper<std::vector<variant> >, // ARRAY
+    boost::recursive_wrapper<std::map<variant, variant> >, // MAP
+    boost::recursive_wrapper<std::multimap<variant, variant> >// MAP
+> variant_imp;
+
+} // namespace detail
+
+struct variant : detail::variant_imp {
+    typedef detail::variant_imp base;
+    variant() {}
+    template <typename T>
+    variant(T const& t):base(t) {}
+    variant(char const* p):base(std::string(p)) {}
+    variant(char v) {
+        int_init(v);
+    }
+    variant(signed char v) {
+        int_init(v);
+    }
+    variant(unsigned char v):base(uint64_t(v)) {}
+    variant(signed int v) {
+        int_init(v);
+    }
+    variant(unsigned int v):base(uint64_t(v)) {}
+    variant(signed long v) {
+        int_init(v);
+    }
+    variant(unsigned long v):base(uint64_t(v)) {}
+    variant(signed long long v) {
+        int_init(v);
+    }
+    variant(unsigned long long v):base(uint64_t(v)) {}
+private:
+    template <typename T>
+    void int_init(T v) {
+        if (v < 0) {
+            static_cast<base&>(*this) = int64_t(v);
+        }
+        else {
+            static_cast<base&>(*this) = uint64_t(v);
+        }
+    }
+};
+
+inline bool operator<(variant const& lhs, variant const& rhs) {
+    return static_cast<variant::base const&>(lhs) < static_cast<variant::base const&>(rhs);
+}
+
+inline bool operator==(variant const& lhs, variant const& rhs) {
+    return static_cast<variant::base const&>(lhs) == static_cast<variant::base const&>(rhs);
+}
+
+struct variant_ref;
+
+namespace detail {
+typedef boost::variant<
+    nil,               // NIL
+    bool,              // BOOL
+    int64_t,           // NEGATIVE_INTEGER
+    uint64_t,          // POSITIVE_INTEGER
+    double,            // FLOAT
+    std::string,       // STR
+#if (BOOST_VERSION / 100000) >= 1 && ((BOOST_VERSION / 100) % 1000) >= 53
+    boost::string_ref, // STR
+#endif // (BOOST_VERSION / 100000) >= 1 && ((BOOST_VERSION / 100) % 1000) >= 53
+    std::vector<char>, // BIN
+    msgpack::type::raw_ref, // BIN
+    ext,               // EXT
+    ext_ref,           // EXT
+    boost::recursive_wrapper<std::vector<variant_ref> >, // ARRAY
+    boost::recursive_wrapper<std::map<variant_ref, variant_ref> >, // MAP
+    boost::recursive_wrapper<std::multimap<variant_ref, variant_ref> >// MAP
+> variant_ref_imp;
+
+} // namespace detail
+
+struct variant_ref : detail::variant_ref_imp {
+    typedef detail::variant_ref_imp base;
+    variant_ref() {}
+    template <typename T>
+    variant_ref(T const& t):base(t) {}
+    variant_ref(char const* p):base(std::string(p)) {}
+    variant_ref(char v) {
+        int_init(v);
+    }
+    variant_ref(signed char v) {
+        int_init(v);
+    }
+    variant_ref(unsigned char v):base(uint64_t(v)) {}
+    variant_ref(signed int v) {
+        int_init(v);
+    }
+    variant_ref(unsigned int v):base(uint64_t(v)) {}
+    variant_ref(signed long v) {
+        int_init(v);
+    }
+    variant_ref(unsigned long v):base(uint64_t(v)) {}
+    variant_ref(signed long long v) {
+        int_init(v);
+    }
+    variant_ref(unsigned long long v):base(uint64_t(v)) {}
+private:
+    template <typename T>
+    void int_init(T v) {
+        if (v < 0) {
+            static_cast<base&>(*this) = int64_t(v);
+        }
+        else {
+            static_cast<base&>(*this) = uint64_t(v);
+        }
+    }
+};
+
+inline bool operator<(variant_ref const& lhs, variant_ref const& rhs) {
+    return static_cast<variant_ref::base const&>(lhs) < static_cast<variant_ref::base const&>(rhs);
+}
+
+inline bool operator==(variant_ref const& lhs, variant_ref const& rhs) {
+    return static_cast<variant_ref::base const&>(lhs) == static_cast<variant_ref::base const&>(rhs);
+}
 
 } // namespace type
-
-
 
 
 namespace adaptor {

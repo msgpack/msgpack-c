@@ -113,7 +113,7 @@ TEST(MSGPACK_BOOST, object_with_zone_variant_bool)
 TEST(MSGPACK_BOOST, pack_convert_variant_positive_integer)
 {
     std::stringstream ss;
-    msgpack::type::variant val1 = uint64_t(123);
+    msgpack::type::variant val1 = 123;
 
     msgpack::pack(ss, val1);
 
@@ -126,7 +126,7 @@ TEST(MSGPACK_BOOST, pack_convert_variant_positive_integer)
 
 TEST(MSGPACK_BOOST, object_variant_positive_integer)
 {
-    msgpack::type::variant val1 = uint64_t(123);
+    msgpack::type::variant val1 = 123;
     msgpack::object obj(val1);
     msgpack::type::variant val2 = obj.as<msgpack::type::variant>();
     EXPECT_NO_THROW(boost::get<uint64_t>(val2));
@@ -136,7 +136,7 @@ TEST(MSGPACK_BOOST, object_variant_positive_integer)
 TEST(MSGPACK_BOOST, object_with_zone_variant_positive_integer)
 {
     msgpack::zone z;
-    msgpack::type::variant val1 = uint64_t(123);
+    msgpack::type::variant val1 = 123;
     msgpack::object obj(val1, z);
     msgpack::type::variant val2 = obj.as<msgpack::type::variant>();
     EXPECT_NO_THROW(boost::get<uint64_t>(val2));
@@ -148,7 +148,7 @@ TEST(MSGPACK_BOOST, object_with_zone_variant_positive_integer)
 TEST(MSGPACK_BOOST, pack_convert_variant_negative_integer)
 {
     std::stringstream ss;
-    msgpack::type::variant val1 = int64_t(-123);
+    msgpack::type::variant val1 = -123;
 
     msgpack::pack(ss, val1);
 
@@ -161,7 +161,7 @@ TEST(MSGPACK_BOOST, pack_convert_variant_negative_integer)
 
 TEST(MSGPACK_BOOST, object_variant_negative_integer)
 {
-    msgpack::type::variant val1 = int64_t(-123);
+    msgpack::type::variant val1 = -123;
     msgpack::object obj(val1);
     msgpack::type::variant val2 = obj.as<msgpack::type::variant>();
     EXPECT_NO_THROW(boost::get<int64_t>(val2));
@@ -171,7 +171,7 @@ TEST(MSGPACK_BOOST, object_variant_negative_integer)
 TEST(MSGPACK_BOOST, object_with_zone_variant_negative_integer)
 {
     msgpack::zone z;
-    msgpack::type::variant val1 = int64_t(-123);
+    msgpack::type::variant val1 = -123;
     msgpack::object obj(val1, z);
     msgpack::type::variant val2 = obj.as<msgpack::type::variant>();
     EXPECT_NO_THROW(boost::get<int64_t>(val2));
@@ -218,7 +218,7 @@ TEST(MSGPACK_BOOST, object_with_zone_variant_float)
 TEST(MSGPACK_BOOST, pack_convert_variant_str)
 {
     std::stringstream ss;
-    msgpack::type::variant val1 = std::string("ABC");
+    msgpack::type::variant val1 = "ABC";
 
     msgpack::pack(ss, val1);
 
@@ -234,7 +234,7 @@ TEST(MSGPACK_BOOST, pack_convert_variant_str)
 TEST(MSGPACK_BOOST, object_with_zone_variant_str)
 {
     msgpack::zone z;
-    msgpack::type::variant val1 = std::string("ABC");
+    msgpack::type::variant val1 = "ABC";
     msgpack::object obj(val1, z);
     msgpack::type::variant val2 = obj.as<msgpack::type::variant>();
     EXPECT_NO_THROW(boost::get<std::string>(val2));
@@ -319,10 +319,10 @@ TEST(MSGPACK_BOOST, pack_convert_variant_array)
 {
     std::stringstream ss;
     std::vector<msgpack::type::variant> v;
-    v.push_back(msgpack::type::variant(uint64_t(1)));
-    v.push_back(msgpack::type::variant(int64_t(-1)));
+    v.push_back(msgpack::type::variant(1));
+    v.push_back(msgpack::type::variant(-1));
     v.push_back(msgpack::type::variant(23.4));
-    v.push_back(msgpack::type::variant(std::string("ABC")));
+    v.push_back(msgpack::type::variant("ABC"));
     msgpack::type::variant val1 = v;
 
     msgpack::pack(ss, val1);
@@ -338,10 +338,10 @@ TEST(MSGPACK_BOOST, object_with_zone_variant_array)
 {
     msgpack::zone z;
     std::vector<msgpack::type::variant> v;
-    v.push_back(msgpack::type::variant(uint64_t(1)));
-    v.push_back(msgpack::type::variant(int64_t(-1)));
+    v.push_back(msgpack::type::variant(1));
+    v.push_back(msgpack::type::variant(-1));
     v.push_back(msgpack::type::variant(23.4));
-    v.push_back(msgpack::type::variant(std::string("ABC")));
+    v.push_back(msgpack::type::variant("ABC"));
     msgpack::type::variant val1 = v;
     msgpack::object obj(val1, z);
     msgpack::type::variant val2 = obj.as<msgpack::type::variant>();
@@ -356,8 +356,8 @@ TEST(MSGPACK_BOOST, pack_convert_variant_map)
     std::stringstream ss;
     typedef std::multimap<msgpack::type::variant, msgpack::type::variant> multimap_t;
     multimap_t v;
-    v.insert(multimap_t::value_type(msgpack::type::variant(uint64_t(1)), msgpack::type::variant(int64_t(-1))));
-    v.insert(multimap_t::value_type(msgpack::type::variant(23.4), msgpack::type::variant(std::string("ABC"))));
+    v.insert(multimap_t::value_type(msgpack::type::variant(1), msgpack::type::variant(-1)));
+    v.insert(multimap_t::value_type(msgpack::type::variant(23.4), msgpack::type::variant("ABC")));
     msgpack::type::variant val1 = v;
 
     msgpack::pack(ss, val1);
@@ -374,8 +374,8 @@ TEST(MSGPACK_BOOST, object_with_zone_variant_map)
     msgpack::zone z;
     typedef std::multimap<msgpack::type::variant, msgpack::type::variant> multimap_t;
     multimap_t v;
-    v.insert(multimap_t::value_type(msgpack::type::variant(uint64_t(1)), msgpack::type::variant(int64_t(-1))));
-    v.insert(multimap_t::value_type(msgpack::type::variant(23.4), msgpack::type::variant(std::string("ABC"))));
+    v.insert(multimap_t::value_type(msgpack::type::variant(1), msgpack::type::variant(-1)));
+    v.insert(multimap_t::value_type(msgpack::type::variant(23.4), msgpack::type::variant("ABC")));
     msgpack::type::variant val1 = v;
     msgpack::object obj(val1, z);
     msgpack::type::variant val2 = obj.as<msgpack::type::variant>();
@@ -489,7 +489,7 @@ TEST(MSGPACK_BOOST, object_with_zone_variant_ref_bool)
 TEST(MSGPACK_BOOST, pack_convert_variant_ref_positive_integer)
 {
     std::stringstream ss;
-    msgpack::type::variant_ref val1 = uint64_t(123);
+    msgpack::type::variant_ref val1 = 123;
 
     msgpack::pack(ss, val1);
 
@@ -502,7 +502,7 @@ TEST(MSGPACK_BOOST, pack_convert_variant_ref_positive_integer)
 
 TEST(MSGPACK_BOOST, object_variant_ref_positive_integer)
 {
-    msgpack::type::variant_ref val1 = uint64_t(123);
+    msgpack::type::variant_ref val1 = 123;
     msgpack::object obj(val1);
     msgpack::type::variant_ref val2 = obj.as<msgpack::type::variant_ref>();
     EXPECT_NO_THROW(boost::get<uint64_t>(val2));
@@ -512,7 +512,7 @@ TEST(MSGPACK_BOOST, object_variant_ref_positive_integer)
 TEST(MSGPACK_BOOST, object_with_zone_variant_ref_positive_integer)
 {
     msgpack::zone z;
-    msgpack::type::variant_ref val1 = uint64_t(123);
+    msgpack::type::variant_ref val1 = 123;
     msgpack::object obj(val1, z);
     msgpack::type::variant_ref val2 = obj.as<msgpack::type::variant_ref>();
     EXPECT_NO_THROW(boost::get<uint64_t>(val2));
@@ -524,7 +524,7 @@ TEST(MSGPACK_BOOST, object_with_zone_variant_ref_positive_integer)
 TEST(MSGPACK_BOOST, pack_convert_variant_ref_negative_integer)
 {
     std::stringstream ss;
-    msgpack::type::variant_ref val1 = int64_t(-123);
+    msgpack::type::variant_ref val1 = -123;
 
     msgpack::pack(ss, val1);
 
@@ -537,7 +537,7 @@ TEST(MSGPACK_BOOST, pack_convert_variant_ref_negative_integer)
 
 TEST(MSGPACK_BOOST, object_variant_ref_negative_integer)
 {
-    msgpack::type::variant_ref val1 = int64_t(-123);
+    msgpack::type::variant_ref val1 = -123;
     msgpack::object obj(val1);
     msgpack::type::variant_ref val2 = obj.as<msgpack::type::variant_ref>();
     EXPECT_NO_THROW(boost::get<int64_t>(val2));
@@ -547,7 +547,7 @@ TEST(MSGPACK_BOOST, object_variant_ref_negative_integer)
 TEST(MSGPACK_BOOST, object_with_zone_variant_ref_negative_integer)
 {
     msgpack::zone z;
-    msgpack::type::variant_ref val1 = int64_t(-123);
+    msgpack::type::variant_ref val1 = -123;
     msgpack::object obj(val1, z);
     msgpack::type::variant_ref val2 = obj.as<msgpack::type::variant_ref>();
     EXPECT_NO_THROW(boost::get<int64_t>(val2));
@@ -699,8 +699,8 @@ TEST(MSGPACK_BOOST, pack_convert_variant_ref_array)
 {
     std::stringstream ss;
     std::vector<msgpack::type::variant_ref> v;
-    v.push_back(msgpack::type::variant_ref(uint64_t(1)));
-    v.push_back(msgpack::type::variant_ref(int64_t(-1)));
+    v.push_back(msgpack::type::variant_ref(1));
+    v.push_back(msgpack::type::variant_ref(-1));
     v.push_back(msgpack::type::variant_ref(23.4));
     std::string s("ABC");
     v.push_back(msgpack::type::variant_ref(boost::string_ref(s)));
@@ -719,8 +719,8 @@ TEST(MSGPACK_BOOST, object_with_zone_variant_ref_array)
 {
     msgpack::zone z;
     std::vector<msgpack::type::variant_ref> v;
-    v.push_back(msgpack::type::variant_ref(uint64_t(1)));
-    v.push_back(msgpack::type::variant_ref(int64_t(-1)));
+    v.push_back(msgpack::type::variant_ref(1));
+    v.push_back(msgpack::type::variant_ref(-1));
     v.push_back(msgpack::type::variant_ref(23.4));
     std::string s("ABC");
     v.push_back(msgpack::type::variant_ref(boost::string_ref(s)));
@@ -738,7 +738,7 @@ TEST(MSGPACK_BOOST, pack_convert_variant_ref_map)
     std::stringstream ss;
     typedef std::multimap<msgpack::type::variant_ref, msgpack::type::variant_ref> multimap_t;
     multimap_t v;
-    v.insert(multimap_t::value_type(msgpack::type::variant_ref(uint64_t(1)), msgpack::type::variant_ref(int64_t(-1))));
+    v.insert(multimap_t::value_type(msgpack::type::variant_ref(1), msgpack::type::variant_ref(-1)));
     std::string s("ABC");
     v.insert(multimap_t::value_type(msgpack::type::variant_ref(23.4), msgpack::type::variant_ref(boost::string_ref(s))));
     msgpack::type::variant_ref val1 = v;
@@ -757,7 +757,7 @@ TEST(MSGPACK_BOOST, object_with_zone_variant_ref_map)
     msgpack::zone z;
     typedef std::multimap<msgpack::type::variant_ref, msgpack::type::variant_ref> multimap_t;
     multimap_t v;
-    v.insert(multimap_t::value_type(msgpack::type::variant_ref(uint64_t(1)), msgpack::type::variant_ref(int64_t(-1))));
+    v.insert(multimap_t::value_type(msgpack::type::variant_ref(1), msgpack::type::variant_ref(-1)));
     std::string s("ABC");
     v.insert(multimap_t::value_type(msgpack::type::variant_ref(23.4), msgpack::type::variant_ref(boost::string_ref(s))));
     msgpack::type::variant_ref val1 = v;
