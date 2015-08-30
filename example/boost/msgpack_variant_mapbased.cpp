@@ -42,8 +42,8 @@ struct proc:boost::static_visitor<void> {
                     // You can add values to msgpack::type::variant_ref.
                     v.insert(
                         std::multimap<msgpack::type::variant_ref, msgpack::type::variant_ref>::value_type(
-                            std::string("role"),
-                            std::string("msgpack-c committer")
+                            "role",
+                            "msgpack-c committer"
                         )
                     );
                 }
@@ -65,7 +65,7 @@ struct proc:boost::static_visitor<void> {
             else if (key == "address") {
                 // When you want to append string
                 // "Tokyo" -> "Tokyo, JAPAN"
-                // Use msgpack::type::variant instead of msgpack::type::varinat_ref
+                // Use msgpack::type::variant instead of msgpack::type::variant_ref
                 // or do as follows:
                 boost::string_ref const& value = boost::get<boost::string_ref>(it->second);
                 it->second = std::string(&value.front(), value.size()) + ", JAPAN";
