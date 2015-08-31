@@ -164,6 +164,7 @@ IF (MSGPACK_ENABLE_CXX)
     LIST (APPEND msgpack_HEADERS
         include/msgpack.hpp
         include/msgpack/adaptor/adaptor_base.hpp
+        include/msgpack/adaptor/array_ref.hpp
         include/msgpack/adaptor/bool.hpp
         include/msgpack/adaptor/boost/fusion.hpp
         include/msgpack/adaptor/boost/optional.hpp

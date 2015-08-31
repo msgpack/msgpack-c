@@ -78,6 +78,22 @@ template <typename T>
 struct enable_if<false, T> {
 };
 
+template<typename T, T val>
+struct integral_constant {
+    static T const value = val;
+    typedef T value_type;
+    typedef integral_constant<T, val> type;
+};
+
+typedef integral_constant<bool, true> true_type;
+typedef integral_constant<bool, false> false_type;
+
+template<class T, class U>
+struct is_same : false_type {};
+
+template<class T>
+struct is_same<T, T> : true_type {};
+
 /// @cond
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 /// @endcond
@@ -104,6 +120,7 @@ MSGPACK_API_VERSION_NAMESPACE(v1) {
     using std::move;
     using std::swap;
     using std::enable_if;
+    using std::is_same;
 
 /// @cond
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)

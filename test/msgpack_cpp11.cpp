@@ -93,6 +93,24 @@ TEST(MSGPACK_CPP11, simple_buffer_array_char)
     }
 }
 
+TEST(MSGPACK_CPP11, simple_buffer_array_unsigned_char)
+{
+    if (!msgpack::is_same<uint8_t, unsigned char>::value) return;
+    for (unsigned int k = 0; k < kLoop; k++) {
+        array<unsigned char, kElements> val1;
+        for (unsigned int i = 0; i < kElements; i++)
+            val1[i] = rand();
+        msgpack::sbuffer sbuf;
+        msgpack::pack(sbuf, val1);
+        msgpack::unpacked ret;
+        msgpack::unpack(ret, sbuf.data(), sbuf.size());
+        EXPECT_EQ(ret.get().type, msgpack::type::BIN);
+        array<unsigned char, kElements> val2 = ret.get().as<array<unsigned char, kElements> >();
+        EXPECT_EQ(val1.size(), val2.size());
+        EXPECT_TRUE(equal(val1.begin(), val1.end(), val2.begin()));
+    }
+}
+
 // strong typedefs
 namespace test {
 
