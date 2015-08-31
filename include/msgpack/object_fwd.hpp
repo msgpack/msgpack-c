@@ -149,6 +149,9 @@ struct object {
     template <typename T>
     T* convert(T* v) const;
 
+    template <typename T>
+    bool convert_if_not_nil(T& v) const;
+
     object();
 
     object(const msgpack_object& o);

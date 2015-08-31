@@ -93,3 +93,20 @@ TEST(convert, return_value_ref)
     EXPECT_EQ(&i, &j);
     EXPECT_EQ(i, j);
 }
+
+TEST(convert, if_not_nil_nil)
+{
+    msgpack::object obj;
+    int i;
+    EXPECT_FALSE(obj.convert_if_not_nil(i));
+}
+
+TEST(convert, if_not_nil_not_nil)
+{
+    msgpack::zone z;
+    msgpack::object obj(1, z);
+
+    int i;
+    EXPECT_TRUE(obj.convert_if_not_nil(i));
+    EXPECT_EQ(i, 1);
+}
