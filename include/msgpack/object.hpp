@@ -512,7 +512,8 @@ inline T* object::convert(T* v) const
 }
 
 template <typename T>
-inline bool object::convert_if_not_nil(T& v) const {
+inline bool object::convert_if_not_nil(T& v) const
+{
     if (is_nil()) {
         return false;
     }
