@@ -511,6 +511,15 @@ inline T* object::convert(T* v) const
     return v;
 }
 
+template <typename T>
+inline bool object::convert_if_not_nil(T& v) const {
+    if (is_nil()) {
+        return false;
+    }
+    convert(v);
+    return true;
+}
+
 #if defined(MSGPACK_USE_CPP03)
 
 template <typename T>
