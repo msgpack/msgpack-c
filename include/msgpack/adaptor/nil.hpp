@@ -31,6 +31,14 @@ namespace type {
 
 struct nil { };
 
+inline bool operator<(nil const& lhs, nil const& rhs) {
+    return &lhs < &rhs;
+}
+
+inline bool operator==(nil const& lhs, nil const& rhs) {
+    return &lhs == &rhs;
+}
+
 }  // namespace type
 
 namespace adaptor {

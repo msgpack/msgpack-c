@@ -31,6 +31,7 @@ check_PROGRAMS = \
 
 check_PROGRAMS += \
 		boost_fusion \
+		boost_variant \
 		boost_optional \
 		boost_string_ref
 
@@ -79,6 +80,7 @@ shared_ptr_cpp11_SOURCES = shared_ptr_cpp11.cpp
 unique_ptr_cpp11_SOURCES = unique_ptr_cpp11.cpp
 
 boost_fusion_SOURCES = boost_fusion.cpp
+boost_variant_SOURCES = boost_variant.cpp
 boost_optional_SOURCES = boost_optional.cpp
 boost_string_ref_SOURCES = boost_string_ref.cpp
 

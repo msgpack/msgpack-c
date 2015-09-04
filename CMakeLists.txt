@@ -167,6 +167,7 @@ IF (MSGPACK_ENABLE_CXX)
         include/msgpack/adaptor/array_ref.hpp
         include/msgpack/adaptor/bool.hpp
         include/msgpack/adaptor/boost/fusion.hpp
+        include/msgpack/adaptor/boost/msgpack_variant.hpp
         include/msgpack/adaptor/boost/optional.hpp
         include/msgpack/adaptor/boost/string_ref.hpp
         include/msgpack/adaptor/char_ptr.hpp
