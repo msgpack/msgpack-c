@@ -908,7 +908,7 @@ TEST(object_with_zone, forward_list)
         msgpack::object obj(v1, z);
         EXPECT_EQ(obj.as<forward_list<int> >(), v1);
         v1.front() = 42;
-        EXPECT_EQ(obj.as<forward_list<int> >().front(), kElements - 1);
+        EXPECT_EQ(obj.as<forward_list<int> >().front(), static_cast<int>(kElements - 1));
     }
 }
 
