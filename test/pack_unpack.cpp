@@ -332,7 +332,7 @@ TEST(unpack, insufficient_bytes_ref)
     }
     catch (msgpack::insufficient_bytes const&) {
         EXPECT_TRUE(true);
-        EXPECT_EQ(off, 0);
+        EXPECT_EQ(off, 0u);
     }
 }
 
@@ -350,7 +350,7 @@ TEST(unpack, insufficient_bytes_object_handle)
     }
     catch (msgpack::insufficient_bytes const&) {
         EXPECT_TRUE(true);
-        EXPECT_EQ(off, 0);
+        EXPECT_EQ(off, 0u);
     }
 }
 
@@ -369,6 +369,6 @@ TEST(unpack, insufficient_bytes_zone)
     }
     catch (msgpack::insufficient_bytes const&) {
         EXPECT_TRUE(true);
-        EXPECT_EQ(off, 0);
+        EXPECT_EQ(off, 0u);
     }
 }
