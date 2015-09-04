@@ -72,6 +72,43 @@ TEST(MSGPACK_STL, simple_buffer_vector_char)
     }
 }
 
+TEST(MSGPACK_STL, simple_buffer_vector_unsigned_char)
+{
+    typedef vector<unsigned char, test::allocator<unsigned char> > type;
+    for (unsigned int k = 0; k < kLoop; k++) {
+        type val1;
+        for (unsigned int i = 0; i < kElements; i++)
+            val1.push_back(rand());
+        msgpack::sbuffer sbuf;
+        msgpack::pack(sbuf, val1);
+        msgpack::unpacked ret;
+        msgpack::unpack(ret, sbuf.data(), sbuf.size());
+        EXPECT_EQ(ret.get().type, msgpack::type::BIN);
+        type const& val2 = ret.get().as<type>();
+        EXPECT_EQ(val1.size(), val2.size());
+        EXPECT_TRUE(equal(val1.begin(), val1.end(), val2.begin()));
+    }
+}
+
+TEST(MSGPACK_STL, simple_buffer_vector_uint8_t)
+{
+    if (!msgpack::is_same<uint8_t, unsigned char>::value) return;
+    typedef vector<uint8_t, test::allocator<uint8_t> > type;
+    for (unsigned int k = 0; k < kLoop; k++) {
+        type val1;
+        for (unsigned int i = 0; i < kElements; i++)
+            val1.push_back(rand());
+        msgpack::sbuffer sbuf;
+        msgpack::pack(sbuf, val1);
+        msgpack::unpacked ret;
+        msgpack::unpack(ret, sbuf.data(), sbuf.size());
+        EXPECT_EQ(ret.get().type, msgpack::type::BIN);
+        type const& val2 = ret.get().as<type>();
+        EXPECT_EQ(val1.size(), val2.size());
+        EXPECT_TRUE(equal(val1.begin(), val1.end(), val2.begin()));
+    }
+}
+
 TEST(MSGPACK_STL, simple_buffer_vector_bool)
 {
     typedef vector<bool, test::allocator<bool> > type;

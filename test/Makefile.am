@@ -3,6 +3,7 @@ AM_C_CPPFLAGS = -I$(top_srcdir)/include -pthread
 AM_LDFLAGS = $(top_builddir)/src/libmsgpack.la -lgtest_main -lgtest -lpthread
 
 check_PROGRAMS = \
+		array_ref \
 		buffer \
 		cases \
 		convert \
@@ -45,6 +46,7 @@ check_PROGRAMS += \
 
 TESTS = $(check_PROGRAMS)
 
+array_ref_SOURCES = array_ref.cpp
 buffer_SOURCES = buffer.cpp
 cases_SOURCES = cases.cpp
 convert_SOURCES = convert.cpp

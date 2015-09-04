@@ -240,6 +240,39 @@ TEST(object_without_zone, vector_char)
     }
 }
 
+// vector_unsgined_char
+TEST(object_with_zone, vector_unsigned_char)
+{
+    if (!msgpack::is_same<uint8_t, unsigned char>::value) return;
+    for (unsigned int k = 0; k < kLoop; k++) {
+        vector<unsigned char> v1;
+        v1.push_back(1);
+        for (unsigned int i = 1; i < kElements; i++)
+            v1.push_back(static_cast<unsigned char>(i));
+        msgpack::zone z;
+        msgpack::object obj(v1, z);
+        EXPECT_EQ(obj.as<vector<unsigned char> >(), v1);
+        v1.front() = 42;
+        EXPECT_EQ(obj.as<vector<unsigned char> >().front(), 1);
+    }
+}
+
+TEST(object_without_zone, vector_unsigned_char)
+{
+    if (!msgpack::is_same<uint8_t, unsigned char>::value) return;
+    for (unsigned int k = 0; k < kLoop; k++) {
+        vector<unsigned char> v1;
+        v1.push_back(1);
+        for (unsigned int i = 1; i < kElements; i++)
+            v1.push_back(static_cast<unsigned char>(i));
+        msgpack::object obj(v1);
+        EXPECT_EQ(obj.as<vector<unsigned char> >(), v1);
+        v1.front() = 42;
+        // obj refer to v1
+        EXPECT_EQ(obj.as<vector<unsigned char> >().front(), 42);
+    }
+}
+
 // list
 TEST(object_with_zone, list)
 {
@@ -817,6 +850,40 @@ TEST(object_with_zone, array_char)
 TEST(object_without_zone, array_char)
 {
     typedef array<char, kElements> test_t;
+    for (unsigned int k = 0; k < kLoop; k++) {
+        test_t v1;
+        v1[0] = 1;
+        for (unsigned int i = 1; i < kElements; i++)
+            v1[i] = rand();
+        msgpack::object obj(v1);
+        EXPECT_EQ(obj.as<test_t>(), v1);
+        v1.front() = 42;
+        // obj refer to v1
+        EXPECT_EQ(obj.as<test_t>().front(), 42);
+    }
+}
+
+TEST(object_with_zone, array_unsigned_char)
+{
+    if (!msgpack::is_same<uint8_t, unsigned char>::value) return;
+    typedef array<unsigned char, kElements> test_t;
+    for (unsigned int k = 0; k < kLoop; k++) {
+        test_t v1;
+        v1[0] = 1;
+        for (unsigned int i = 1; i < kElements; i++)
+            v1[i] = rand();
+        msgpack::zone z;
+        msgpack::object obj(v1, z);
+        EXPECT_EQ(obj.as<test_t>(), v1);
+        v1.front() = 42;
+        EXPECT_EQ(obj.as<test_t>().front(), 1);
+    }
+}
+
+TEST(object_without_zone, array_unsigned_char)
+{
+    if (!msgpack::is_same<uint8_t, unsigned char>::value) return;
+    typedef array<unsigned char, kElements> test_t;
     for (unsigned int k = 0; k < kLoop; k++) {
         test_t v1;
         v1[0] = 1;

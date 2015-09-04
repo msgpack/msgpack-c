@@ -8,6 +8,7 @@ INCLUDE_DIRECTORIES (
 )
 
 LIST (APPEND check_PROGRAMS
+    array_ref.cpp
     buffer.cpp
     cases.cpp
     convert.cpp
