@@ -8,7 +8,7 @@ DOC_FILES = \
 		msgpack_vc8.sln
 
 EXTRA_DIST = \
-		$(DOC_FILES) CMakeLists.txt test/CMakeLists.txt
+		$(DOC_FILES) CMakeLists.txt test/CMakeLists.txt example
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = msgpack.pc
