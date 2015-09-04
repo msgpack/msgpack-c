@@ -5,8 +5,7 @@ DOC_FILES = \
 		LICENSE \
 		NOTICE \
 		msgpack_vc8.vcproj \
-		msgpack_vc8.sln \
-		msgpack_vc.postbuild.bat
+		msgpack_vc8.sln
 
 EXTRA_DIST = \
 		$(DOC_FILES) CMakeLists.txt test/CMakeLists.txt
@@ -18,4 +17,3 @@ doxygen:
 	./preprocess clean
 	cd src && $(MAKE) doxygen
 	./preprocess
-

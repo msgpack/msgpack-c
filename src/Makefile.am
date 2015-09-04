@@ -504,7 +504,8 @@ endif
 
 EXTRA_DIST = \
 		../erb/cpp03_zone.hpp.erb \
-		../erb/cpp03_define.hpp.erb \
+		../erb/cpp03_define_array.hpp.erb \
+		../erb/cpp03_define_map.hpp.erb \
 		../erb/cpp03_msgpack_tuple.hpp.erb
 
 
