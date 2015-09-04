@@ -88,4 +88,4 @@ multi_file_SOURCES = multi_file1.cpp multi_file2.cpp
 
 buffer_LDADD = -lz
 
-EXTRA_DIST = cases.mpac cases_compact.mpac
+EXTRA_DIST = cases.mpac cases_compact.mpac test_allocator.hpp
