@@ -40,8 +40,11 @@ int main() {
 
     // msgpack array is constructed on z.
     msgpack::object obj = msgpack::unpack(z, ss.str().data(), ss.str().size(), offset);
+    std::cout << obj << std::endl;
     assert(obj.as<std::vector<int> >() == v);
 
     // msgpack str is constructed on z.
-    assert(msgpack::unpack(z, ss.str().data(), ss.str().size(), offset).as<std::string>() == s);
+    std::string const& str = msgpack::unpack(z, ss.str().data(), ss.str().size(), offset).as<std::string>();
+    std::cout << str << std::endl;
+    assert(str == s);
 }

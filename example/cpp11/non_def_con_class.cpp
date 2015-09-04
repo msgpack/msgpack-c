@@ -17,6 +17,7 @@
 
 #include <cassert>
 #include <memory>
+#include <iostream>
 
 #include <msgpack.hpp>
 
@@ -53,6 +54,6 @@ int main() {
     my m1(42);
     msgpack::zone z;
     msgpack::object obj(m1, z);
-    auto m2 = obj.as<my>();
-    assert(m1.a == m2.a);
+    std::cout << obj << std::endl;
+    assert(m1.a == obj.as<my>().a);
 }
