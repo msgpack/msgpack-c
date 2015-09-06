@@ -693,7 +693,7 @@ template <typename Stream>
 inline packer<Stream>& packer<Stream>::pack_str(uint32_t l)
 {
     if(l < 32) {
-        unsigned char d = 0xa0u | static_cast<uint8_t>(l);
+        unsigned char d = static_cast<uint8_t>(0xa0u | l);
         char buf = take8_8(d);
         append_buffer(&buf, 1);
     } else if(l < 256) {
