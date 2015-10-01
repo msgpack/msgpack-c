@@ -34,7 +34,7 @@ namespace type {
 template <typename T>
 struct fix_int {
     fix_int() : value(0) { }
-    fix_int(T value) : value(value) { }
+    fix_int(T v) : value(v) { }
 
     operator T() const { return value; }
 
