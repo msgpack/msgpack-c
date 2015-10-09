@@ -39,6 +39,7 @@ check_PROGRAMS += \
 		iterator_cpp11 \
 		msgpack_cpp11 \
 		reference_cpp11 \
+		reference_wrapper_cpp11 \
 		shared_ptr_cpp11 \
 		unique_ptr_cpp11
 
@@ -76,6 +77,7 @@ zone_SOURCES = zone.cpp
 iterator_cpp11_SOURCES = iterator_cpp11.cpp
 msgpack_cpp11_SOURCES = msgpack_cpp11.cpp
 reference_cpp11_SOURCES = reference_cpp11.cpp
+reference_wrapper_cpp11_SOURCES = reference_wrapper_cpp11.cpp
 shared_ptr_cpp11_SOURCES = shared_ptr_cpp11.cpp
 unique_ptr_cpp11_SOURCES = unique_ptr_cpp11.cpp
 
