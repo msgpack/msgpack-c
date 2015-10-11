@@ -8,15 +8,16 @@
 
 #if !defined(MSGPACK_USE_CPP03)
 
-TEST(MSGPACK_REFERENCE_WRAPPER, pack)
+TEST(MSGPACK_REFERENCE_WRAPPER, pack_convert)
 {
     int i1 = 42;
     std::reference_wrapper<int> val1(i1);
     std::stringstream ss;
     msgpack::pack(ss, val1);
     msgpack::object_handle oh = msgpack::unpack(ss.str().data(), ss.str().size());
-    int i2= oh.get().as<int>();
-    EXPECT_EQ(val1, i2);
+    int i2 = 0;
+    std::reference_wrapper<int> val2(i2);
+    oh.get().convert(val2);;
     EXPECT_EQ(i1, i2);
 }
 
@@ -37,29 +38,21 @@ TEST(MSGPACK_REFERENCE_WRAPPER, object)
     int i1 = 42;
     std::reference_wrapper<int> val1(i1);
     msgpack::object o(val1);
-    int i2= o.as<int>();
-    EXPECT_EQ(val1, i2);
+    int i2 = 0;
+    std::reference_wrapper<int> val2(i2);
+    o.convert(val2);
     EXPECT_EQ(i1, i2);
 }
 
 TEST(MSGPACK_REFERENCE_WRAPPER, object_with_zone)
 {
-    int i1 = 42;
-    std::reference_wrapper<int> val1(i1);
-    msgpack::zone z;
-    msgpack::object o(val1, z);
-    int i2= o.as<int>();
-    EXPECT_EQ(val1, i2);
-    EXPECT_EQ(i1, i2);
-}
-
-TEST(MSGPACK_REFERENCE_WRAPPER, object_with_zone_string)
-{
     std::string s1 = "ABC";
     std::reference_wrapper<std::string> val1(s1);
     msgpack::zone z;
     msgpack::object o(val1, z);
-    std::string s2= o.as<std::string>();
+    std::string s2 = "DE";
+    std::reference_wrapper<std::string> val2(s2);
+    o.convert(val2);
     EXPECT_EQ(s1, s2);
 }
 

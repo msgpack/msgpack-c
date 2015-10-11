@@ -34,6 +34,14 @@ MSGPACK_API_VERSION_NAMESPACE(v1) {
 namespace adaptor {
 
 template <typename T>
+struct convert<std::reference_wrapper<T>> {
+    msgpack::object const& operator()(msgpack::object const& o, std::reference_wrapper<T>& v) const {
+        msgpack::adaptor::convert<T>()(o, v.get());
+        return o;
+    }
+};
+
+template <typename T>
 struct pack<std::reference_wrapper<T>> {
     template <typename Stream>
     msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const std::reference_wrapper<T>& v) const {
