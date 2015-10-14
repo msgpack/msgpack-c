@@ -20,6 +20,7 @@
 
 #include "msgpack/versioning.hpp"
 #include "msgpack/adaptor/adaptor_base.hpp"
+#include "msgpack/adaptor/check_container_size.hpp"
 #include <cstring>
 #include <string>
 #include <cassert>
@@ -37,13 +38,13 @@ class ext {
 public:
     ext() : m_data(1, 0) {}
     ext(int8_t t, const char* p, uint32_t s) {
-        detail::check_container_size_for_ext<sizeof(std::size_t)>(s);
+        ::msgpack::detail::check_container_size_for_ext<sizeof(std::size_t)>(s);
         m_data.reserve(static_cast<std::size_t>(s) + 1);
         m_data.push_back(static_cast<char>(t));
         m_data.insert(m_data.end(), p, p + s);
     }
     ext(int8_t t, uint32_t s) {
-        detail::check_container_size_for_ext<sizeof(std::size_t)>(s);
+        ::msgpack::detail::check_container_size_for_ext<sizeof(std::size_t)>(s);
         m_data.resize(static_cast<std::size_t>(s) + 1);
         m_data[0] = static_cast<char>(t);
     }
@@ -136,7 +137,7 @@ public:
     ext_ref(const char* p, uint32_t s) :
         m_ptr(s == 0 ? static_cast<char*>(static_cast<void*>(&m_size)) : p),
         m_size(s == 0 ? 0 : s - 1) {
-        detail::check_container_size_for_ext<sizeof(std::size_t)>(s);
+        ::msgpack::detail::check_container_size_for_ext<sizeof(std::size_t)>(s);
     }
 
     // size limit has aleady been checked at ext's constructor
