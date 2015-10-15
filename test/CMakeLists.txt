@@ -48,9 +48,10 @@ IF (MSGPACK_CXX11)
     LIST (APPEND check_PROGRAMS
         iterator_cpp11.cpp
         msgpack_cpp11.cpp
+        reference_cpp11.cpp
+        reference_wrapper_cpp11.cpp
         shared_ptr_cpp11.cpp
         unique_ptr_cpp11.cpp
-        reference_cpp11.cpp
     )
 ENDIF ()
 

@@ -176,6 +176,7 @@ IF (MSGPACK_ENABLE_CXX)
         include/msgpack/adaptor/cpp11/array_char.hpp
         include/msgpack/adaptor/cpp11/array_unsigned_char.hpp
         include/msgpack/adaptor/cpp11/forward_list.hpp
+        include/msgpack/adaptor/cpp11/reference_wrapper.hpp
         include/msgpack/adaptor/cpp11/shared_ptr.hpp
         include/msgpack/adaptor/cpp11/tuple.hpp
         include/msgpack/adaptor/cpp11/unique_ptr.hpp

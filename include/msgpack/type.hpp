@@ -33,6 +33,7 @@
 #include "adaptor/cpp11/array_char.hpp"
 #include "adaptor/cpp11/array_unsigned_char.hpp"
 #include "adaptor/cpp11/forward_list.hpp"
+#include "adaptor/cpp11/reference_wrapper.hpp"
 #include "adaptor/cpp11/shared_ptr.hpp"
 #include "adaptor/cpp11/tuple.hpp"
 #include "adaptor/cpp11/unique_ptr.hpp"
