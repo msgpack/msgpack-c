@@ -38,11 +38,13 @@
 #   include <stdbool.h>
 #endif
 
+#if !defined(MSGPACK_DLLEXPORT)
 #if defined(_MSC_VER)
 #   define MSGPACK_DLLEXPORT __declspec(dllexport)
 #else  /* _MSC_VER */
 #   define MSGPACK_DLLEXPORT
 #endif /* _MSC_VER */
+#endif
 
 #ifdef _WIN32
 #   define _msgpack_atomic_counter_header <windows.h>
