@@ -372,3 +372,22 @@ TEST(unpack, insufficient_bytes_zone)
         EXPECT_EQ(off, 0u);
     }
 }
+
+TEST(unpack, parse_error)
+{
+    msgpack::sbuffer sbuf;
+
+    char c = '\xc1';
+    sbuf.write(&c, 1);
+
+    bool thrown = false;
+    msgpack::unpacked msg;
+    try {
+        msgpack::unpack(msg, sbuf.data(), sbuf.size());
+        EXPECT_TRUE(false);
+    }
+    catch (msgpack::parse_error const&) {
+        thrown = true;
+    }
+    EXPECT_TRUE(thrown);
+}
