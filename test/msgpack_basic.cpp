@@ -278,6 +278,16 @@ TEST(MSGPACK, simple_buffer_double)
   }
 }
 
+TEST(MSGPACK, simple_buffer_nil)
+{
+  msgpack::sbuffer sbuf;
+  msgpack::packer<msgpack::sbuffer> packer(sbuf);
+  packer.pack_nil();
+  msgpack::unpacked ret;
+  msgpack::unpack(ret, sbuf.data(), sbuf.size());
+  EXPECT_EQ(ret.get().type, msgpack::type::NIL);
+}
+
 TEST(MSGPACK, simple_buffer_true)
 {
   msgpack::sbuffer sbuf;
