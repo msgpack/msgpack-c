@@ -391,3 +391,77 @@ TEST(unpack, parse_error)
     }
     EXPECT_TRUE(thrown);
 }
+
+TEST(unpack, returned_parse_error)
+{
+    msgpack::sbuffer sbuf;
+
+    char c = '\xc1';
+    sbuf.write(&c, 1);
+
+    bool thrown = false;
+    try {
+        msgpack::unpack(sbuf.data(), sbuf.size());
+        EXPECT_TRUE(false);
+    }
+    catch (msgpack::parse_error const&) {
+        thrown = true;
+    }
+    EXPECT_TRUE(thrown);
+}
+
+TEST(unpack, zone_parse_error)
+{
+    msgpack::sbuffer sbuf;
+
+    char c = '\xc1';
+    sbuf.write(&c, 1);
+
+    bool thrown = false;
+    msgpack::zone z;
+    try {
+        msgpack::unpack(z, sbuf.data(), sbuf.size());
+        EXPECT_TRUE(false);
+    }
+    catch (msgpack::parse_error const&) {
+        thrown = true;
+    }
+    EXPECT_TRUE(thrown);
+}
+
+TEST(unpack, extra_bytes)
+{
+    msgpack::sbuffer sbuf;
+    msgpack::pack(sbuf, 1);
+
+    msgpack::unpacked msg = msgpack::unpack(sbuf.data(), sbuf.size() + 1);
+    EXPECT_EQ(1, msg.get().as<int>());
+}
+
+TEST(unpack, zone_extra_bytes)
+{
+    msgpack::sbuffer sbuf;
+    msgpack::pack(sbuf, 1);
+
+    msgpack::zone z;
+    msgpack::object obj = msgpack::unpack(z, sbuf.data(), sbuf.size() + 1);
+    EXPECT_EQ(1, obj.as<int>());
+}
+
+TEST(unpack, int_off_larger_than_length)
+{
+    msgpack::sbuffer sbuf;
+    msgpack::pack(sbuf, 1);
+
+    std::size_t off = 2;
+
+    bool thrown = false;
+    try {
+        msgpack::unpacked msg = msgpack::unpack(sbuf.data(), sbuf.size(), off);
+    }
+    catch (msgpack::insufficient_bytes const&) {
+        thrown = true;
+    }
+    EXPECT_TRUE(thrown);
+    EXPECT_EQ(off, 2u);
+}
