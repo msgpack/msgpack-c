@@ -553,3 +553,21 @@ TEST(limit, unpacker_array_over)
         EXPECT_TRUE(false);
     }
 }
+
+TEST(limit, unpacker_reserve)
+{
+    msgpack::unpacker u(nullptr, nullptr, MSGPACK_UNPACKER_INIT_BUFFER_SIZE,
+                        msgpack::unpack_limit());
+    std::size_t original_capacity = u.buffer_capacity();
+    u.reserve_buffer(original_capacity + 1u);
+    EXPECT_EQ((original_capacity + COUNTER_SIZE) * 2 - COUNTER_SIZE, u.buffer_capacity());
+}
+
+TEST(limit, unpacker_reserve_more_than_twice)
+{
+    msgpack::unpacker u(nullptr, nullptr, MSGPACK_UNPACKER_INIT_BUFFER_SIZE,
+                        msgpack::unpack_limit());
+    std::size_t original_capacity = u.buffer_capacity();
+    u.reserve_buffer(original_capacity * 3);
+    EXPECT_EQ((original_capacity + COUNTER_SIZE) * 4 - COUNTER_SIZE, u.buffer_capacity());
+}
