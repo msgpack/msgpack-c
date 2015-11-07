@@ -99,7 +99,7 @@ template <>
 struct pack<msgpack::type::ext> {
     template <typename Stream>
     msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const msgpack::type::ext& v) const {
-        // size limit has aleady been checked at ext's constructor
+        // size limit has already been checked at ext's constructor
         uint32_t size = v.size();
         o.pack_ext(size, v.type());
         o.pack_ext_body(v.data(), size);
@@ -110,7 +110,7 @@ struct pack<msgpack::type::ext> {
 template <>
 struct object_with_zone<msgpack::type::ext> {
     void operator()(msgpack::object::with_zone& o, const msgpack::type::ext& v) const {
-        // size limit has aleady been checked at ext's constructor
+        // size limit has already been checked at ext's constructor
         uint32_t size = v.size();
         o.type = msgpack::type::EXT;
         char* ptr = static_cast<char*>(o.zone.allocate_align(size + 1));
@@ -131,7 +131,7 @@ public:
     // A default constructed ext_ref object::m_ptr doesn't have the buffer to point to.
     // In order to avoid nullptr checking branches, m_ptr points to m_size.
     // So type() returns unspecified but valid value. It might be a zero because m_size
-    // is initialized as zero, but shoudn't assume that.
+    // is initialized as zero, but shouldn't assume that.
     ext_ref() : m_ptr(static_cast<char*>(static_cast<void*>(&m_size))), m_size(0) {}
     ext_ref(const char* p, uint32_t s) :
         m_ptr(s == 0 ? static_cast<char*>(static_cast<void*>(&m_size)) : p),
@@ -139,7 +139,7 @@ public:
         detail::check_container_size_for_ext<sizeof(std::size_t)>(s);
     }
 
-    // size limit has aleady been checked at ext's constructor
+    // size limit has already been checked at ext's constructor
     ext_ref(ext const& x) : m_ptr(&x.m_data[0]), m_size(x.size()) {}
 
     const char* data() const {
@@ -184,7 +184,7 @@ private:
 };
 
 inline ext::ext(ext_ref const& x) {
-    // size limit has aleady been checked at ext_ref's constructor
+    // size limit has already been checked at ext_ref's constructor
     m_data.reserve(x.size() + 1);
 
     m_data.push_back(x.type());
@@ -208,7 +208,7 @@ template <>
 struct pack<msgpack::type::ext_ref> {
     template <typename Stream>
     msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const msgpack::type::ext_ref& v) const {
-        // size limit has aleady been checked at ext_ref's constructor
+        // size limit has already been checked at ext_ref's constructor
         uint32_t size = v.size();
         o.pack_ext(size, v.type());
         o.pack_ext_body(v.data(), size);
@@ -219,7 +219,7 @@ struct pack<msgpack::type::ext_ref> {
 template <>
 struct object<msgpack::type::ext_ref> {
     void operator()(msgpack::object& o, const msgpack::type::ext_ref& v) const {
-        // size limit has aleady been checked at ext_ref's constructor
+        // size limit has already been checked at ext_ref's constructor
         uint32_t size = v.size();
         o.type = msgpack::type::EXT;
         o.via.ext.ptr = v.m_ptr;

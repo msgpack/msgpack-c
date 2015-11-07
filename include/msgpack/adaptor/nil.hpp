@@ -74,7 +74,7 @@ struct object_with_zone<type::nil> {
     }
 };
 
-} // namespace adaptror
+} // namespace adaptor
 
 template <>
 inline void msgpack::object::as<void>() const
