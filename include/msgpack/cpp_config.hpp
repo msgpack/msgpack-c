@@ -32,8 +32,7 @@
 
 
 
-#if defined __cplusplus
-#if __cplusplus < 201103L
+#if defined(MSGPACK_USE_CPP03)
 
 #if !defined(nullptr)
 #  if _MSC_VER < 1600
@@ -101,7 +100,7 @@ struct is_same<T, T> : true_type {};
 }  // namespace msgpack
 
 
-#else  // __cplusplus < 201103L
+#else  // MSGPACK_USE_CPP03
 
 #include <memory>
 #include <tuple>
@@ -128,8 +127,6 @@ MSGPACK_API_VERSION_NAMESPACE(v1) {
 }  // namespace msgpack
 
 
-#endif // __cplusplus < 201103L
-
-#endif // __cplusplus
+#endif // MSGPACK_USE_CPP03
 
 #endif /* msgpack/cpp_config.hpp */
