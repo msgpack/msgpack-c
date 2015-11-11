@@ -521,7 +521,7 @@ TEST(MSGPACKC, simple_buffer_fixext_1byte_255)
 {
   const size_t size = 255;
   char buf[size];
-  for (int i = 0; i != size; ++i) buf[i] = i;
+  for (size_t i = 0; i != size; ++i) buf[i] = i;
 
   msgpack_sbuffer sbuf;
   msgpack_sbuffer_init(&sbuf);
@@ -548,7 +548,7 @@ TEST(MSGPACKC, simple_buffer_fixext_2byte_256)
 {
   const size_t size = 256;
   char buf[size];
-  for (int i = 0; i != size; ++i) buf[i] = i;
+  for (size_t i = 0; i != size; ++i) buf[i] = i;
 
   msgpack_sbuffer sbuf;
   msgpack_sbuffer_init(&sbuf);
@@ -575,7 +575,7 @@ TEST(MSGPACKC, simple_buffer_fixext_2byte_65535)
 {
   const size_t size = 65535;
   char buf[size];
-  for (int i = 0; i != size; ++i) buf[i] = i;
+  for (size_t i = 0; i != size; ++i) buf[i] = i;
 
   msgpack_sbuffer sbuf;
   msgpack_sbuffer_init(&sbuf);
@@ -602,7 +602,7 @@ TEST(MSGPACKC, simple_buffer_fixext_4byte_65536)
 {
   const size_t size = 65536;
   char buf[size];
-  for (int i = 0; i != size; ++i) buf[i] = i;
+  for (size_t i = 0; i != size; ++i) buf[i] = i;
 
   msgpack_sbuffer sbuf;
   msgpack_sbuffer_init(&sbuf);

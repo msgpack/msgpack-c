@@ -687,7 +687,7 @@ TEST(object_with_zone, construct_enum)
     msgpack::zone z;
     msgpack::object obj(elem, z);
     EXPECT_EQ(msgpack::type::POSITIVE_INTEGER, obj.type);
-    EXPECT_EQ(elem, obj.via.u64);
+    EXPECT_EQ(static_cast<uint64_t>(elem), obj.via.u64);
 }
 
 #if !defined(MSGPACK_USE_CPP03)
@@ -707,7 +707,7 @@ TEST(object_with_zone, construct_enum_outer)
     msgpack::zone z;
     msgpack::object obj(outer_enum::elem, z);
     EXPECT_EQ(msgpack::type::POSITIVE_INTEGER, obj.type);
-    EXPECT_EQ(elem, obj.via.u64);
+    EXPECT_EQ(static_cast<uint64_t>(elem), obj.via.u64);
 }
 
 // User defined inheriting classes

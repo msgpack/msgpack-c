@@ -147,7 +147,7 @@ TEST(MSGPACK_BOOST, pack_convert_variant_positive_integer)
     std::stringstream ss;
     msgpack::type::variant val1 = 123;
     EXPECT_TRUE(val1.is_uint64_t());
-    EXPECT_EQ(val1.as_uint64_t(), 123);
+    EXPECT_EQ(val1.as_uint64_t(), 123U);
 
     msgpack::pack(ss, val1);
 
@@ -155,7 +155,7 @@ TEST(MSGPACK_BOOST, pack_convert_variant_positive_integer)
     msgpack::unpack(ret, ss.str().data(), ss.str().size());
     msgpack::type::variant val2 = ret.get().as<msgpack::type::variant>();
     EXPECT_TRUE(val2.is_uint64_t());
-    EXPECT_EQ(val2.as_uint64_t(), 123);
+    EXPECT_EQ(val2.as_uint64_t(), 123U);
     EXPECT_NO_THROW(boost::get<uint64_t>(val2));
     EXPECT_TRUE(val1 == val2);
 }
@@ -164,11 +164,11 @@ TEST(MSGPACK_BOOST, object_variant_positive_integer)
 {
     msgpack::type::variant val1 = 123;
     EXPECT_TRUE(val1.is_uint64_t());
-    EXPECT_EQ(val1.as_uint64_t(), 123);
+    EXPECT_EQ(val1.as_uint64_t(), 123U);
     msgpack::object obj(val1);
     msgpack::type::variant val2 = obj.as<msgpack::type::variant>();
     EXPECT_TRUE(val2.is_uint64_t());
-    EXPECT_EQ(val2.as_uint64_t(), 123);
+    EXPECT_EQ(val2.as_uint64_t(), 123U);
     EXPECT_NO_THROW(boost::get<uint64_t>(val2));
     EXPECT_TRUE(val1 == val2);
 }
@@ -178,11 +178,11 @@ TEST(MSGPACK_BOOST, object_with_zone_variant_positive_integer)
     msgpack::zone z;
     msgpack::type::variant val1 = 123;
     EXPECT_TRUE(val1.is_uint64_t());
-    EXPECT_EQ(val1.as_uint64_t(), 123);
+    EXPECT_EQ(val1.as_uint64_t(), 123U);
     msgpack::object obj(val1, z);
     msgpack::type::variant val2 = obj.as<msgpack::type::variant>();
     EXPECT_TRUE(val2.is_uint64_t());
-    EXPECT_EQ(val2.as_uint64_t(), 123);
+    EXPECT_EQ(val2.as_uint64_t(), 123U);
     EXPECT_NO_THROW(boost::get<uint64_t>(val2));
     EXPECT_TRUE(val1 == val2);
 }
