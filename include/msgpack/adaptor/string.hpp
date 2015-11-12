@@ -22,6 +22,7 @@
 #include "msgpack/adaptor/adaptor_base.hpp"
 #include "msgpack/adaptor/check_container_size.hpp"
 
+#include <cstring> // for memcpy()
 #include <string>
 
 namespace msgpack {
