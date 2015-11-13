@@ -24,6 +24,7 @@
 #include "msgpack/adaptor/check_container_size.hpp"
 
 #include <memory>
+#include <type_traits>
 
 namespace msgpack {
 
@@ -53,14 +54,14 @@ struct pack<std::reference_wrapper<T>> {
 template <typename T>
 struct object<std::reference_wrapper<T> > {
     void operator()(msgpack::object& o, const std::reference_wrapper<T>& v) const {
-        msgpack::adaptor::object<T>()(o, v.get());
+        msgpack::adaptor::object<typename std::remove_const<T>::type>()(o, v.get());
     }
 };
 
 template <typename T>
 struct object_with_zone<std::reference_wrapper<T>> {
     void operator()(msgpack::object::with_zone& o, const std::reference_wrapper<T>& v) const {
-        msgpack::adaptor::object_with_zone<T>()(o, v.get());
+        msgpack::adaptor::object_with_zone<typename std::remove_const<T>::type>()(o, v.get());
     }
 };
 
