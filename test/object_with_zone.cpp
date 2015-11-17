@@ -203,7 +203,7 @@ TEST(object_with_zone, vector)
             v1.push_back(i);
         msgpack::zone z;
         msgpack::object obj(v1, z);
-        EXPECT_EQ(obj.as<vector<int> >(), v1);
+        EXPECT_TRUE(obj.as<vector<int> >() == v1);
         v1.front() = 42;
         EXPECT_EQ(obj.as<vector<int> >().front(), 1);
     }
@@ -219,7 +219,7 @@ TEST(object_with_zone, vector_char)
             v1.push_back(static_cast<char>(i));
         msgpack::zone z;
         msgpack::object obj(v1, z);
-        EXPECT_EQ(obj.as<vector<char> >(), v1);
+        EXPECT_TRUE(obj.as<vector<char> >() == v1);
         v1.front() = 42;
         EXPECT_EQ(obj.as<vector<char> >().front(), 1);
     }
@@ -233,7 +233,7 @@ TEST(object_without_zone, vector_char)
         for (unsigned int i = 1; i < kElements; i++)
             v1.push_back(static_cast<char>(i));
         msgpack::object obj(v1);
-        EXPECT_EQ(obj.as<vector<char> >(), v1);
+        EXPECT_TRUE(obj.as<vector<char> >() == v1);
         v1.front() = 42;
         // obj refer to v1
         EXPECT_EQ(obj.as<vector<char> >().front(), 42);
@@ -251,7 +251,7 @@ TEST(object_with_zone, vector_unsigned_char)
             v1.push_back(static_cast<unsigned char>(i));
         msgpack::zone z;
         msgpack::object obj(v1, z);
-        EXPECT_EQ(obj.as<vector<unsigned char> >(), v1);
+        EXPECT_TRUE(obj.as<vector<unsigned char> >() == v1);
         v1.front() = 42;
         EXPECT_EQ(obj.as<vector<unsigned char> >().front(), 1);
     }
@@ -266,7 +266,7 @@ TEST(object_without_zone, vector_unsigned_char)
         for (unsigned int i = 1; i < kElements; i++)
             v1.push_back(static_cast<unsigned char>(i));
         msgpack::object obj(v1);
-        EXPECT_EQ(obj.as<vector<unsigned char> >(), v1);
+        EXPECT_TRUE(obj.as<vector<unsigned char> >() == v1);
         v1.front() = 42;
         // obj refer to v1
         EXPECT_EQ(obj.as<vector<unsigned char> >().front(), 42);
@@ -283,7 +283,7 @@ TEST(object_with_zone, list)
             v1.push_back(i);
         msgpack::zone z;
         msgpack::object obj(v1, z);
-        EXPECT_EQ(obj.as<list<int> >(), v1);
+        EXPECT_TRUE(obj.as<list<int> >() == v1);
         v1.front() = 42;
         EXPECT_EQ(obj.as<list<int> >().front(), 1);
     }
@@ -299,7 +299,7 @@ TEST(object_with_zone, deque)
             v1.push_back(i);
         msgpack::zone z;
         msgpack::object obj(v1, z);
-        EXPECT_EQ(obj.as<deque<int> >(), v1);
+        EXPECT_TRUE(obj.as<deque<int> >() == v1);
         v1.front() = 42;
         EXPECT_EQ(obj.as<deque<int> >().front(), 1);
     }
@@ -355,12 +355,12 @@ TEST(object_with_zone, raw_ref)
     msgpack::type::raw_ref v(s.data(), static_cast<uint32_t>(s.size()));
     msgpack::zone z;
     msgpack::object obj(v, z);
-    EXPECT_EQ(obj.as<msgpack::type::raw_ref>(), v);
+    EXPECT_TRUE(obj.as<msgpack::type::raw_ref>() == v);
     s[0] = 'd';
     // even if with_zone, not copied due to raw_ref
     // Basically, the combination raw_ref and object::wit_zone
     // is meaningless.
-    EXPECT_EQ(obj.as<msgpack::type::raw_ref>(), v);
+    EXPECT_TRUE(obj.as<msgpack::type::raw_ref>() == v);
 }
 
 TEST(object_without_zone, raw_ref)
@@ -369,9 +369,9 @@ TEST(object_without_zone, raw_ref)
     msgpack::type::raw_ref v(s.data(), static_cast<uint32_t>(s.size()));
     msgpack::zone z;
     msgpack::object obj(v);
-    EXPECT_EQ(obj.as<msgpack::type::raw_ref>(), v);
+    EXPECT_TRUE(obj.as<msgpack::type::raw_ref>() == v);
     s[0] = 'd';
-    EXPECT_EQ(obj.as<msgpack::type::raw_ref>(), v);
+    EXPECT_TRUE(obj.as<msgpack::type::raw_ref>() == v);
 }
 
 // pair
@@ -381,7 +381,7 @@ TEST(object_with_zone, pair)
     test_t v(1, "abc");
     msgpack::zone z;
     msgpack::object obj(v, z);
-    EXPECT_EQ(obj.as<test_t>(), v);
+    EXPECT_TRUE(obj.as<test_t>() == v);
     v.first = 42;
     EXPECT_EQ(obj.as<test_t>().first, 1);
 }
@@ -395,7 +395,7 @@ TEST(object_with_zone, set)
             v1.insert(i);
         msgpack::zone z;
         msgpack::object obj(v1, z);
-        EXPECT_EQ(obj.as<set<int> >(), v1);
+        EXPECT_TRUE(obj.as<set<int> >() == v1);
     }
 }
 
@@ -408,7 +408,7 @@ TEST(object_with_zone, multiset)
             v1.insert(i % (kElements / 2));
         msgpack::zone z;
         msgpack::object obj(v1, z);
-        EXPECT_EQ(obj.as<multiset<int> >(), v1);
+        EXPECT_TRUE(obj.as<multiset<int> >() == v1);
     }
 }
 
@@ -422,7 +422,7 @@ TEST(object_with_zone, map)
             v1.insert(std::make_pair(i, i*2));
         msgpack::zone z;
         msgpack::object obj(v1, z);
-        EXPECT_EQ(obj.as<test_t >(), v1);
+        EXPECT_TRUE(obj.as<test_t >() == v1);
     }
 }
 
@@ -436,7 +436,7 @@ TEST(object_with_zone, multimap)
             v1.insert(std::make_pair(i % (kElements / 2), i*2));
         msgpack::zone z;
         msgpack::object obj(v1, z);
-        EXPECT_EQ(obj.as<test_t >(), v1);
+        EXPECT_TRUE(obj.as<test_t >() == v1);
     }
 }
 
@@ -825,7 +825,7 @@ TEST(object_with_zone, array)
             v1[i] = rand();
         msgpack::zone z;
         msgpack::object obj(v1, z);
-        EXPECT_EQ(obj.as<test_t>(), v1);
+        EXPECT_TRUE(obj.as<test_t>() == v1);
         v1.front() = 42;
         EXPECT_EQ(obj.as<test_t>().front(), 1);
     }
@@ -841,7 +841,7 @@ TEST(object_with_zone, array_char)
             v1[i] = rand();
         msgpack::zone z;
         msgpack::object obj(v1, z);
-        EXPECT_EQ(obj.as<test_t>(), v1);
+        EXPECT_TRUE(obj.as<test_t>() == v1);
         v1.front() = 42;
         EXPECT_EQ(obj.as<test_t>().front(), 1);
     }
@@ -856,7 +856,7 @@ TEST(object_without_zone, array_char)
         for (unsigned int i = 1; i < kElements; i++)
             v1[i] = rand();
         msgpack::object obj(v1);
-        EXPECT_EQ(obj.as<test_t>(), v1);
+        EXPECT_TRUE(obj.as<test_t>() == v1);
         v1.front() = 42;
         // obj refer to v1
         EXPECT_EQ(obj.as<test_t>().front(), 42);
@@ -874,7 +874,7 @@ TEST(object_with_zone, array_unsigned_char)
             v1[i] = rand();
         msgpack::zone z;
         msgpack::object obj(v1, z);
-        EXPECT_EQ(obj.as<test_t>(), v1);
+        EXPECT_TRUE(obj.as<test_t>() == v1);
         v1.front() = 42;
         EXPECT_EQ(obj.as<test_t>().front(), 1);
     }
@@ -890,7 +890,7 @@ TEST(object_without_zone, array_unsigned_char)
         for (unsigned int i = 1; i < kElements; i++)
             v1[i] = rand();
         msgpack::object obj(v1);
-        EXPECT_EQ(obj.as<test_t>(), v1);
+        EXPECT_TRUE(obj.as<test_t>() == v1);
         v1.front() = 42;
         // obj refer to v1
         EXPECT_EQ(obj.as<test_t>().front(), 42);
@@ -906,7 +906,7 @@ TEST(object_with_zone, forward_list)
             v1.push_front(i);
         msgpack::zone z;
         msgpack::object obj(v1, z);
-        EXPECT_EQ(obj.as<forward_list<int> >(), v1);
+        EXPECT_TRUE(obj.as<forward_list<int> >() == v1);
         v1.front() = 42;
         EXPECT_EQ(obj.as<forward_list<int> >().front(), static_cast<int>(kElements - 1));
     }
@@ -918,7 +918,7 @@ TEST(object_with_zone, tuple)
     test_t v(1, "abc", true);
     msgpack::zone z;
     msgpack::object obj(v, z);
-    EXPECT_EQ(obj.as<test_t>(), v);
+    EXPECT_TRUE(obj.as<test_t>() == v);
 }
 
 TEST(object_with_zone, tuple_empty)
@@ -927,7 +927,7 @@ TEST(object_with_zone, tuple_empty)
     test_t v;
     msgpack::zone z;
     msgpack::object obj(v, z);
-    EXPECT_EQ(obj.as<test_t>(), v);
+    EXPECT_TRUE(obj.as<test_t>() == v);
 }
 
 #endif // !defined(MSGPACK_USE_CPP03)
@@ -937,8 +937,8 @@ TEST(object_with_zone, ext_empty)
     msgpack::type::ext v;
     msgpack::zone z;
     msgpack::object obj(v, z);
-    EXPECT_EQ(obj.as<msgpack::type::ext>(), v);
-    EXPECT_EQ(obj.as<msgpack::type::ext_ref>(), v);
+    EXPECT_TRUE(obj.as<msgpack::type::ext>() == v);
+    EXPECT_TRUE(obj.as<msgpack::type::ext_ref>() == v);
 }
 
 TEST(object_with_zone, ext)
@@ -947,8 +947,8 @@ TEST(object_with_zone, ext)
     for (int i = 0; i < 10; ++i) v.data()[i] = i;
     msgpack::zone z;
     msgpack::object obj(v, z);
-    EXPECT_EQ(obj.as<msgpack::type::ext>(), v);
-    EXPECT_EQ(obj.as<msgpack::type::ext_ref>(), v);
+    EXPECT_TRUE(obj.as<msgpack::type::ext>() == v);
+    EXPECT_TRUE(obj.as<msgpack::type::ext_ref>() == v);
 }
 
 TEST(object_with_zone, ext_from_buf)
@@ -957,8 +957,8 @@ TEST(object_with_zone, ext_from_buf)
     msgpack::type::ext v(42, buf, sizeof(buf));
     msgpack::zone z;
     msgpack::object obj(v, z);
-    EXPECT_EQ(obj.as<msgpack::type::ext>(), v);
-    EXPECT_EQ(obj.as<msgpack::type::ext_ref>(), v);
+    EXPECT_TRUE(obj.as<msgpack::type::ext>() == v);
+    EXPECT_TRUE(obj.as<msgpack::type::ext_ref>() == v);
 }
 
 TEST(object_with_zone, ext_ref_empty)
@@ -966,8 +966,8 @@ TEST(object_with_zone, ext_ref_empty)
     msgpack::type::ext_ref v;
     msgpack::zone z;
     msgpack::object obj(v, z);
-    EXPECT_EQ(obj.as<msgpack::type::ext>(), v);
-    EXPECT_EQ(obj.as<msgpack::type::ext_ref>(), v);
+    EXPECT_TRUE(obj.as<msgpack::type::ext>() == v);
+    EXPECT_TRUE(obj.as<msgpack::type::ext_ref>() == v);
 }
 
 TEST(object_with_zone, ext_ref_from_buf)
@@ -976,6 +976,6 @@ TEST(object_with_zone, ext_ref_from_buf)
     msgpack::type::ext_ref v(buf, sizeof(buf));
     msgpack::zone z;
     msgpack::object obj(v, z);
-    EXPECT_EQ(obj.as<msgpack::type::ext>(), v);
-    EXPECT_EQ(obj.as<msgpack::type::ext_ref>(), v);
+    EXPECT_TRUE(obj.as<msgpack::type::ext>() == v);
+    EXPECT_TRUE(obj.as<msgpack::type::ext_ref>() == v);
 }
