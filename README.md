@@ -1,7 +1,7 @@
 `msgpack` for C/C++
 ===================
 
-Version 1.2.0 [![Build Status](https://travis-ci.org/msgpack/msgpack-c.svg?branch=master)](https://travis-ci.org/msgpack/msgpack-c) [![Build status](https://ci.appveyor.com/api/projects/status/8kstcgt79qj123mw/branch/master?svg=true)](https://ci.appveyor.com/project/redboltz/msgpack-c/branch/master)
+Version 1.3.0 [![Build Status](https://travis-ci.org/msgpack/msgpack-c.svg?branch=master)](https://travis-ci.org/msgpack/msgpack-c) [![Build status](https://ci.appveyor.com/api/projects/status/8kstcgt79qj123mw/branch/master?svg=true)](https://ci.appveyor.com/project/redboltz/msgpack-c/branch/master)
 
 It's like JSON but small and fast.
 
@@ -215,5 +215,5 @@ Here's the list of [great contributors](https://github.com/msgpack/msgpack-c/gra
 License
 -------
 
-`msgpack-c` is licensed under the Apache License Version 2.0. See
-the [`LICENSE`](./LICENSE) file for details.
+`msgpack-c` is licensed under the Boost Software License, Version 1.0. See
+the [`LICENSE_1_0.txt`](./LICENSE_1_0.txt) file for details.

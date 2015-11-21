@@ -1,3 +1,11 @@
+2015-11-21 version 1.3.0
+  * Change the license from the Apache License Version 2.0 to the
+    Boost Software License, Version 1.0.(#386)
+  * Remove some warnings (#365)
+  * Add std::reference_wrapper support(#373, #384)
+  * Improve tests (#375, #378, #379, #380)
+  * Fix msvc specific problem (#376, #383)
+  * Fix typos (#381)
 2015-09-04 version 1.2.0
   << breaking change >>
   * Change std::vector<unsigned char> and std::array<unsigned char>
