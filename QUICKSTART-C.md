@@ -119,7 +119,7 @@ int main(void) {
         /* creates buffer and serializer instance. */
         msgpack_sbuffer* buffer = msgpack_sbuffer_new();
         msgpack_packer* pk = msgpack_packer_new(buffer, msgpack_sbuffer_write);
-        
+
         int j;
 
         for(j = 0; j<23; j++) {
