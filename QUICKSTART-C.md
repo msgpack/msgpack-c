@@ -88,10 +88,10 @@ int main(void) {
 
         /* serializes ["Hello", "MessagePack"]. */
         msgpack_pack_array(pk, 2);
-        msgpack_pack_raw(pk, 5);
-        msgpack_pack_raw_body(pk, "Hello", 5);
-        msgpack_pack_raw(pk, 11);
-        msgpack_pack_raw_body(pk, "MessagePack", 11);
+        msgpack_pack_bin(pk, 5);
+        msgpack_pack_bin_body(pk, "Hello", 5);
+        msgpack_pack_bin(pk, 11);
+        msgpack_pack_bin_body(pk, "MessagePack", 11);
 
         /* deserializes it. */
         msgpack_unpacked msg;
@@ -128,10 +128,10 @@ int main(void) {
 
            /* serializes ["Hello", "MessagePack"]. */
            msgpack_pack_array(pk, 3);
-           msgpack_pack_raw(pk, 5);
-           msgpack_pack_raw_body(pk, "Hello", 5);
-           msgpack_pack_raw(pk, 11);
-           msgpack_pack_raw_body(pk, "MessagePack", 11);
+           msgpack_pack_bin(pk, 5);
+           msgpack_pack_bin_body(pk, "Hello", 5);
+           msgpack_pack_bin(pk, 11);
+           msgpack_pack_bin_body(pk, "MessagePack", 11);
            msgpack_pack_int(pk, j);
 
            /* deserializes it. */
