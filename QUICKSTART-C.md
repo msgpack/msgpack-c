@@ -36,9 +36,9 @@ On Gentoo Linux, you can use emerge. Install [dev-libs/msgpack|http://gentoo-por
 On the other UNIX-like platforms, download source package from [Releases|http://msgpack.org/releases/cpp/] and run `./configure && make && make install`.
 
 ```
-$ wget http://msgpack.org/releases/cpp/msgpack-0.5.5.tar.gz
-$ tar zxvf msgpack-0.5.5.tar.gz
-$ cd msgpack-0.5.5
+$ wget http://msgpack.org/releases/cpp/msgpack-1.3.0.tar.gz
+$ tar zxvf msgpack-1.3.0.tar.gz
+$ cd msgpack-1.3.0
 $ ./configure
 $ make
 $ sudo make install
