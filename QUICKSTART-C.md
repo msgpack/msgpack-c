@@ -36,9 +36,9 @@ On Gentoo Linux, you can use emerge. Install [dev-libs/msgpack|http://gentoo-por
 On the other UNIX-like platforms, download source package from [Releases|http://msgpack.org/releases/cpp/] and run `./configure && make && make install`.
 
 ```
-$ wget http://msgpack.org/releases/cpp/msgpack-0.5.5.tar.gz
-$ tar zxvf msgpack-0.5.5.tar.gz
-$ cd msgpack-0.5.5
+$ wget http://msgpack.org/releases/cpp/msgpack-1.3.0.tar.gz
+$ tar zxvf msgpack-1.3.0.tar.gz
+$ cd msgpack-1.3.0
 $ ./configure
 $ make
 $ sudo make install
@@ -88,10 +88,10 @@ int main(void) {
 
         /* serializes ["Hello", "MessagePack"]. */
         msgpack_pack_array(pk, 2);
-        msgpack_pack_raw(pk, 5);
-        msgpack_pack_raw_body(pk, "Hello", 5);
-        msgpack_pack_raw(pk, 11);
-        msgpack_pack_raw_body(pk, "MessagePack", 11);
+        msgpack_pack_bin(pk, 5);
+        msgpack_pack_bin_body(pk, "Hello", 5);
+        msgpack_pack_bin(pk, 11);
+        msgpack_pack_bin_body(pk, "MessagePack", 11);
 
         /* deserializes it. */
         msgpack_unpacked msg;
@@ -119,7 +119,7 @@ int main(void) {
         /* creates buffer and serializer instance. */
         msgpack_sbuffer* buffer = msgpack_sbuffer_new();
         msgpack_packer* pk = msgpack_packer_new(buffer, msgpack_sbuffer_write);
-        
+
         int j;
 
         for(j = 0; j<23; j++) {
@@ -128,10 +128,10 @@ int main(void) {
 
            /* serializes ["Hello", "MessagePack"]. */
            msgpack_pack_array(pk, 3);
-           msgpack_pack_raw(pk, 5);
-           msgpack_pack_raw_body(pk, "Hello", 5);
-           msgpack_pack_raw(pk, 11);
-           msgpack_pack_raw_body(pk, "MessagePack", 11);
+           msgpack_pack_bin(pk, 5);
+           msgpack_pack_bin_body(pk, "Hello", 5);
+           msgpack_pack_bin(pk, 11);
+           msgpack_pack_bin_body(pk, "MessagePack", 11);
            msgpack_pack_int(pk, j);
 
            /* deserializes it. */
