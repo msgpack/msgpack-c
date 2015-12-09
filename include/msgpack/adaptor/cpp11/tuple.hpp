@@ -112,7 +112,7 @@ struct as<std::tuple<Args...>, typename std::enable_if<msgpack::all_of<msgpack::
     std::tuple<Args...> operator()(
         msgpack::object const& o) const {
         if (o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-        if (o.via.array.size < sizeof...(Args)) { throw msgpack::type_error(); }
+        if (o.via.array.size != sizeof...(Args)) { throw msgpack::type_error(); }
         return StdTupleAs<Args...>::as(o);
     }
 };
