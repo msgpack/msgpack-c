@@ -70,13 +70,17 @@ namespace detail {
     template <>
     struct object_char_sign<true> {
         static inline void make(msgpack::object& o, char v) {
-            if (v < 0) {
+            // Since 'char' is unsigned on ARM, the condition 'v < 0'
+            // triggers an error if '-Werror=type-limits' is used:
+            //   comparison is always false due to limited range of data type
+            int i = v;
+            if (i < 0) {
                 o.type = msgpack::type::NEGATIVE_INTEGER;
-                o.via.i64 = v;
+                o.via.i64 = i;
             }
             else {
                 o.type = msgpack::type::POSITIVE_INTEGER;
-                o.via.u64 = v;
+                o.via.u64 = i;
             }
         }
     };
