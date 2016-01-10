@@ -1,6 +1,7 @@
 SUBDIRS = src test
 
 DOC_FILES = \
+		Doxyfile \
 		README.md \
 		LICENSE_1_0.txt \
 		NOTICE \
