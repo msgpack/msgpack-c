@@ -76,6 +76,11 @@ IF (MSGPACK_BOOST)
    )
 ENDIF ()
 
+IF (MSGPACK_CHAR_SIGN)
+   SET (CMAKE_C_FLAGS "-f${MSGPACK_CHAR_SIGN}-char ${CMAKE_C_FLAGS}")
+   SET (CMAKE_CXX_FLAGS "-f${MSGPACK_CHAR_SIGN}-char ${CMAKE_CXX_FLAGS}")
+ENDIF ()
+
 FILE (GLOB_RECURSE PREDEF_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/external/boost/predef/include/boost ${CMAKE_CURRENT_SOURCE_DIR}/external/boost/predef/include/boost/*.h)
 FOREACH (F ${PREDEF_FILES})
    SET(M "Converting ${F}")
