@@ -36,14 +36,14 @@ install:
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then unzip -q gtest-1.7.0.zip && cd gtest-1.7.0 && sudo cp -r include/gtest /usr/local/include && clang++ src/gtest-all.cc -I. -Iinclude -c && g++ src/gtest_main.cc -I. -Iinclude -c && ar -rv libgtest.a gtest-all.o && ar -rv libgtest_main.a gtest_main.o && sudo mv *.a /usr/local/lib && cd ..; fi
 
 env:
-  - ACTION="ci/build_autotools.sh" VERSION="cpp03" ARCH="64" LIBPATH="/usr/local/lib"   BOOST="boost" BOOST_INC="/usr/local/boost"
-  - ACTION="ci/build_autotools.sh" VERSION="cpp03" ARCH="32" LIBPATH="/usr/local/lib32" BOOST=""      BOOST_INC=""
-  - ACTION="ci/build_cmake.sh"     VERSION="cpp11" ARCH="64" LIBPATH="/usr/local/lib"   BOOST="boost" BOOST_INC="/usr/local/boost"
-  - ACTION="ci/build_cmake.sh"     VERSION="cpp11" ARCH="32" LIBPATH="/usr/local/lib32" BOOST=""      BOOST_INC=""                 SHARED="OFF"
-  - ACTION="ci/build_autotools.sh" VERSION="cpp11" ARCH="64" LIBPATH="/usr/local/lib"   BOOST=""      BOOST_INC=""
-  - ACTION="ci/build_autotools.sh" VERSION="cpp11" ARCH="32" LIBPATH="/usr/local/lib32" BOOST="boost" BOOST_INC="/usr/local/boost"
-  - ACTION="ci/build_cmake.sh"     VERSION="cpp03" ARCH="64" LIBPATH="/usr/local/lib"   BOOST=""      BOOST_INC=""
-  - ACTION="ci/build_cmake.sh"     VERSION="cpp03" ARCH="32" LIBPATH="/usr/local/lib32" BOOST="boost" BOOST_INC="/usr/local/boost" SHARED="OFF"
+  - ACTION="ci/build_autotools.sh" VERSION="cpp03" ARCH="64" LIBPATH="/usr/local/lib"   BOOST="boost" BOOST_INC="/usr/local/boost" CHAR_SIGN="unsigned"
+  - ACTION="ci/build_autotools.sh" VERSION="cpp03" ARCH="32" LIBPATH="/usr/local/lib32" BOOST=""      BOOST_INC=""                 CHAR_SIGN="signed"
+  - ACTION="ci/build_cmake.sh"     VERSION="cpp11" ARCH="64" LIBPATH="/usr/local/lib"   BOOST="boost" BOOST_INC="/usr/local/boost" CHAR_SIGN="signed"
+  - ACTION="ci/build_cmake.sh"     VERSION="cpp11" ARCH="32" LIBPATH="/usr/local/lib32" BOOST=""      BOOST_INC=""                 SHARED="OFF" CHAR_SIGN="unsigned"
+  - ACTION="ci/build_autotools.sh" VERSION="cpp11" ARCH="64" LIBPATH="/usr/local/lib"   BOOST=""      BOOST_INC=""                 CHAR_SIGN="signed"
+  - ACTION="ci/build_autotools.sh" VERSION="cpp11" ARCH="32" LIBPATH="/usr/local/lib32" BOOST="boost" BOOST_INC="/usr/local/boost" CHAR_SIGN="unsigned"
+  - ACTION="ci/build_cmake.sh"     VERSION="cpp03" ARCH="64" LIBPATH="/usr/local/lib"   BOOST=""      BOOST_INC=""                 CHAR_SIGN="unsigned"
+  - ACTION="ci/build_cmake.sh"     VERSION="cpp03" ARCH="32" LIBPATH="/usr/local/lib32" BOOST="boost" BOOST_INC="/usr/local/boost" SHARED="OFF" CHAR_SIGN="signed"
 
 before_script:
  - export PATH=/usr/local/bin:$PATH && rm -rf install
@@ -53,39 +53,39 @@ matrix:
     - os: osx
       compiler: gcc
     - os: osx
-      env: ACTION="ci/build_autotools.sh" VERSION="cpp03" ARCH="32" LIBPATH="/usr/local/lib32" BOOST=""      BOOST_INC=""
+      env: ACTION="ci/build_autotools.sh" VERSION="cpp03" ARCH="32" LIBPATH="/usr/local/lib32" BOOST=""      BOOST_INC=""                 CHAR_SIGN="signed"
     - os: osx
-      env: ACTION="ci/build_cmake.sh"     VERSION="cpp11" ARCH="32" LIBPATH="/usr/local/lib32" BOOST=""      BOOST_INC=""                 SHARED="OFF"
+      env: ACTION="ci/build_cmake.sh"     VERSION="cpp11" ARCH="32" LIBPATH="/usr/local/lib32" BOOST=""      BOOST_INC=""                 SHARED="OFF" CHAR_SIGN="unsigned"
     - os: osx
-      env: ACTION="ci/build_autotools.sh" VERSION="cpp11" ARCH="32" LIBPATH="/usr/local/lib32" BOOST="boost" BOOST_INC="/usr/local/boost"
+      env: ACTION="ci/build_autotools.sh" VERSION="cpp11" ARCH="32" LIBPATH="/usr/local/lib32" BOOST="boost" BOOST_INC="/usr/local/boost" CHAR_SIGN="unsigned"
     - os: osx
-      env: ACTION="ci/build_cmake.sh"     VERSION="cpp03" ARCH="32" LIBPATH="/usr/local/lib32" BOOST="boost" BOOST_INC="/usr/local/boost" SHARED="OFF"
+      env: ACTION="ci/build_cmake.sh"     VERSION="cpp03" ARCH="32" LIBPATH="/usr/local/lib32" BOOST="boost" BOOST_INC="/usr/local/boost" SHARED="OFF" CHAR_SIGN="signed"
 
     - os: linux
       compiler: gcc
-      env: ACTION="ci/build_autotools.sh" VERSION="cpp03" ARCH="64" LIBPATH="/usr/local/lib"   BOOST="boost" BOOST_INC="/usr/local/boost"
+      env: ACTION="ci/build_autotools.sh" VERSION="cpp03" ARCH="64" LIBPATH="/usr/local/lib"   BOOST="boost" BOOST_INC="/usr/local/boost" CHAR_SIGN="unsigned"
     - os: linux
       compiler: gcc
-      env: ACTION="ci/build_autotools.sh" VERSION="cpp03" ARCH="32" LIBPATH="/usr/local/lib32" BOOST=""      BOOST_INC=""
+      env: ACTION="ci/build_autotools.sh" VERSION="cpp03" ARCH="32" LIBPATH="/usr/local/lib32" BOOST=""      BOOST_INC=""                 CHAR_SIGN="signed"
     - os: linux
       compiler: gcc
-      env: ACTION="ci/build_cmake.sh"     VERSION="cpp11" ARCH="64" LIBPATH="/usr/local/lib"   BOOST="boost" BOOST_INC="/usr/local/boost"
+      env: ACTION="ci/build_cmake.sh"     VERSION="cpp11" ARCH="64" LIBPATH="/usr/local/lib"   BOOST="boost" BOOST_INC="/usr/local/boost" CHAR_SIGN="signed"
     - os: linux
       compiler: gcc
-      env: ACTION="ci/build_cmake.sh"     VERSION="cpp11" ARCH="32" LIBPATH="/usr/local/lib32" BOOST=""      BOOST_INC=""                 SHARED="OFF"
+      env: ACTION="ci/build_cmake.sh"     VERSION="cpp11" ARCH="32" LIBPATH="/usr/local/lib32" BOOST=""      BOOST_INC=""                 SHARED="OFF" CHAR_SIGN="unsigned"
 
     - os: linux
       compiler: clang
-      env: ACTION="ci/build_autotools.sh" VERSION="cpp11" ARCH="64" LIBPATH="/usr/local/lib"   BOOST=""      BOOST_INC=""
+      env: ACTION="ci/build_autotools.sh" VERSION="cpp11" ARCH="64" LIBPATH="/usr/local/lib"   BOOST=""      BOOST_INC=""                 CHAR_SIGN="signed"
     - os: linux
       compiler: clang
-      env: ACTION="ci/build_autotools.sh" VERSION="cpp11" ARCH="32" LIBPATH="/usr/local/lib32" BOOST="boost" BOOST_INC="/usr/local/boost"
+      env: ACTION="ci/build_autotools.sh" VERSION="cpp11" ARCH="32" LIBPATH="/usr/local/lib32" BOOST="boost" BOOST_INC="/usr/local/boost" CHAR_SIGN="unsigned"
     - os: linux
       compiler: clang
-      env: ACTION="ci/build_cmake.sh"     VERSION="cpp03" ARCH="64" LIBPATH="/usr/local/lib"   BOOST=""      BOOST_INC=""
+      env: ACTION="ci/build_cmake.sh"     VERSION="cpp03" ARCH="64" LIBPATH="/usr/local/lib"   BOOST=""      BOOST_INC=""                 CHAR_SIGN="unsigned"
     - os: linux
       compiler: clang
-      env: ACTION="ci/build_cmake.sh"     VERSION="cpp03" ARCH="32" LIBPATH="/usr/local/lib32" BOOST="boost" BOOST_INC="/usr/local/boost" SHARED="OFF"
+      env: ACTION="ci/build_cmake.sh"     VERSION="cpp03" ARCH="32" LIBPATH="/usr/local/lib32" BOOST="boost" BOOST_INC="/usr/local/boost" SHARED="OFF" CHAR_SIGN="signed"
 
 script:
-  - git clean -xdf && CMAKE_LIBRARY_PATH=${LIBPATH} ${ACTION} ${VERSION} ${ARCH} ${BOOST} ${BOOST_INC}
+  - git clean -xdf && CMAKE_LIBRARY_PATH=${LIBPATH} ${ACTION} ${VERSION} ${ARCH} ${BOOST} ${BOOST_INC} ${CHAR_SIGN}

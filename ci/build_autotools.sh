@@ -28,7 +28,7 @@ else
     boost=""
 fi
 
-./configure CFLAGS="$bit32" CXXFLAGS="$bit32 $cpp11 $boost -I$4"
+./configure CFLAGS="$bit32 -f${CHAR_SIGN}-char" CXXFLAGS="$bit32 -f${CHAR_SIGN}-char $cpp11 $boost -I$4"
 
 ret=$?
 if [ $ret -ne 0 ]
