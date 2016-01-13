@@ -125,13 +125,13 @@ int main(int argc, char * argv[])
 " MSGPACK_ENABLE_GCC_CXX_ATOMIC)
 
 IF (MSGPACK_ENABLE_GCC_CXX_ATOMIC)
-    LIST (APPEND msgpack_SOURCES
+    LIST (APPEND msgpackc_SOURCES
         src/gcc_atomic.cpp
     )
 ENDIF ()
 
 
-LIST (APPEND msgpack_SOURCES
+LIST (APPEND msgpackc_SOURCES
     src/unpack.c
     src/objectc.c
     src/version.c
@@ -139,7 +139,7 @@ LIST (APPEND msgpack_SOURCES
     src/zone.c
 )
 
-LIST (APPEND msgpack_HEADERS
+LIST (APPEND msgpackc_HEADERS
     include/msgpack/pack_define.h
     include/msgpack/pack_template.h
     include/msgpack/unpack_define.h
@@ -162,8 +162,8 @@ LIST (APPEND msgpack_HEADERS
 
 FILE (GLOB_RECURSE PREDEF_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/include/msgpack/predef/*.h)
 
-LIST (APPEND msgpack_HEADERS ${PREDEF_FILES})
-LIST (APPEND msgpack_HEADERS include/msgpack/predef.h)
+LIST (APPEND msgpackc_HEADERS ${PREDEF_FILES})
+LIST (APPEND msgpackc_HEADERS include/msgpack/predef.h)
 
 IF (MSGPACK_ENABLE_CXX)
     LIST (APPEND msgpack_HEADERS
@@ -234,8 +234,8 @@ IF (MSGPACK_ENABLE_CXX)
     )
     FILE (GLOB_RECURSE PREPROCESSOR_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/include/msgpack/preprocessor/*.hpp)
 
-    LIST (APPEND msgpack_HEADERS ${PREPROCESSOR_FILES})
-    LIST (APPEND msgpack_HEADERS include/msgpack/preprocessor.hpp)
+    LIST (APPEND msgpackc_HEADERS ${PREPROCESSOR_FILES})
+    LIST (APPEND msgpackc_HEADERS include/msgpack/preprocessor.hpp)
 ENDIF ()
 
 EXECUTE_PROCESS (
@@ -255,21 +255,21 @@ INCLUDE_DIRECTORIES (
 )
 
 IF (MSGPACK_ENABLE_SHARED)
-    ADD_LIBRARY (msgpack SHARED
-        ${msgpack_SOURCES}
-        ${msgpack_HEADERS}
+    ADD_LIBRARY (msgpackc SHARED
+        ${msgpackc_SOURCES}
+        ${msgpackc_HEADERS}
     )
 ENDIF ()
 
-ADD_LIBRARY (msgpack-static STATIC
-    ${msgpack_SOURCES}
-    ${msgpack_HEADERS}
+ADD_LIBRARY (msgpackc-static STATIC
+    ${msgpackc_SOURCES}
+    ${msgpackc_HEADERS}
 )
 
-SET_TARGET_PROPERTIES (msgpack-static PROPERTIES OUTPUT_NAME "msgpack")
+SET_TARGET_PROPERTIES (msgpackc-static PROPERTIES OUTPUT_NAME "msgpackc")
 IF (MSGPACK_ENABLE_SHARED)
-    SET_TARGET_PROPERTIES (msgpack PROPERTIES IMPORT_SUFFIX "_import.lib")
-    SET_TARGET_PROPERTIES (msgpack PROPERTIES SOVERSION 4 VERSION 4.0.0)
+    SET_TARGET_PROPERTIES (msgpackc PROPERTIES IMPORT_SUFFIX "_import.lib")
+    SET_TARGET_PROPERTIES (msgpackc PROPERTIES SOVERSION 2 VERSION 2.0.0)
 ENDIF ()
 
 IF (MSGPACK_BUILD_TESTS)
@@ -283,9 +283,9 @@ ENDIF ()
 
 IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     IF (MSGPACK_ENABLE_SHARED)
-        SET_PROPERTY (TARGET msgpack APPEND_STRING PROPERTY COMPILE_FLAGS "-Wall -Wextra -Wno-mismatched-tags -Werror -g -O3 -DPIC")
+        SET_PROPERTY (TARGET msgpackc APPEND_STRING PROPERTY COMPILE_FLAGS "-Wall -Wextra -Wno-mismatched-tags -Werror -g -O3 -DPIC")
     ENDIF ()
-    SET_PROPERTY (TARGET msgpack-static APPEND_STRING PROPERTY COMPILE_FLAGS "-Wall -Wextra -Wno-mismatched-tags -Werror -g -O3" )
+    SET_PROPERTY (TARGET msgpackc-static APPEND_STRING PROPERTY COMPILE_FLAGS "-Wall -Wextra -Wno-mismatched-tags -Werror -g -O3" )
 ENDIF ()
 IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     IF (CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
@@ -296,7 +296,7 @@ IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
 ENDIF ()
 
 IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC90" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC10")
-    SET_SOURCE_FILES_PROPERTIES(${msgpack_SOURCES} PROPERTIES LANGUAGE CXX)
+    SET_SOURCE_FILES_PROPERTIES(${msgpackc_SOURCES} PROPERTIES LANGUAGE CXX)
 ENDIF()
 
 IF (NOT DEFINED CMAKE_INSTALL_LIBDIR)
@@ -308,9 +308,9 @@ IF (MSGPACK_BUILD_EXAMPLES)
 ENDIF ()
 
 IF (MSGPACK_ENABLE_SHARED)
-    SET (MSGPACK_INSTALLTARGETS msgpack msgpack-static)
+    SET (MSGPACK_INSTALLTARGETS msgpackc msgpackc-static)
 ELSE()
-    SET (MSGPACK_INSTALLTARGETS msgpack-static)
+    SET (MSGPACK_INSTALLTARGETS msgpackc-static)
 ENDIF ()
 
 INSTALL (TARGETS ${MSGPACK_INSTALLTARGETS} DESTINATION ${CMAKE_INSTALL_LIBDIR})

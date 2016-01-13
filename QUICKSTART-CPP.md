@@ -47,7 +47,7 @@ int main(void) {
 Compile it as follows:
 
 ```
-$ g++ hello.cc -lmsgpack -o hello
+$ g++ hello.cc -o hello
 $ ./hello
 ["Hello", "MessagePack"]
 ```
@@ -83,7 +83,7 @@ int main(void) {
         }
 
         // results:
-        // $ g++ stream.cc -lmsgpack -o stream
+        // $ g++ stream.cc -o stream
         // $ ./stream
         // "Log message ... 1"
         // "Log message ... 2"

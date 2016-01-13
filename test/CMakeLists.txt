@@ -56,9 +56,9 @@ IF (MSGPACK_CXX11)
 ENDIF ()
 
 IF (MSGPACK_ENABLE_SHARED)
-    SET (MSGPACK_TEST_LIB msgpack)
+    SET (MSGPACK_TEST_LIB msgpackc)
 ELSE ()
-    SET (MSGPACK_TEST_LIB msgpack-static)
+    SET (MSGPACK_TEST_LIB msgpackc-static)
 ENDIF ()
 
 FOREACH (source_file ${check_PROGRAMS})
