@@ -34,7 +34,7 @@ fi
 mkdir -p ac
 test -f AUTHORS   || touch AUTHORS
 test -f COPYING   || touch COPYING
-test -f ChangeLog || touch ChangeLog
+test -f ChangeLog || cp -f CHANGELOG.md ChangeLog
 test -f NEWS      || touch NEWS
 test -f NOTICE    || touch NOTICE
 test -f README    || cp -f README.md README
