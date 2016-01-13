@@ -27,7 +27,7 @@ namespace detail {
 
     template <typename T>
     struct convert_integer_sign<T, true> {
-        static inline T convert(msgpack::object const& o) {
+        static T convert(msgpack::object const& o) {
             if(o.type == msgpack::type::POSITIVE_INTEGER) {
                 if(o.via.u64 > static_cast<uint64_t>(std::numeric_limits<T>::max()))
                     { throw msgpack::type_error(); }
@@ -43,7 +43,7 @@ namespace detail {
 
     template <typename T>
     struct convert_integer_sign<T, false> {
-        static inline T convert(msgpack::object const& o) {
+        static T convert(msgpack::object const& o) {
             if(o.type == msgpack::type::POSITIVE_INTEGER) {
                 if(o.via.u64 > static_cast<uint64_t>(std::numeric_limits<T>::max()))
                     { throw msgpack::type_error(); }
@@ -69,7 +69,9 @@ namespace detail {
 
     template <>
     struct object_char_sign<true> {
-        static inline void make(msgpack::object& o, char v) {
+        template <typename T>
+        static typename msgpack::enable_if<msgpack::is_same<T, char>::value>::type
+        make(msgpack::object& o, T v) {
             if (v < 0) {
                 o.type = msgpack::type::NEGATIVE_INTEGER;
                 o.via.i64 = v;
@@ -83,7 +85,7 @@ namespace detail {
 
     template <>
     struct object_char_sign<false> {
-        static inline void make(msgpack::object& o, char v) {
+        static void make(msgpack::object& o, char v) {
             o.type = msgpack::type::POSITIVE_INTEGER, o.via.u64 = v;
         }
     };
