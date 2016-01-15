@@ -294,7 +294,7 @@ TEST(object, construct_enum)
 {
     msgpack::object obj(elem);
     EXPECT_EQ(msgpack::type::POSITIVE_INTEGER, obj.type);
-    EXPECT_EQ(elem, obj.via.u64);
+    EXPECT_EQ(static_cast<uint64_t>(elem), obj.via.u64);
 }
 
 #if !defined(MSGPACK_USE_CPP03)
@@ -312,7 +312,7 @@ TEST(object, construct_enum_outer)
 {
     msgpack::object obj(outer_enum::elem);
     EXPECT_EQ(msgpack::type::POSITIVE_INTEGER, obj.type);
-    EXPECT_EQ(elem, obj.via.u64);
+    EXPECT_EQ(static_cast<uint64_t>(elem), obj.via.u64);
 }
 
 #if !defined(MSGPACK_USE_CPP03)
