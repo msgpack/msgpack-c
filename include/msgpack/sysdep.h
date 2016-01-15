@@ -78,7 +78,7 @@
 
 #endif
 
-#ifdef MSGPACK_ENDIAN_LITTLE_BYTE
+#if MSGPACK_ENDIAN_LITTLE_BYTE
 
 #   ifdef _WIN32
 #       if defined(ntohs)
