@@ -14,6 +14,9 @@ EXTRA_DIST = \
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = msgpack.pc
 
+vapidir = $(datadir)/vala/vapi
+vapi_DATA = msgpack.vapi msgpack.deps
+
 doxygen:
 	./preprocess clean
 	cd src && $(MAKE) doxygen
