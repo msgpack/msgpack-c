@@ -1,25 +1,14 @@
-lib_LTLIBRARIES = libmsgpack.la
+# For C++
+#
+# The C++ parts of msgpack-c is a header only library,
+# so there is no libraries.
 
-AM_CPPFLAGS = -I../include
+# For C
 
-libmsgpack_la_SOURCES = \
-		unpack.c \
-		objectc.c \
-		version.c \
-		vrefbuffer.c \
-		zone.c
+lib_LTLIBRARIES = libmsgpackc.la
 
-if ENABLE_GCC_CXX_ATOMIC
-	CXXFLAGS="$CXXFLAGS -DENABLE_GCC_CXX_ATOMIC"
-endif
-
-
-# -version-info CURRENT:REVISION:AGE
-libmsgpack_la_LDFLAGS = -version-info 4:0:0 -no-undefined
-
-
-# backward compatibility
-lib_LTLIBRARIES += libmsgpackc.la
+#AM_CPPFLAGS = -I../include
+AM_CFLAGS = -I../include
 
 libmsgpackc_la_SOURCES = \
 		unpack.c \
@@ -28,6 +17,7 @@ libmsgpackc_la_SOURCES = \
 		vrefbuffer.c \
 		zone.c
 
+# -version-info CURRENT:REVISION:AGE
 libmsgpackc_la_LDFLAGS = -version-info 2:0:0 -no-undefined
 
 
