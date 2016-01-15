@@ -408,7 +408,7 @@ TEST(MSGPACK, simple_buffer_fixext_1byte_255)
   msgpack::sbuffer sbuf;
   msgpack::packer<msgpack::sbuffer> packer(sbuf);
   char buf[size];
-  for (int i = 0; i != size; ++i) buf[i] = static_cast<char>(i);
+  for (std::size_t i = 0; i != size; ++i) buf[i] = static_cast<char>(i);
   packer.pack_ext(sizeof(buf), 77);
   packer.pack_ext_body(buf, sizeof(buf));
 
@@ -426,7 +426,7 @@ TEST(MSGPACK, simple_buffer_fixext_2byte_256)
   msgpack::sbuffer sbuf;
   msgpack::packer<msgpack::sbuffer> packer(sbuf);
   char buf[size];
-  for (int i = 0; i != size; ++i) buf[i] = static_cast<char>(i);
+  for (std::size_t i = 0; i != size; ++i) buf[i] = static_cast<char>(i);
   packer.pack_ext(sizeof(buf), 77);
   packer.pack_ext_body(buf, sizeof(buf));
 
@@ -444,7 +444,7 @@ TEST(MSGPACK, simple_buffer_fixext_2byte_65535)
   msgpack::sbuffer sbuf;
   msgpack::packer<msgpack::sbuffer> packer(sbuf);
   char buf[size];
-  for (int i = 0; i != size; ++i) buf[i] = static_cast<char>(i);
+  for (std::size_t i = 0; i != size; ++i) buf[i] = static_cast<char>(i);
   packer.pack_ext(sizeof(buf), 77);
   packer.pack_ext_body(buf, sizeof(buf));
 

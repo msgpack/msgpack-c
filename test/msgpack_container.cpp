@@ -146,7 +146,7 @@ TEST(MSGPACK_STL, simple_buffer_assoc_vector)
 
 TEST(MSGPACK_STL, simple_buffer_map)
 {
-    typedef map<int, int, test::less<int>, test::allocator<std::pair<int, int> > > type;
+    typedef map<int, int, test::less<int>, test::allocator<std::pair<const int, int> > > type;
     for (unsigned int k = 0; k < kLoop; k++) {
         type val1;
         for (unsigned int i = 0; i < kElements; i++)
@@ -228,7 +228,7 @@ TEST(MSGPACK_STL, simple_buffer_pair)
 
 TEST(MSGPACK_STL, simple_buffer_multimap)
 {
-    typedef multimap<int, int, test::less<int>, test::allocator<std::pair<int, int> > > type;
+    typedef multimap<int, int, test::less<int>, test::allocator<std::pair<const int, int> > > type;
     for (unsigned int k = 0; k < kLoop; k++) {
         type val1;
         for (unsigned int i = 0; i < kElements; i++) {
@@ -352,7 +352,7 @@ TEST(MSGPACK_TR1, simple_buffer_tr1_unordered_map)
 
 TEST(MSGPACK_TR1, simple_buffer_tr1_unordered_multimap)
 {
-    typedef tr1::unordered_multimap<int, int, test::tr1_hash<int>, test::equal_to<int>, test::allocator<std::pair<int, int> > > type;
+    typedef tr1::unordered_multimap<int, int, test::tr1_hash<int>, test::equal_to<int>, test::allocator<std::pair<const int, int> > > type;
     for (unsigned int k = 0; k < kLoop; k++) {
         type val1;
         for (unsigned int i = 0; i < kElements; i++) {
