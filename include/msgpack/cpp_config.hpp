@@ -121,4 +121,10 @@ MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 #endif // MSGPACK_USE_CPP03
 
+// Core Foundation headers under OS X define nil as NULL breaking compilation
+// of msgpack/adaptor/nil.hpp and all the headers including it.
+#ifdef nil
+#undef nil
+#endif
+
 #endif /* msgpack/cpp_config.hpp */
