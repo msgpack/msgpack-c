@@ -43,7 +43,7 @@ namespace type {
 template <typename STR, typename BIN, typename EXT>
 struct basic_variant :
     boost::variant<
-        nil,               // NIL
+        nil_t,             // NIL
         bool,              // BOOL
         int64_t,           // NEGATIVE_INTEGER
         uint64_t,          // POSITIVE_INTEGER
@@ -62,7 +62,7 @@ struct basic_variant :
     >,
     private boost::totally_ordered<basic_variant<STR, BIN, EXT> > {
     typedef boost::variant<
-        nil,               // NIL
+        nil_t,             // NIL
         bool,              // BOOL
         int64_t,           // NEGATIVE_INTEGER
         uint64_t,          // POSITIVE_INTEGER
@@ -104,7 +104,7 @@ struct basic_variant :
     basic_variant(unsigned long long v):base(uint64_t(v)) {}
 
     bool is_nil() const {
-        return boost::get<nil>(this);
+        return boost::get<msgpack::type::nil_t>(this);
     }
     bool is_bool() const {
         return boost::get<bool>(this);
@@ -268,7 +268,7 @@ struct as<msgpack::type::basic_variant<STR, BIN, EXT> > {
     msgpack::type::basic_variant<STR, BIN, EXT> operator()(msgpack::object const& o) const {
         switch(o.type) {
         case type::NIL:
-            return o.as<msgpack::type::nil>();
+            return o.as<msgpack::type::nil_t>();
         case type::BOOLEAN:
             return o.as<bool>();
         case type::POSITIVE_INTEGER:
@@ -304,7 +304,7 @@ struct convert<msgpack::type::basic_variant<STR, BIN, EXT> > {
         msgpack::type::basic_variant<STR, BIN, EXT>& v) const {
         switch(o.type) {
         case type::NIL:
-            v = o.as<msgpack::type::nil>();
+            v = o.as<msgpack::type::nil_t>();
             break;
         case type::BOOLEAN:
             v = o.as<bool>();
@@ -366,8 +366,8 @@ struct pack<msgpack::type::basic_variant<STR, BIN, EXT> > {
 namespace detail {
 
 struct object_imp : boost::static_visitor<void> {
-    void operator()(msgpack::type::nil const& v) const {
-        object<msgpack::type::nil>()(o_, v);
+    void operator()(msgpack::type::nil_t const& v) const {
+        object<msgpack::type::nil_t>()(o_, v);
     }
     void operator()(bool const& v) const {
         object<bool>()(o_, v);

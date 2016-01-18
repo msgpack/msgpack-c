@@ -17,7 +17,7 @@ const double kEPS = 1e-10;
 TEST(MSGPACK_BOOST, pack_convert_variant_nil)
 {
     std::stringstream ss;
-    msgpack::type::variant val1 = msgpack::type::nil();
+    msgpack::type::variant val1 = msgpack::type::nil_t();
     EXPECT_TRUE(val1.is_nil());
     msgpack::pack(ss, val1);
 
@@ -25,28 +25,28 @@ TEST(MSGPACK_BOOST, pack_convert_variant_nil)
     msgpack::unpack(ret, ss.str().data(), ss.str().size());
     msgpack::type::variant val2 = ret.get().as<msgpack::type::variant>();
     EXPECT_TRUE(val2.is_nil());
-    EXPECT_NO_THROW(boost::get<msgpack::type::nil>(val2));
+    EXPECT_NO_THROW(boost::get<msgpack::type::nil_t>(val2));
 }
 
 TEST(MSGPACK_BOOST, object_variant_nil)
 {
-    msgpack::type::variant val1 = msgpack::type::nil();
+    msgpack::type::variant val1 = msgpack::type::nil_t();
     EXPECT_TRUE(val1.is_nil());
     msgpack::object obj(val1);
     msgpack::type::variant val2 = obj.as<msgpack::type::variant>();
     EXPECT_TRUE(val2.is_nil());
-    EXPECT_NO_THROW(boost::get<msgpack::type::nil>(val2));
+    EXPECT_NO_THROW(boost::get<msgpack::type::nil_t>(val2));
 }
 
 TEST(MSGPACK_BOOST, object_with_zone_variant_nil)
 {
     msgpack::zone z;
-    msgpack::type::variant val1 = msgpack::type::nil();
+    msgpack::type::variant val1 = msgpack::type::nil_t();
     EXPECT_TRUE(val1.is_nil());
     msgpack::object obj(val1, z);
     msgpack::type::variant val2 = obj.as<msgpack::type::variant>();
     EXPECT_TRUE(val2.is_nil());
-    EXPECT_NO_THROW(boost::get<msgpack::type::nil>(val2));
+    EXPECT_NO_THROW(boost::get<msgpack::type::nil_t>(val2));
 }
 
 // nil (default constructor)
@@ -63,7 +63,7 @@ TEST(MSGPACK_BOOST, pack_convert_variant_nil_default)
     msgpack::unpack(ret, ss.str().data(), ss.str().size());
     msgpack::type::variant val2 = ret.get().as<msgpack::type::variant>();
     EXPECT_TRUE(val2.is_nil());
-    EXPECT_NO_THROW(boost::get<msgpack::type::nil>(val2));
+    EXPECT_NO_THROW(boost::get<msgpack::type::nil_t>(val2));
 }
 
 TEST(MSGPACK_BOOST, object_variant_nil_default)
@@ -73,7 +73,7 @@ TEST(MSGPACK_BOOST, object_variant_nil_default)
     msgpack::object obj(val1);
     msgpack::type::variant val2 = obj.as<msgpack::type::variant>();
     EXPECT_TRUE(val2.is_nil());
-    EXPECT_NO_THROW(boost::get<msgpack::type::nil>(val2));
+    EXPECT_NO_THROW(boost::get<msgpack::type::nil_t>(val2));
 }
 
 TEST(MSGPACK_BOOST, object_with_zone_variant_nil_default)
@@ -84,7 +84,7 @@ TEST(MSGPACK_BOOST, object_with_zone_variant_nil_default)
     msgpack::object obj(val1, z);
     msgpack::type::variant val2 = obj.as<msgpack::type::variant>();
     EXPECT_TRUE(val2.is_nil());
-    EXPECT_NO_THROW(boost::get<msgpack::type::nil>(val2));
+    EXPECT_NO_THROW(boost::get<msgpack::type::nil_t>(val2));
 }
 
 // bool
