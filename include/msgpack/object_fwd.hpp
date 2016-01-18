@@ -255,7 +255,7 @@ struct object_kv {
 };
 
 struct object::with_zone : object {
-    with_zone(msgpack::zone& zone) : zone(zone) { }
+    with_zone(msgpack::zone& z) : zone(z) { }
     msgpack::zone& zone;
 private:
     with_zone();
