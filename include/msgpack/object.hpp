@@ -29,10 +29,17 @@ namespace msgpack {
 MSGPACK_API_VERSION_NAMESPACE(v1) {
 /// @endcond
 
+/// The class holds object and zone
 class object_handle {
 public:
+    /// Constructor that creates nil object and null zone.
     object_handle() {}
 
+    /// Constructor that creates an object_handle holding object `obj` and zone `z`.
+    /**
+     * @param obj object
+     * @param z zone
+     */
     object_handle(msgpack::object const& obj, msgpack::unique_ptr<msgpack::zone> z) :
         m_obj(obj), m_zone(msgpack::move(z)) { }
 
@@ -40,12 +47,24 @@ public:
     void set(msgpack::object const& obj)
         { m_obj = obj; }
 
+    /// Get object reference
+    /**
+     * @return object
+     */
     const msgpack::object& get() const
         { return m_obj; }
 
+    /// Get unique_ptr reference of zone.
+    /**
+     * @return unique_ptr reference of zone
+     */
     msgpack::unique_ptr<msgpack::zone>& zone()
         { return m_zone; }
 
+    /// Get unique_ptr const reference of zone.
+    /**
+     * @return unique_ptr const reference of zone
+     */
     const msgpack::unique_ptr<msgpack::zone>& zone() const
         { return m_zone; }
 
@@ -133,6 +152,14 @@ inline std::size_t aligned_zone_size(msgpack::object const& obj) {
     return s;
 }
 
+/// clone object
+/**
+ * Clone (deep copy) object.
+ * The copied object is located on newly allocated zone.
+ * @param obj copy source object
+ *
+ * @return object_handle that holds deep copied object and zone.
+ */
 inline object_handle clone(msgpack::object const& obj) {
     std::size_t size = msgpack::aligned_zone_size(obj);
     msgpack::unique_ptr<msgpack::zone> z(size == 0 ? nullptr : new msgpack::zone(size));

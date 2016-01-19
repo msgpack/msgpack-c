@@ -60,7 +60,18 @@ namespace msgpack {
 MSGPACK_API_VERSION_NAMESPACE(v1) {
 /// @endcond
 
-typedef bool (*unpack_reference_func)(msgpack::type::object_type, std::size_t, void*);
+/// The type of reference or copy judging function.
+/**
+ * @param type msgpack data type.
+ * @param size msgpack data size.
+ * @param user_data The user_data that is set by msgpack::unpack functions.
+ *
+ * @return If the data should be referenced, then return true, otherwise (should be copied) false.
+ *
+ * This function is called when unpacking STR, BIN, or EXT.
+ *
+ */
+typedef bool (*unpack_reference_func)(msgpack::type::object_type type, std::size_t size, void* user_data);
 
 struct unpack_error : public std::runtime_error {
     explicit unpack_error(const std::string& msg)
@@ -985,11 +996,21 @@ inline int context::execute(const char* data, std::size_t len, std::size_t& off)
 
 typedef object_handle unpacked;
 
+/// Unpacking class for a stream deserialization.
 class unpacker {
 public:
+    /// Constructor
+    /**
+     * @param referenced If the unpacked object contains reference of the buffer, then set as true, otherwise false.
+     * @param f A judging function that msgpack::object refer to the buffer.
+     * @param user_data This parameter is passed to f.
+     * @param initial_buffer_size The memory size to allocate when unpacker is constructed.
+     * @param limit The size limit information of msgpack::object.
+     *
+     */
     unpacker(unpack_reference_func f = &unpacker::default_reference_func,
              void* user_data = nullptr,
-             std::size_t init_buffer_size = MSGPACK_UNPACKER_INIT_BUFFER_SIZE,
+             std::size_t initial_buffer_size = MSGPACK_UNPACKER_INIT_BUFFER_SIZE,
              unpack_limit const& limit = unpack_limit());
 
 #if !defined(MSGPACK_USE_CPP03)
@@ -1000,59 +1021,96 @@ public:
     ~unpacker();
 
 public:
-    /*! 1. reserve buffer. at least `size' bytes of capacity will be ready */
+    /// Reserve a buffer memory.
+    /**
+     * @param size The size of allocating memory.
+     *
+     * After returning this function, buffer_capacity() returns at least 'size'.
+     * See:
+     * https://github.com/msgpack/msgpack-c/wiki/v1_1_cpp_unpacker#msgpack-controls-a-buffer
+     */
     void reserve_buffer(std::size_t size = MSGPACK_UNPACKER_RESERVE_SIZE);
 
-    /*! 2. read data to the buffer() up to buffer_capacity() bytes */
+    /// Get buffer pointer.
+    /**
+     * You need to care about the memory is enable between buffer() and buffer() + buffer_capacity()
+     * See:
+     * https://github.com/msgpack/msgpack-c/wiki/v1_1_cpp_unpacker#msgpack-controls-a-buffer
+     */
     char* buffer();
+
+    /// Get buffer capacity.
+    /**
+     * @return The memory size that you can write.
+     *
+     * See:
+     * https://github.com/msgpack/msgpack-c/wiki/v1_1_cpp_unpacker#msgpack-controls-a-buffer
+     */
     std::size_t buffer_capacity() const;
 
-    /*! 3. specify the number of bytes actually copied */
+    /// Notify a buffer consumed information to msgpack::unpacker.
+    /**
+     * @param size The size of memory that you consumed.
+     *
+     * After copying the data to the memory that is pointed by buffer(), you need to call the
+     * function to notify how many bytes are consumed. Then you can call next() functions.
+     *
+     * See:
+     * https://github.com/msgpack/msgpack-c/wiki/v1_1_cpp_unpacker#msgpack-controls-a-buffer
+     */
     void buffer_consumed(std::size_t size);
 
-    /*! 4. repeat next() until it retunrs false */
+    /// Unpack one msgpack::object. [obsolete]
+    /**
+     *
+     * @param result The object that contains unpacked data.
+     *
+     * @return If one msgpack::object is unpacked, then return true, if msgpack::object is incomplete
+     *         and additional data is required, then return false. If data format is invalid, throw
+     *         msgpack::parse_error.
+     *
+     * See:
+     * https://github.com/msgpack/msgpack-c/wiki/v1_1_cpp_unpacker#msgpack-controls-a-buffer
+     * This function is obsolete. Use the reference inteface version of next() function instead of
+     * the pointer interface version.
+     */
     bool next(unpacked* result);
+
+    /// Unpack one msgpack::object.
+    /**
+     *
+     * @param result The object that contains unpacked data.
+     * @param referenced If the unpacked object contains reference of the buffer,
+     *                   then set as true, otherwise false.
+     *
+     * @return If one msgpack::object is unpacked, then return true, if msgpack::object is incomplete
+     *         and additional data is required, then return false. If data format is invalid, throw
+     *         msgpack::parse_error.
+     *
+     * See:
+     * https://github.com/msgpack/msgpack-c/wiki/v1_1_cpp_unpacker#msgpack-controls-a-buffer
+     */
     bool next(unpacked& result, bool& referenced);
+
+    /// Unpack one msgpack::object.
+    /**
+     *
+     * @param result The object that contains unpacked data.
+     *
+     * @return If one msgpack::object is unpacked, then return true, if msgpack::object is incomplete
+     *         and additional data is required, then return false. If data format is invalid, throw
+     *         msgpack::parse_error.
+     *
+     * See:
+     * https://github.com/msgpack/msgpack-c/wiki/v1_1_cpp_unpacker#msgpack-controls-a-buffer
+     */
     bool next(unpacked& result);
 
-    /*! 5. check if the size of message doesn't exceed assumption. */
+    /// Get message size.
+    /**
+     * @return Returns parsed_size() + nonparsed_size()
+     */
     std::size_t message_size() const;
-
-    // Basic usage of the unpacker is as following:
-    //
-    // unpacker pac;
-    // while( /* input is readable */ ) {
-    //
-    //     // 1.
-    //     pac.reserve_buffer(32*1024);
-    //
-    //     // 2.
-    //     std::size_t bytes = input.readsome(pac.buffer(), pac.buffer_capacity());
-    //
-    //     // error handling ...
-    //
-    //     // 3.
-    //     pac.buffer_consumed(bytes);
-    //
-    //     // 4.
-    //     unpacked result;
-    //     while(pac.next(&result)) {
-    //         // do some with the object with the zone.
-    //         object obj = result.get();
-    //         std::auto_ptr<msgpack:zone> z = result.zone();
-    //         on_message(obj, z);
-    //
-    //         //// boost::shared_ptr is also usable:
-    //         // boost::shared_ptr<zone> life(z.release());
-    //         // on_message(result.get(), life);
-    //     }
-    //
-    //     // 5.
-    //     if(pac.message_size() > 10*1024*1024) {
-    //         throw std::runtime_error("message is too large");
-    //     }
-    // }
-    //
 
     /*! for backward compatibility */
     bool execute();
@@ -1070,20 +1128,48 @@ public:
     void reset();
 
 public:
-    // These functions are usable when non-MessagePack message follows after
-    // MessagePack message.
+    /// Get parsed message size.
+    /**
+     * @return Parsed message size.
+     *
+     * This function is usable when non-MessagePack message follows after
+     * MessagePack message.
+     */
     std::size_t parsed_size() const;
 
-    /*! get address of the buffer that is not parsed */
+    /// Get the address that is not parsed in the buffer.
+    /**
+     * @return Address of the buffer that is not parsed
+     *
+     * This function is usable when non-MessagePack message follows after
+     * MessagePack message.
+     */
     char* nonparsed_buffer();
+
+    /// Get the size of the buffer that is not parsed.
+    /**
+     * @return Size of the buffer that is not parsed
+     *
+     * This function is usable when non-MessagePack message follows after
+     * MessagePack message.
+     */
     std::size_t nonparsed_size() const;
 
-    /*! skip specified size of non-parsed buffer, leaving the buffer */
-    // Note that the `size' argument must be smaller than nonparsed_size()
+    /// Skip the specified size of non-parsed buffer.
+    /**
+     * @param size to skip
+     *
+     * Note that the `size' argument must be smaller than nonparsed_size().
+     * This function is usable when non-MessagePack message follows after
+     * MessagePack message.
+     */
     void skip_nonparsed_buffer(std::size_t size);
 
-    /*! remove unparsed buffer from unpacker */
-    // Note that reset() leaves non-parsed buffer.
+    /// Remove nonparsed buffer and reset the current position as a new start point.
+    /**
+     * This function is usable when non-MessagePack message follows after
+     * MessagePack message.
+     */
     void remove_nonparsed_buffer();
 
 private:
@@ -1112,57 +1198,213 @@ private:
 #endif // defined(MSGPACK_USE_CPP03)
 };
 
+/// Unpack msgpack::object from a buffer.
+/**
+ * @param data The pointer to the buffer.
+ * @param len The length of the buffer.
+ * @param off The offset position of the buffer. It is read and overwritten.
+ * @param referenced If the unpacked object contains reference of the buffer, then set as true, otherwise false.
+ * @param f A judging function that msgpack::object refer to the buffer.
+ * @param user_data This parameter is passed to f.
+ * @param limit The size limit information of msgpack::object.
+ *
+ * @return unpacked object that contains unpacked data.
+ *
+ */
 unpacked unpack(
     const char* data, std::size_t len, std::size_t& off, bool& referenced,
     unpack_reference_func f = nullptr, void* user_data = nullptr,
     unpack_limit const& limit = unpack_limit());
+
+/// Unpack msgpack::object from a buffer.
+/**
+ * @param data The pointer to the buffer.
+ * @param len The length of the buffer.
+ * @param off The offset position of the buffer. It is read and overwritten.
+ * @param f A judging function that msgpack::object refer to the buffer.
+ * @param user_data This parameter is passed to f.
+ * @param limit The size limit information of msgpack::object.
+ *
+ * @return unpacked object that contains unpacked data.
+ *
+ */
 unpacked unpack(
     const char* data, std::size_t len, std::size_t& off,
     unpack_reference_func f = nullptr, void* user_data = nullptr,
     unpack_limit const& limit = unpack_limit());
+
+/// Unpack msgpack::object from a buffer.
+/**
+ * @param data The pointer to the buffer.
+ * @param len The length of the buffer.
+ * @param referenced If the unpacked object contains reference of the buffer, then set as true, otherwise false.
+ * @param f A judging function that msgpack::object refer to the buffer.
+ * @param user_data This parameter is passed to f.
+ * @param limit The size limit information of msgpack::object.
+ *
+ * @return unpacked object that contains unpacked data.
+ *
+ */
 unpacked unpack(
     const char* data, std::size_t len, bool& referenced,
     unpack_reference_func f = nullptr, void* user_data = nullptr,
     unpack_limit const& limit = unpack_limit());
+
+/// Unpack msgpack::object from a buffer.
+/**
+ * @param data The pointer to the buffer.
+ * @param len The length of the buffer.
+ * @param f A judging function that msgpack::object refer to the buffer.
+ * @param user_data This parameter is passed to f.
+ * @param limit The size limit information of msgpack::object.
+ *
+ * @return unpacked object that contains unpacked data.
+ *
+ */
 unpacked unpack(
     const char* data, std::size_t len,
     unpack_reference_func f = nullptr, void* user_data = nullptr,
     unpack_limit const& limit = unpack_limit());
 
 
+/// Unpack msgpack::object from a buffer.
+/**
+ * @param result The object that contains unpacked data.
+ * @param data The pointer to the buffer.
+ * @param len The length of the buffer.
+ * @param off The offset position of the buffer. It is read and overwritten.
+ * @param referenced If the unpacked object contains reference of the buffer, then set as true, otherwise false.
+ * @param f A judging function that msgpack::object refer to the buffer.
+ * @param user_data This parameter is passed to f.
+ * @param limit The size limit information of msgpack::object.
+ *
+ *
+ */
 void unpack(unpacked& result,
             const char* data, std::size_t len, std::size_t& off, bool& referenced,
             unpack_reference_func f = nullptr, void* user_data = nullptr,
             unpack_limit const& limit = unpack_limit());
+
+/// Unpack msgpack::object from a buffer.
+/**
+ * @param result The object that contains unpacked data.
+ * @param data The pointer to the buffer.
+ * @param len The length of the buffer.
+ * @param off The offset position of the buffer. It is read and overwritten.
+ * @param f A judging function that msgpack::object refer to the buffer.
+ * @param user_data This parameter is passed to f.
+ * @param limit The size limit information of msgpack::object.
+ *
+ *
+ */
 void unpack(unpacked& result,
             const char* data, std::size_t len, std::size_t& off,
             unpack_reference_func f = nullptr, void* user_data = nullptr,
             unpack_limit const& limit = unpack_limit());
+
+/// Unpack msgpack::object from a buffer.
+/**
+ * @param result The object that contains unpacked data.
+ * @param data The pointer to the buffer.
+ * @param len The length of the buffer.
+ * @param referenced If the unpacked object contains reference of the buffer, then set as true, otherwise false.
+ * @param f A judging function that msgpack::object refer to the buffer.
+ * @param user_data This parameter is passed to f.
+ * @param limit The size limit information of msgpack::object.
+ *
+ *
+ */
 void unpack(unpacked& result,
             const char* data, std::size_t len, bool& referenced,
             unpack_reference_func f = nullptr, void* user_data = nullptr,
             unpack_limit const& limit = unpack_limit());
 
+/// Unpack msgpack::object from a buffer.
+/**
+ * @param result The object that contains unpacked data.
+ * @param data The pointer to the buffer.
+ * @param len The length of the buffer.
+ * @param f A judging function that msgpack::object refer to the buffer.
+ * @param user_data This parameter is passed to f.
+ * @param limit The size limit information of msgpack::object.
+ *
+ *
+ */
 void unpack(unpacked& result,
             const char* data, std::size_t len,
             unpack_reference_func f = nullptr, void* user_data = nullptr,
             unpack_limit const& limit = unpack_limit());
 
+/// Unpack msgpack::object from a buffer.
+/**
+ * @param z The msgpack::zone that is used as a memory of unpacked msgpack objects.
+ * @param data The pointer to the buffer.
+ * @param len The length of the buffer.
+ * @param off The offset position of the buffer. It is read and overwritten.
+ * @param referenced If the unpacked object contains reference of the buffer, then set as true, otherwise false.
+ * @param f A judging function that msgpack::object refer to the buffer.
+ * @param user_data This parameter is passed to f.
+ * @param limit The size limit information of msgpack::object.
+ *
+ * @return msgpack::object that contains unpacked data.
+ *
+ */
 msgpack::object unpack(
     msgpack::zone& z,
     const char* data, std::size_t len, std::size_t& off, bool& referenced,
     unpack_reference_func f = nullptr, void* user_data = nullptr,
     unpack_limit const& limit = unpack_limit());
+
+/// Unpack msgpack::object from a buffer.
+/**
+ * @param z The msgpack::zone that is used as a memory of unpacked msgpack objects.
+ * @param data The pointer to the buffer.
+ * @param len The length of the buffer.
+ * @param off The offset position of the buffer. It is read and overwritten.
+ * @param f A judging function that msgpack::object refer to the buffer.
+ * @param user_data This parameter is passed to f.
+ * @param limit The size limit information of msgpack::object.
+ *
+ * @return msgpack::object that contains unpacked data.
+ *
+ */
 msgpack::object unpack(
     msgpack::zone& z,
     const char* data, std::size_t len, std::size_t& off,
     unpack_reference_func f = nullptr, void* user_data = nullptr,
     unpack_limit const& limit = unpack_limit());
+
+/// Unpack msgpack::object from a buffer.
+/**
+ * @param z The msgpack::zone that is used as a memory of unpacked msgpack objects.
+ * @param data The pointer to the buffer.
+ * @param len The length of the buffer.
+ * @param referenced If the unpacked object contains reference of the buffer, then set as true, otherwise false.
+ * @param f A judging function that msgpack::object refer to the buffer.
+ * @param user_data This parameter is passed to f.
+ * @param limit The size limit information of msgpack::object.
+ *
+ * @return msgpack::object that contains unpacked data.
+ *
+ */
 msgpack::object unpack(
     msgpack::zone& z,
     const char* data, std::size_t len, bool& referenced,
     unpack_reference_func f = nullptr, void* user_data = nullptr,
     unpack_limit const& limit = unpack_limit());
+
+/// Unpack msgpack::object from a buffer.
+/**
+ * @param z The msgpack::zone that is used as a memory of unpacked msgpack objects.
+ * @param data The pointer to the buffer.
+ * @param len The length of the buffer.
+ * @param f A judging function that msgpack::object refer to the buffer.
+ * @param user_data This parameter is passed to f.
+ * @param limit The size limit information of msgpack::object.
+ *
+ * @return msgpack::object that contains unpacked data.
+ *
+ */
 msgpack::object unpack(
     msgpack::zone& z,
     const char* data, std::size_t len,
@@ -1170,7 +1412,19 @@ msgpack::object unpack(
     unpack_limit const& limit = unpack_limit());
 
 
-// obsolete
+/// Unpack msgpack::object from a buffer. [obsolete]
+/**
+ * @param result The object that contains unpacked data.
+ * @param data The pointer to the buffer.
+ * @param len The length of the buffer.
+ * @param off The offset position of the buffer. It is read and overwritten.
+ * @param referenced If the unpacked object contains reference of the buffer, then set as true, otherwise false.
+ * @param f A judging function that msgpack::object refer to the buffer.
+ * @param user_data This parameter is passed to f.
+ * @param limit The size limit information of msgpack::object.
+ *
+ * This function is obsolete. Use the reference inteface version of unpack functions instead of the pointer interface version.
+ */
 void unpack(unpacked* result,
             const char* data, std::size_t len, std::size_t* off = nullptr, bool* referenced = nullptr,
             unpack_reference_func f = nullptr, void* user_data = nullptr,
