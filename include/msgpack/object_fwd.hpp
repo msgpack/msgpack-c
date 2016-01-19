@@ -171,6 +171,8 @@ struct object {
     template <typename T>
     T& convert(T& v) const;
 
+
+#if !defined(MSGPACK_DISABLE_LEGACY_CONVERT)
     /// Convert the object (obsolete)
     /**
      * If the object can't be converted to T, msgpack::type_error would be thrown.
@@ -180,6 +182,7 @@ struct object {
      */
     template <typename T>
     T* convert(T* v) const;
+#endif // !defined(MSGPACK_DISABLE_LEGACY_CONVERT)
 
     /// Convert the object if not nil
     /**

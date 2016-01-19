@@ -149,13 +149,13 @@ public:
   void msgpack_unpack(msgpack::object o)
   {
     msgpack::type::tuple<bool, msgpack::object> tuple;
-    o.convert(&tuple);
+    o.convert(tuple);
 
     is_double = tuple.get<0>();
     if (is_double)
-      tuple.get<1>().convert(&value.f);
+      tuple.get<1>().convert(value.f);
     else
-      tuple.get<1>().convert(&value.i);
+      tuple.get<1>().convert(value.i);
   }
 };
 

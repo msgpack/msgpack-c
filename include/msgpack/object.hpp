@@ -523,12 +523,14 @@ inline T& object::convert(T& v) const
     return v;
 }
 
+#if !defined(MSGPACK_DISABLE_LEGACY_CONVERT)
 template <typename T>
 inline T* object::convert(T* v) const
 {
     convert(*v);
     return v;
 }
+#endif // !defined(MSGPACK_DISABLE_LEGACY_CONVERT)
 
 template <typename T>
 inline bool object::convert_if_not_nil(T& v) const

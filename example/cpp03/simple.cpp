@@ -40,7 +40,7 @@ int main(void)
     // convert msgpack::object instance into the original type.
     // if the type is mismatched, it throws msgpack::type_error exception.
     msgpack::type::tuple<int, bool, std::string> dst;
-    deserialized.convert(&dst);
+    deserialized.convert(dst);
 
     return 0;
 }
