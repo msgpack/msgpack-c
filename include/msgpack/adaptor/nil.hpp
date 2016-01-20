@@ -21,13 +21,19 @@ MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 namespace type {
 
-struct nil { };
+struct nil_t { };
 
-inline bool operator<(nil const& lhs, nil const& rhs) {
+#if defined(MSGPACK_USE_LEGACY_NIL)
+
+typedef nil_t nil;
+
+#endif // defined(MSGPACK_USE_LEGACY_NIL)
+
+inline bool operator<(nil_t const& lhs, nil_t const& rhs) {
     return &lhs < &rhs;
 }
 
-inline bool operator==(nil const& lhs, nil const& rhs) {
+inline bool operator==(nil_t const& lhs, nil_t const& rhs) {
     return &lhs == &rhs;
 }
 
@@ -36,32 +42,32 @@ inline bool operator==(nil const& lhs, nil const& rhs) {
 namespace adaptor {
 
 template <>
-struct convert<type::nil> {
-    msgpack::object const& operator()(msgpack::object const& o, type::nil&) const {
+struct convert<type::nil_t> {
+    msgpack::object const& operator()(msgpack::object const& o, type::nil_t&) const {
         if(o.type != msgpack::type::NIL) { throw msgpack::type_error(); }
         return o;
     }
 };
 
 template <>
-struct pack<type::nil> {
+struct pack<type::nil_t> {
     template <typename Stream>
-    msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const type::nil&) const {
+    msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const type::nil_t&) const {
         o.pack_nil();
         return o;
     }
 };
 
 template <>
-struct object<type::nil> {
-    void operator()(msgpack::object& o, type::nil) const {
+struct object<type::nil_t> {
+    void operator()(msgpack::object& o, type::nil_t) const {
         o.type = msgpack::type::NIL;
     }
 };
 
 template <>
-struct object_with_zone<type::nil> {
-    void operator()(msgpack::object::with_zone& o, type::nil v) const {
+struct object_with_zone<type::nil_t> {
+    void operator()(msgpack::object::with_zone& o, type::nil_t v) const {
         static_cast<msgpack::object&>(o) << v;
     }
 };
@@ -71,7 +77,7 @@ struct object_with_zone<type::nil> {
 template <>
 inline void msgpack::object::as<void>() const
 {
-    msgpack::type::nil v;
+    msgpack::type::nil_t v;
     convert(v);
 }
 
