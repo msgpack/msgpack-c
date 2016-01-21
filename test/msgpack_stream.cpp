@@ -45,7 +45,7 @@ const unsigned int kLoop = 1000;
         if (it == vec.end()) goto out;                                  \
         msgpack::object obj = result.get();                             \
         vec_type::value_type val;                                       \
-        obj.convert(&val);                                              \
+        obj.convert(val);                                               \
         EXPECT_EQ(*it, val);                                            \
         ++it;                                                           \
       }                                                                 \

@@ -40,19 +40,19 @@ int main(void) {
 
         // convert it into statically typed object.
         std::vector<std::string> rvec;
-        obj.convert(&rvec);
+        obj.convert(rvec);
 }
 ```
 
 Compile it as follows:
 
 ```
-$ g++ -Ipath_to_msgpack/include -DMSGPACK_DISABLE_LEGACY_NIL hello.cc -o hello
+$ g++ -Ipath_to_msgpack/include -DMSGPACK_DISABLE_LEGACY_NIL -DMSGPACK_DISABLE_LEGACY_CONVERT hello.cc -o hello
 $ ./hello
 ["Hello", "MessagePack"]
 ```
 
-See [MSGPACK_DISABLE_LEGACY_NIL](https://github.com/msgpack/msgpack-c/wiki/v1_1_cpp_configure#msgpack_disable_legacy_nil-since-140).
+See [MSGPACK_DISABLE_LEGACY_NIL](https://github.com/msgpack/msgpack-c/wiki/v1_1_cpp_configure#msgpack_disable_legacy_nil-since-140) and [MSGPACK_DISABLE_LEGACY_CONVERT](https://github.com/msgpack/msgpack-c/wiki/v1_1_cpp_configure#msgpack_disable_legacy_convert-since-140).
 
 ## Streaming feature
 
@@ -85,7 +85,7 @@ int main(void) {
         }
 
         // results:
-        // $ g++ -Ipath_to_msgpack/include -DMSGPACK_DISABLE_LEGACY_NIL stream.cc -o stream
+        // $ g++ -Ipath_to_msgpack/include -DMSGPACK_DISABLE_LEGACY_NIL -DMSGPACK_DISABLE_LEGACY_CONVERT stream.cc -o stream
         // $ ./stream
         // "Log message ... 1"
         // "Log message ... 2"
@@ -93,7 +93,7 @@ int main(void) {
 }
 ```
 
-See [MSGPACK_DISABLE_LEGACY_NIL](https://github.com/msgpack/msgpack-c/wiki/v1_1_cpp_configure#msgpack_disable_legacy_nil-since-140).
+See [MSGPACK_DISABLE_LEGACY_NIL](https://github.com/msgpack/msgpack-c/wiki/v1_1_cpp_configure#msgpack_disable_legacy_nil-since-140) and [MSGPACK_DISABLE_LEGACY_CONVERT](https://github.com/msgpack/msgpack-c/wiki/v1_1_cpp_configure#msgpack_disable_legacy_convert-since-140).
 
 ### Streaming into an array or map
 
@@ -158,6 +158,6 @@ int main(void) {
 
         // you can convert object to myclass directly
         std::vector<myclass> rvec;
-        obj.convert(&rvec);
+        obj.convert(rvec);
 }
 ```

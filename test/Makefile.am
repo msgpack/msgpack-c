@@ -1,4 +1,4 @@
-AM_CPPFLAGS   = -I$(top_srcdir)/include -pthread -DMSGPACK_DISABLE_LEGACY_NIL
+AM_CPPFLAGS   = -I$(top_srcdir)/include -pthread -DMSGPACK_DISABLE_LEGACY_NIL -DMSGPACK_DISABLE_LEGACY_CONVERT
 AM_C_CPPFLAGS = -I$(top_srcdir)/include -pthread
 AM_LDFLAGS = $(top_builddir)/src/libmsgpackc.la -lgtest_main -lgtest -lpthread
 

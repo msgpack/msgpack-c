@@ -73,7 +73,7 @@ void test_array_of_array() {
     std::cout << "Start converting..." << std::endl;
     {
         boost::timer::cpu_timer timer;
-        unpacked.get().convert(&v2);
+        unpacked.get().convert(v2);
         std::string result = timer.format();
         std::cout << result << std::endl;
     }

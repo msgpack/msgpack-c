@@ -44,7 +44,7 @@ int main(void)
         msgpack::unpack(result, sbuf.str().data(), sbuf.str().size());
         msgpack::object obj = result.get();
 
-        obj.convert(&nc);
+        obj.convert(nc);
 
         std::cout << obj << " value=" << nc.value << " flag=" << nc.flag << std::endl;
     }
@@ -60,7 +60,7 @@ int main(void)
         msgpack::unpack(result, sbuf.str().data(), sbuf.str().size());
         msgpack::object obj = result.get();
 
-        obj.convert(&oc);
+        obj.convert(oc);
 
         std::cout << obj << " value=" << oc.value << std::endl;
     }

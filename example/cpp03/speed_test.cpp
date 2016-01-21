@@ -50,7 +50,7 @@ void test_map_pack_unpack() {
     std::cout << "Start converting..." << std::endl;
     {
         boost::timer::cpu_timer timer;
-        unpacked.get().convert(&m2);
+        unpacked.get().convert(m2);
         std::string result = timer.format();
         std::cout << result << std::endl;
     }

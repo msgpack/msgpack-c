@@ -33,10 +33,10 @@ TEST(convert, compatibility_less)
     src[0] = "kumofs";
 
     msgpack::zone z;
-    msgpack::object obj(src, &z);
+    msgpack::object obj(src, z);
 
     compatibility c;
-    EXPECT_NO_THROW( obj.convert(&c) );
+    EXPECT_NO_THROW( obj.convert(c) );
 
     EXPECT_EQ("kumofs",  c.str1);
     EXPECT_EQ("default", c.str2);
@@ -50,10 +50,10 @@ TEST(convert, compatibility_more)
     src[2] = "cloudy";
 
     msgpack::zone z;
-    msgpack::object obj(src, &z);
+    msgpack::object obj(src, z);
 
     compatibility to;
-    EXPECT_NO_THROW( obj.convert(&to) );
+    EXPECT_NO_THROW( obj.convert(to) );
 
     EXPECT_EQ("kumofs", to.str1);
     EXPECT_EQ("mpio",   to.str2);
@@ -65,22 +65,12 @@ TEST(convert, enum_member)
     src.flag = enum_member::B;
 
     msgpack::zone z;
-    msgpack::object obj(src, &z);
+    msgpack::object obj(src, z);
 
     enum_member to;
-    EXPECT_NO_THROW( obj.convert(&to) );
+    EXPECT_NO_THROW( obj.convert(to) );
 
     EXPECT_EQ(enum_member::B, to.flag);
-}
-
-TEST(convert, return_value_ptr)
-{
-    msgpack::zone z;
-    msgpack::object obj(1, z);
-
-    int i;
-    EXPECT_EQ(obj.convert(&i), &i);
-    EXPECT_EQ(1, i);
 }
 
 TEST(convert, return_value_ref)
@@ -93,6 +83,20 @@ TEST(convert, return_value_ref)
     EXPECT_EQ(&i, &j);
     EXPECT_EQ(i, j);
 }
+
+#if !defined(MSGPACK_DISABLE_LEGACY_CONVERT)
+
+TEST(convert, return_value_ptr)
+{
+    msgpack::zone z;
+    msgpack::object obj(1, z);
+
+    int i;
+    EXPECT_EQ(obj.convert(&i), &i);
+    EXPECT_EQ(1, i);
+}
+
+#endif // !defined(MSGPACK_DISABLE_LEGACY_CONVERT)
 
 TEST(convert, if_not_nil_nil)
 {

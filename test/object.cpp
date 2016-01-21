@@ -72,7 +72,7 @@ TEST(object, convert)
     msgpack::unpack(ret, sbuf.data(), sbuf.size());
 
     myclass m2;
-    ret.get().convert(&m2);
+    ret.get().convert(m2);
 
     EXPECT_EQ(m1, m2);
 }
