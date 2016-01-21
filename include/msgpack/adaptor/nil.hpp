@@ -23,11 +23,11 @@ namespace type {
 
 struct nil_t { };
 
-#if defined(MSGPACK_USE_LEGACY_NIL)
+#if !defined(MSGPACK_DISABLE_LEGACY_NIL)
 
 typedef nil_t nil;
 
-#endif // defined(MSGPACK_USE_LEGACY_NIL)
+#endif // !defined(MSGPACK_DISABLE_LEGACY_NIL)
 
 inline bool operator<(nil_t const& lhs, nil_t const& rhs) {
     return &lhs < &rhs;
