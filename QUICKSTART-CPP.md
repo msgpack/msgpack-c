@@ -47,10 +47,12 @@ int main(void) {
 Compile it as follows:
 
 ```
-$ g++ hello.cc -o hello
+$ g++ -Ipath_to_msgpack/include -DMSGPACK_DISABLE_LEGACY_NIL hello.cc -o hello
 $ ./hello
 ["Hello", "MessagePack"]
 ```
+
+See [MSGPACK_DISABLE_LEGACY_NIL](https://github.com/msgpack/msgpack-c/wiki/v1_1_cpp_configure#msgpack_disable_legacy_nil-since-140).
 
 ## Streaming feature
 
@@ -83,13 +85,15 @@ int main(void) {
         }
 
         // results:
-        // $ g++ stream.cc -o stream
+        // $ g++ -Ipath_to_msgpack/include -DMSGPACK_DISABLE_LEGACY_NIL stream.cc -o stream
         // $ ./stream
         // "Log message ... 1"
         // "Log message ... 2"
         // "Log message ... 3"
 }
 ```
+
+See [MSGPACK_DISABLE_LEGACY_NIL](https://github.com/msgpack/msgpack-c/wiki/v1_1_cpp_configure#msgpack_disable_legacy_nil-since-140).
 
 ### Streaming into an array or map
 
