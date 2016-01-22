@@ -51,7 +51,7 @@ else
     shared=""
 fi
 
-cmake $cpp11 $bit32 $boost $boost_dir $shared -DMSGPACK_CHAR_SIGN=${CHAR_SIGN} ..
+cmake $cpp11 $bit32 $boost $boost_dir $shared -DMSGPACK_CHAR_SIGN=${CHAR_SIGN} -DMSGPACK_DEFAULT_API_VERSION=${API_VERSION} ..
 
 ret=$?
 if [ $ret -ne 0 ]
