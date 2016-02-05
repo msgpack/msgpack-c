@@ -118,6 +118,29 @@ int msgpack_pack_object(msgpack_packer* pk, msgpack_object d);
 #define msgpack_pack_append_buffer(user, buf, len) \
     return (*(user)->callback)((user)->data, (const char*)buf, len)
 
+#ifdef MSGPACK_C11
+#define msgpack_pack_genint(pk,i) \
+    _Generic((i), char:               msgpack_pack_char, \
+                  signed char:        msgpack_pack_signed_char, \
+                  unsigned char:      msgpack_pack_unsigned_char, \
+                  short:              msgpack_pack_short, \
+                  unsigned short:     msgpack_pack_unsigned_short, \
+                  int:                msgpack_pack_int, \
+                  unsigned int:       msgpack_pack_unsigned_int, \
+                  long:               msgpack_pack_long, \
+                  unsigned long:      msgpack_pack_unsigned_long, \
+                  long long:          msgpack_pack_long_long, \
+                  unsigned long long: msgpack_pack_unsigned_long_long, \
+                  uint8_t:            msgpack_pack_uint8, \
+                  uint16_t:           msgpack_pack_uint16, \
+                  uint32_t:           msgpack_pack_uint32, \
+                  uint64_t:           msgpack_pack_uint64, \
+                  int8_t:             msgpack_pack_int8, \
+                  int16_t:            msgpack_pack_int16, \
+                  int32_t:            msgpack_pack_int32, \
+                  int64_t:            msgpack_pack_int64)((pk), (i))
+#endif
+
 #include "pack_template.h"
 
 inline void msgpack_packer_init(msgpack_packer* pk, void* data, msgpack_packer_write callback)
