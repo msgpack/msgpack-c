@@ -119,7 +119,7 @@ int msgpack_pack_object(msgpack_packer* pk, msgpack_object d);
     return (*(user)->callback)((user)->data, (const char*)buf, len)
 
 #ifdef MSGPACK_C11
-#define msgpack_pack_genint(pk,i) \
+#define msgpack_pack_genint(pk, i) \
     _Generic((i), char:               msgpack_pack_char, \
                   signed char:        msgpack_pack_signed_char, \
                   unsigned char:      msgpack_pack_unsigned_char, \
@@ -139,6 +139,10 @@ int msgpack_pack_object(msgpack_packer* pk, msgpack_object d);
                   int16_t:            msgpack_pack_int16, \
                   int32_t:            msgpack_pack_int32, \
                   int64_t:            msgpack_pack_int64)((pk), (i))
+
+#define msgpack_pack_genfloat(pk, i) \
+    _Generic((i), float:  msgpack_pack_float, \
+                  double: msgpack_pack_double)((pk), (i))
 #endif
 
 #include "pack_template.h"
