@@ -10,12 +10,8 @@
 #ifndef MSGPACK_MSGPACK_TUPLE_HPP
 #define MSGPACK_MSGPACK_TUPLE_HPP
 
-#include "msgpack/cpp_config.hpp"
+#include "msgpack/adaptor/msgpack_tuple_decl.hpp"
 
-#if defined(MSGPACK_USE_CPP03)
-#include "detail/cpp03_msgpack_tuple.hpp"
-#else  // MSGPACK_USE_CPP03
-#include "detail/cpp11_msgpack_tuple.hpp"
-#endif // MSGPACK_USE_CPP03
+#include "msgpack/v1/adaptor/msgpack_tuple.hpp"
 
 #endif // MSGPACK_MSGPACK_TUPLE_HPP

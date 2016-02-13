@@ -28,7 +28,7 @@ else
     boost=""
 fi
 
-./configure CFLAGS="$bit32 -f${CHAR_SIGN}-char" CXXFLAGS="$bit32 -f${CHAR_SIGN}-char $cpp11 $boost -I$4"
+./configure CFLAGS="$bit32 -f${CHAR_SIGN}-char" CXXFLAGS="$bit32 -f${CHAR_SIGN}-char $cpp11 $boost -I$4 -DMSGPACK_DEFAULT_API_VERSION=${API_VERSION}"
 
 ret=$?
 if [ $ret -ne 0 ]
