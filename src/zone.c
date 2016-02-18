@@ -74,7 +74,7 @@ void* msgpack_zone_malloc_expand(msgpack_zone* zone, size_t size)
     while(sz < size) {
         size_t tmp_sz = sz * 2;
         if (tmp_sz <= sz) {
-            tmp_sz = size;
+            sz = size;
             break;
         }
         sz = tmp_sz;
