@@ -43,7 +43,9 @@ namespace type {
         tuple(OtherTypes&&... other):base(std::forward<OtherTypes>(other)...) {}
 
         template<typename... OtherTypes>
-        tuple(tuple<OtherTypes...> && other):base(static_cast<std::tuple<OtherTypes...>>(other)) {}
+        tuple(tuple<OtherTypes...> const& other):base(static_cast<std::tuple<OtherTypes...> const&>(other)) {}
+        template<typename... OtherTypes>
+        tuple(tuple<OtherTypes...> && other):base(static_cast<std::tuple<OtherTypes...> &&>(other)) {}
 
         tuple& operator=(tuple const&) = default;
         tuple& operator=(tuple&&) = default;
