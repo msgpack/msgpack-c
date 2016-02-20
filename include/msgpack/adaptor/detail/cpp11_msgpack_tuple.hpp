@@ -36,11 +36,12 @@ namespace type {
     public:
         using base = std::tuple<Types...>;
 
-        using base::base;
 
-        tuple() = default;
         tuple(tuple const&) = default;
         tuple(tuple&&) = default;
+
+        template<typename... OtherTypes>
+        tuple(OtherTypes&&... other):base(std::forward<OtherTypes>(other)...) {}
 
         template<typename... OtherTypes>
         tuple(tuple<OtherTypes...> const& other):base(static_cast<std::tuple<OtherTypes...> const&>(other)) {}
