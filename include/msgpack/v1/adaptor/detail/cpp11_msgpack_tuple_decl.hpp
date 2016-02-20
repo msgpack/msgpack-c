@@ -32,7 +32,45 @@ namespace type {
     using std::swap;
 
     template< class... Types >
-    class tuple;
+    class tuple : public std::tuple<Types...> {
+    public:
+        using base = std::tuple<Types...>;
+
+        tuple(tuple const&) = default;
+        tuple(tuple&&) = default;
+
+        template<typename... OtherTypes>
+        tuple(OtherTypes&&... other):base(std::forward<OtherTypes>(other)...) {}
+
+        template<typename... OtherTypes>
+        tuple(tuple<OtherTypes...> && other):base(static_cast<std::tuple<OtherTypes...>>(other)) {}
+
+        tuple& operator=(tuple const&) = default;
+        tuple& operator=(tuple&&) = default;
+
+        template<typename... OtherTypes>
+        tuple& operator=(tuple<OtherTypes...> const& other) {
+            *static_cast<base*>(this) = static_cast<std::tuple<OtherTypes...> const&>(other);
+            return *this;
+        }
+        template<typename... OtherTypes>
+        tuple& operator=(tuple<OtherTypes...> && other) {
+            *static_cast<base*>(this) = static_cast<std::tuple<OtherTypes...> &&>(other);
+            return *this;
+        }
+
+        template< std::size_t I>
+        typename tuple_element<I, base >::type&
+        get() & { return std::get<I>(*this); }
+
+        template< std::size_t I>
+        typename tuple_element<I, base >::type const&
+        get() const& { return std::get<I>(*this); }
+
+        template< std::size_t I>
+        typename tuple_element<I, base >::type&&
+        get() && { return std::get<I>(*this); }
+    };
 
     template <class... Args>
     tuple<Args...> make_tuple(Args&&... args);
