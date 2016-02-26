@@ -70,14 +70,16 @@ struct convert<type::assoc_vector<K, V, Compare, Alloc> > {
     msgpack::object const& operator()(msgpack::object const& o, type::assoc_vector<K, V, Compare, Alloc>& v) const {
         if (o.type != msgpack::type::MAP) { throw msgpack::type_error(); }
         v.resize(o.via.map.size);
-        msgpack::object_kv* p = o.via.map.ptr;
-        msgpack::object_kv* const pend = o.via.map.ptr + o.via.map.size;
-        std::pair<K, V>* it(&v.front());
-        for (; p < pend; ++p, ++it) {
-            p->key.convert(it->first);
-            p->val.convert(it->second);
+        if (o.via.map.size != 0) {
+            msgpack::object_kv* p = o.via.map.ptr;
+            msgpack::object_kv* const pend = o.via.map.ptr + o.via.map.size;
+            std::pair<K, V>* it(&v.front());
+            for (; p < pend; ++p, ++it) {
+                p->key.convert(it->first);
+                p->val.convert(it->second);
+            }
+            std::sort(v.begin(), v.end(), type::detail::pair_first_less<K, V, Compare, Alloc>());
         }
-        std::sort(v.begin(), v.end(), type::detail::pair_first_less<K, V, Compare, Alloc>());
         return o;
     }
 };
@@ -192,14 +194,22 @@ struct object_with_zone<std::map<K, V, Compare, Alloc> > {
         }
         else {
             uint32_t size = checked_get_container_size(v.size());
+
             msgpack::object_kv* p = static_cast<msgpack::object_kv*>(o.zone.allocate_align(sizeof(msgpack::object_kv)*size));
             msgpack::object_kv* const pend = p + size;
             o.via.map.ptr  = p;
             o.via.map.size = size;
             typename std::map<K, V, Compare, Alloc>::const_iterator it(v.begin());
             do {
+#if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) && !defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+#endif // (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) && !defined(__clang__)
                 p->key = msgpack::object(it->first, o.zone);
                 p->val = msgpack::object(it->second, o.zone);
+#if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) && !defined(__clang__)
+#pragma GCC diagnostic pop
+#endif // (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) && !defined(__clang__)
                 ++p;
                 ++it;
             } while(p < pend);
