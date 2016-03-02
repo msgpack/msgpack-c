@@ -316,6 +316,8 @@ TEST(object_with_zone, string)
     EXPECT_EQ(obj.as<string>()[0], 'a');
 }
 
+#if MSGPACK_DEFAULT_API_VERSION == 1
+
 TEST(object_without_zone, string)
 {
     string v = "abc";
@@ -325,6 +327,8 @@ TEST(object_without_zone, string)
     v[0] = 'd';
     EXPECT_EQ(obj.as<string>()[0], 'd');
 }
+
+#endif // MSGPACK_DEFAULT_API_VERSION == 1
 
 // char*
 TEST(object_with_zone, char_ptr)
