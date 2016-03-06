@@ -1,3 +1,10 @@
+# 2016-03-06 version 1.4.1
+
+  * Fix TARGET_OS_IPHONE checking (#436, #438)
+  * Fix invalid front() call for empty container (#435. #437)
+  * Fix compile error on g++6 (C++11 only) (#426, #428)
+  * Fix zone size expansion logic (#423, #427)
+
 # 2016-01-22 version 1.4.0
 
 ## << recommended changes >>
