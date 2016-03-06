@@ -186,4 +186,8 @@
 #  define inline __inline
 #endif
 
+#ifdef __APPLE__
+#  include <TargetConditionals.h>
+#endif
+
 #endif /* msgpack/sysdep.h */
