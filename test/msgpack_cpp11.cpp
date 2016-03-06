@@ -76,6 +76,19 @@ TEST(MSGPACK_CPP11, simple_array)
     }
 }
 
+TEST(MSGPACK_CPP11, simple_array_empty)
+{
+    array<int, 0> val1;
+    msgpack::sbuffer sbuf;
+    msgpack::pack(sbuf, val1);
+    msgpack::unpacked ret;
+    msgpack::unpack(ret, sbuf.data(), sbuf.size());
+    EXPECT_EQ(ret.get().type, msgpack::type::ARRAY);
+    array<int, 0> val2 = ret.get().as<array<int, 0> >();
+    EXPECT_EQ(val1.size(), val2.size());
+    EXPECT_TRUE(equal(val1.begin(), val1.end(), val2.begin()));
+}
+
 TEST(MSGPACK_CPP11, simple_buffer_array_char)
 {
     for (unsigned int k = 0; k < kLoop; k++) {
@@ -91,6 +104,19 @@ TEST(MSGPACK_CPP11, simple_buffer_array_char)
         EXPECT_EQ(val1.size(), val2.size());
         EXPECT_TRUE(equal(val1.begin(), val1.end(), val2.begin()));
     }
+}
+
+TEST(MSGPACK_CPP11, simple_buffer_array_char_empty)
+{
+    array<char, 0> val1;
+    msgpack::sbuffer sbuf;
+    msgpack::pack(sbuf, val1);
+    msgpack::unpacked ret;
+    msgpack::unpack(ret, sbuf.data(), sbuf.size());
+    EXPECT_EQ(ret.get().type, msgpack::type::BIN);
+    array<char, 0> val2 = ret.get().as<array<char, 0> >();
+    EXPECT_EQ(val1.size(), val2.size());
+    EXPECT_TRUE(equal(val1.begin(), val1.end(), val2.begin()));
 }
 
 TEST(MSGPACK_CPP11, simple_buffer_array_unsigned_char)
@@ -109,6 +135,20 @@ TEST(MSGPACK_CPP11, simple_buffer_array_unsigned_char)
         EXPECT_EQ(val1.size(), val2.size());
         EXPECT_TRUE(equal(val1.begin(), val1.end(), val2.begin()));
     }
+}
+
+TEST(MSGPACK_CPP11, simple_buffer_array_unsigned_char_empty)
+{
+    if (!msgpack::is_same<uint8_t, unsigned char>::value) return;
+    array<unsigned char, 0> val1;
+    msgpack::sbuffer sbuf;
+    msgpack::pack(sbuf, val1);
+    msgpack::unpacked ret;
+    msgpack::unpack(ret, sbuf.data(), sbuf.size());
+    EXPECT_EQ(ret.get().type, msgpack::type::BIN);
+    array<unsigned char, 0> val2 = ret.get().as<array<unsigned char, 0> >();
+    EXPECT_EQ(val1.size(), val2.size());
+    EXPECT_TRUE(equal(val1.begin(), val1.end(), val2.begin()));
 }
 
 // strong typedefs
@@ -158,6 +198,18 @@ TEST(MSGPACK_STL, simple_buffer_forward_list)
     }
 }
 
+TEST(MSGPACK_STL, simple_buffer_forward_list_empty)
+{
+    using type = forward_list<int, test::allocator<int>>;
+    type val1;
+    msgpack::sbuffer sbuf;
+    msgpack::pack(sbuf, val1);
+    msgpack::unpacked ret;
+    msgpack::unpack(ret, sbuf.data(), sbuf.size());
+    type val2 = ret.get().as<type >();
+    EXPECT_EQ(val1, val2);
+}
+
 TEST(MSGPACK_STL, simple_buffer_unordered_map)
 {
     using type = unordered_map<int, int, test::hash<int>, test::equal_to<int>, test::map_allocator<int, int>>;
@@ -172,6 +224,18 @@ TEST(MSGPACK_STL, simple_buffer_unordered_map)
         type val2 = ret.get().as<type >();
         EXPECT_EQ(val1, val2);
     }
+}
+
+TEST(MSGPACK_STL, simple_buffer_unordered_map_empty)
+{
+    using type = unordered_map<int, int, test::hash<int>, test::equal_to<int>, test::map_allocator<int, int>>;
+    type val1;
+    msgpack::sbuffer sbuf;
+    msgpack::pack(sbuf, val1);
+    msgpack::unpacked ret;
+    msgpack::unpack(ret, sbuf.data(), sbuf.size());
+    type val2 = ret.get().as<type >();
+    EXPECT_EQ(val1, val2);
 }
 
 TEST(MSGPACK_STL, simple_buffer_unordered_multimap)
@@ -194,6 +258,19 @@ TEST(MSGPACK_STL, simple_buffer_unordered_multimap)
     }
 }
 
+TEST(MSGPACK_STL, simple_buffer_unordered_multimap_empty)
+{
+    using type = unordered_multimap<int, int, test::hash<int>, test::equal_to<int>, test::map_allocator<int, int>>;
+    type val1;
+    msgpack::sbuffer sbuf;
+    msgpack::pack(sbuf, val1);
+    msgpack::unpacked ret;
+    msgpack::unpack(ret, sbuf.data(), sbuf.size());
+    type val2 = ret.get().as<type >();
+
+    EXPECT_EQ(val1, val2);
+}
+
 TEST(MSGPACK_STL, simple_buffer_unordered_set)
 {
     using type = unordered_set<int, test::hash<int>, test::equal_to<int>, test::set_allocator<int>>;
@@ -210,6 +287,18 @@ TEST(MSGPACK_STL, simple_buffer_unordered_set)
     }
 }
 
+TEST(MSGPACK_STL, simple_buffer_unordered_set_empty)
+{
+    using type = unordered_set<int, test::hash<int>, test::equal_to<int>, test::set_allocator<int>>;
+    type val1;
+    msgpack::sbuffer sbuf;
+    msgpack::pack(sbuf, val1);
+    msgpack::unpacked ret;
+    msgpack::unpack(ret, sbuf.data(), sbuf.size());
+    type val2 = ret.get().as<type>();
+    EXPECT_EQ(val1, val2);
+}
+
 TEST(MSGPACK_STL, simple_buffer_unordered_multiset)
 {
     using type = unordered_multiset<int, test::hash<int>, test::equal_to<int>, test::set_allocator<int>>;
@@ -224,6 +313,18 @@ TEST(MSGPACK_STL, simple_buffer_unordered_multiset)
         type val2 = ret.get().as<type >();
         EXPECT_EQ(val1, val2);
     }
+}
+
+TEST(MSGPACK_STL, simple_buffer_unordered_multiset_empty)
+{
+    using type = unordered_multiset<int, test::hash<int>, test::equal_to<int>, test::set_allocator<int>>;
+    type val1;
+    msgpack::sbuffer sbuf;
+    msgpack::pack(sbuf, val1);
+    msgpack::unpacked ret;
+    msgpack::unpack(ret, sbuf.data(), sbuf.size());
+    type val2 = ret.get().as<type >();
+    EXPECT_EQ(val1, val2);
 }
 
 TEST(MSGPACK_USER_DEFINED, simple_buffer_enum_class_member)
