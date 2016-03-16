@@ -51,25 +51,25 @@ struct object_with_zone {
 template <typename T>
 inline
 msgpack::object const& operator>> (msgpack::object const& o, T& v) {
-    return adaptor::convert<T>()(o, v);
+    return msgpack::adaptor::convert<T>()(o, v);
 }
 
 template <typename Stream, typename T>
 inline
 msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, T const& v) {
-    return adaptor::pack<T>()(o, v);
+    return msgpack::adaptor::pack<T>()(o, v);
 }
 
 template <typename T>
 inline
 void operator<< (msgpack::object& o, T const& v) {
-    adaptor::object<T>()(o, v);
+    msgpack::adaptor::object<T>()(o, v);
 }
 
 template <typename T>
 inline
 void operator<< (msgpack::object::with_zone& o, T const& v) {
-    adaptor::object_with_zone<T>()(o, v);
+    msgpack::adaptor::object_with_zone<T>()(o, v);
 }
 
 /// @cond
