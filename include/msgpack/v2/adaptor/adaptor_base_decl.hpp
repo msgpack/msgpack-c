@@ -40,17 +40,8 @@ struct object_with_zone;
 
 // operators
 
-template <typename T>
- msgpack::object const& operator>> (msgpack::object const& o, T& v);
-
-template <typename Stream, typename T>
-msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, T const& v);
-
-template <typename T>
-void operator<< (msgpack::object& o, T const& v);
-
-template <typename T>
-void operator<< (msgpack::object::with_zone& o, T const& v);
+using v1::operator>>;
+using v1::operator<<;
 
 /// @cond
 } // MSGPACK_API_VERSION_NAMESPACE(v2)
