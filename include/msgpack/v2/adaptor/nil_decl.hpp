@@ -22,6 +22,12 @@ namespace type {
 
 using v1::type::nil_t;
 
+#if defined(MSGPACK_USE_LEGACY_NIL)
+
+typedef nil_t nil;
+
+#endif // defined(MSGPACK_USE_LEGACY_NIL)
+
 using v1::type::operator<;
 using v1::type::operator==;
 
