@@ -37,7 +37,14 @@ public:
      * @param obj object
      * @param z zone
      */
-    object_handle(msgpack::object const& obj, msgpack::unique_ptr<msgpack::zone> z) :
+    object_handle(
+        msgpack::object const& obj,
+#if defined(MSGPACK_USE_CPP03)
+        msgpack::unique_ptr<msgpack::zone> z
+#else  // defined(MSGPACK_USE_CPP03)
+        msgpack::unique_ptr<msgpack::zone>&& z
+#endif // defined(MSGPACK_USE_CPP03)
+    ) :
         m_obj(obj), m_zone(msgpack::move(z)) { }
 
     // obsolete
