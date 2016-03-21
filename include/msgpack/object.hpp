@@ -13,5 +13,6 @@
 #include "msgpack/object_decl.hpp"
 
 #include "msgpack/v1/object.hpp"
+#include "msgpack/v2/object.hpp"
 
 #endif // MSGPACK_OBJECT_HPP

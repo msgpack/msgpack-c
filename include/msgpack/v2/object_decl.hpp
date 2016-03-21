@@ -37,9 +37,6 @@ using v1::detail::packer_serializer;
 
 } // namespace detail
 
-// obsolete
-using v1::define;
-
 using v1::operator==;
 using v1::operator!=;
 
