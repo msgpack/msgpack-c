@@ -21,7 +21,7 @@ BOOST_FUSION_DEFINE_STRUCT(
     mystruct,
     (int, f1)
     (double, f2)
-    )
+)
 
 TEST(MSGPACK_BOOST, fusion_pack_unpack_convert)
 {
@@ -30,9 +30,9 @@ TEST(MSGPACK_BOOST, fusion_pack_unpack_convert)
     val1.f1 = 42;
     val1.f2 = 123.45;
     msgpack::pack(ss, val1);
-    msgpack::unpacked ret;
-    msgpack::unpack(ret, ss.str().data(), ss.str().size());
-    mystruct val2 = ret.get().as<mystruct>();
+    msgpack::object_handle oh =
+        msgpack::unpack(ss.str().data(), ss.str().size());
+    mystruct val2 = oh.get().as<mystruct>();
     EXPECT_TRUE(val1.f1 == val2.f1);
     EXPECT_TRUE(fabs(val2.f2 - val1.f2) <= kEPS);
 }
@@ -84,27 +84,27 @@ inline bool operator!=(no_def_con2 const& lhs, no_def_con2 const& rhs) {
 
 namespace msgpack {
 MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS) {
-namespace adaptor {
+    namespace adaptor {
 
-template <>
-struct as<no_def_con1> {
-    no_def_con1 operator()(msgpack::object const& o) const {
-        if (o.type != msgpack::type::ARRAY) throw msgpack::type_error();
-        if (o.via.array.size != 1) throw msgpack::type_error();
-        return no_def_con1(o.via.array.ptr[0].as<int>());
-    }
-};
+    template <>
+    struct as<no_def_con1> {
+        no_def_con1 operator()(msgpack::object const& o) const {
+            if (o.type != msgpack::type::ARRAY) throw msgpack::type_error();
+            if (o.via.array.size != 1) throw msgpack::type_error();
+            return no_def_con1(o.via.array.ptr[0].as<int>());
+        }
+    };
 
-template <>
-struct as<no_def_con2> {
-    no_def_con2 operator()(msgpack::object const& o) const {
-        if (o.type != msgpack::type::ARRAY) throw msgpack::type_error();
-        if (o.via.array.size != 1) throw msgpack::type_error();
-        return no_def_con2(o.via.array.ptr[0].as<int>());
-    }
-};
+    template <>
+    struct as<no_def_con2> {
+        no_def_con2 operator()(msgpack::object const& o) const {
+            if (o.type != msgpack::type::ARRAY) throw msgpack::type_error();
+            if (o.via.array.size != 1) throw msgpack::type_error();
+            return no_def_con2(o.via.array.ptr[0].as<int>());
+        }
+    };
 
-} // adaptor
+    } // adaptor
 } // MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS)
 } // msgpack
 
@@ -138,7 +138,7 @@ BOOST_FUSION_ADAPT_STRUCT(
     f1, // *1
     f2, // *2
     f3  // *3
-    )
+)
 
 
 // MSVC2015's std::tuple requires default constructor during 'as' process.
@@ -151,9 +151,9 @@ TEST(MSGPACK_BOOST, pack_convert_no_def_con)
     std::stringstream ss;
     mystruct_no_def_con val1(no_def_con1(1), no_def_con2(2), no_def_con1(3));
     msgpack::pack(ss, val1);
-    msgpack::unpacked ret;
-    msgpack::unpack(ret, ss.str().data(), ss.str().size());
-    mystruct_no_def_con val2 = ret.get().as<mystruct_no_def_con>();
+    msgpack::object_handle oh =
+        msgpack::unpack(ss.str().data(), ss.str().size());
+    mystruct_no_def_con val2 = oh.get().as<mystruct_no_def_con>();
     EXPECT_TRUE(val1 == val2);
 }
 

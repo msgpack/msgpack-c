@@ -68,11 +68,11 @@ TEST(object, convert)
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, m1);
 
-    msgpack::unpacked ret;
-    msgpack::unpack(ret, sbuf.data(), sbuf.size());
+    msgpack::object_handle oh =
+        msgpack::unpack(sbuf.data(), sbuf.size());
 
     myclass m2;
-    ret.get().convert(m2);
+    oh.get().convert(m2);
 
     EXPECT_EQ(m1, m2);
 }
@@ -85,10 +85,10 @@ TEST(object, as)
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, m1);
 
-    msgpack::unpacked ret;
-    msgpack::unpack(ret, sbuf.data(), sbuf.size());
+    msgpack::object_handle oh =
+        msgpack::unpack(sbuf.data(), sbuf.size());
 
-    EXPECT_EQ(m1, ret.get().as<myclass>());
+    EXPECT_EQ(m1, oh.get().as<myclass>());
 }
 
 TEST(object, cross_zone_copy)

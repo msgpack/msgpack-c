@@ -73,8 +73,8 @@ int main() {
     msgpack::pack(ss1, u);
     print(ss1.str());
 
-    msgpack::unpacked unp1 = msgpack::unpack(ss1.str().data(), ss1.str().size());
-    msgpack::object const& obj1 = unp1.get();
+    msgpack::object_handle oh1 = msgpack::unpack(ss1.str().data(), ss1.str().size());
+    msgpack::object const& obj1 = oh1.get();
     std::cout << "Unpacked msgpack object." << std::endl;
     std::cout << obj1 << std::endl;
 
@@ -87,8 +87,8 @@ int main() {
     msgpack::pack(ss2, v);
     print(ss2.str());
 
-    msgpack::unpacked unp2 = msgpack::unpack(ss2.str().data(), ss2.str().size());
-    msgpack::object const& obj2 = unp2.get();
+    msgpack::object_handle oh2 = msgpack::unpack(ss2.str().data(), ss2.str().size());
+    msgpack::object const& obj2 = oh2.get();
     std::cout << "Modified msgpack object." << std::endl;
     std::cout << obj2 << std::endl;
 }

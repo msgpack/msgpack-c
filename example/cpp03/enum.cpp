@@ -30,20 +30,20 @@ int main(void)
         my_enum e3 = elem3;
         msgpack::pack(sbuf, e3);
 
-        msgpack::unpacked result;
+        msgpack::object_handle oh;
         std::size_t off = 0;
 
-        msgpack::unpack(result, sbuf.str().data(), sbuf.str().size(), off);
-        std::cout << result.get().as<my_enum>() << std::endl;
-        assert(result.get().as<my_enum>() == elem1);
+        msgpack::unpack(oh, sbuf.str().data(), sbuf.str().size(), off);
+        std::cout << oh.get().as<my_enum>() << std::endl;
+        assert(oh.get().as<my_enum>() == elem1);
 
-        msgpack::unpack(result, sbuf.str().data(), sbuf.str().size(), off);
-        std::cout << result.get().as<my_enum>() << std::endl;
-        assert(result.get().as<my_enum>() == elem2);
+        msgpack::unpack(oh, sbuf.str().data(), sbuf.str().size(), off);
+        std::cout << oh.get().as<my_enum>() << std::endl;
+        assert(oh.get().as<my_enum>() == elem2);
 
-        msgpack::unpack(result, sbuf.str().data(), sbuf.str().size(), off);
-        std::cout << result.get().as<my_enum>() << std::endl;
-        assert(result.get().as<my_enum>() == elem3);
+        msgpack::unpack(oh, sbuf.str().data(), sbuf.str().size(), off);
+        std::cout << oh.get().as<my_enum>() << std::endl;
+        assert(oh.get().as<my_enum>() == elem3);
     }
     {   // create object without zone
         msgpack::object obj(elem2);

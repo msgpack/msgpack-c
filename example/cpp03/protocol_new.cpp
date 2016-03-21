@@ -44,9 +44,9 @@ int main(void)
     {
         std::string buffer(stream.str());
 
-        msgpack::unpacked result;
-        msgpack::unpack(result, buffer.data(), buffer.size());
-        msgpack::object o = result.get();
+        msgpack::object_handle oh =
+            msgpack::unpack(buffer.data(), buffer.size());
+        msgpack::object o = oh.get();
 
         myprotocol::Get req;
         o.convert(req);
@@ -72,9 +72,9 @@ int main(void)
     {
         std::string buffer(stream.str());
 
-        msgpack::unpacked result;
-        msgpack::unpack(result, buffer.data(), buffer.size());
-        msgpack::object o = result.get();
+        msgpack::object_handle oh =
+            msgpack::unpack(buffer.data(), buffer.size());
+        msgpack::object o = oh.get();
 
 
         myprotocol::MultiGet req;

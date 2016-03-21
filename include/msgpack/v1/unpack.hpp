@@ -1003,7 +1003,7 @@ public:
      * This function is obsolete. Use the reference inteface version of next() function instead of
      * the pointer interface version.
      */
-    bool next(unpacked* result);
+    bool next(object_handle* result);
 
     /// Unpack one msgpack::object.
     /**
@@ -1019,7 +1019,7 @@ public:
      * See:
      * https://github.com/msgpack/msgpack-c/wiki/v1_1_cpp_unpacker#msgpack-controls-a-buffer
      */
-    bool next(unpacked& result, bool& referenced);
+    bool next(object_handle& result, bool& referenced);
 
     /// Unpack one msgpack::object.
     /**
@@ -1033,7 +1033,7 @@ public:
      * See:
      * https://github.com/msgpack/msgpack-c/wiki/v1_1_cpp_unpacker#msgpack-controls-a-buffer
      */
-    bool next(unpacked& result);
+    bool next(object_handle& result);
 
     /// Get message size.
     /**
@@ -1281,7 +1281,7 @@ inline void unpacker::buffer_consumed(std::size_t size)
     m_free -= size;
 }
 
-inline bool unpacker::next(unpacked& result, bool& referenced)
+inline bool unpacker::next(object_handle& result, bool& referenced)
 {
     referenced = false;
     int ret = execute_imp();
@@ -1303,13 +1303,13 @@ inline bool unpacker::next(unpacked& result, bool& referenced)
     }
 }
 
-inline bool unpacker::next(unpacked& result)
+inline bool unpacker::next(object_handle& result)
 {
     bool referenced;
     return next(result, referenced);
 }
 
-inline bool unpacker::next(unpacked* result)
+inline bool unpacker::next(object_handle* result)
 {
     return next(*result);
 }
@@ -1461,7 +1461,7 @@ unpack_imp(const char* data, std::size_t len, std::size_t& off,
 
 // reference version
 
-inline unpacked unpack(
+inline object_handle unpack(
     const char* data, std::size_t len, std::size_t& off, bool& referenced,
     unpack_reference_func f, void* user_data,
     unpack_limit const& limit
@@ -1477,20 +1477,20 @@ inline unpacked unpack(
     switch(ret) {
     case UNPACK_SUCCESS:
         off = noff;
-        return unpacked(obj, msgpack::move(z));
+        return object_handle(obj, msgpack::move(z));
     case UNPACK_EXTRA_BYTES:
         off = noff;
-        return unpacked(obj, msgpack::move(z));
+        return object_handle(obj, msgpack::move(z));
     case UNPACK_CONTINUE:
         throw msgpack::insufficient_bytes("insufficient bytes");
     case UNPACK_PARSE_ERROR:
     default:
         throw msgpack::parse_error("parse error");
     }
-    return unpacked();
+    return object_handle();
 }
 
-inline unpacked unpack(
+inline object_handle unpack(
     const char* data, std::size_t len, std::size_t& off,
     unpack_reference_func f, void* user_data,
     unpack_limit const& limit)
@@ -1499,7 +1499,7 @@ inline unpacked unpack(
     return unpack(data, len, off, referenced, f, user_data, limit);
 }
 
-inline unpacked unpack(
+inline object_handle unpack(
     const char* data, std::size_t len, bool& referenced,
     unpack_reference_func f, void* user_data,
     unpack_limit const& limit)
@@ -1508,7 +1508,7 @@ inline unpacked unpack(
     return unpack(data, len, off, referenced, f, user_data, limit);
 }
 
-inline unpacked unpack(
+inline object_handle unpack(
     const char* data, std::size_t len,
     unpack_reference_func f, void* user_data,
     unpack_limit const& limit)
@@ -1519,7 +1519,7 @@ inline unpacked unpack(
 }
 
 inline void unpack(
-    unpacked& result,
+    object_handle& result,
     const char* data, std::size_t len, std::size_t& off, bool& referenced,
     unpack_reference_func f, void* user_data,
     unpack_limit const& limit)
@@ -1551,7 +1551,7 @@ inline void unpack(
 }
 
 inline void unpack(
-    unpacked& result,
+    object_handle& result,
     const char* data, std::size_t len, std::size_t& off,
     unpack_reference_func f, void* user_data,
             unpack_limit const& limit)
@@ -1561,7 +1561,7 @@ inline void unpack(
 }
 
 inline void unpack(
-    unpacked& result,
+    object_handle& result,
     const char* data, std::size_t len, bool& referenced,
     unpack_reference_func f, void* user_data,
     unpack_limit const& limit)
@@ -1571,7 +1571,7 @@ inline void unpack(
 }
 
 inline void unpack(
-    unpacked& result,
+    object_handle& result,
     const char* data, std::size_t len,
     unpack_reference_func f, void* user_data,
     unpack_limit const& limit)
@@ -1644,7 +1644,7 @@ inline msgpack::object unpack(
 // obsolete
 // pointer version
 inline void unpack(
-    unpacked* result,
+    object_handle* result,
     const char* data, std::size_t len, std::size_t* off, bool* referenced,
     unpack_reference_func f, void* user_data,
     unpack_limit const& limit)
