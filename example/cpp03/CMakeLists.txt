@@ -5,11 +5,16 @@ LIST (APPEND exec_PROGRAMS
     custom.cpp
     enum.cpp
     map_based_versionup.cpp
-    protocol.cpp
     protocol_new.cpp
     reuse_zone.cpp
     simple.cpp
 )
+
+IF (MSGPACK_DEFAULT_API_VERSION EQUAL 1)
+    LIST (APPEND exec_PROGRAMS
+        protocol.cpp
+    )
+ENDIF ()
 
 IF (NOT MSVC)
     LIST (APPEND with_pthread_PROGRAMS

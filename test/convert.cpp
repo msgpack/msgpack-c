@@ -84,7 +84,7 @@ TEST(convert, return_value_ref)
     EXPECT_EQ(i, j);
 }
 
-#if !defined(MSGPACK_DISABLE_LEGACY_CONVERT)
+#if MSGPACK_DEFAULT_API_VERSION == 1 && !defined(MSGPACK_DISABLE_LEGACY_CONVERT)
 
 TEST(convert, return_value_ptr)
 {
@@ -96,7 +96,7 @@ TEST(convert, return_value_ptr)
     EXPECT_EQ(1, i);
 }
 
-#endif // !defined(MSGPACK_DISABLE_LEGACY_CONVERT)
+#endif // MSGPACK_DEFAULT_API_VERSION == 1 && !defined(MSGPACK_DISABLE_LEGACY_CONVERT)
 
 TEST(convert, if_not_nil_nil)
 {

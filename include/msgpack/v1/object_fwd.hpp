@@ -212,7 +212,7 @@ struct object {
 
     struct with_zone;
 
-private:
+protected:
     struct implicit_type;
 
 public:
@@ -221,16 +221,15 @@ public:
 
 class type_error : public std::bad_cast { };
 
-struct object_kv {
-    msgpack::object key;
-    msgpack::object val;
-};
+struct object::implicit_type {
+    implicit_type(object const& o) : obj(o) { }
+    ~implicit_type() { }
 
-struct object::with_zone : object {
-    with_zone(msgpack::zone& z) : zone(z) { }
-    msgpack::zone& zone;
+    template <typename T>
+    operator T();
+
 private:
-    with_zone();
+    object const& obj;
 };
 
 /// @cond

@@ -36,7 +36,8 @@ using v1::type::MAP;
 using v1::type::EXT;
 } // namespace type
 
-using v1::object;
+struct object;
+
 using v1::object_kv;
 
 using v1::object_array;
