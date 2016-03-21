@@ -37,20 +37,8 @@ using v1::detail::packer_serializer;
 
 } // namespace detail
 
-// obsolete
-using v1::define;
-
 using v1::operator==;
 using v1::operator!=;
-
-// obsolete
-using v1::convert;
-
-// obsolete
-using v1::pack;
-
-// obsolete
-using v1::pack_copy;
 
 /// @cond
 }  // MSGPACK_API_VERSION_NAMESPACE(v2)

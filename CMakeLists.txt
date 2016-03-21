@@ -21,9 +21,6 @@ OPTION (MSGPACK_CXX11 "Using c++11 compiler" OFF)
 OPTION (MSGPACK_32BIT "32bit compile" OFF)
 OPTION (MSGPACK_BOOST "Using boost libraries" OFF)
 
-SET (CMAKE_CXX_FLAGS "-DMSGPACK_DISABLE_LEGACY_NIL ${CMAKE_CXX_FLAGS}")
-SET (CMAKE_CXX_FLAGS "-DMSGPACK_DISABLE_LEGACY_CONVERT ${CMAKE_CXX_FLAGS}")
-
 IF (APPLE)
     SET(CMAKE_MACOSX_RPATH ON)
     SET(CMAKE_SKIP_BUILD_RPATH FALSE)
@@ -177,14 +174,18 @@ IF (MSGPACK_ENABLE_CXX)
     LIST (APPEND msgpack_HEADERS
         include/msgpack.hpp
         include/msgpack/adaptor/adaptor_base.hpp
+        include/msgpack/adaptor/adaptor_base_decl.hpp
         include/msgpack/adaptor/array_ref.hpp
+        include/msgpack/adaptor/array_ref_decl.hpp
         include/msgpack/adaptor/bool.hpp
         include/msgpack/adaptor/boost/fusion.hpp
         include/msgpack/adaptor/boost/msgpack_variant.hpp
+        include/msgpack/adaptor/boost/msgpack_variant_decl.hpp
         include/msgpack/adaptor/boost/optional.hpp
         include/msgpack/adaptor/boost/string_ref.hpp
         include/msgpack/adaptor/char_ptr.hpp
         include/msgpack/adaptor/check_container_size.hpp
+        include/msgpack/adaptor/check_container_size_decl.hpp
         include/msgpack/adaptor/cpp11/array.hpp
         include/msgpack/adaptor/cpp11/array_char.hpp
         include/msgpack/adaptor/cpp11/array_unsigned_char.hpp
@@ -196,49 +197,195 @@ IF (MSGPACK_ENABLE_CXX)
         include/msgpack/adaptor/cpp11/unordered_map.hpp
         include/msgpack/adaptor/cpp11/unordered_set.hpp
         include/msgpack/adaptor/define.hpp
+        include/msgpack/adaptor/define_decl.hpp
         include/msgpack/adaptor/deque.hpp
-        include/msgpack/adaptor/detail/cpp03_define_array.hpp
-        include/msgpack/adaptor/detail/cpp03_define_map.hpp
-        include/msgpack/adaptor/detail/cpp03_msgpack_tuple.hpp
-        include/msgpack/adaptor/detail/cpp11_define_array.hpp
-        include/msgpack/adaptor/detail/cpp11_define_map.hpp
-        include/msgpack/adaptor/detail/cpp11_msgpack_tuple.hpp
         include/msgpack/adaptor/ext.hpp
+        include/msgpack/adaptor/ext_decl.hpp
         include/msgpack/adaptor/fixint.hpp
+        include/msgpack/adaptor/fixint_decl.hpp
         include/msgpack/adaptor/float.hpp
         include/msgpack/adaptor/int.hpp
+        include/msgpack/adaptor/int_decl.hpp
         include/msgpack/adaptor/list.hpp
         include/msgpack/adaptor/map.hpp
+        include/msgpack/adaptor/map_decl.hpp
         include/msgpack/adaptor/msgpack_tuple.hpp
+        include/msgpack/adaptor/msgpack_tuple_decl.hpp
         include/msgpack/adaptor/nil.hpp
+        include/msgpack/adaptor/nil_decl.hpp
         include/msgpack/adaptor/pair.hpp
         include/msgpack/adaptor/raw.hpp
-        include/msgpack/adaptor/v4raw.hpp
+        include/msgpack/adaptor/raw_decl.hpp
         include/msgpack/adaptor/set.hpp
         include/msgpack/adaptor/string.hpp
         include/msgpack/adaptor/tr1/unordered_map.hpp
         include/msgpack/adaptor/tr1/unordered_set.hpp
+        include/msgpack/adaptor/v4raw.hpp
+        include/msgpack/adaptor/v4raw_decl.hpp
         include/msgpack/adaptor/vector.hpp
         include/msgpack/adaptor/vector_bool.hpp
         include/msgpack/adaptor/vector_char.hpp
         include/msgpack/adaptor/vector_unsigned_char.hpp
         include/msgpack/cpp_config.hpp
-        include/msgpack/detail/cpp03_zone.hpp
-        include/msgpack/detail/cpp11_zone.hpp
+        include/msgpack/cpp_config_decl.hpp
         include/msgpack/fbuffer.hpp
+        include/msgpack/fbuffer_decl.hpp
         include/msgpack/iterator.hpp
+        include/msgpack/iterator_decl.hpp
         include/msgpack/meta.hpp
+        include/msgpack/meta_decl.hpp
         include/msgpack/object.hpp
+        include/msgpack/object_decl.hpp
         include/msgpack/object_fwd.hpp
+        include/msgpack/object_fwd_decl.hpp
         include/msgpack/pack.hpp
+        include/msgpack/pack_decl.hpp
         include/msgpack/sbuffer.hpp
+        include/msgpack/sbuffer_decl.hpp
         include/msgpack/type.hpp
         include/msgpack/unpack.hpp
+        include/msgpack/unpack_decl.hpp
+        include/msgpack/v1/adaptor/adaptor_base.hpp
+        include/msgpack/v1/adaptor/adaptor_base_decl.hpp
+        include/msgpack/v1/adaptor/array_ref.hpp
+        include/msgpack/v1/adaptor/array_ref_decl.hpp
+        include/msgpack/v1/adaptor/bool.hpp
+        include/msgpack/v1/adaptor/boost/fusion.hpp
+        include/msgpack/v1/adaptor/boost/msgpack_variant.hpp
+        include/msgpack/v1/adaptor/boost/msgpack_variant_decl.hpp
+        include/msgpack/v1/adaptor/boost/optional.hpp
+        include/msgpack/v1/adaptor/boost/string_ref.hpp
+        include/msgpack/v1/adaptor/char_ptr.hpp
+        include/msgpack/v1/adaptor/check_container_size.hpp
+        include/msgpack/v1/adaptor/check_container_size_decl.hpp
+        include/msgpack/v1/adaptor/cpp11/array.hpp
+        include/msgpack/v1/adaptor/cpp11/array_char.hpp
+        include/msgpack/v1/adaptor/cpp11/array_unsigned_char.hpp
+        include/msgpack/v1/adaptor/cpp11/forward_list.hpp
+        include/msgpack/v1/adaptor/cpp11/reference_wrapper.hpp
+        include/msgpack/v1/adaptor/cpp11/shared_ptr.hpp
+        include/msgpack/v1/adaptor/cpp11/tuple.hpp
+        include/msgpack/v1/adaptor/cpp11/unique_ptr.hpp
+        include/msgpack/v1/adaptor/cpp11/unordered_map.hpp
+        include/msgpack/v1/adaptor/cpp11/unordered_set.hpp
+        include/msgpack/v1/adaptor/define.hpp
+        include/msgpack/v1/adaptor/define_decl.hpp
+        include/msgpack/v1/adaptor/deque.hpp
+        include/msgpack/v1/adaptor/detail/cpp03_define_array.hpp
+        include/msgpack/v1/adaptor/detail/cpp03_define_array_decl.hpp
+        include/msgpack/v1/adaptor/detail/cpp03_define_map.hpp
+        include/msgpack/v1/adaptor/detail/cpp03_define_map_decl.hpp
+        include/msgpack/v1/adaptor/detail/cpp03_msgpack_tuple.hpp
+        include/msgpack/v1/adaptor/detail/cpp03_msgpack_tuple_decl.hpp
+        include/msgpack/v1/adaptor/detail/cpp11_define_array.hpp
+        include/msgpack/v1/adaptor/detail/cpp11_define_array_decl.hpp
+        include/msgpack/v1/adaptor/detail/cpp11_define_map.hpp
+        include/msgpack/v1/adaptor/detail/cpp11_define_map_decl.hpp
+        include/msgpack/v1/adaptor/detail/cpp11_msgpack_tuple.hpp
+        include/msgpack/v1/adaptor/detail/cpp11_msgpack_tuple_decl.hpp
+        include/msgpack/v1/adaptor/ext.hpp
+        include/msgpack/v1/adaptor/ext_decl.hpp
+        include/msgpack/v1/adaptor/fixint.hpp
+        include/msgpack/v1/adaptor/fixint_decl.hpp
+        include/msgpack/v1/adaptor/float.hpp
+        include/msgpack/v1/adaptor/int.hpp
+        include/msgpack/v1/adaptor/int_decl.hpp
+        include/msgpack/v1/adaptor/list.hpp
+        include/msgpack/v1/adaptor/map.hpp
+        include/msgpack/v1/adaptor/map_decl.hpp
+        include/msgpack/v1/adaptor/msgpack_tuple.hpp
+        include/msgpack/v1/adaptor/msgpack_tuple_decl.hpp
+        include/msgpack/v1/adaptor/nil.hpp
+        include/msgpack/v1/adaptor/nil_decl.hpp
+        include/msgpack/v1/adaptor/pair.hpp
+        include/msgpack/v1/adaptor/raw.hpp
+        include/msgpack/v1/adaptor/raw_decl.hpp
+        include/msgpack/v1/adaptor/set.hpp
+        include/msgpack/v1/adaptor/string.hpp
+        include/msgpack/v1/adaptor/tr1/unordered_map.hpp
+        include/msgpack/v1/adaptor/tr1/unordered_set.hpp
+        include/msgpack/v1/adaptor/v4raw.hpp
+        include/msgpack/v1/adaptor/v4raw_decl.hpp
+        include/msgpack/v1/adaptor/vector.hpp
+        include/msgpack/v1/adaptor/vector_bool.hpp
+        include/msgpack/v1/adaptor/vector_char.hpp
+        include/msgpack/v1/adaptor/vector_unsigned_char.hpp
+        include/msgpack/v1/cpp_config.hpp
+        include/msgpack/v1/cpp_config_decl.hpp
+        include/msgpack/v1/detail/cpp03_zone.hpp
+        include/msgpack/v1/detail/cpp03_zone_decl.hpp
+        include/msgpack/v1/detail/cpp11_zone.hpp
+        include/msgpack/v1/detail/cpp11_zone_decl.hpp
+        include/msgpack/v1/fbuffer.hpp
+        include/msgpack/v1/fbuffer_decl.hpp
+        include/msgpack/v1/iterator.hpp
+        include/msgpack/v1/iterator_decl.hpp
+        include/msgpack/v1/meta.hpp
+        include/msgpack/v1/meta_decl.hpp
+        include/msgpack/v1/object.hpp
+        include/msgpack/v1/object_decl.hpp
+        include/msgpack/v1/object_fwd.hpp
+        include/msgpack/v1/object_fwd_decl.hpp
+        include/msgpack/v1/pack.hpp
+        include/msgpack/v1/pack_decl.hpp
+        include/msgpack/v1/preprocessor.hpp
+        include/msgpack/v1/sbuffer.hpp
+        include/msgpack/v1/sbuffer_decl.hpp
+        include/msgpack/v1/type.hpp
+        include/msgpack/v1/unpack.hpp
+        include/msgpack/v1/unpack_decl.hpp
+        include/msgpack/v1/version.hpp
+        include/msgpack/v1/versioning.hpp
+        include/msgpack/v1/vrefbuffer.hpp
+        include/msgpack/v1/vrefbuffer_decl.hpp
+        include/msgpack/v1/zbuffer.hpp
+        include/msgpack/v1/zbuffer_decl.hpp
+        include/msgpack/v1/zone.hpp
+        include/msgpack/v1/zone_decl.hpp
+        include/msgpack/v2/adaptor/adaptor_base.hpp
+        include/msgpack/v2/adaptor/adaptor_base_decl.hpp
+        include/msgpack/v2/adaptor/array_ref_decl.hpp
+        include/msgpack/v2/adaptor/boost/msgpack_variant_decl.hpp
+        include/msgpack/v2/adaptor/check_container_size_decl.hpp
+        include/msgpack/v2/adaptor/define_decl.hpp
+        include/msgpack/v2/adaptor/detail/cpp03_define_array_decl.hpp
+        include/msgpack/v2/adaptor/detail/cpp03_define_map_decl.hpp
+        include/msgpack/v2/adaptor/detail/cpp03_msgpack_tuple_decl.hpp
+        include/msgpack/v2/adaptor/detail/cpp11_define_array_decl.hpp
+        include/msgpack/v2/adaptor/detail/cpp11_define_map_decl.hpp
+        include/msgpack/v2/adaptor/detail/cpp11_msgpack_tuple_decl.hpp
+        include/msgpack/v2/adaptor/ext_decl.hpp
+        include/msgpack/v2/adaptor/fixint_decl.hpp
+        include/msgpack/v2/adaptor/int_decl.hpp
+        include/msgpack/v2/adaptor/map_decl.hpp
+        include/msgpack/v2/adaptor/msgpack_tuple_decl.hpp
+        include/msgpack/v2/adaptor/nil_decl.hpp
+        include/msgpack/v2/adaptor/raw_decl.hpp
+        include/msgpack/v2/adaptor/v4raw_decl.hpp
+        include/msgpack/v2/cpp_config_decl.hpp
+        include/msgpack/v2/detail/cpp03_zone_decl.hpp
+        include/msgpack/v2/detail/cpp11_zone_decl.hpp
+        include/msgpack/v2/fbuffer_decl.hpp
+        include/msgpack/v2/iterator_decl.hpp
+        include/msgpack/v2/meta_decl.hpp
+        include/msgpack/v2/object.hpp
+        include/msgpack/v2/object_decl.hpp
+        include/msgpack/v2/object_fwd.hpp
+        include/msgpack/v2/object_fwd_decl.hpp
+        include/msgpack/v2/pack_decl.hpp
+        include/msgpack/v2/sbuffer_decl.hpp
+        include/msgpack/v2/unpack_decl.hpp
+        include/msgpack/v2/vrefbuffer_decl.hpp
+        include/msgpack/v2/zbuffer_decl.hpp
+        include/msgpack/v2/zone_decl.hpp
         include/msgpack/version.hpp
         include/msgpack/versioning.hpp
         include/msgpack/vrefbuffer.hpp
+        include/msgpack/vrefbuffer_decl.hpp
         include/msgpack/zbuffer.hpp
+        include/msgpack/zbuffer_decl.hpp
         include/msgpack/zone.hpp
+        include/msgpack/zone_decl.hpp
     )
     FILE (GLOB_RECURSE PREPROCESSOR_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/include/msgpack/preprocessor/*.hpp)
 
