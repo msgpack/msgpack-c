@@ -55,8 +55,8 @@ TEST(unpack, int_ret_no_offset_no_ref)
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, 1);
 
-    msgpack::unpacked msg = msgpack::unpack(sbuf.data(), sbuf.size());
-    EXPECT_EQ(1, msg.get().as<int>());
+    msgpack::object_handle oh = msgpack::unpack(sbuf.data(), sbuf.size());
+    EXPECT_EQ(1, oh.get().as<int>());
 }
 
 TEST(unpack, int_ret_offset_no_ref)
@@ -66,8 +66,8 @@ TEST(unpack, int_ret_offset_no_ref)
 
     std::size_t off = 0;
 
-    msgpack::unpacked msg = msgpack::unpack(sbuf.data(), sbuf.size(), off);
-    EXPECT_EQ(1, msg.get().as<int>());
+    msgpack::object_handle oh = msgpack::unpack(sbuf.data(), sbuf.size(), off);
+    EXPECT_EQ(1, oh.get().as<int>());
     EXPECT_EQ(off, sbuf.size());
 }
 
@@ -77,8 +77,8 @@ TEST(unpack, int_ret_no_offset_ref)
     msgpack::pack(sbuf, 1);
     bool referenced;
 
-    msgpack::unpacked msg = msgpack::unpack(sbuf.data(), sbuf.size(), referenced);
-    EXPECT_EQ(1, msg.get().as<int>());
+    msgpack::object_handle oh = msgpack::unpack(sbuf.data(), sbuf.size(), referenced);
+    EXPECT_EQ(1, oh.get().as<int>());
     EXPECT_EQ(false, referenced);
 }
 
@@ -89,8 +89,8 @@ TEST(unpack, int_ret_offset_ref)
     std::size_t off = 0;
     bool referenced;
 
-    msgpack::unpacked msg = msgpack::unpack(sbuf.data(), sbuf.size(), off, referenced);
-    EXPECT_EQ(1, msg.get().as<int>());
+    msgpack::object_handle oh = msgpack::unpack(sbuf.data(), sbuf.size(), off, referenced);
+    EXPECT_EQ(1, oh.get().as<int>());
     EXPECT_EQ(false, referenced);
     EXPECT_EQ(off, sbuf.size());
 }
@@ -100,22 +100,22 @@ TEST(unpack, int_no_offset_no_ref)
 {
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, 1);
-    msgpack::unpacked msg;
+    msgpack::object_handle oh;
 
-    msgpack::unpack(msg, sbuf.data(), sbuf.size());
-    EXPECT_EQ(1, msg.get().as<int>());
+    msgpack::unpack(oh, sbuf.data(), sbuf.size());
+    EXPECT_EQ(1, oh.get().as<int>());
 }
 
 TEST(unpack, int_offset_no_ref)
 {
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, 1);
-    msgpack::unpacked msg;
+    msgpack::object_handle oh;
 
     std::size_t off = 0;
 
-    msgpack::unpack(msg, sbuf.data(), sbuf.size(), off);
-    EXPECT_EQ(1, msg.get().as<int>());
+    msgpack::unpack(oh, sbuf.data(), sbuf.size(), off);
+    EXPECT_EQ(1, oh.get().as<int>());
     EXPECT_EQ(off, sbuf.size());
 }
 
@@ -123,11 +123,11 @@ TEST(unpack, int_no_offset_ref)
 {
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, 1);
-    msgpack::unpacked msg;
+    msgpack::object_handle oh;
     bool referenced;
 
-    msgpack::unpack(msg, sbuf.data(), sbuf.size(), referenced);
-    EXPECT_EQ(1, msg.get().as<int>());
+    msgpack::unpack(oh, sbuf.data(), sbuf.size(), referenced);
+    EXPECT_EQ(1, oh.get().as<int>());
     EXPECT_EQ(false, referenced);
 }
 
@@ -135,12 +135,12 @@ TEST(unpack, int_offset_ref)
 {
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, 1);
-    msgpack::unpacked msg;
+    msgpack::object_handle oh;
     std::size_t off = 0;
     bool referenced;
 
-    msgpack::unpack(msg, sbuf.data(), sbuf.size(), off, referenced);
-    EXPECT_EQ(1, msg.get().as<int>());
+    msgpack::unpack(oh, sbuf.data(), sbuf.size(), off, referenced);
+    EXPECT_EQ(1, oh.get().as<int>());
     EXPECT_EQ(false, referenced);
     EXPECT_EQ(off, sbuf.size());
 }
@@ -150,13 +150,13 @@ TEST(unpack, int_pointer_off_no_ref)
 {
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, 1);
-    msgpack::unpacked msg;
+    msgpack::object_handle oh;
 
     std::size_t off = 0;
 
     // obsolete
-    msgpack::unpack(&msg, sbuf.data(), sbuf.size(), &off);
-    EXPECT_EQ(1, msg.get().as<int>());
+    msgpack::unpack(&oh, sbuf.data(), sbuf.size(), &off);
+    EXPECT_EQ(1, oh.get().as<int>());
     EXPECT_EQ(off, sbuf.size());
 }
 
@@ -164,13 +164,13 @@ TEST(unpack, int_pointer_off_no_ref_explicit)
 {
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, 1);
-    msgpack::unpacked msg;
+    msgpack::object_handle oh;
 
     std::size_t off = 0;
 
     // obsolete
-    msgpack::unpack(&msg, sbuf.data(), sbuf.size(), &off, nullptr);
-    EXPECT_EQ(1, msg.get().as<int>());
+    msgpack::unpack(&oh, sbuf.data(), sbuf.size(), &off, nullptr);
+    EXPECT_EQ(1, oh.get().as<int>());
     EXPECT_EQ(off, sbuf.size());
 }
 
@@ -178,12 +178,12 @@ TEST(unpack, int_pointer_no_off_ref)
 {
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, 1);
-    msgpack::unpacked msg;
+    msgpack::object_handle oh;
     bool referenced;
 
     // obsolete
-    msgpack::unpack(&msg, sbuf.data(), sbuf.size(), nullptr, &referenced);
-    EXPECT_EQ(1, msg.get().as<int>());
+    msgpack::unpack(&oh, sbuf.data(), sbuf.size(), nullptr, &referenced);
+    EXPECT_EQ(1, oh.get().as<int>());
     EXPECT_EQ(false, referenced);
 }
 
@@ -191,13 +191,13 @@ TEST(unpack, int_pointer_off_ref)
 {
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, 1);
-    msgpack::unpacked msg;
+    msgpack::object_handle oh;
     bool referenced;
     std::size_t off = 0;
 
     // obsolete
-    msgpack::unpack(&msg, sbuf.data(), sbuf.size(), &off, &referenced);
-    EXPECT_EQ(1, msg.get().as<int>());
+    msgpack::unpack(&oh, sbuf.data(), sbuf.size(), &off, &referenced);
+    EXPECT_EQ(1, oh.get().as<int>());
     EXPECT_EQ(off, sbuf.size());
     EXPECT_EQ(false, referenced);
 }
@@ -207,11 +207,11 @@ TEST(unpack, int_default_null_pointer)
 {
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, 1);
-    msgpack::unpacked msg;
+    msgpack::object_handle oh;
 
     // obsolete
-    msgpack::unpack(&msg, sbuf.data(), sbuf.size());
-    EXPECT_EQ(1, msg.get().as<int>());
+    msgpack::unpack(&oh, sbuf.data(), sbuf.size());
+    EXPECT_EQ(1, oh.get().as<int>());
 }
 
 TEST(unpack, int_zone_no_offset_no_ref)
@@ -273,16 +273,16 @@ TEST(unpack, sequence)
 
     std::size_t off = 0;
 
-    msgpack::unpacked msg;
+    msgpack::object_handle oh;
 
-    msgpack::unpack(msg, sbuf.data(), sbuf.size(), off);
-    EXPECT_EQ(1, msg.get().as<int>());
+    msgpack::unpack(oh, sbuf.data(), sbuf.size(), off);
+    EXPECT_EQ(1, oh.get().as<int>());
 
-    msgpack::unpack(msg, sbuf.data(), sbuf.size(), off);
-    EXPECT_EQ(2, msg.get().as<int>());
+    msgpack::unpack(oh, sbuf.data(), sbuf.size(), off);
+    EXPECT_EQ(2, oh.get().as<int>());
 
-    msgpack::unpack(msg, sbuf.data(), sbuf.size(), off);
-    EXPECT_EQ(3, msg.get().as<int>());
+    msgpack::unpack(oh, sbuf.data(), sbuf.size(), off);
+    EXPECT_EQ(3, oh.get().as<int>());
 
     EXPECT_EQ(off, sbuf.size());
 }
@@ -325,9 +325,9 @@ TEST(unpack, insufficient_bytes_ref)
 
     std::size_t off = 0;
 
-    msgpack::unpacked msg;
+    msgpack::object_handle oh;
     try {
-        msgpack::unpack(msg, sbuf.data(), 1, off);
+        msgpack::unpack(oh, sbuf.data(), 1, off);
         EXPECT_TRUE(false);
     }
     catch (msgpack::insufficient_bytes const&) {
@@ -343,7 +343,6 @@ TEST(unpack, insufficient_bytes_object_handle)
 
     std::size_t off = 0;
 
-    msgpack::unpacked msg;
     try {
         msgpack::object_handle oh(msgpack::unpack(sbuf.data(), 1, off));
         EXPECT_TRUE(false);
@@ -361,7 +360,6 @@ TEST(unpack, insufficient_bytes_zone)
 
     std::size_t off = 0;
 
-    msgpack::unpacked msg;
     try {
         msgpack::zone z;
         msgpack::unpack(z, sbuf.data(), 1, off);
@@ -381,9 +379,9 @@ TEST(unpack, parse_error)
     sbuf.write(&c, 1);
 
     bool thrown = false;
-    msgpack::unpacked msg;
+    msgpack::object_handle oh;
     try {
-        msgpack::unpack(msg, sbuf.data(), sbuf.size());
+        msgpack::unpack(oh, sbuf.data(), sbuf.size());
         EXPECT_TRUE(false);
     }
     catch (msgpack::parse_error const&) {
@@ -434,8 +432,8 @@ TEST(unpack, extra_bytes)
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, 1);
 
-    msgpack::unpacked msg = msgpack::unpack(sbuf.data(), sbuf.size() + 1);
-    EXPECT_EQ(1, msg.get().as<int>());
+    msgpack::object_handle oh = msgpack::unpack(sbuf.data(), sbuf.size() + 1);
+    EXPECT_EQ(1, oh.get().as<int>());
 }
 
 TEST(unpack, zone_extra_bytes)
@@ -457,7 +455,7 @@ TEST(unpack, int_off_larger_than_length)
 
     bool thrown = false;
     try {
-        msgpack::unpacked msg = msgpack::unpack(sbuf.data(), sbuf.size(), off);
+        msgpack::object_handle oh = msgpack::unpack(sbuf.data(), sbuf.size(), off);
     }
     catch (msgpack::insufficient_bytes const&) {
         thrown = true;

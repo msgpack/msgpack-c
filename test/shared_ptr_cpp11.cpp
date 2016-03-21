@@ -14,9 +14,9 @@ TEST(SHARED_PTR, pack_convert_nil)
     std::stringstream ss;
     std::shared_ptr<int> val1;
     msgpack::pack(ss, val1);
-    msgpack::unpacked ret;
-    msgpack::unpack(ret, ss.str().data(), ss.str().size());
-    std::shared_ptr<int> val2 = ret.get().as<std::shared_ptr<int>>();
+    msgpack::object_handle oh =
+        msgpack::unpack(ss.str().data(), ss.str().size());
+    std::shared_ptr<int> val2 = oh.get().as<std::shared_ptr<int>>();
     EXPECT_TRUE(val1 == val2);
 }
 
@@ -25,9 +25,9 @@ TEST(SHARED_PTR, pack_convert_int)
     std::stringstream ss;
     std::shared_ptr<int> val1(new int(1));
     msgpack::pack(ss, val1);
-    msgpack::unpacked ret;
-    msgpack::unpack(ret, ss.str().data(), ss.str().size());
-    std::shared_ptr<int> val2 = ret.get().as<std::shared_ptr<int>>();
+    msgpack::object_handle oh =
+        msgpack::unpack(ss.str().data(), ss.str().size());
+    std::shared_ptr<int> val2 = oh.get().as<std::shared_ptr<int>>();
     EXPECT_TRUE(*val1 == *val2);
 }
 
@@ -113,9 +113,9 @@ TEST(SHARED_PTR, pack_convert_nil_no_def_con)
     std::stringstream ss;
     std::shared_ptr<no_def_con> val1(new no_def_con(1));
     msgpack::pack(ss, val1);
-    msgpack::unpacked ret;
-    msgpack::unpack(ret, ss.str().data(), ss.str().size());
-    std::shared_ptr<no_def_con> val2 = ret.get().as<std::shared_ptr<no_def_con>>();
+    msgpack::object_handle oh =
+        msgpack::unpack(ss.str().data(), ss.str().size());
+    std::shared_ptr<no_def_con> val2 = oh.get().as<std::shared_ptr<no_def_con>>();
     EXPECT_TRUE(*val1 == *val2);
 }
 

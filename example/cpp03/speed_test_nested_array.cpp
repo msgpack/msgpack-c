@@ -60,11 +60,11 @@ void test_array_of_array() {
     buffer.seekg(0);
     std::string str(buffer.str());
 
-    msgpack::unpacked unpacked;
-    std::cout << "Start unpacking...by void unpack(unpacked& result, const char* data, size_t len)" << std::endl;
+    msgpack::object_handle oh;
+    std::cout << "Start unpacking...by void unpack(object_handle& oh, const char* data, size_t len)" << std::endl;
     {
         boost::timer::cpu_timer timer;
-        msgpack::unpack(unpacked, str.data(), str.size());
+        msgpack::unpack(oh, str.data(), str.size());
         std::string result = timer.format();
         std::cout << result << std::endl;
     }
@@ -73,7 +73,7 @@ void test_array_of_array() {
     std::cout << "Start converting..." << std::endl;
     {
         boost::timer::cpu_timer timer;
-        unpacked.get().convert(v2);
+        oh.get().convert(v2);
         std::string result = timer.format();
         std::cout << result << std::endl;
     }

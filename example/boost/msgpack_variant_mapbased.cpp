@@ -79,8 +79,8 @@ int main() {
     u.address = "Tokyo";
     msgpack::pack(ss, u);
 
-    msgpack::unpacked unp = msgpack::unpack(ss.str().data(), ss.str().size());
-    msgpack::object const& obj = unp.get();
+    msgpack::object_handle oh = msgpack::unpack(ss.str().data(), ss.str().size());
+    msgpack::object const& obj = oh.get();
     std::cout << "Unpacked msgpack object." << std::endl;
     std::cout << obj << std::endl;
     msgpack::type::variant_ref v = obj.as<msgpack::type::variant_ref>();

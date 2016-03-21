@@ -29,15 +29,15 @@ void check_convert() {
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, v1);
 
-    msgpack::unpacked msg;
-    msgpack::unpack(&msg, sbuf.data(), sbuf.size());
+    msgpack::object_handle oh =
+        msgpack::unpack(sbuf.data(), sbuf.size());
 
     T v2;
-    msg.get().convert(v2);
+    oh.get().convert(v2);
 
     EXPECT_EQ(v1.get(), v2.get());
 
-    EXPECT_EQ(msg.get(), msgpack::object(T(v1.get())));
+    EXPECT_EQ(oh.get(), msgpack::object(T(v1.get())));
 }
 
 TEST(fixint, convert)

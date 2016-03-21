@@ -27,12 +27,10 @@ int main(void)
     // deserialize the buffer into msgpack::object instance.
     std::string str(buffer.str());
 
-    msgpack::unpacked result;
+    msgpack::object_handle oh = msgpack::unpack(str.data(), str.size());
 
-    msgpack::unpack(result, str.data(), str.size());
-
-    // deserialized object is valid during the msgpack::unpacked instance alive.
-    msgpack::object deserialized = result.get();
+    // deserialized object is valid during the msgpack::object_handle instance alive.
+    msgpack::object deserialized = oh.get();
 
     // msgpack::object supports ostream.
     std::cout << deserialized << std::endl;

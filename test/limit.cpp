@@ -11,8 +11,8 @@ TEST(limit, unpack_array_no_over)
     v.push_back(3);
     msgpack::pack(ss, v);
     try {
-        msgpack::unpacked unp;
-        msgpack::unpack(unp, ss.str().c_str(), ss.str().size(), nullptr, nullptr,
+        msgpack::object_handle oh =
+            msgpack::unpack(ss.str().c_str(), ss.str().size(), nullptr, nullptr,
                         msgpack::unpack_limit(3, 0, 0, 0, 0));
         EXPECT_TRUE(true);
     }
@@ -33,8 +33,8 @@ TEST(limit, unpack_array_over)
     v.push_back(3);
     msgpack::pack(ss, v);
     try {
-        msgpack::unpacked unp;
-        msgpack::unpack(unp, ss.str().c_str(), ss.str().size(), nullptr, nullptr,
+        msgpack::object_handle oh =
+            msgpack::unpack(ss.str().c_str(), ss.str().size(), nullptr, nullptr,
                         msgpack::unpack_limit(2, 0, 0, 0, 0));
         EXPECT_TRUE(false);
     }
@@ -55,8 +55,8 @@ TEST(limit, unpack_map_no_over)
     m[3] = 3;
     msgpack::pack(ss, m);
     try {
-        msgpack::unpacked unp;
-        msgpack::unpack(unp, ss.str().c_str(), ss.str().size(), nullptr, nullptr,
+        msgpack::object_handle oh =
+            msgpack::unpack(ss.str().c_str(), ss.str().size(), nullptr, nullptr,
                         msgpack::unpack_limit(0, 3, 0, 0, 0));
         EXPECT_TRUE(true);
     }
@@ -77,8 +77,8 @@ TEST(limit, unpack_map_over)
     m[3] = 3;
     msgpack::pack(ss, m);
     try {
-        msgpack::unpacked unp;
-        msgpack::unpack(unp, ss.str().c_str(), ss.str().size(), nullptr, nullptr,
+        msgpack::object_handle oh =
+            msgpack::unpack(ss.str().c_str(), ss.str().size(), nullptr, nullptr,
                         msgpack::unpack_limit(0, 2, 0, 0, 0));
         EXPECT_TRUE(false);
     }
@@ -96,8 +96,8 @@ TEST(limit, unpack_str_no_over)
     std::string s("123");
     msgpack::pack(ss, s);
     try {
-        msgpack::unpacked unp;
-        msgpack::unpack(unp, ss.str().c_str(), ss.str().size(), nullptr, nullptr,
+        msgpack::object_handle oh =
+            msgpack::unpack(ss.str().c_str(), ss.str().size(), nullptr, nullptr,
                         msgpack::unpack_limit(0, 0, 3, 0, 0));
         EXPECT_TRUE(true);
     }
@@ -115,8 +115,8 @@ TEST(limit, unpack_str_over)
     std::string s("123");
     msgpack::pack(ss, s);
     try {
-        msgpack::unpacked unp;
-        msgpack::unpack(unp, ss.str().c_str(), ss.str().size(), nullptr, nullptr,
+        msgpack::object_handle oh =
+            msgpack::unpack(ss.str().c_str(), ss.str().size(), nullptr, nullptr,
                         msgpack::unpack_limit(0, 0, 2, 0, 0));
         EXPECT_TRUE(false);
     }
@@ -137,8 +137,8 @@ TEST(limit, unpack_bin_no_over)
     v.push_back('3');
     msgpack::pack(ss, v);
     try {
-        msgpack::unpacked unp;
-        msgpack::unpack(unp, ss.str().c_str(), ss.str().size(), nullptr, nullptr,
+        msgpack::object_handle oh =
+            msgpack::unpack(ss.str().c_str(), ss.str().size(), nullptr, nullptr,
                         msgpack::unpack_limit(0, 0, 0, 3, 0));
         EXPECT_TRUE(true);
     }
@@ -159,8 +159,8 @@ TEST(limit, unpack_bin_over)
     v.push_back('3');
     msgpack::pack(ss, v);
     try {
-        msgpack::unpacked unp;
-        msgpack::unpack(unp, ss.str().c_str(), ss.str().size(), nullptr, nullptr,
+        msgpack::object_handle oh =
+            msgpack::unpack(ss.str().c_str(), ss.str().size(), nullptr, nullptr,
                         msgpack::unpack_limit(0, 0, 0, 2, 0));
         EXPECT_TRUE(false);
     }
@@ -180,8 +180,8 @@ TEST(limit, unpack_ext_no_over)
     packer.pack_ext(sizeof(buf), 1);
     packer.pack_ext_body(buf, sizeof(buf));
     try {
-        msgpack::unpacked unp;
-        msgpack::unpack(unp, ss.str().c_str(), ss.str().size(), nullptr, nullptr,
+        msgpack::object_handle oh =
+            msgpack::unpack(ss.str().c_str(), ss.str().size(), nullptr, nullptr,
                         msgpack::unpack_limit(0, 0, 0, 0, 3+1));
         EXPECT_TRUE(true);
     }
@@ -201,8 +201,8 @@ TEST(limit, unpack_ext_over)
     packer.pack_ext(sizeof(buf), 1);
     packer.pack_ext_body(buf, sizeof(buf));
     try {
-        msgpack::unpacked unp;
-        msgpack::unpack(unp, ss.str().c_str(), ss.str().size(), nullptr, nullptr,
+        msgpack::object_handle oh =
+            msgpack::unpack(ss.str().c_str(), ss.str().size(), nullptr, nullptr,
                         msgpack::unpack_limit(0, 0, 0, 0, 2+1));
         EXPECT_TRUE(false);
     }
@@ -226,7 +226,7 @@ TEST(limit, unpack_ext_over_32_bit)
             static_cast<char>(0x01u),
         };
         try {
-            msgpack::unpacked unp;
+            msgpack::object_handle unp;
             msgpack::unpack(unp, buf, sizeof(buf), nullptr, nullptr,
                             msgpack::unpack_limit(0, 0, 0, 0, 0xffffffff));
             EXPECT_TRUE(false);
@@ -252,7 +252,7 @@ TEST(limit, unpack_ext_no_over_64_bit)
             static_cast<char>(0x01u),
         };
         try {
-            msgpack::unpacked unp;
+            msgpack::object_handle unp;
             msgpack::unpack(unp, buf, sizeof(buf), nullptr, nullptr,
                             msgpack::unpack_limit(0, 0, 0, 0, 0xffffffff));
             EXPECT_TRUE(false);
@@ -278,7 +278,7 @@ TEST(limit, unpack_depth_no_over)
     outer.push_back(inner);
     msgpack::pack(ss, outer);
     try {
-        msgpack::unpacked unp;
+        msgpack::object_handle unp;
         msgpack::unpack(unp, ss.str().c_str(), ss.str().size(), nullptr, nullptr,
                         msgpack::unpack_limit(1, 0, 0, 0, 0, 2));
         EXPECT_TRUE(true);
@@ -300,7 +300,7 @@ TEST(limit, unpack_depth_over)
     outer.push_back(inner);
     msgpack::pack(ss, outer);
     try {
-        msgpack::unpacked unp;
+        msgpack::object_handle unp;
         msgpack::unpack(unp, ss.str().c_str(), ss.str().size(), nullptr, nullptr,
                         msgpack::unpack_limit(1, 0, 0, 0, 0, 1));
         EXPECT_TRUE(false);
@@ -326,7 +326,7 @@ TEST(limit, unpack_array_over_cpp11_no_off_no_ref)
     v.push_back(3);
     msgpack::pack(ss, v);
     try {
-        msgpack::unpacked unp =
+        msgpack::object_handle unp =
             msgpack::unpack(ss.str().c_str(), ss.str().size(), nullptr, nullptr,
                             msgpack::unpack_limit(2, 0, 0, 0, 0));
         EXPECT_TRUE(false);
@@ -349,7 +349,7 @@ TEST(limit, unpack_array_over_cpp11_no_off_ref)
     msgpack::pack(ss, v);
     try {
         bool ref;
-        msgpack::unpacked unp =
+        msgpack::object_handle unp =
             msgpack::unpack(ss.str().c_str(), ss.str().size(), ref, nullptr, nullptr,
                             msgpack::unpack_limit(2, 0, 0, 0, 0));
         EXPECT_TRUE(false);
@@ -372,7 +372,7 @@ TEST(limit, unpack_array_over_cpp11_off_no_ref)
     msgpack::pack(ss, v);
     try {
         std::size_t off = 0;
-        msgpack::unpacked unp =
+        msgpack::object_handle unp =
             msgpack::unpack(ss.str().c_str(), ss.str().size(), off, nullptr, nullptr,
                             msgpack::unpack_limit(2, 0, 0, 0, 0));
         EXPECT_TRUE(false);
@@ -396,7 +396,7 @@ TEST(limit, unpack_array_over_cpp11_off_ref)
     try {
         bool ref;
         std::size_t off = 0;
-        msgpack::unpacked unp =
+        msgpack::object_handle unp =
             msgpack::unpack(ss.str().c_str(), ss.str().size(), off, ref, nullptr, nullptr,
                             msgpack::unpack_limit(2, 0, 0, 0, 0));
         EXPECT_TRUE(false);
@@ -420,7 +420,7 @@ TEST(limit, unpack_array_over_no_off_no_ref)
     v.push_back(3);
     msgpack::pack(ss, v);
     try {
-        msgpack::unpacked unp;
+        msgpack::object_handle unp;
         msgpack::unpack(unp, ss.str().c_str(), ss.str().size(), nullptr, nullptr,
                         msgpack::unpack_limit(2, 0, 0, 0, 0));
         EXPECT_TRUE(false);
@@ -443,7 +443,7 @@ TEST(limit, unpack_array_over_no_off_ref)
     msgpack::pack(ss, v);
     try {
         bool ref;
-        msgpack::unpacked unp;
+        msgpack::object_handle unp;
         msgpack::unpack(unp, ss.str().c_str(), ss.str().size(), ref, nullptr, nullptr,
                         msgpack::unpack_limit(2, 0, 0, 0, 0));
         EXPECT_TRUE(false);
@@ -466,7 +466,7 @@ TEST(limit, unpack_array_over_off_no_ref)
     msgpack::pack(ss, v);
     try {
         std::size_t off = 0;
-        msgpack::unpacked unp;
+        msgpack::object_handle unp;
         msgpack::unpack(unp, ss.str().c_str(), ss.str().size(), off, nullptr, nullptr,
                         msgpack::unpack_limit(2, 0, 0, 0, 0));
         EXPECT_TRUE(false);
@@ -490,7 +490,7 @@ TEST(limit, unpack_array_over_off_ref)
     try {
         bool ref;
         std::size_t off = 0;
-        msgpack::unpacked unp;
+        msgpack::object_handle unp;
         msgpack::unpack(unp, ss.str().c_str(), ss.str().size(), off, ref, nullptr, nullptr,
                         msgpack::unpack_limit(2, 0, 0, 0, 0));
         EXPECT_TRUE(false);
@@ -515,7 +515,7 @@ TEST(limit, unpack_array_over_off_ref_pointer)
     try {
         bool ref;
         std::size_t off = 0;
-        msgpack::unpacked unp;
+        msgpack::object_handle unp;
         msgpack::unpack(&unp, ss.str().c_str(), ss.str().size(), &off, &ref, nullptr, nullptr,
                         msgpack::unpack_limit(2, 0, 0, 0, 0));
         EXPECT_TRUE(false);
@@ -542,7 +542,7 @@ TEST(limit, unpacker_array_over)
         u.reserve_buffer(ss.str().size());
         memcpy(u.buffer(), ss.str().c_str(), ss.str().size());
         u.buffer_consumed(ss.str().size());
-        msgpack::unpacked unp;
+        msgpack::object_handle unp;
         u.next(unp);
         EXPECT_TRUE(false);
     }

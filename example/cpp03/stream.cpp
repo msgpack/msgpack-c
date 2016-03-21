@@ -43,10 +43,10 @@ public:
 
         m_pac.buffer_consumed(count);
 
-        msgpack::unpacked result;
-        while (m_pac.next(&result)) {
-            msgpack::object msg = result.get();
-            unique_zone& life = result.zone();
+        msgpack::object_handle oh;
+        while (m_pac.next(&oh)) {
+            msgpack::object msg = oh.get();
+            unique_zone& life = oh.zone();
             process_message(msg, life);
         }
 

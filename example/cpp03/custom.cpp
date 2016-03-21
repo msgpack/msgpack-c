@@ -40,9 +40,9 @@ int main(void)
         std::stringstream sbuf;
         msgpack::pack(sbuf, oc);
 
-        msgpack::unpacked result;
-        msgpack::unpack(result, sbuf.str().data(), sbuf.str().size());
-        msgpack::object obj = result.get();
+        msgpack::object_handle oh =
+            msgpack::unpack(sbuf.str().data(), sbuf.str().size());
+        msgpack::object obj = oh.get();
 
         obj.convert(nc);
 
@@ -56,9 +56,9 @@ int main(void)
         std::stringstream sbuf;
         msgpack::pack(sbuf, nc);
 
-        msgpack::unpacked result;
-        msgpack::unpack(result, sbuf.str().data(), sbuf.str().size());
-        msgpack::object obj = result.get();
+        msgpack::object_handle oh =
+            msgpack::unpack(sbuf.str().data(), sbuf.str().size());
+        msgpack::object obj = oh.get();
 
         obj.convert(oc);
 

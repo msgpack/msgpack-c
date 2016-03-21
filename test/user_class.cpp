@@ -21,20 +21,20 @@ const double kEPS = 1e-10;
 class TestEnumMemberClass
 {
 public:
-  TestEnumMemberClass()
-    : t1(STATE_A), t2(STATE_B), t3(STATE_C) {}
+    TestEnumMemberClass()
+        : t1(STATE_A), t2(STATE_B), t3(STATE_C) {}
 
-  enum TestEnumType {
-    STATE_INVALID = 0,
-    STATE_A = 1,
-    STATE_B = 2,
-    STATE_C = 3
-  };
-  TestEnumType t1;
-  TestEnumType t2;
-  TestEnumType t3;
+    enum TestEnumType {
+        STATE_INVALID = 0,
+        STATE_A = 1,
+        STATE_B = 2,
+        STATE_C = 3
+    };
+    TestEnumType t1;
+    TestEnumType t2;
+    TestEnumType t3;
 
-  MSGPACK_DEFINE(t1, t2, t3);
+    MSGPACK_DEFINE(t1, t2, t3);
 };
 
 MSGPACK_ADD_ENUM(TestEnumMemberClass::TestEnumType);
@@ -42,148 +42,148 @@ MSGPACK_ADD_ENUM(TestEnumMemberClass::TestEnumType);
 class TestClass
 {
 public:
-  TestClass() : i(0), s("kzk") {}
-  int i;
-  string s;
-  MSGPACK_DEFINE(i, s);
+    TestClass() : i(0), s("kzk") {}
+    int i;
+    string s;
+    MSGPACK_DEFINE(i, s);
 };
 
 TEST(MSGPACK_USER_DEFINED, simple_buffer_class)
 {
-  for (unsigned int k = 0; k < kLoop; k++) {
-    TestClass val1;
-    msgpack::sbuffer sbuf;
-    msgpack::pack(sbuf, val1);
-    msgpack::unpacked ret;
-    msgpack::unpack(ret, sbuf.data(), sbuf.size());
-    TestClass val2 = ret.get().as<TestClass>();
-    EXPECT_EQ(val1.i, val2.i);
-    EXPECT_EQ(val1.s, val2.s);
-  }
+    for (unsigned int k = 0; k < kLoop; k++) {
+        TestClass val1;
+        msgpack::sbuffer sbuf;
+        msgpack::pack(sbuf, val1);
+        msgpack::object_handle oh =
+            msgpack::unpack(sbuf.data(), sbuf.size());
+        TestClass val2 = oh.get().as<TestClass>();
+        EXPECT_EQ(val1.i, val2.i);
+        EXPECT_EQ(val1.s, val2.s);
+    }
 }
 
 class TestClass2
 {
 public:
-  TestClass2() : i(0), s("kzk") {
-    for (unsigned int i = 0; i < kElements; i++)
-      v.push_back(rand());
-  }
-  int i;
-  string s;
-  vector<int> v;
-  MSGPACK_DEFINE(i, s, v);
+    TestClass2() : i(0), s("kzk") {
+        for (unsigned int i = 0; i < kElements; i++)
+            v.push_back(rand());
+    }
+    int i;
+    string s;
+    vector<int> v;
+    MSGPACK_DEFINE(i, s, v);
 };
 
 TEST(MSGPACK_USER_DEFINED, simple_buffer_class_old_to_new)
 {
-  for (unsigned int k = 0; k < kLoop; k++) {
-    TestClass val1;
-    msgpack::sbuffer sbuf;
-    msgpack::pack(sbuf, val1);
-    msgpack::unpacked ret;
-    msgpack::unpack(ret, sbuf.data(), sbuf.size());
-    TestClass2 val2 = ret.get().as<TestClass2>();
-    EXPECT_EQ(val1.i, val2.i);
-    EXPECT_EQ(val1.s, val2.s);
-    EXPECT_FALSE(val2.s.empty());
-  }
+    for (unsigned int k = 0; k < kLoop; k++) {
+        TestClass val1;
+        msgpack::sbuffer sbuf;
+        msgpack::pack(sbuf, val1);
+        msgpack::object_handle oh =
+            msgpack::unpack(sbuf.data(), sbuf.size());
+        TestClass2 val2 = oh.get().as<TestClass2>();
+        EXPECT_EQ(val1.i, val2.i);
+        EXPECT_EQ(val1.s, val2.s);
+        EXPECT_FALSE(val2.s.empty());
+    }
 }
 
 TEST(MSGPACK_USER_DEFINED, simple_buffer_class_new_to_old)
 {
-  for (unsigned int k = 0; k < kLoop; k++) {
-    TestClass2 val1;
-    msgpack::sbuffer sbuf;
-    msgpack::pack(sbuf, val1);
-    msgpack::unpacked ret;
-    msgpack::unpack(ret, sbuf.data(), sbuf.size());
-    TestClass val2 = ret.get().as<TestClass>();
-    EXPECT_EQ(val1.i, val2.i);
-    EXPECT_EQ(val1.s, val2.s);
-    EXPECT_FALSE(val2.s.empty());
-  }
+    for (unsigned int k = 0; k < kLoop; k++) {
+        TestClass2 val1;
+        msgpack::sbuffer sbuf;
+        msgpack::pack(sbuf, val1);
+        msgpack::object_handle oh =
+            msgpack::unpack(sbuf.data(), sbuf.size());
+        TestClass val2 = oh.get().as<TestClass>();
+        EXPECT_EQ(val1.i, val2.i);
+        EXPECT_EQ(val1.s, val2.s);
+        EXPECT_FALSE(val2.s.empty());
+    }
 }
 
 TEST(MSGPACK_USER_DEFINED, simple_buffer_enum_member)
 {
-  TestEnumMemberClass val1;
-  msgpack::sbuffer sbuf;
-  msgpack::pack(sbuf, val1);
-  msgpack::unpacked ret;
-  msgpack::unpack(ret, sbuf.data(), sbuf.size());
-  TestEnumMemberClass val2 = ret.get().as<TestEnumMemberClass>();
-  EXPECT_EQ(val1.t1, val2.t1);
-  EXPECT_EQ(val1.t2, val2.t2);
-  EXPECT_EQ(val1.t3, val2.t3);
+    TestEnumMemberClass val1;
+    msgpack::sbuffer sbuf;
+    msgpack::pack(sbuf, val1);
+    msgpack::object_handle oh =
+        msgpack::unpack(sbuf.data(), sbuf.size());
+    TestEnumMemberClass val2 = oh.get().as<TestEnumMemberClass>();
+    EXPECT_EQ(val1.t1, val2.t1);
+    EXPECT_EQ(val1.t2, val2.t2);
+    EXPECT_EQ(val1.t3, val2.t3);
 }
 
 class TestUnionMemberClass
 {
 public:
-  TestUnionMemberClass() {}
-  TestUnionMemberClass(double f) {
-    is_double = true;
-    value.f = f;
-  }
-  TestUnionMemberClass(int i) {
-    is_double = false;
-    value.i = i;
-  }
+    TestUnionMemberClass() {}
+    TestUnionMemberClass(double f) {
+        is_double = true;
+        value.f = f;
+    }
+    TestUnionMemberClass(int i) {
+        is_double = false;
+        value.i = i;
+    }
 
-  union {
-    double f;
-    int i;
-  } value;
-  bool is_double;
+    union {
+        double f;
+        int i;
+    } value;
+    bool is_double;
 
-  template <typename Packer>
-  void msgpack_pack(Packer& pk) const
-  {
-    if (is_double)
-      pk.pack(msgpack::type::tuple<bool, double>(true, value.f));
-    else
-      pk.pack(msgpack::type::tuple<bool, int>(false, value.i));
-  }
+    template <typename Packer>
+    void msgpack_pack(Packer& pk) const
+    {
+        if (is_double)
+            pk.pack(msgpack::type::tuple<bool, double>(true, value.f));
+        else
+            pk.pack(msgpack::type::tuple<bool, int>(false, value.i));
+    }
 
-  void msgpack_unpack(msgpack::object o)
-  {
-    msgpack::type::tuple<bool, msgpack::object> tuple;
-    o.convert(tuple);
+    void msgpack_unpack(msgpack::object o)
+    {
+        msgpack::type::tuple<bool, msgpack::object> tuple;
+        o.convert(tuple);
 
-    is_double = tuple.get<0>();
-    if (is_double)
-      tuple.get<1>().convert(value.f);
-    else
-      tuple.get<1>().convert(value.i);
-  }
+        is_double = tuple.get<0>();
+        if (is_double)
+            tuple.get<1>().convert(value.f);
+        else
+            tuple.get<1>().convert(value.i);
+    }
 };
 
 TEST(MSGPACK_USER_DEFINED, simple_buffer_union_member)
 {
-  {
-    // double
-    TestUnionMemberClass val1(1.0);
-    msgpack::sbuffer sbuf;
-    msgpack::pack(sbuf, val1);
-    msgpack::unpacked ret;
-    msgpack::unpack(ret, sbuf.data(), sbuf.size());
-    TestUnionMemberClass val2 = ret.get().as<TestUnionMemberClass>();
-    EXPECT_EQ(val1.is_double, val2.is_double);
-    EXPECT_TRUE(fabs(val1.value.f - val2.value.f) < kEPS);
-  }
-  {
-    // int
-    TestUnionMemberClass val1(1);
-    msgpack::sbuffer sbuf;
-    msgpack::pack(sbuf, val1);
-    msgpack::unpacked ret;
-    msgpack::unpack(ret, sbuf.data(), sbuf.size());
-    TestUnionMemberClass val2 = ret.get().as<TestUnionMemberClass>();
-    EXPECT_EQ(val1.is_double, val2.is_double);
-    EXPECT_EQ(val1.value.i, 1);
-    EXPECT_EQ(val1.value.i, val2.value.i);
-  }
+    {
+        // double
+        TestUnionMemberClass val1(1.0);
+        msgpack::sbuffer sbuf;
+        msgpack::pack(sbuf, val1);
+        msgpack::object_handle oh =
+            msgpack::unpack(sbuf.data(), sbuf.size());
+        TestUnionMemberClass val2 = oh.get().as<TestUnionMemberClass>();
+        EXPECT_EQ(val1.is_double, val2.is_double);
+        EXPECT_TRUE(fabs(val1.value.f - val2.value.f) < kEPS);
+    }
+    {
+        // int
+        TestUnionMemberClass val1(1);
+        msgpack::sbuffer sbuf;
+        msgpack::pack(sbuf, val1);
+        msgpack::object_handle oh =
+            msgpack::unpack(sbuf.data(), sbuf.size());
+        TestUnionMemberClass val2 = oh.get().as<TestUnionMemberClass>();
+        EXPECT_EQ(val1.is_double, val2.is_double);
+        EXPECT_EQ(val1.value.i, 1);
+        EXPECT_EQ(val1.value.i, val2.value.i);
+    }
 }
 
 // inheritance
@@ -220,9 +220,9 @@ TEST(MSGPACK_INHERIT, define_non_virtual)
     b.d_mid2::t = 5;
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, b);
-    msgpack::unpacked ret;
-    msgpack::unpack(ret, sbuf.data(), sbuf.size());
-    d_bottom br = ret.get().as<d_bottom>();
+    msgpack::object_handle oh =
+        msgpack::unpack(sbuf.data(), sbuf.size());
+    d_bottom br = oh.get().as<d_bottom>();
     EXPECT_EQ(b.b, br.b);
     EXPECT_EQ(b.m1, br.m1);
     EXPECT_EQ(b.m2, br.m2);
@@ -259,9 +259,9 @@ TEST(MSGPACK_INHERIT, define_virtual)
     b.t = 4;
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, b);
-    msgpack::unpacked ret;
-    msgpack::unpack(ret, sbuf.data(), sbuf.size());
-    v_d_bottom br = ret.get().as<v_d_bottom>();
+    msgpack::object_handle oh =
+        msgpack::unpack(sbuf.data(), sbuf.size());
+    v_d_bottom br = oh.get().as<v_d_bottom>();
     EXPECT_EQ(b.b, br.b);
     EXPECT_EQ(b.m1, br.m1);
     EXPECT_EQ(b.m2, br.m2);
@@ -300,9 +300,9 @@ TEST(MSGPACK_INHERIT, define_array_non_virtual)
     b.da_mid2::t = 5;
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, b);
-    msgpack::unpacked ret;
-    msgpack::unpack(ret, sbuf.data(), sbuf.size());
-    da_bottom br = ret.get().as<da_bottom>();
+    msgpack::object_handle oh =
+        msgpack::unpack(sbuf.data(), sbuf.size());
+    da_bottom br = oh.get().as<da_bottom>();
     EXPECT_EQ(b.b, br.b);
     EXPECT_EQ(b.m1, br.m1);
     EXPECT_EQ(b.m2, br.m2);
@@ -339,9 +339,9 @@ TEST(MSGPACK_INHERIT, define_array_virtual)
     b.t = 4;
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, b);
-    msgpack::unpacked ret;
-    msgpack::unpack(ret, sbuf.data(), sbuf.size());
-    v_da_bottom br = ret.get().as<v_da_bottom>();
+    msgpack::object_handle oh =
+        msgpack::unpack(sbuf.data(), sbuf.size());
+    v_da_bottom br = oh.get().as<v_da_bottom>();
     EXPECT_EQ(b.b, br.b);
     EXPECT_EQ(b.m1, br.m1);
     EXPECT_EQ(b.m2, br.m2);
@@ -380,9 +380,9 @@ TEST(MSGPACK_INHERIT, define_map_non_virtual)
     b.dm_mid2::t = 5;
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, b);
-    msgpack::unpacked ret;
-    msgpack::unpack(ret, sbuf.data(), sbuf.size());
-    dm_bottom br = ret.get().as<dm_bottom>();
+    msgpack::object_handle oh =
+        msgpack::unpack(sbuf.data(), sbuf.size());
+    dm_bottom br = oh.get().as<dm_bottom>();
     EXPECT_EQ(b.b, br.b);
     EXPECT_EQ(b.m1, br.m1);
     EXPECT_EQ(b.m2, br.m2);
@@ -419,9 +419,9 @@ TEST(MSGPACK_INHERIT, define_map_virtual)
     b.t = 4;
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, b);
-    msgpack::unpacked ret;
-    msgpack::unpack(ret, sbuf.data(), sbuf.size());
-    v_dm_bottom br = ret.get().as<v_dm_bottom>();
+    msgpack::object_handle oh =
+        msgpack::unpack(sbuf.data(), sbuf.size());
+    v_dm_bottom br = oh.get().as<v_dm_bottom>();
     EXPECT_EQ(b.b, br.b);
     EXPECT_EQ(b.m1, br.m1);
     EXPECT_EQ(b.m2, br.m2);
@@ -451,9 +451,9 @@ TEST(MSGPACK_MIGRATION, order_number_changed)
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, v1);
 
-    msgpack::unpacked ret;
-    msgpack::unpack(ret, sbuf.data(), sbuf.size());
-    s_v2 v2 = ret.get().as<s_v2>();
+    msgpack::object_handle oh =
+        msgpack::unpack(sbuf.data(), sbuf.size());
+    s_v2 v2 = oh.get().as<s_v2>();
 
     EXPECT_EQ(v2.c, 'A');
     EXPECT_EQ(v2.s, "foo"); // from v1

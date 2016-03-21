@@ -18,9 +18,9 @@ TEST(MSGPACK_BOOST, pack_convert_string_ref)
 
     msgpack::pack(ss, val1);
 
-    msgpack::unpacked ret;
-    msgpack::unpack(ret, ss.str().data(), ss.str().size());
-    boost::string_ref val2 = ret.get().as<boost::string_ref>();
+    msgpack::object_handle oh;
+    msgpack::unpack(oh, ss.str().data(), ss.str().size());
+    boost::string_ref val2 = oh.get().as<boost::string_ref>();
     EXPECT_TRUE(val1 == val2);
 }
 

@@ -71,9 +71,9 @@ int main() {
 
         print(ss.str());
 
-        msgpack::unpacked unp = msgpack::unpack(ss.str().data(), ss.str().size());
+        msgpack::object_handle oh = msgpack::unpack(ss.str().data(), ss.str().size());
 
-        msgpack::object obj = unp.get();
+        msgpack::object obj = oh.get();
         std::cout << obj << std::endl;
 
         v2 newv = obj.as<v2>();

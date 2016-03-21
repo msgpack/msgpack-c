@@ -31,11 +31,11 @@ int main(void) {
         msgpack::pack(sbuf, vec);
 
         // deserialize it.
-        msgpack::unpacked msg;
-        msgpack::unpack(&msg, sbuf.data(), sbuf.size());
+        msgpack::object_handle oh =
+            msgpack::unpack(sbuf.data(), sbuf.size());
 
         // print the deserialized object.
-        msgpack::object obj = msg.get();
+        msgpack::object obj = oh.get();
         std::cout << obj << std::endl;  //=> ["Hello", "MessagePack"]
 
         // convert it into statically typed object.
@@ -79,9 +79,9 @@ int main(void) {
         pac.buffer_consumed(buffer.size());
 
         // now starts streaming deserialization.
-        msgpack::unpacked result;
-        while(pac.next(&result)) {
-            std::cout << result.get() << std::endl;
+        msgpack::object_handle oh;
+        while(pac.next(&oh)) {
+            std::cout << oh.get() << std::endl;
         }
 
         // results:
@@ -151,10 +151,10 @@ int main(void) {
         msgpack::sbuffer sbuf;
         msgpack::pack(sbuf, vec);
 
-        msgpack::unpacked msg;
-        msgpack::unpack(&msg, sbuf.data(), sbuf.size());
+        msgpack::object_handle oh =
+            msgpack::unpack(sbuf.data(), sbuf.size());
 
-        msgpack::object obj = msg.get();
+        msgpack::object obj = oh.get();
 
         // you can convert object to myclass directly
         std::vector<myclass> rvec;

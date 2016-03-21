@@ -84,9 +84,9 @@ int main() {
 
         print(ss.str());
 
-        msgpack::unpacked unp;
-        msgpack::unpack(unp, ss.str().data(), ss.str().size());
-        msgpack::object obj = unp.get();
+        msgpack::object_handle oh =
+            msgpack::unpack(ss.str().data(), ss.str().size());
+        msgpack::object obj = oh.get();
         std::cout << obj << std::endl;
         assert(obj.as<my_class>() == my);
     }
