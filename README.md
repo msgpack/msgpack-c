@@ -113,9 +113,7 @@ Usage
 When you use msgpack on C++03 and C++11, you can just add
 msgpack-c/include to your include path:
 
-    g++ -I msgpack-c/include -DMSGPACK_DISABLE_LEGACY_NIL -DMSGPACK_DISABLE_LEGACY_CONVERT your_source_file.cpp
-
-See [MSGPACK_DISABLE_LEGACY_NIL](https://github.com/msgpack/msgpack-c/wiki/v1_1_cpp_configure#msgpack_disable_legacy_nil-since-140) and [MSGPACK_DISABLE_LEGACY_CONVERT](https://github.com/msgpack/msgpack-c/wiki/v1_1_cpp_configure#msgpack_disable_legacy_convert-since-140).
+    g++ -I msgpack-c/include your_source_file.cpp
 
 If you want to use C version of msgpack, you need to build it. You can
 also install the C and C++ versions of msgpack.

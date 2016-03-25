@@ -26,6 +26,19 @@ namespace msgpack {
 MSGPACK_API_VERSION_NAMESPACE(v1) {
 /// @endcond
 
+struct object_kv {
+    msgpack::object key;
+    msgpack::object val;
+};
+
+struct object::with_zone : msgpack::object {
+    with_zone(msgpack::zone& z) : zone(z) { }
+    msgpack::zone& zone;
+private:
+    with_zone();
+};
+
+
 /// The class holds object and zone
 class object_handle {
 public:
@@ -171,16 +184,8 @@ inline object_handle clone(msgpack::object const& obj) {
     return object_handle(newobj, msgpack::move(z));
 }
 
-struct object::implicit_type {
-    implicit_type(object const& o) : obj(o) { }
-    ~implicit_type() { }
-
-    template <typename T>
-    operator T() { return obj.as<T>(); }
-
-private:
-    msgpack::object const& obj;
-};
+template <typename T>
+inline object::implicit_type::operator T() { return obj.as<T>(); }
 
 namespace detail {
 template <typename Stream, typename T>
@@ -515,9 +520,9 @@ inline bool operator!=(const T& y, const msgpack::object& x)
 { return x != y; }
 
 
-inline msgpack::object::implicit_type object::convert() const
+inline object::implicit_type object::convert() const
 {
-    return msgpack::object::implicit_type(*this);
+    return object::implicit_type(*this);
 }
 
 template <typename T>
@@ -580,7 +585,7 @@ inline object::object()
 template <typename T>
 inline object::object(const T& v)
 {
-    msgpack::operator<<(*this, v);
+    *this << v;
 }
 
 template <typename T>

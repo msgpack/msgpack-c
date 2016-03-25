@@ -459,3 +459,67 @@ TEST(MSGPACK_MIGRATION, order_number_changed)
     EXPECT_EQ(v2.s, "foo"); // from v1
     EXPECT_EQ(v2.i, 42);    // from v1
 }
+
+// non intrusive with operator <<
+
+class test_non_intrusive {
+public:
+    const std::string& name() const { return m_name; }
+    void set_name(const std::string& name) { m_name = name; }
+private:
+    std::string m_name;
+};
+
+namespace msgpack {
+MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS) {
+namespace adaptor {
+
+template<>
+struct convert<test_non_intrusive>
+{
+    msgpack::object const& operator()(
+        msgpack::object const& o,
+        test_non_intrusive& t) const {
+        t.set_name(o.as<std::string>());
+        return o;
+    }
+};
+
+template<>
+struct pack<test_non_intrusive>
+{
+    template <typename Stream>
+    msgpack::packer<Stream>& operator()(
+        msgpack::packer<Stream>& p,
+        test_non_intrusive const& t) const {
+        p.pack(t.name());
+        return p;
+    }
+};
+
+template <>
+struct object_with_zone<test_non_intrusive>
+{
+    void operator()(
+        msgpack::object::with_zone& o,
+        const test_non_intrusive& t) const {
+        o << t.name();
+    }
+};
+
+} // namespace adaptor
+} // MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS)
+} // namespace msgpack
+
+TEST(MSGPACK_USER_DEFINED, test_non_intrusive)
+{
+    test_non_intrusive t1;
+    msgpack::sbuffer sbuf;
+    msgpack::pack(sbuf, t1);
+
+    msgpack::object_handle oh =
+        msgpack::unpack(sbuf.data(), sbuf.size());
+    test_non_intrusive t2 = oh.get().as<test_non_intrusive>();
+
+    EXPECT_EQ(t1.name(), t2.name());
+}
