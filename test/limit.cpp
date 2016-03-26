@@ -504,6 +504,8 @@ TEST(limit, unpack_array_over_off_ref)
 }
 
 // obsolete
+#if MSGPACK_DEFAULT_API_VERSION == 1
+
 TEST(limit, unpack_array_over_off_ref_pointer)
 {
     std::stringstream ss;
@@ -527,6 +529,8 @@ TEST(limit, unpack_array_over_off_ref_pointer)
         EXPECT_TRUE(false);
     }
 }
+
+#endif // MSGPACK_DEFAULT_API_VERSION == 1
 
 TEST(limit, unpacker_array_over)
 {
