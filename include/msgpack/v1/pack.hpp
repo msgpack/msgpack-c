@@ -34,7 +34,7 @@ public:
     /// Constructor
     /**
      * This constructor is left for compatibility.
-     * Use `packer(Stream* s)` instead of the constructor.
+     * Use `packer(Stream& s)` instead of the constructor.
      *
      * @param s A pointer to packing destination stream object.
      */
