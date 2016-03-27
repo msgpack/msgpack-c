@@ -145,6 +145,7 @@ TEST(unpack, int_offset_ref)
     EXPECT_EQ(off, sbuf.size());
 }
 
+#if MSGPACK_DEFAULT_API_VERSION == 1
 
 TEST(unpack, int_pointer_off_no_ref)
 {
@@ -213,6 +214,8 @@ TEST(unpack, int_default_null_pointer)
     msgpack::unpack(&oh, sbuf.data(), sbuf.size());
     EXPECT_EQ(1, oh.get().as<int>());
 }
+
+#endif // MSGPACK_DEFAULT_API_VERSION == 1
 
 TEST(unpack, int_zone_no_offset_no_ref)
 {

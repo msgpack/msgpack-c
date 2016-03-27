@@ -363,6 +363,7 @@ nobase_include_HEADERS += \
 		../include/msgpack/v2/object_fwd_decl.hpp \
 		../include/msgpack/v2/pack_decl.hpp \
 		../include/msgpack/v2/sbuffer_decl.hpp \
+		../include/msgpack/v2/unpack.hpp \
 		../include/msgpack/v2/unpack_decl.hpp \
 		../include/msgpack/v2/vrefbuffer_decl.hpp \
 		../include/msgpack/v2/zbuffer_decl.hpp \
