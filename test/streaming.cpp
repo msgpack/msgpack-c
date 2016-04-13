@@ -48,6 +48,9 @@ TEST(streaming, basic)
     }
 }
 
+// obsolete
+#if MSGPACK_DEFAULT_API_VERSION == 1
+
 TEST(streaming, basic_pointer)
 {
     msgpack::sbuffer buffer;
@@ -93,6 +96,8 @@ TEST(streaming, basic_pointer)
         EXPECT_TRUE(input < eof);
     }
 }
+
+#endif // MSGPACK_DEFAULT_API_VERSION == 1
 
 #if !defined(MSGPACK_USE_CPP03)
 
@@ -207,6 +212,8 @@ TEST(streaming, event)
     handler.on_read();
 }
 
+// obsolete
+#if MSGPACK_DEFAULT_API_VERSION == 1
 
 // backward compatibility
 TEST(streaming, basic_compat)
@@ -314,3 +321,5 @@ TEST(streaming, event_compat)
     handler.expect = 3;
     handler.on_read();
 }
+
+#endif // !defined(MSGPACK_USE_CPP03)

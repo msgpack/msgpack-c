@@ -30,6 +30,7 @@ LIST (APPEND check_PROGRAMS
     reference.cpp
     streaming.cpp
     streaming_c.cpp
+    unpack_visitor.cpp
     user_class.cpp
     version.cpp
     zone.cpp

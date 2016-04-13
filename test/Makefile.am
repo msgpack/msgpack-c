@@ -25,6 +25,7 @@ check_PROGRAMS = \
 		reference \
 		streaming \
 		streaming_c \
+		unpack_visitor \
 		user_class \
 		version \
 		zone
@@ -70,6 +71,7 @@ raw_SOURCES = raw.cpp
 reference_SOURCES = reference.cpp
 streaming_SOURCES = streaming.cpp
 streaming_c_SOURCES = streaming_c.cpp
+unpack_visitor_SOURCES = unpack_visitor.cpp
 user_class_SOURCES = user_class.cpp
 version_SOURCES = version.cpp
 zone_SOURCES = zone.cpp

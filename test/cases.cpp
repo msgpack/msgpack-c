@@ -27,11 +27,11 @@ TEST(cases, format)
     feed_file(pac_compact, "cases_compact.mpac");
 
     msgpack::object_handle oh;
-    while(pac.next(&oh)) {
+    while(pac.next(oh)) {
         msgpack::object_handle oh_compact;
-        EXPECT_TRUE( pac_compact.next(&oh_compact) );
+        EXPECT_TRUE( pac_compact.next(oh_compact) );
         EXPECT_EQ(oh_compact.get(), oh.get());
     }
 
-    EXPECT_FALSE( pac_compact.next(&oh) );
+    EXPECT_FALSE( pac_compact.next(oh) );
 }
