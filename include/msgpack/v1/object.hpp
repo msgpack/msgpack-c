@@ -734,7 +734,7 @@ inline std::ostream& operator<< (std::ostream& s, const msgpack::object& o)
 {
     switch(o.type) {
     case msgpack::type::NIL:
-        s << "nil";
+        s << "null";
         break;
 
     case msgpack::type::BOOLEAN:
