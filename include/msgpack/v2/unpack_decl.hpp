@@ -305,23 +305,25 @@ msgpack::object unpack(
  * @param data The pointer to the buffer.
  * @param len The length of the buffer.
  * @param off The offset position of the buffer. It is read and overwritten.
+ * @param v The visitor that satisfies visitor concept. https://github.com/msgpack/msgpack-c/wiki/v2_0_cpp_visitor#visitor-concept
  *
  * @return if unpacking process finishs without error then return true, otherwise return false.
  *
  */
-template <typename UnpackVisitor>
-bool unpack_visit(const char* data, size_t len, size_t& off, UnpackVisitor&);
+template <typename Visitor>
+bool parse(const char* data, size_t len, size_t& off, Visitor& v);
 
 /// Unpack msgpack formatted data via a visitor
 /**
  * @param data The pointer to the buffer.
  * @param len The length of the buffer.
+ * @param v The visitor that satisfies visitor concept. https://github.com/msgpack/msgpack-c/wiki/v2_0_cpp_visitor#visitor-concept
  *
  * @return if unpacking process finishs without error then return true, otherwise return false.
  *
  */
-template <typename UnpackVisitor>
-bool unpack_visit(const char* data, size_t len, UnpackVisitor& v);
+template <typename Visitor>
+bool parse(const char* data, size_t len, Visitor& v);
 
 namespace detail {
 
@@ -333,7 +335,7 @@ unpack_imp(const char* data, std::size_t len, std::size_t& off,
 
 template <typename UnpackVisitor>
 unpack_return
-unpack_visit_imp(const char* data, size_t len, size_t& off, UnpackVisitor& v);
+parse_imp(const char* data, size_t len, size_t& off, UnpackVisitor& v);
 
 } // detail
 

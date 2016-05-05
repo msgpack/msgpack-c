@@ -3,14 +3,14 @@
 #include <sstream>
 
 // To avoid link error
-TEST(unpack_visitor, dummy)
+TEST(visitor, dummy)
 {
 }
 
 #if MSGPACK_DEFAULT_API_VERSION >= 2
 
-struct json_visitor : msgpack::v2::null_visitor {
-    json_visitor(std::string& s):m_s(s) {}
+struct json_like_visitor : msgpack::v2::null_visitor {
+    json_like_visitor(std::string& s):m_s(s) {}
 
     bool visit_nil() {
         m_s += "null";
@@ -34,6 +34,7 @@ struct json_visitor : msgpack::v2::null_visitor {
         return true;
     }
     bool visit_str(const char* v, uint32_t size) {
+        // I omit escape process.
         m_s += '"' + std::string(v, size) + '"';
         return true;
     }
@@ -58,7 +59,12 @@ struct json_visitor : msgpack::v2::null_visitor {
         m_s += ":";
         return true;
     }
+    bool end_map_value() {
+        m_s += ",";
+        return true;
+    }
     bool end_map() {
+        m_s.erase(m_s.size() - 1, 1); // remove the last ','
         m_s += "}";
         return true;
     }
@@ -71,7 +77,7 @@ struct json_visitor : msgpack::v2::null_visitor {
     std::string& m_s;
 };
 
-TEST(unpack_visitor, json)
+TEST(visitor, json_like)
 {
     std::stringstream ss;
     msgpack::packer<std::stringstream> p(ss);
@@ -82,12 +88,12 @@ TEST(unpack_visitor, json)
     p.pack_nil();
     p.pack(true);
 
-    std::string json;
-    json_visitor v(json);
+    std::string json_like;
+    json_like_visitor v(json_like);
     std::size_t off = 0;
-    bool ret = msgpack::v2::unpack_visit(ss.str().data(), ss.str().size(), off, v);
+    bool ret = msgpack::v2::parse(ss.str().data(), ss.str().size(), off, v);
     EXPECT_TRUE(ret);
-    EXPECT_EQ("{\"key\":[42,null,true]}", json);
+    EXPECT_EQ("{\"key\":[42,null,true]}", json_like);
 }
 
 struct parse_error_check_visitor : msgpack::v2::null_visitor {
@@ -100,13 +106,13 @@ struct parse_error_check_visitor : msgpack::v2::null_visitor {
     bool& m_called;
 };
 
-TEST(unpack_visitor, parse_error)
+TEST(visitor, parse_error)
 {
     bool called = false;
     parse_error_check_visitor v(called);
     std::size_t off = 0;
     char const data[] = { static_cast<char>(0x93u), 0x01u, static_cast<char>(0xc1u), 0x03u };
-    bool ret = msgpack::v2::unpack_visit(data, sizeof(data), off, v);
+    bool ret = msgpack::v2::parse(data, sizeof(data), off, v);
     EXPECT_FALSE(ret);
     EXPECT_TRUE(called);
 }
@@ -121,13 +127,13 @@ struct insuf_bytes_check_visitor : msgpack::v2::null_visitor {
     bool& m_called;
 };
 
-TEST(unpack_visitor, insuf_bytes)
+TEST(visitor, insuf_bytes)
 {
     bool called = false;
     insuf_bytes_check_visitor v(called);
     std::size_t off = 0;
     char const data[] = { static_cast<char>(0x93u), 0x01u, 0x01u };
-    bool ret = msgpack::v2::unpack_visit(data, sizeof(data), off, v);
+    bool ret = msgpack::v2::parse(data, sizeof(data), off, v);
     EXPECT_FALSE(ret);
     EXPECT_TRUE(called);
 }

@@ -283,7 +283,7 @@ public:
     bool m_referenced;
 };
 
-template <typename UnpackVisitorHolder>
+template <typename VisitorHolder>
 class context {
 public:
     context()
@@ -308,8 +308,8 @@ private:
         return static_cast<uint32_t>(*p) & 0x1f;
     }
 
-    UnpackVisitorHolder& holder() {
-        return static_cast<UnpackVisitorHolder&>(*this);
+    VisitorHolder& holder() {
+        return static_cast<VisitorHolder&>(*this);
     }
 
     template <typename T, typename StartVisitor, typename EndVisitor>
@@ -364,38 +364,38 @@ private:
     }
 
     struct array_sv {
-        array_sv(UnpackVisitorHolder& visitor_holder):m_visitor_holder(visitor_holder) {}
+        array_sv(VisitorHolder& visitor_holder):m_visitor_holder(visitor_holder) {}
         bool operator()(uint32_t size) const {
             return m_visitor_holder.visitor().start_array(size);
         }
         msgpack_container_type type() const { return MSGPACK_CT_ARRAY_ITEM; }
     private:
-        UnpackVisitorHolder& m_visitor_holder;
+        VisitorHolder& m_visitor_holder;
     };
     struct array_ev {
-        array_ev(UnpackVisitorHolder& visitor_holder):m_visitor_holder(visitor_holder) {}
+        array_ev(VisitorHolder& visitor_holder):m_visitor_holder(visitor_holder) {}
         bool operator()() const {
             return m_visitor_holder.visitor().end_array();
         }
     private:
-        UnpackVisitorHolder& m_visitor_holder;
+        VisitorHolder& m_visitor_holder;
     };
     struct map_sv {
-        map_sv(UnpackVisitorHolder& visitor_holder):m_visitor_holder(visitor_holder) {}
+        map_sv(VisitorHolder& visitor_holder):m_visitor_holder(visitor_holder) {}
         bool operator()(uint32_t size) const {
             return m_visitor_holder.visitor().start_map(size);
         }
         msgpack_container_type type() const { return MSGPACK_CT_MAP_KEY; }
     private:
-        UnpackVisitorHolder& m_visitor_holder;
+        VisitorHolder& m_visitor_holder;
     };
     struct map_ev {
-        map_ev(UnpackVisitorHolder& visitor_holder):m_visitor_holder(visitor_holder) {}
+        map_ev(VisitorHolder& visitor_holder):m_visitor_holder(visitor_holder) {}
         bool operator()() const {
             return m_visitor_holder.visitor().end_map();
         }
     private:
-        UnpackVisitorHolder& m_visitor_holder;
+        VisitorHolder& m_visitor_holder;
     };
 
     struct unpack_stack {
@@ -410,7 +410,7 @@ private:
         void push(msgpack_container_type type, uint32_t rest) {
             m_stack.push_back(stack_elem(type, rest));
         }
-        unpack_return consume(UnpackVisitorHolder& visitor_holder) {
+        unpack_return consume(VisitorHolder& visitor_holder) {
             while (!m_stack.empty()) {
                 stack_elem& e = m_stack.back();
                 switch (e.m_type) {
@@ -431,13 +431,13 @@ private:
                     e.m_type = MSGPACK_CT_MAP_VALUE;
                     return UNPACK_CONTINUE;
                 case MSGPACK_CT_MAP_VALUE:
+                    if (!visitor_holder.visitor().end_map_value()) return UNPACK_STOP_VISITOR;
                     if (--e.m_rest == 0) {
                         m_stack.pop_back();
                         if (!visitor_holder.visitor().end_map()) return UNPACK_STOP_VISITOR;
                     }
                     else {
                         e.m_type = MSGPACK_CT_MAP_KEY;
-                        if (!visitor_holder.visitor().end_map_value()) return UNPACK_STOP_VISITOR;
                         if (!visitor_holder.visitor().start_map_key()) return UNPACK_STOP_VISITOR;
                         return UNPACK_CONTINUE;
                     }
@@ -470,8 +470,8 @@ inline void check_ext_size<4>(std::size_t size) {
     if (size == 0xffffffff) throw msgpack::ext_size_overflow("ext size overflow");
 }
 
-template <typename UnpackVisitorHolder>
-inline unpack_return context<UnpackVisitorHolder>::execute(const char* data, std::size_t len, std::size_t& off)
+template <typename VisitorHolder>
+inline unpack_return context<VisitorHolder>::execute(const char* data, std::size_t len, std::size_t& off)
 {
     assert(len >= off);
 
@@ -869,10 +869,10 @@ inline unpack_return context<UnpackVisitorHolder>::execute(const char* data, std
 
 /// Unpacking class for a stream deserialization.
 
-template <typename UnpackVisitorHolder, typename ReferencedBufferHook>
-class basic_unpacker : public detail::context<UnpackVisitorHolder> {
-    typedef basic_unpacker<UnpackVisitorHolder, ReferencedBufferHook> this_type;
-    typedef detail::context<UnpackVisitorHolder> context_type;
+template <typename VisitorHolder, typename ReferencedBufferHook>
+class parser : public detail::context<VisitorHolder> {
+    typedef parser<VisitorHolder, ReferencedBufferHook> this_type;
+    typedef detail::context<VisitorHolder> context_type;
 public:
     /// Constructor
     /**
@@ -883,15 +883,15 @@ public:
      * @param limit The size limit information of msgpack::object.
      *
      */
-    basic_unpacker(ReferencedBufferHook& hook,
-                   std::size_t initial_buffer_size = MSGPACK_UNPACKER_INIT_BUFFER_SIZE);
+    parser(ReferencedBufferHook& hook,
+           std::size_t initial_buffer_size = MSGPACK_UNPACKER_INIT_BUFFER_SIZE);
 
 #if !defined(MSGPACK_USE_CPP03)
-    basic_unpacker(this_type&& other);
+    parser(this_type&& other);
     this_type& operator=(this_type&& other);
 #endif // !defined(MSGPACK_USE_CPP03)
 
-    ~basic_unpacker();
+    ~parser();
 
 public:
     /// Reserve a buffer memory.
@@ -1018,17 +1018,17 @@ private:
 
 #if defined(MSGPACK_USE_CPP03)
 private:
-    basic_unpacker(const this_type&);
+    parser(const this_type&);
     this_type& operator=(const this_type&);
 #else  // defined(MSGPACK_USE_CPP03)
 public:
-    basic_unpacker(const this_type&) = delete;
+    parser(const this_type&) = delete;
     this_type& operator=(const this_type&) = delete;
 #endif // defined(MSGPACK_USE_CPP03)
 };
 
-template <typename UnpackVisitorHolder, typename ReferencedBufferHook>
-inline basic_unpacker<UnpackVisitorHolder, ReferencedBufferHook>::basic_unpacker(
+template <typename VisitorHolder, typename ReferencedBufferHook>
+inline parser<VisitorHolder, ReferencedBufferHook>::parser(
     ReferencedBufferHook& hook,
     std::size_t initial_buffer_size)
     :m_referenced_buffer_hook(hook)
@@ -1055,8 +1055,8 @@ inline basic_unpacker<UnpackVisitorHolder, ReferencedBufferHook>::basic_unpacker
 #if !defined(MSGPACK_USE_CPP03)
 // Move constructor and move assignment operator
 
-template <typename UnpackVisitorHolder, typename ReferencedBufferHook>
-inline basic_unpacker<UnpackVisitorHolder, ReferencedBufferHook>::basic_unpacker(this_type&& other)
+template <typename VisitorHolder, typename ReferencedBufferHook>
+inline parser<VisitorHolder, ReferencedBufferHook>::parser(this_type&& other)
     :context_type(std::move(other)),
      m_buffer(other.m_buffer),
      m_used(other.m_used),
@@ -1072,9 +1072,9 @@ inline basic_unpacker<UnpackVisitorHolder, ReferencedBufferHook>::basic_unpacker
     other.m_parsed = 0;
 }
 
-template <typename UnpackVisitorHolder, typename ReferencedBufferHook>
-inline basic_unpacker<UnpackVisitorHolder, ReferencedBufferHook>& basic_unpacker<UnpackVisitorHolder, ReferencedBufferHook>::operator=(this_type&& other) {
-    this->~basic_unpacker();
+template <typename VisitorHolder, typename ReferencedBufferHook>
+inline parser<VisitorHolder, ReferencedBufferHook>& parser<VisitorHolder, ReferencedBufferHook>::operator=(this_type&& other) {
+    this->~parser();
     new (this) this_type(std::move(other));
     return *this;
 }
@@ -1082,26 +1082,26 @@ inline basic_unpacker<UnpackVisitorHolder, ReferencedBufferHook>& basic_unpacker
 #endif // !defined(MSGPACK_USE_CPP03)
 
 
-template <typename UnpackVisitorHolder, typename ReferencedBufferHook>
-inline basic_unpacker<UnpackVisitorHolder, ReferencedBufferHook>::~basic_unpacker()
+template <typename VisitorHolder, typename ReferencedBufferHook>
+inline parser<VisitorHolder, ReferencedBufferHook>::~parser()
 {
     // These checks are required for move operations.
     if (m_buffer) detail::decr_count(m_buffer);
 }
 
 
-template <typename UnpackVisitorHolder, typename ReferencedBufferHook>
-inline void basic_unpacker<UnpackVisitorHolder, ReferencedBufferHook>::reserve_buffer(std::size_t size)
+template <typename VisitorHolder, typename ReferencedBufferHook>
+inline void parser<VisitorHolder, ReferencedBufferHook>::reserve_buffer(std::size_t size)
 {
     if(m_free >= size) return;
     expand_buffer(size);
 }
 
-template <typename UnpackVisitorHolder, typename ReferencedBufferHook>
-inline void basic_unpacker<UnpackVisitorHolder, ReferencedBufferHook>::expand_buffer(std::size_t size)
+template <typename VisitorHolder, typename ReferencedBufferHook>
+inline void parser<VisitorHolder, ReferencedBufferHook>::expand_buffer(std::size_t size)
 {
     if(m_used == m_off && detail::get_count(m_buffer) == 1
-       && static_cast<UnpackVisitorHolder&>(*this).visitor().referenced()) {
+       && static_cast<VisitorHolder&>(*this).visitor().referenced()) {
         // rewind buffer
         m_free += m_used - COUNTER_SIZE;
         m_used = COUNTER_SIZE;
@@ -1150,7 +1150,7 @@ inline void basic_unpacker<UnpackVisitorHolder, ReferencedBufferHook>::expand_bu
 
         std::memcpy(tmp+COUNTER_SIZE, m_buffer + m_off, not_parsed);
 
-        if(static_cast<UnpackVisitorHolder&>(*this).referenced()) {
+        if(static_cast<VisitorHolder&>(*this).referenced()) {
             try {
                 m_referenced_buffer_hook(m_buffer);
             }
@@ -1158,7 +1158,7 @@ inline void basic_unpacker<UnpackVisitorHolder, ReferencedBufferHook>::expand_bu
                 ::free(tmp);
                 throw;
             }
-            static_cast<UnpackVisitorHolder&>(*this).set_referenced(false);
+            static_cast<VisitorHolder&>(*this).set_referenced(false);
         } else {
             detail::decr_count(m_buffer);
         }
@@ -1170,34 +1170,34 @@ inline void basic_unpacker<UnpackVisitorHolder, ReferencedBufferHook>::expand_bu
     }
 }
 
-template <typename UnpackVisitorHolder, typename ReferencedBufferHook>
-inline char* basic_unpacker<UnpackVisitorHolder, ReferencedBufferHook>::buffer()
+template <typename VisitorHolder, typename ReferencedBufferHook>
+inline char* parser<VisitorHolder, ReferencedBufferHook>::buffer()
 {
     return m_buffer + m_used;
 }
 
-template <typename UnpackVisitorHolder, typename ReferencedBufferHook>
-inline std::size_t basic_unpacker<UnpackVisitorHolder, ReferencedBufferHook>::buffer_capacity() const
+template <typename VisitorHolder, typename ReferencedBufferHook>
+inline std::size_t parser<VisitorHolder, ReferencedBufferHook>::buffer_capacity() const
 {
     return m_free;
 }
 
-template <typename UnpackVisitorHolder, typename ReferencedBufferHook>
-inline void basic_unpacker<UnpackVisitorHolder, ReferencedBufferHook>::buffer_consumed(std::size_t size)
+template <typename VisitorHolder, typename ReferencedBufferHook>
+inline void parser<VisitorHolder, ReferencedBufferHook>::buffer_consumed(std::size_t size)
 {
     m_used += size;
     m_free -= size;
 }
 
-template <typename UnpackVisitorHolder, typename ReferencedBufferHook>
-    inline bool basic_unpacker<UnpackVisitorHolder, ReferencedBufferHook>::next()
+template <typename VisitorHolder, typename ReferencedBufferHook>
+    inline bool parser<VisitorHolder, ReferencedBufferHook>::next()
 {
     unpack_return ret = execute_imp();
     return ret == UNPACK_SUCCESS;
 }
 
-template <typename UnpackVisitorHolder, typename ReferencedBufferHook>
-inline unpack_return basic_unpacker<UnpackVisitorHolder, ReferencedBufferHook>::execute_imp()
+template <typename VisitorHolder, typename ReferencedBufferHook>
+inline unpack_return parser<VisitorHolder, ReferencedBufferHook>::execute_imp()
 {
     std::size_t off = m_off;
     unpack_return ret = context_type::execute(m_buffer, m_used, m_off);
@@ -1207,46 +1207,46 @@ inline unpack_return basic_unpacker<UnpackVisitorHolder, ReferencedBufferHook>::
     return ret;
 }
 
-template <typename UnpackVisitorHolder, typename ReferencedBufferHook>
-inline void basic_unpacker<UnpackVisitorHolder, ReferencedBufferHook>::reset()
+template <typename VisitorHolder, typename ReferencedBufferHook>
+inline void parser<VisitorHolder, ReferencedBufferHook>::reset()
 {
     context_type::init();
     // don't reset referenced flag
     m_parsed = 0;
 }
 
-template <typename UnpackVisitorHolder, typename ReferencedBufferHook>
-inline std::size_t basic_unpacker<UnpackVisitorHolder, ReferencedBufferHook>::message_size() const
+template <typename VisitorHolder, typename ReferencedBufferHook>
+inline std::size_t parser<VisitorHolder, ReferencedBufferHook>::message_size() const
 {
     return m_parsed - m_off + m_used;
 }
 
-template <typename UnpackVisitorHolder, typename ReferencedBufferHook>
-inline std::size_t basic_unpacker<UnpackVisitorHolder, ReferencedBufferHook>::parsed_size() const
+template <typename VisitorHolder, typename ReferencedBufferHook>
+inline std::size_t parser<VisitorHolder, ReferencedBufferHook>::parsed_size() const
 {
     return m_parsed;
 }
 
-template <typename UnpackVisitorHolder, typename ReferencedBufferHook>
-inline char* basic_unpacker<UnpackVisitorHolder, ReferencedBufferHook>::nonparsed_buffer()
+template <typename VisitorHolder, typename ReferencedBufferHook>
+inline char* parser<VisitorHolder, ReferencedBufferHook>::nonparsed_buffer()
 {
     return m_buffer + m_off;
 }
 
-template <typename UnpackVisitorHolder, typename ReferencedBufferHook>
-inline std::size_t basic_unpacker<UnpackVisitorHolder, ReferencedBufferHook>::nonparsed_size() const
+template <typename VisitorHolder, typename ReferencedBufferHook>
+inline std::size_t parser<VisitorHolder, ReferencedBufferHook>::nonparsed_size() const
 {
     return m_used - m_off;
 }
 
-template <typename UnpackVisitorHolder, typename ReferencedBufferHook>
-inline void basic_unpacker<UnpackVisitorHolder, ReferencedBufferHook>::skip_nonparsed_buffer(std::size_t size)
+template <typename VisitorHolder, typename ReferencedBufferHook>
+inline void parser<VisitorHolder, ReferencedBufferHook>::skip_nonparsed_buffer(std::size_t size)
 {
     m_off += size;
 }
 
-template <typename UnpackVisitorHolder, typename ReferencedBufferHook>
-inline void basic_unpacker<UnpackVisitorHolder, ReferencedBufferHook>::remove_nonparsed_buffer()
+template <typename VisitorHolder, typename ReferencedBufferHook>
+inline void parser<VisitorHolder, ReferencedBufferHook>::remove_nonparsed_buffer()
 {
     m_used = m_off;
 }
@@ -1260,15 +1260,15 @@ struct zone_push_finalizer {
     msgpack::zone* m_z;
 };
 
-class unpacker : public basic_unpacker<unpacker, zone_push_finalizer>,
+class unpacker : public parser<unpacker, zone_push_finalizer>,
                  public detail::create_object_visitor {
-    typedef basic_unpacker<unpacker, zone_push_finalizer> basic;
+    typedef parser<unpacker, zone_push_finalizer> parser;
 public:
     unpacker(unpack_reference_func f = &unpacker::default_reference_func,
              void* user_data = nullptr,
              std::size_t initial_buffer_size = MSGPACK_UNPACKER_INIT_BUFFER_SIZE,
              unpack_limit const& limit = unpack_limit())
-        :basic(m_finalizer, initial_buffer_size),
+        :parser(m_finalizer, initial_buffer_size),
          detail::create_object_visitor(f, user_data, limit),
          m_z(new msgpack::zone),
          m_finalizer(*m_z) {
@@ -1318,7 +1318,7 @@ private:
 };
 
 inline bool unpacker::next(msgpack::object_handle& result, bool& referenced) {
-    bool ret = basic::next();
+    bool ret = parser::next();
     if (ret) {
         referenced = detail::create_object_visitor::referenced();
         result.zone().reset( release_zone() );
@@ -1544,33 +1544,33 @@ inline msgpack::object unpack(
     return msgpack::v2::unpack(z, data, len, off, referenced, f, user_data, limit);
 }
 
-template <typename UnpackVisitor>
-inline bool unpack_visit(const char* data, size_t len, size_t& off, UnpackVisitor& v) {
-    unpack_return ret = detail::unpack_visit_imp(data, len, off, v);
+template <typename Visitor>
+inline bool parse(const char* data, size_t len, size_t& off, Visitor& v) {
+    unpack_return ret = detail::parse_imp(data, len, off, v);
     return ret == UNPACK_SUCCESS || ret == UNPACK_EXTRA_BYTES;
 }
 
-template <typename UnpackVisitor>
-inline bool unpack_visit(const char* data, size_t len, UnpackVisitor& v) {
+template <typename Visitor>
+inline bool parse(const char* data, size_t len, Visitor& v) {
     std::size_t off = 0;
-    return unpack_visit(data, len, off, v);
+    return parse(data, len, off, v);
 }
 
 namespace detail {
 
-template <typename UnpackVisitor>
-struct unpack_helper : context<unpack_helper<UnpackVisitor> > {
-    unpack_helper(UnpackVisitor& v):m_visitor(v) {}
+template <typename Visitor>
+struct parse_helper : context<parse_helper<Visitor> > {
+    parse_helper(Visitor& v):m_visitor(v) {}
     unpack_return execute(const char* data, std::size_t len, std::size_t& off) {
-        return context<unpack_helper<UnpackVisitor> >::execute(data, len, off);
+        return context<parse_helper<Visitor> >::execute(data, len, off);
     }
-    UnpackVisitor& visitor() const { return m_visitor; }
-    UnpackVisitor& m_visitor;
+    Visitor& visitor() const { return m_visitor; }
+    Visitor& m_visitor;
 };
 
-template <typename UnpackVisitor>
+template <typename Visitor>
 inline unpack_return
-unpack_visit_imp(const char* data, size_t len, size_t& off, UnpackVisitor& v) {
+parse_imp(const char* data, size_t len, size_t& off, Visitor& v) {
     std::size_t noff = off;
 
     if(len <= noff) {
@@ -1578,7 +1578,7 @@ unpack_visit_imp(const char* data, size_t len, size_t& off, UnpackVisitor& v) {
         v.insufficient_bytes(noff, noff);
         return UNPACK_CONTINUE;
     }
-    detail::unpack_helper<UnpackVisitor> h(v);
+    detail::parse_helper<Visitor> h(v);
     unpack_return ret = h.execute(data, len, noff);
     switch (ret) {
     case UNPACK_CONTINUE:
@@ -1606,7 +1606,7 @@ unpack_imp(const char* data, std::size_t len, std::size_t& off,
     v.set_zone(result_zone);
     referenced = false;
     v.set_referenced(referenced);
-    unpack_return ret = unpack_visit_imp(data, len, off, v);
+    unpack_return ret = parse_imp(data, len, off, v);
     referenced = v.referenced();
     result = v.data();
     return ret;
