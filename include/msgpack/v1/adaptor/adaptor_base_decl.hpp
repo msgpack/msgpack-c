@@ -12,6 +12,7 @@
 
 #include "msgpack/versioning.hpp"
 #include "msgpack/object_fwd.hpp"
+#include "msgpack/pack.hpp"
 
 namespace msgpack {
 

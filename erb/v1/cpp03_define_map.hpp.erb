@@ -15,6 +15,8 @@
 #include "msgpack/adaptor/adaptor_base.hpp"
 #include "msgpack/object_fwd.hpp"
 
+#include <map>
+
 namespace msgpack {
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {

@@ -9,6 +9,7 @@ check_PROGRAMS = \
 		convert \
 		fixint \
 		fixint_c \
+		inc_adaptor_define \
 		json \
 		limit \
 		msgpack_basic \
@@ -54,6 +55,7 @@ cases_SOURCES = cases.cpp
 convert_SOURCES = convert.cpp
 fixint_SOURCES = fixint.cpp
 fixint_c_SOURCES = fixint_c.cpp
+inc_adaptor_define_SOURCES = inc_adaptor_define.cpp
 json_SOURCES = json.cpp
 limit_SOURCES = limit.cpp
 msgpack_basic_SOURCES = msgpack_basic.cpp

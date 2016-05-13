@@ -185,6 +185,8 @@ TEST(MSGPACKC, simple_buffer_int64)
     GEN_TEST_SIGNED(int64_t, int64);
 }
 
+#if !defined(_MSC_VER) || _MSC_VER >=1800
+
 TEST(MSGPACKC, simple_buffer_float)
 {
     vector<float> v;
@@ -314,6 +316,8 @@ TEST(MSGPACKC, simple_buffer_double)
         msgpack_sbuffer_destroy(&sbuf);
     }
 }
+
+#endif // !defined(_MSC_VER) || _MSC_VER >=1800
 
 TEST(MSGPACKC, simple_buffer_nil)
 {

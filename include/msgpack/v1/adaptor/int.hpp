@@ -11,6 +11,8 @@
 #define MSGPACK_V1_TYPE_INT_HPP
 
 #include "msgpack/v1/adaptor/int_decl.hpp"
+#include "msgpack/object.hpp"
+
 #include <limits>
 
 namespace msgpack {

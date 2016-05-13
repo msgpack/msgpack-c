@@ -82,6 +82,17 @@ struct basic_variant :
     basic_variant() {}
     template <typename T>
     basic_variant(T const& t):base(t) {}
+
+#if defined(_MSC_VER) && _MSC_VER < 1700
+    // The following redundant functions are required to avoid MSVC
+    // See https://svn.boost.org/trac/boost/ticket/592
+    basic_variant(basic_variant const& other):base(static_cast<base const&>(other)) {}
+    basic_variant& operator=(basic_variant const& other) {
+        *static_cast<base*>(this) = static_cast<base const&>(other);
+        return *this;
+    }
+#endif // defined(_MSC_VER) && _MSC_VER < 1700
+
     basic_variant(char const* p):base(std::string(p)) {}
     basic_variant(char v) {
         int_init(v);
@@ -104,51 +115,51 @@ struct basic_variant :
     basic_variant(unsigned long long v):base(uint64_t(v)) {}
 
     bool is_nil() const {
-        return boost::get<msgpack::type::nil_t>(this);
+        return boost::get<msgpack::type::nil_t>(this) != nullptr;
     }
     bool is_bool() const {
-        return boost::get<bool>(this);
+        return boost::get<bool>(this) != nullptr;
     }
     bool is_int64_t() const {
-        return boost::get<int64_t>(this);
+        return boost::get<int64_t>(this) != nullptr;
     }
     bool is_uint64_t() const {
-        return boost::get<uint64_t>(this);
+        return boost::get<uint64_t>(this) != nullptr;
     }
     bool is_double() const {
-        return boost::get<double>(this);
+        return boost::get<double>(this) != nullptr;
     }
     bool is_string() const {
-        return boost::get<std::string>(this);
+        return boost::get<std::string>(this) != nullptr;
     }
 #if (BOOST_VERSION / 100000) >= 1 && ((BOOST_VERSION / 100) % 1000) >= 53
     bool is_boost_string_ref() const {
-        return boost::get<boost::string_ref>(this);
+        return boost::get<boost::string_ref>(this) != nullptr;
     }
 #endif // (BOOST_VERSION / 100000) >= 1 && ((BOOST_VERSION / 100) % 1000) >= 53
     bool is_vector_char() const {
-        return boost::get<std::vector<char> >(this);
+        return boost::get<std::vector<char> >(this) != nullptr;
     }
     bool is_vector_char() {
-        return boost::get<std::vector<char> >(this);
+        return boost::get<std::vector<char> >(this) != nullptr;
     }
     bool is_raw_ref() const {
-        return boost::get<raw_ref>(this);
+        return boost::get<raw_ref>(this) != nullptr;
     }
     bool is_ext() const {
-        return boost::get<ext>(this);
+        return boost::get<ext>(this) != nullptr;
     }
     bool is_ext_ref() const {
-        return boost::get<ext_ref>(this);
+        return boost::get<ext_ref>(this) != nullptr;
     }
     bool is_vector() const {
-        return boost::get<std::vector<basic_variant<STR, BIN, EXT> > >(this);
+        return boost::get<std::vector<basic_variant<STR, BIN, EXT> > >(this) != nullptr;
     }
     bool is_map() const {
-        return boost::get<std::map<basic_variant<STR, BIN, EXT>, basic_variant<STR, BIN, EXT> > >(this);
+        return boost::get<std::map<basic_variant<STR, BIN, EXT>, basic_variant<STR, BIN, EXT> > >(this) != nullptr;
     }
     bool is_multimap() const {
-        return boost::get<std::multimap<basic_variant<STR, BIN, EXT>, basic_variant<STR, BIN, EXT> > >(this);
+        return boost::get<std::multimap<basic_variant<STR, BIN, EXT>, basic_variant<STR, BIN, EXT> > >(this) != nullptr;
     }
 
     bool as_bool() const {
