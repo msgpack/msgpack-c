@@ -138,7 +138,14 @@ struct object {
      * @return The reference of `v`.
      */
     template <typename T>
-    T& convert(T& v) const;
+    typename msgpack::enable_if<
+        !msgpack::is_array<T>::value && !msgpack::is_pointer<T>::value,
+        T&
+    >::type
+    convert(T& v) const;
+
+    template <typename T, std::size_t N>
+    T (&convert(T(&v)[N]) const)[N];
 
 
 #if !defined(MSGPACK_DISABLE_LEGACY_CONVERT)
@@ -150,7 +157,11 @@ struct object {
      * @return The pointer of `v`.
      */
     template <typename T>
-    T* convert(T* v) const;
+    typename msgpack::enable_if<
+        msgpack::is_pointer<T>::value,
+        T
+    >::type
+    convert(T v) const;
 #endif // !defined(MSGPACK_DISABLE_LEGACY_CONVERT)
 
     /// Convert the object if not nil

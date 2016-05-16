@@ -183,6 +183,7 @@ IF (MSGPACK_ENABLE_CXX)
         include/msgpack/adaptor/boost/msgpack_variant_decl.hpp
         include/msgpack/adaptor/boost/optional.hpp
         include/msgpack/adaptor/boost/string_ref.hpp
+        include/msgpack/adaptor/carray.hpp
         include/msgpack/adaptor/char_ptr.hpp
         include/msgpack/adaptor/check_container_size.hpp
         include/msgpack/adaptor/check_container_size_decl.hpp
@@ -255,6 +256,7 @@ IF (MSGPACK_ENABLE_CXX)
         include/msgpack/v1/adaptor/boost/msgpack_variant_decl.hpp
         include/msgpack/v1/adaptor/boost/optional.hpp
         include/msgpack/v1/adaptor/boost/string_ref.hpp
+        include/msgpack/v1/adaptor/carray.hpp
         include/msgpack/v1/adaptor/char_ptr.hpp
         include/msgpack/v1/adaptor/check_container_size.hpp
         include/msgpack/v1/adaptor/check_container_size_decl.hpp
@@ -331,7 +333,6 @@ IF (MSGPACK_ENABLE_CXX)
         include/msgpack/v1/preprocessor.hpp
         include/msgpack/v1/sbuffer.hpp
         include/msgpack/v1/sbuffer_decl.hpp
-        include/msgpack/v1/type.hpp
         include/msgpack/v1/unpack.hpp
         include/msgpack/v1/unpack_decl.hpp
         include/msgpack/v1/version.hpp

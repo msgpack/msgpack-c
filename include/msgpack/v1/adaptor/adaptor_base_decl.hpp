@@ -12,6 +12,7 @@
 
 #include "msgpack/versioning.hpp"
 #include "msgpack/object_fwd.hpp"
+#include "msgpack/pack.hpp"
 
 namespace msgpack {
 
@@ -43,16 +44,38 @@ struct object_with_zone;
 // operators
 
 template <typename T>
-msgpack::object const& operator>> (msgpack::object const& o, T& v);
+typename msgpack::enable_if<
+    !is_array<T>::value,
+    msgpack::object const&
+>::type
+operator>> (msgpack::object const& o, T& v);
+template <typename T, std::size_t N>
+msgpack::object const& operator>> (msgpack::object const& o, T(&v)[N]);
 
 template <typename Stream, typename T>
-msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, T const& v);
+typename msgpack::enable_if<
+    !is_array<T>::value,
+    msgpack::packer<Stream>&
+>::type
+operator<< (msgpack::packer<Stream>& o, T const& v);
+template <typename Stream, typename T, std::size_t N>
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const T(&v)[N]);
 
 template <typename T>
-void operator<< (msgpack::object& o, T const& v);
+typename msgpack::enable_if<
+    !is_array<T>::value
+>::type
+operator<< (msgpack::object& o, T const& v);
+template <typename T, std::size_t N>
+void operator<< (msgpack::object& o, const T(&v)[N]);
 
 template <typename T>
-void operator<< (msgpack::object::with_zone& o, T const& v);
+typename msgpack::enable_if<
+    !is_array<T>::value
+>::type
+operator<< (msgpack::object::with_zone& o, T const& v);
+template <typename T, std::size_t N>
+void operator<< (msgpack::object::with_zone& o, const T(&v)[N]);
 
 /// @cond
 } // MSGPACK_API_VERSION_NAMESPACE(v1)

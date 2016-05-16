@@ -1,6 +1,7 @@
 #include "cpp_config.hpp"
 #include "adaptor/array_ref.hpp"
 #include "adaptor/bool.hpp"
+#include "adaptor/carray.hpp"
 #include "adaptor/char_ptr.hpp"
 #include "adaptor/deque.hpp"
 #include "adaptor/ext.hpp"

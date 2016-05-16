@@ -32,6 +32,14 @@ using v1::is_same;
 
 using v1::underlying_type;
 
+using v1::is_array;
+
+using v1::remove_const;
+using v1::remove_volatile;
+using v1::remove_cv;
+
+using v1::is_pointer;
+
 /// @cond
 }  // MSGPACK_API_VERSION_NAMESPACE(v2)
 /// @endcond
@@ -57,6 +65,13 @@ using v1::swap;
 using v1::enable_if;
 using v1::is_same;
 using v1::underlying_type;
+using v1::is_array;
+
+using v1::remove_const;
+using v1::remove_volatile;
+using v1::remove_cv;
+
+using v1::is_pointer;
 
 /// @cond
 }  // MSGPACK_API_VERSION_NAMESPACE(v2)

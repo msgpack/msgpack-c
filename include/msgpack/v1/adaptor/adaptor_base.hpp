@@ -50,26 +50,60 @@ struct object_with_zone {
 
 template <typename T>
 inline
-msgpack::object const& operator>> (msgpack::object const& o, T& v) {
+typename msgpack::enable_if<
+    !is_array<T>::value,
+    msgpack::object const&
+>::type
+operator>> (msgpack::object const& o, T& v) {
     return msgpack::adaptor::convert<T>()(o, v);
+}
+template <typename T, std::size_t N>
+inline
+msgpack::object const& operator>> (msgpack::object const& o, T(&v)[N]) {
+    return msgpack::adaptor::convert<T[N]>()(o, v);
 }
 
 template <typename Stream, typename T>
 inline
-msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, T const& v) {
+typename msgpack::enable_if<
+    !is_array<T>::value,
+    msgpack::packer<Stream>&
+>::type
+operator<< (msgpack::packer<Stream>& o, T const& v) {
     return msgpack::adaptor::pack<T>()(o, v);
 }
-
-template <typename T>
+template <typename Stream, typename T, std::size_t N>
 inline
-void operator<< (msgpack::object& o, T const& v) {
-    msgpack::adaptor::object<T>()(o, v);
+msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const T(&v)[N]) {
+    return msgpack::adaptor::pack<T[N]>()(o, v);
 }
 
 template <typename T>
 inline
-void operator<< (msgpack::object::with_zone& o, T const& v) {
+typename msgpack::enable_if<
+    !is_array<T>::value
+>::type
+operator<< (msgpack::object& o, T const& v) {
+    msgpack::adaptor::object<T>()(o, v);
+}
+template <typename T, std::size_t N>
+inline
+void operator<< (msgpack::v1::object& o, const T(&v)[N]) {
+    msgpack::v1::adaptor::object<T[N]>()(o, v);
+}
+
+template <typename T>
+inline
+typename msgpack::enable_if<
+    !is_array<T>::value
+>::type
+operator<< (msgpack::object::with_zone& o, T const& v) {
     msgpack::adaptor::object_with_zone<T>()(o, v);
+}
+template <typename T, std::size_t N>
+inline
+void operator<< (msgpack::object::with_zone& o, const T(&v)[N]) {
+    msgpack::adaptor::object_with_zone<T[N]>()(o, v);
 }
 
 /// @cond

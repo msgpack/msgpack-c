@@ -63,6 +63,19 @@ struct is_same;
 template<typename T>
 struct underlying_type;
 
+template<class T>
+struct is_array;
+
+template<class T>
+struct remove_const;
+template<class T>
+struct remove_volatile;
+template<class T>
+struct remove_cv;
+
+template<class T>
+struct is_pointer;
+
 /// @cond
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 /// @endcond
@@ -91,6 +104,11 @@ MSGPACK_API_VERSION_NAMESPACE(v1) {
     using std::enable_if;
     using std::is_same;
     using std::underlying_type;
+    using std::is_array;
+    using std::remove_const;
+    using std::remove_volatile;
+    using std::remove_cv;
+    using std::is_pointer;
 
 /// @cond
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
