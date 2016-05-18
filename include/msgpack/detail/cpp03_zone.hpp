@@ -125,6 +125,7 @@ class zone {
                     ::free(c);
                     c = n;
                 } else {
+                    m_head = c;
                     break;
                 }
             }
