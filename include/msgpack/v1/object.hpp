@@ -526,7 +526,19 @@ inline object::implicit_type object::convert() const
 }
 
 template <typename T>
-inline T& object::convert(T& v) const
+inline
+typename msgpack::enable_if<
+    !msgpack::is_array<T>::value && !msgpack::is_pointer<T>::value,
+    T&
+>::type
+object::convert(T& v) const
+{
+    msgpack::operator>>(*this, v);
+    return v;
+}
+
+template <typename T, std::size_t N>
+inline T(&object::convert(T(&v)[N]) const)[N]
 {
     msgpack::operator>>(*this, v);
     return v;
@@ -534,7 +546,12 @@ inline T& object::convert(T& v) const
 
 #if !defined(MSGPACK_DISABLE_LEGACY_CONVERT)
 template <typename T>
-inline T* object::convert(T* v) const
+inline
+typename msgpack::enable_if<
+    msgpack::is_pointer<T>::value,
+    T
+>::type
+object::convert(T v) const
 {
     convert(*v);
     return v;

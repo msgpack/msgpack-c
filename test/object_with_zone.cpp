@@ -341,6 +341,8 @@ TEST(object_with_zone, char_ptr)
     EXPECT_EQ(obj.as<string>()[0], 'a');
 }
 
+#if MSGPACK_DEFAULT_API_VERSION == 1
+
 TEST(object_without_zone, char_ptr)
 {
     char v[] = "abc";
@@ -351,6 +353,7 @@ TEST(object_without_zone, char_ptr)
     EXPECT_EQ(obj.as<string>()[0], 'd');
 }
 
+#endif // MSGPACK_DEFAULT_API_VERSION == 1
 
 // raw_ref
 TEST(object_with_zone, raw_ref)

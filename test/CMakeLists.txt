@@ -10,6 +10,7 @@ INCLUDE_DIRECTORIES (
 LIST (APPEND check_PROGRAMS
     array_ref.cpp
     buffer.cpp
+    carray.cpp
     cases.cpp
     convert.cpp
     fixint.cpp

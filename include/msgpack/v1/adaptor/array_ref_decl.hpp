@@ -25,10 +25,24 @@ template <typename T>
 struct array_ref;
 
 template <typename T>
-array_ref<T const> make_array_ref(T const& t);
+typename msgpack::enable_if<
+    !msgpack::is_array<T const>::value,
+    array_ref<T const>
+>::type
+make_array_ref(T const& t);
 
 template <typename T>
-array_ref<T> make_array_ref(T& t);
+typename msgpack::enable_if<
+    !msgpack::is_array<T>::value,
+    array_ref<T>
+>::type
+make_array_ref(T& t);
+
+template <typename T, std::size_t N>
+array_ref<const T[N]> make_array_ref(const T(&t)[N]);
+
+template <typename T, std::size_t N>
+array_ref<T[N]> make_array_ref(T(&t)[N]);
 
 } // namespace type
 

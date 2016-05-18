@@ -5,6 +5,7 @@ AM_LDFLAGS = $(top_builddir)/src/libmsgpackc.la -lgtest_main -lgtest -lpthread
 check_PROGRAMS = \
 		array_ref \
 		buffer \
+		carray \
 		cases \
 		convert \
 		fixint \
@@ -50,6 +51,7 @@ TESTS = $(check_PROGRAMS)
 
 array_ref_SOURCES = array_ref.cpp
 buffer_SOURCES = buffer.cpp
+carray_SOURCES = carray.cpp
 cases_SOURCES = cases.cpp
 convert_SOURCES = convert.cpp
 fixint_SOURCES = fixint.cpp

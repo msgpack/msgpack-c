@@ -38,6 +38,9 @@ template<std::size_t... Is> struct seq;
 template<std::size_t N, std::size_t... Is>
 struct gen_seq;
 
+template <typename T>
+struct is_non_const_pointer;
+
 /// @cond
 } // MSGPACK_API_VERSION_NAMESPACE(v1)
 /// @endcond
