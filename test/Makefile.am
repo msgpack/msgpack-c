@@ -28,6 +28,7 @@ check_PROGRAMS = \
 		streaming_c \
 		user_class \
 		version \
+		visitor \
 		zone
 
 check_PROGRAMS += \
@@ -74,6 +75,7 @@ streaming_SOURCES = streaming.cpp
 streaming_c_SOURCES = streaming_c.cpp
 user_class_SOURCES = user_class.cpp
 version_SOURCES = version.cpp
+visitor_SOURCES = visitor.cpp
 zone_SOURCES = zone.cpp
 
 iterator_cpp11_SOURCES = iterator_cpp11.cpp

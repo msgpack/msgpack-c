@@ -33,6 +33,7 @@ LIST (APPEND check_PROGRAMS
     streaming_c.cpp
     user_class.cpp
     version.cpp
+    visitor.cpp
     zone.cpp
 )
 

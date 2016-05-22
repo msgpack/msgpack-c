@@ -44,7 +44,7 @@ public:
         m_pac.buffer_consumed(count);
 
         msgpack::object_handle oh;
-        while (m_pac.next(&oh)) {
+        while (m_pac.next(oh)) {
             msgpack::object msg = oh.get();
             unique_zone& life = oh.zone();
             process_message(msg, life);
