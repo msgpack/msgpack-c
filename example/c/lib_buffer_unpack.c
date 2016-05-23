@@ -44,13 +44,14 @@ size_t receiver_recv(receiver *r, char* buf, size_t try_size) {
 size_t receiver_to_unpacker(receiver* r, size_t request_size,
         msgpack_unpacker *unpacker)
 {
+    size_t recv_len;
     // make sure there's enough room, or expand the unpacker accordingly
     if (msgpack_unpacker_buffer_capacity(unpacker) < request_size) {
         msgpack_unpacker_reserve_buffer(unpacker, request_size);
         assert(msgpack_unpacker_buffer_capacity(unpacker) >= request_size);
     }
-    size_t recv_len = receiver_recv(r, msgpack_unpacker_buffer(unpacker),
-                                    request_size);
+    recv_len = receiver_recv(r, msgpack_unpacker_buffer(unpacker),
+                             request_size);
     msgpack_unpacker_buffer_consumed(unpacker, recv_len);
     return recv_len;
 }

@@ -15,6 +15,7 @@ LIST (APPEND check_PROGRAMS
     convert.cpp
     fixint.cpp
     fixint_c.cpp
+    inc_adaptor_define.cpp
     json.cpp
     limit.cpp
     msgpack_basic.cpp

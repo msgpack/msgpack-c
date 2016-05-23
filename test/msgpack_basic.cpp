@@ -143,6 +143,8 @@ TEST(MSGPACK, simple_buffer_int64)
     GEN_TEST(int64_t);
 }
 
+#if !defined(_MSC_VER) || _MSC_VER >=1800
+
 TEST(MSGPACK, simple_buffer_float)
 {
     vector<float> v;
@@ -184,6 +186,8 @@ TEST(MSGPACK, simple_buffer_float)
             EXPECT_TRUE(fabs(val2 - val1) <= kEPS);
     }
 }
+
+#endif // !defined(_MSC_VER) || _MSC_VER >=1800
 
 namespace {
 template<typename F, typename I>
@@ -232,6 +236,8 @@ INSTANTIATE_TYPED_TEST_CASE_P(IntegerToFloatingPointTestInstance,
                               IntegerToFloatingPointTest,
                               IntegerToFloatingPointTestTypes);
 
+#if !defined(_MSC_VER) || _MSC_VER >=1800
+
 TEST(MSGPACK, simple_buffer_double)
 {
     vector<double> v;
@@ -277,6 +283,8 @@ TEST(MSGPACK, simple_buffer_double)
             EXPECT_TRUE(fabs(val2 - val1) <= kEPS);
     }
 }
+
+#endif // !defined(_MSC_VER) || _MSC_VER >=1800
 
 TEST(MSGPACK, simple_buffer_nil)
 {
