@@ -1,3 +1,6 @@
+# 2016-05-26 version 1.4.2
+  * Fix C++03 msgpack::zone::clear() memory access violation bug (#467)
+
 # 2016-03-06 version 1.4.1
 
   * Fix TARGET_OS_IPHONE checking (#436, #438)
