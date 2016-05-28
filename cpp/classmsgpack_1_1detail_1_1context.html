@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.11"/>
-<title>MessagePack for C++: msgpack::detail::context Class Reference</title>
+<title>MessagePack for C++: msgpack::detail::context&lt; VisitorHolder &gt; Class Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -87,40 +87,61 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="classmsgpack_1_1detail_1_1context-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">msgpack::detail::context Class Reference</div>  </div>
+<div class="title">msgpack::detail::context&lt; VisitorHolder &gt; Class Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
 <p><code>#include &lt;<a class="el" href="v1_2unpack_8hpp_source.html">unpack.hpp</a>&gt;</code></p>
+<div class="dynheader">
+Inheritance diagram for msgpack::detail::context&lt; VisitorHolder &gt;:</div>
+<div class="dyncontent">
+ <div class="center">
+  <img src="classmsgpack_1_1detail_1_1context.png" usemap="#msgpack::detail::context_3C_20VisitorHolder_20_3E_map" alt=""/>
+  <map id="msgpack::detail::context_3C_20VisitorHolder_20_3E_map" name="msgpack::detail::context&lt; VisitorHolder &gt;_map">
+<area href="classmsgpack_1_1parser.html" title="Unpacking class for a stream deserialization. " alt="msgpack::parser&lt; VisitorHolder, ReferencedBufferHook &gt;" shape="rect" coords="0,56,341,80"/>
+</map>
+ </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a2a9b5574ad2f8a903cbc557f94b4b39c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmsgpack_1_1detail_1_1context.html#a2a9b5574ad2f8a903cbc557f94b4b39c">context</a> (<a class="el" href="namespacemsgpack.html#a74841406f4ad1b1b1bf51d5290418697">unpack_reference_func</a> f, void *user_data, <a class="el" href="classmsgpack_1_1unpack__limit.html">unpack_limit</a> const &amp;limit)</td></tr>
-<tr class="separator:a2a9b5574ad2f8a903cbc557f94b4b39c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7c3b0f6e8c0251ffe6ddaaace0eaf530"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmsgpack_1_1detail_1_1context.html#a7c3b0f6e8c0251ffe6ddaaace0eaf530">init</a> ()</td></tr>
-<tr class="separator:a7c3b0f6e8c0251ffe6ddaaace0eaf530"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5c7cda597df8614f5a45fe6cd99841f0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structmsgpack_1_1object.html">msgpack::object</a> const &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmsgpack_1_1detail_1_1context.html#a5c7cda597df8614f5a45fe6cd99841f0">data</a> () const </td></tr>
-<tr class="separator:a5c7cda597df8614f5a45fe6cd99841f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a725d5107c48c76414d5b2a927648fdc7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmsgpack_1_1detail_1_1unpack__user.html">unpack_user</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmsgpack_1_1detail_1_1context.html#a725d5107c48c76414d5b2a927648fdc7">user</a> ()</td></tr>
-<tr class="separator:a725d5107c48c76414d5b2a927648fdc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab59edefbe64d3979a32fe09f4f767185"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmsgpack_1_1detail_1_1unpack__user.html">unpack_user</a> const &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmsgpack_1_1detail_1_1context.html#ab59edefbe64d3979a32fe09f4f767185">user</a> () const </td></tr>
-<tr class="separator:ab59edefbe64d3979a32fe09f4f767185"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afdc1357666cf7b2e2c827fc2680d1b5b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmsgpack_1_1detail_1_1context.html#afdc1357666cf7b2e2c827fc2680d1b5b">execute</a> (const char *<a class="el" href="classmsgpack_1_1detail_1_1context.html#a5c7cda597df8614f5a45fe6cd99841f0">data</a>, std::size_t len, std::size_t &amp;off)</td></tr>
-<tr class="separator:afdc1357666cf7b2e2c827fc2680d1b5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab649f3a5606a7c051f3e4fcc9b81c7b6"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmsgpack_1_1detail_1_1context.html#ab649f3a5606a7c051f3e4fcc9b81c7b6">context</a> (<a class="el" href="namespacemsgpack.html#a74841406f4ad1b1b1bf51d5290418697">unpack_reference_func</a> f, void *user_data, <a class="el" href="classmsgpack_1_1unpack__limit.html">unpack_limit</a> const &amp;limit)</td></tr>
+<tr class="separator:ab649f3a5606a7c051f3e4fcc9b81c7b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae0d157b928a8ed6d30115e6d7eed4913"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmsgpack_1_1detail_1_1context.html#ae0d157b928a8ed6d30115e6d7eed4913">init</a> ()</td></tr>
+<tr class="separator:ae0d157b928a8ed6d30115e6d7eed4913"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a960c0f01ce409506a5efb476834e1056"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structmsgpack_1_1object.html">msgpack::object</a> const &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmsgpack_1_1detail_1_1context.html#a960c0f01ce409506a5efb476834e1056">data</a> () const </td></tr>
+<tr class="separator:a960c0f01ce409506a5efb476834e1056"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac74485be61ea7a98565f1d496818eab1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmsgpack_1_1detail_1_1unpack__user.html">unpack_user</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmsgpack_1_1detail_1_1context.html#ac74485be61ea7a98565f1d496818eab1">user</a> ()</td></tr>
+<tr class="separator:ac74485be61ea7a98565f1d496818eab1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a01fe2523409c8ed9ad099d58b0ac5d04"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmsgpack_1_1detail_1_1unpack__user.html">unpack_user</a> const &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmsgpack_1_1detail_1_1context.html#a01fe2523409c8ed9ad099d58b0ac5d04">user</a> () const </td></tr>
+<tr class="separator:a01fe2523409c8ed9ad099d58b0ac5d04"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:affa143892408ecd3c2df243cc90ca836"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmsgpack_1_1detail_1_1context.html#affa143892408ecd3c2df243cc90ca836">execute</a> (const char *<a class="el" href="classmsgpack_1_1detail_1_1context.html#a960c0f01ce409506a5efb476834e1056">data</a>, std::size_t len, std::size_t &amp;off)</td></tr>
+<tr class="separator:affa143892408ecd3c2df243cc90ca836"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acff8b663cc9c031d02587a423c35ffc7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmsgpack_1_1detail_1_1context.html#acff8b663cc9c031d02587a423c35ffc7">context</a> ()</td></tr>
+<tr class="separator:acff8b663cc9c031d02587a423c35ffc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae0d157b928a8ed6d30115e6d7eed4913"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmsgpack_1_1detail_1_1context.html#ae0d157b928a8ed6d30115e6d7eed4913">init</a> ()</td></tr>
+<tr class="separator:ae0d157b928a8ed6d30115e6d7eed4913"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:affa143892408ecd3c2df243cc90ca836"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacemsgpack.html#acb783138a9bf52537f466eb620225a98">unpack_return</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmsgpack_1_1detail_1_1context.html#affa143892408ecd3c2df243cc90ca836">execute</a> (const char *<a class="el" href="classmsgpack_1_1detail_1_1context.html#a960c0f01ce409506a5efb476834e1056">data</a>, std::size_t len, std::size_t &amp;off)</td></tr>
+<tr class="separator:affa143892408ecd3c2df243cc90ca836"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac5063af350c492ca70938deb32bdd267"><td class="memTemplParams" colspan="2">template&lt;&gt; </td></tr>
+<tr class="memitem:ac5063af350c492ca70938deb32bdd267"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classmsgpack_1_1detail_1_1context.html#ac5063af350c492ca70938deb32bdd267">check_ext_size</a> (std::size_t size)</td></tr>
+<tr class="separator:ac5063af350c492ca70938deb32bdd267"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a class="anchor" id="a2a9b5574ad2f8a903cbc557f94b4b39c"></a>
+<a class="anchor" id="ab649f3a5606a7c051f3e4fcc9b81c7b6"></a>
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;typename VisitorHolder&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">msgpack::detail::context::context </td>
+          <td class="memname"><a class="el" href="classmsgpack_1_1detail_1_1context.html">msgpack::detail::context</a>&lt; VisitorHolder &gt;::<a class="el" href="classmsgpack_1_1detail_1_1context.html">context</a> </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="namespacemsgpack.html#a74841406f4ad1b1b1bf51d5290418697">unpack_reference_func</a>&#160;</td>
           <td class="paramname"><em>f</em>, </td>
@@ -152,16 +173,71 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="a5c7cda597df8614f5a45fe6cd99841f0"></a>
+<a class="anchor" id="acff8b663cc9c031d02587a423c35ffc7"></a>
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;typename VisitorHolder&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structmsgpack_1_1object.html">msgpack::object</a> const&amp; msgpack::detail::context::data </td>
+          <td class="memname"><a class="el" href="classmsgpack_1_1detail_1_1context.html">msgpack::detail::context</a>&lt; VisitorHolder &gt;::<a class="el" href="classmsgpack_1_1detail_1_1context.html">context</a> </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="ac5063af350c492ca70938deb32bdd267"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename VisitorHolder&gt; </div>
+<div class="memtemplate">
+template&lt;&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classmsgpack_1_1detail_1_1context.html">msgpack::detail::context</a>&lt; VisitorHolder &gt;::check_ext_size </td>
+          <td>(</td>
+          <td class="paramtype">std::size_t&#160;</td>
+          <td class="paramname"><em>size</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a960c0f01ce409506a5efb476834e1056"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename VisitorHolder&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structmsgpack_1_1object.html">msgpack::object</a> const&amp; <a class="el" href="classmsgpack_1_1detail_1_1context.html">msgpack::detail::context</a>&lt; VisitorHolder &gt;::data </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -174,19 +250,55 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Referenced by <a class="el" href="classmsgpack_1_1unpacker.html#ae639537ab7dc2587824cd2a134acc0ea">msgpack::unpacker::data()</a>, and <a class="el" href="namespacemsgpack_1_1detail.html#a9faa869d0a47dcb96467c908c8e84bdc">msgpack::detail::unpack_imp()</a>.</p>
+<p>Referenced by <a class="el" href="classmsgpack_1_1unpacker.html#ae639537ab7dc2587824cd2a134acc0ea">msgpack::unpacker::data()</a>, <a class="el" href="namespacemsgpack_1_1detail.html#a9faa869d0a47dcb96467c908c8e84bdc">msgpack::detail::unpack_imp()</a>, and <a class="el" href="classmsgpack_1_1unpacker.html#a786c115bb4f50f608007b4e6715d3666">msgpack::unpacker::visitor()</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="afdc1357666cf7b2e2c827fc2680d1b5b"></a>
+<a class="anchor" id="affa143892408ecd3c2df243cc90ca836"></a>
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;typename VisitorHolder&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="namespacemsgpack.html#acb783138a9bf52537f466eb620225a98">unpack_return</a> <a class="el" href="classmsgpack_1_1detail_1_1context.html">msgpack::detail::context</a>&lt; VisitorHolder &gt;::execute </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>data</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::size_t&#160;</td>
+          <td class="paramname"><em>len</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::size_t &amp;&#160;</td>
+          <td class="paramname"><em>off</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="affa143892408ecd3c2df243cc90ca836"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename VisitorHolder &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">int msgpack::detail::context::execute </td>
+          <td class="memname"><a class="el" href="namespacemsgpack.html#acb783138a9bf52537f466eb620225a98">unpack_return</a> <a class="el" href="classmsgpack_1_1detail_1_1context.html">msgpack::detail::context</a>&lt; VisitorHolder &gt;::execute </td>
           <td>(</td>
           <td class="paramtype">const char *&#160;</td>
           <td class="paramname"><em>data</em>, </td>
@@ -218,19 +330,21 @@ Public Member Functions</h2></td></tr>
 
 <p>References <a class="el" href="namespacemsgpack_1_1detail.html#ac5a1c0468d4cf47bcedc198231e6b5d7">msgpack::detail::unpack_bin()</a>, <a class="el" href="namespacemsgpack_1_1detail.html#af0ce75e4c642380d51dbebe5622f55de">msgpack::detail::unpack_double()</a>, <a class="el" href="namespacemsgpack_1_1detail.html#a04c19a782b1848cb620c4ed0a5f54eee">msgpack::detail::unpack_ext()</a>, <a class="el" href="namespacemsgpack_1_1detail.html#a144b09f49b214997a1a8470f51408c64">msgpack::detail::unpack_false()</a>, <a class="el" href="namespacemsgpack_1_1detail.html#a0e5165bfddd04c12a245468c0bbfdd64">msgpack::detail::unpack_float()</a>, <a class="el" href="namespacemsgpack_1_1detail.html#a36ffed13f07cf434e2c769eef699195d">msgpack::detail::unpack_int16()</a>, <a class="el" href="namespacemsgpack_1_1detail.html#a04599088ca22dba0616a47d3975f55f4">msgpack::detail::unpack_int32()</a>, <a class="el" href="namespacemsgpack_1_1detail.html#abdc3ca6ed8bfbd5f2102140625eaee7d">msgpack::detail::unpack_int64()</a>, <a class="el" href="namespacemsgpack_1_1detail.html#ac6a7ee8c26d49b756127374dfa2b3503">msgpack::detail::unpack_int8()</a>, <a class="el" href="namespacemsgpack_1_1detail.html#a470c40a927813ea6577425131a8be4f9">msgpack::detail::unpack_nil()</a>, <a class="el" href="namespacemsgpack_1_1detail.html#a3d8f95b547025cb3ac1dc82e4c6d434d">msgpack::detail::unpack_str()</a>, <a class="el" href="namespacemsgpack_1_1detail.html#acec71749be6cc29b94d01c7d60fd40e6">msgpack::detail::unpack_true()</a>, <a class="el" href="namespacemsgpack_1_1detail.html#adf2104fdd721377d05e7ab337d2d54a9">msgpack::detail::unpack_uint16()</a>, <a class="el" href="namespacemsgpack_1_1detail.html#af149873e9d5b2ae6d0dd09bc7c074231">msgpack::detail::unpack_uint32()</a>, <a class="el" href="namespacemsgpack_1_1detail.html#a599a9a50c4b2be139577af7cb7276dee">msgpack::detail::unpack_uint64()</a>, and <a class="el" href="namespacemsgpack_1_1detail.html#ac367630a095c237cceaf821e37c60e79">msgpack::detail::unpack_uint8()</a>.</p>
 
-<p>Referenced by <a class="el" href="classmsgpack_1_1unpacker.html#acfa3d1d984b4870e3b2cf9ff6af92b80">msgpack::unpacker::execute()</a>, and <a class="el" href="namespacemsgpack_1_1detail.html#a9faa869d0a47dcb96467c908c8e84bdc">msgpack::detail::unpack_imp()</a>.</p>
+<p>Referenced by <a class="el" href="classmsgpack_1_1unpacker.html#acfa3d1d984b4870e3b2cf9ff6af92b80">msgpack::unpacker::execute()</a>, <a class="el" href="structmsgpack_1_1detail_1_1parse__helper.html#af23c2877a18c290e5cc78637a50a5767">msgpack::detail::parse_helper&lt; Visitor &gt;::execute()</a>, <a class="el" href="classmsgpack_1_1parser.html#aad4b57fe3f726575e844f6c1a9f534e4">msgpack::parser&lt; VisitorHolder, ReferencedBufferHook &gt;::next()</a>, and <a class="el" href="namespacemsgpack_1_1detail.html#a9faa869d0a47dcb96467c908c8e84bdc">msgpack::detail::unpack_imp()</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a7c3b0f6e8c0251ffe6ddaaace0eaf530"></a>
+<a class="anchor" id="ae0d157b928a8ed6d30115e6d7eed4913"></a>
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;typename VisitorHolder&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void msgpack::detail::context::init </td>
+          <td class="memname">void <a class="el" href="classmsgpack_1_1detail_1_1context.html">msgpack::detail::context</a>&lt; VisitorHolder &gt;::init </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -243,19 +357,46 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Referenced by <a class="el" href="classmsgpack_1_1unpacker.html#ad0095eaf0945754f209b7ca77805790a">msgpack::unpacker::reset()</a>, <a class="el" href="namespacemsgpack_1_1detail.html#a9faa869d0a47dcb96467c908c8e84bdc">msgpack::detail::unpack_imp()</a>, and <a class="el" href="classmsgpack_1_1unpacker.html#a5e3c5204327f5f451dcf24111324f615">msgpack::unpacker::unpacker()</a>.</p>
-
 </div>
 </div>
-<a class="anchor" id="a725d5107c48c76414d5b2a927648fdc7"></a>
+<a class="anchor" id="ae0d157b928a8ed6d30115e6d7eed4913"></a>
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;typename VisitorHolder&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classmsgpack_1_1detail_1_1unpack__user.html">unpack_user</a>&amp; msgpack::detail::context::user </td>
+          <td class="memname">void <a class="el" href="classmsgpack_1_1detail_1_1context.html">msgpack::detail::context</a>&lt; VisitorHolder &gt;::init </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classmsgpack_1_1parser.html#a24a72753c6cab06bdbde3c900962035a">msgpack::parser&lt; VisitorHolder, ReferencedBufferHook &gt;::reset()</a>, <a class="el" href="classmsgpack_1_1unpacker.html#ad0095eaf0945754f209b7ca77805790a">msgpack::unpacker::reset()</a>, <a class="el" href="namespacemsgpack_1_1detail.html#a9faa869d0a47dcb96467c908c8e84bdc">msgpack::detail::unpack_imp()</a>, and <a class="el" href="classmsgpack_1_1unpacker.html#a5e3c5204327f5f451dcf24111324f615">msgpack::unpacker::unpacker()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ac74485be61ea7a98565f1d496818eab1"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename VisitorHolder&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmsgpack_1_1detail_1_1unpack__user.html">unpack_user</a>&amp; <a class="el" href="classmsgpack_1_1detail_1_1context.html">msgpack::detail::context</a>&lt; VisitorHolder &gt;::user </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -272,15 +413,17 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ab59edefbe64d3979a32fe09f4f767185"></a>
+<a class="anchor" id="a01fe2523409c8ed9ad099d58b0ac5d04"></a>
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;typename VisitorHolder&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classmsgpack_1_1detail_1_1unpack__user.html">unpack_user</a> const&amp; msgpack::detail::context::user </td>
+          <td class="memname"><a class="el" href="classmsgpack_1_1detail_1_1unpack__user.html">unpack_user</a> const&amp; <a class="el" href="classmsgpack_1_1detail_1_1context.html">msgpack::detail::context</a>&lt; VisitorHolder &gt;::user </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -292,8 +435,6 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-
-<p>References <a class="el" href="classmsgpack_1_1detail_1_1unpack__stack.html#a4342d041c59bb29302284d25a0b07e33">msgpack::detail::unpack_stack::container_type()</a>, <a class="el" href="classmsgpack_1_1detail_1_1unpack__stack.html#a27442cd751cf2807017e4bb599f9875d">msgpack::detail::unpack_stack::decr_count()</a>, <a class="el" href="classmsgpack_1_1detail_1_1unpack__stack.html#a2a1a94185266aa158cbf07a384cb3ac9">msgpack::detail::unpack_stack::map_key()</a>, <a class="el" href="classmsgpack_1_1detail_1_1unpack__stack.html#a2960087873e61ed0babb477b9e3ace1e">msgpack::detail::unpack_stack::obj()</a>, <a class="el" href="classmsgpack_1_1detail_1_1unpack__stack.html#ab3460e01141eb1105674d09558fb1e0a">msgpack::detail::unpack_stack::set_container_type()</a>, <a class="el" href="classmsgpack_1_1detail_1_1unpack__stack.html#a79e8718fd6c1b846e36621993454edf5">msgpack::detail::unpack_stack::set_map_key()</a>, <a class="el" href="namespacemsgpack_1_1detail.html#a99b3cb4490317734e1af75d152c5c964">msgpack::detail::unpack_array_item()</a>, and <a class="el" href="namespacemsgpack_1_1detail.html#ad04caa1a8e9d9ae5b1a765ba77611b60">msgpack::detail::unpack_map_item()</a>.</p>
 
 </div>
 </div>

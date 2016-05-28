@@ -95,6 +95,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="v1_2adaptor_2array__ref_8hpp_source.html">msgpack/v1/adaptor/array_ref.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="adaptor_2check__container__size_8hpp_source.html">msgpack/adaptor/check_container_size.hpp</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="cpp__config_8hpp_source.html">msgpack/cpp_config.hpp</a>&quot;</code><br />
 <code>#include &lt;cstring&gt;</code><br />
 <code>#include &lt;string&gt;</code><br />
 </div>
@@ -104,13 +105,21 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmsgpack_1_1type_1_1array__ref.html">msgpack::type::array_ref&lt; T &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmsgpack_1_1type_1_1array__ref_3_01_t[_n]_4.html">msgpack::type::array_ref&lt; T[N]&gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmsgpack_1_1adaptor_1_1convert_3_01msgpack_1_1type_1_1array__ref_3_01_t_01_4_01_4.html">msgpack::adaptor::convert&lt; msgpack::type::array_ref&lt; T &gt; &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmsgpack_1_1adaptor_1_1convert_3_01msgpack_1_1type_1_1array__ref_3_01_t[_n]_4_01_4.html">msgpack::adaptor::convert&lt; msgpack::type::array_ref&lt; T[N]&gt; &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmsgpack_1_1adaptor_1_1convert_3_01msgpack_1_1type_1_1array__ref_3_01std_1_1vector_3_01_t_01_4_01_4_01_4.html">msgpack::adaptor::convert&lt; msgpack::type::array_ref&lt; std::vector&lt; T &gt; &gt; &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmsgpack_1_1adaptor_1_1pack_3_01msgpack_1_1type_1_1array__ref_3_01_t_01_4_01_4.html">msgpack::adaptor::pack&lt; msgpack::type::array_ref&lt; T &gt; &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmsgpack_1_1adaptor_1_1pack_3_01msgpack_1_1type_1_1array__ref_3_01_t[_n]_4_01_4.html">msgpack::adaptor::pack&lt; msgpack::type::array_ref&lt; T[N]&gt; &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmsgpack_1_1adaptor_1_1object__with__zone_3_01msgpack_1_1type_1_1array__ref_3_01_t_01_4_01_4.html">msgpack::adaptor::object_with_zone&lt; msgpack::type::array_ref&lt; T &gt; &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmsgpack_1_1adaptor_1_1object__with__zone_3_01msgpack_1_1type_1_1array__ref_3_01_t[_n]_4_01_4.html">msgpack::adaptor::object_with_zone&lt; msgpack::type::array_ref&lt; T[N]&gt; &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
@@ -124,12 +133,18 @@ Namespaces</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:aa9c40b5dc5fa7c948d05bf17619bdca9"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:aa9c40b5dc5fa7c948d05bf17619bdca9"><td class="memTemplItemLeft" align="right" valign="top">array_ref&lt; T const  &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacemsgpack_1_1type.html#aa9c40b5dc5fa7c948d05bf17619bdca9">msgpack::type::make_array_ref</a> (T const &amp;t)</td></tr>
-<tr class="separator:aa9c40b5dc5fa7c948d05bf17619bdca9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6e61d382256679a789128d77beca1e9d"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a6e61d382256679a789128d77beca1e9d"><td class="memTemplItemLeft" align="right" valign="top">array_ref&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacemsgpack_1_1type.html#a6e61d382256679a789128d77beca1e9d">msgpack::type::make_array_ref</a> (T &amp;t)</td></tr>
-<tr class="separator:a6e61d382256679a789128d77beca1e9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab20b9cfe048eeff23748c229c6cecc10"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:ab20b9cfe048eeff23748c229c6cecc10"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="structmsgpack_1_1enable__if.html">msgpack::enable_if</a>&lt; !<a class="el" href="structmsgpack_1_1is__array.html">msgpack::is_array</a>&lt; T const  &gt;::value, array_ref&lt; T const  &gt;&gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacemsgpack_1_1type.html#ab20b9cfe048eeff23748c229c6cecc10">msgpack::type::make_array_ref</a> (const T &amp;t)</td></tr>
+<tr class="separator:ab20b9cfe048eeff23748c229c6cecc10"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2da8f40f441146acf4576e46635faaca"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a2da8f40f441146acf4576e46635faaca"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="structmsgpack_1_1enable__if.html">msgpack::enable_if</a>&lt; !<a class="el" href="structmsgpack_1_1is__array.html">msgpack::is_array</a>&lt; T &gt;::value, array_ref&lt; T &gt;&gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacemsgpack_1_1type.html#a2da8f40f441146acf4576e46635faaca">msgpack::type::make_array_ref</a> (T &amp;t)</td></tr>
+<tr class="separator:a2da8f40f441146acf4576e46635faaca"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad1463757cf2df3896df07d4c39716a0f"><td class="memTemplParams" colspan="2">template&lt;typename T , std::size_t N&gt; </td></tr>
+<tr class="memitem:ad1463757cf2df3896df07d4c39716a0f"><td class="memTemplItemLeft" align="right" valign="top">array_ref&lt; const T[N]&gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacemsgpack_1_1type.html#ad1463757cf2df3896df07d4c39716a0f">msgpack::type::make_array_ref</a> (const T(&amp;t)[N])</td></tr>
+<tr class="separator:ad1463757cf2df3896df07d4c39716a0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad9d4b6d29983d662759c455eb3b85a3d"><td class="memTemplParams" colspan="2">template&lt;typename T , std::size_t N&gt; </td></tr>
+<tr class="memitem:ad9d4b6d29983d662759c455eb3b85a3d"><td class="memTemplItemLeft" align="right" valign="top">array_ref&lt; T[N]&gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacemsgpack_1_1type.html#ad9d4b6d29983d662759c455eb3b85a3d">msgpack::type::make_array_ref</a> (T(&amp;t)[N])</td></tr>
+<tr class="separator:ad9d4b6d29983d662759c455eb3b85a3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
 <!-- start footer part -->

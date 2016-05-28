@@ -18,9 +18,8 @@ var searchData=
   ['to_5ftuple_2ehpp',['to_tuple.hpp',['../seq_2to__tuple_8hpp.html',1,'']]],
   ['transform_2ehpp',['transform.hpp',['../seq_2transform_8hpp.html',1,'']]],
   ['transform_2ehpp',['transform.hpp',['../list_2transform_8hpp.html',1,'']]],
-  ['tuple_2ehpp',['tuple.hpp',['../v1_2adaptor_2cpp11_2tuple_8hpp.html',1,'']]],
   ['tuple_2ehpp',['tuple.hpp',['../adaptor_2cpp11_2tuple_8hpp.html',1,'']]],
+  ['tuple_2ehpp',['tuple.hpp',['../v1_2adaptor_2cpp11_2tuple_8hpp.html',1,'']]],
   ['tuple_2ehpp',['tuple.hpp',['../preprocessor_2tuple_8hpp.html',1,'']]],
-  ['type_2ehpp',['type.hpp',['../type_8hpp.html',1,'']]],
-  ['type_2ehpp',['type.hpp',['../v1_2type_8hpp.html',1,'']]]
+  ['type_2ehpp',['type.hpp',['../type_8hpp.html',1,'']]]
 ];

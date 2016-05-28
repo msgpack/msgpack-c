@@ -105,6 +105,8 @@ Namespaces</h2></td></tr>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmsgpack_1_1type_1_1array__ref.html">array_ref</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmsgpack_1_1type_1_1array__ref_3_01_t[_n]_4.html">array_ref&lt; T[N]&gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmsgpack_1_1type_1_1assoc__vector.html">assoc_vector</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmsgpack_1_1type_1_1const__tuple__element.html">const_tuple_element</a></td></tr>
@@ -192,12 +194,18 @@ Enumerations</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:aa9c40b5dc5fa7c948d05bf17619bdca9"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:aa9c40b5dc5fa7c948d05bf17619bdca9"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="structmsgpack_1_1type_1_1array__ref.html">array_ref</a>&lt; T const  &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacemsgpack_1_1type.html#aa9c40b5dc5fa7c948d05bf17619bdca9">make_array_ref</a> (T const &amp;t)</td></tr>
-<tr class="separator:aa9c40b5dc5fa7c948d05bf17619bdca9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6e61d382256679a789128d77beca1e9d"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a6e61d382256679a789128d77beca1e9d"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="structmsgpack_1_1type_1_1array__ref.html">array_ref</a>&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacemsgpack_1_1type.html#a6e61d382256679a789128d77beca1e9d">make_array_ref</a> (T &amp;t)</td></tr>
-<tr class="separator:a6e61d382256679a789128d77beca1e9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab20b9cfe048eeff23748c229c6cecc10"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:ab20b9cfe048eeff23748c229c6cecc10"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="structmsgpack_1_1enable__if.html">msgpack::enable_if</a>&lt; !<a class="el" href="structmsgpack_1_1is__array.html">msgpack::is_array</a>&lt; T const  &gt;::value, <a class="el" href="structmsgpack_1_1type_1_1array__ref.html">array_ref</a>&lt; T const  &gt;&gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacemsgpack_1_1type.html#ab20b9cfe048eeff23748c229c6cecc10">make_array_ref</a> (const T &amp;t)</td></tr>
+<tr class="separator:ab20b9cfe048eeff23748c229c6cecc10"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2da8f40f441146acf4576e46635faaca"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a2da8f40f441146acf4576e46635faaca"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="structmsgpack_1_1enable__if.html">msgpack::enable_if</a>&lt; !<a class="el" href="structmsgpack_1_1is__array.html">msgpack::is_array</a>&lt; T &gt;::value, <a class="el" href="structmsgpack_1_1type_1_1array__ref.html">array_ref</a>&lt; T &gt;&gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacemsgpack_1_1type.html#a2da8f40f441146acf4576e46635faaca">make_array_ref</a> (T &amp;t)</td></tr>
+<tr class="separator:a2da8f40f441146acf4576e46635faaca"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad1463757cf2df3896df07d4c39716a0f"><td class="memTemplParams" colspan="2">template&lt;typename T , std::size_t N&gt; </td></tr>
+<tr class="memitem:ad1463757cf2df3896df07d4c39716a0f"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="structmsgpack_1_1type_1_1array__ref.html">array_ref</a>&lt; const T[N]&gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacemsgpack_1_1type.html#ad1463757cf2df3896df07d4c39716a0f">make_array_ref</a> (const T(&amp;t)[N])</td></tr>
+<tr class="separator:ad1463757cf2df3896df07d4c39716a0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad9d4b6d29983d662759c455eb3b85a3d"><td class="memTemplParams" colspan="2">template&lt;typename T , std::size_t N&gt; </td></tr>
+<tr class="memitem:ad9d4b6d29983d662759c455eb3b85a3d"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="structmsgpack_1_1type_1_1array__ref.html">array_ref</a>&lt; T[N]&gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacemsgpack_1_1type.html#ad9d4b6d29983d662759c455eb3b85a3d">make_array_ref</a> (T(&amp;t)[N])</td></tr>
+<tr class="separator:ad9d4b6d29983d662759c455eb3b85a3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac0f454b9373915be2922e2e2a1214678"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structmsgpack_1_1type_1_1define__array.html">define_array</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacemsgpack_1_1type.html#ac0f454b9373915be2922e2e2a1214678">make_define_array</a> ()</td></tr>
 <tr class="separator:ac0f454b9373915be2922e2e2a1214678"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af728c4713585591205c36e1a4c10cec7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structmsgpack_1_1type_1_1define__map.html">define_map</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacemsgpack_1_1type.html#af728c4713585591205c36e1a4c10cec7">make_define_map</a> ()</td></tr>
@@ -400,7 +408,7 @@ template&lt;class... Args&gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="aa9c40b5dc5fa7c948d05bf17619bdca9"></a>
+<a class="anchor" id="ab20b9cfe048eeff23748c229c6cecc10"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
@@ -410,9 +418,9 @@ template&lt;typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structmsgpack_1_1type_1_1array__ref.html">array_ref</a>&lt; T const  &gt; msgpack::type::make_array_ref </td>
+          <td class="memname"><a class="el" href="structmsgpack_1_1enable__if.html">msgpack::enable_if</a>&lt; !<a class="el" href="structmsgpack_1_1is__array.html">msgpack::is_array</a>&lt;T const&gt;::value, <a class="el" href="structmsgpack_1_1type_1_1array__ref.html">array_ref</a>&lt;T const&gt;&gt;::type msgpack::type::make_array_ref </td>
           <td>(</td>
-          <td class="paramtype">T const &amp;&#160;</td>
+          <td class="paramtype">const T &amp;&#160;</td>
           <td class="paramname"><em>t</em></td><td>)</td>
           <td></td>
         </tr>
@@ -426,7 +434,7 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="a6e61d382256679a789128d77beca1e9d"></a>
+<a class="anchor" id="a2da8f40f441146acf4576e46635faaca"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
@@ -436,10 +444,62 @@ template&lt;typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structmsgpack_1_1type_1_1array__ref.html">array_ref</a>&lt; T &gt; msgpack::type::make_array_ref </td>
+          <td class="memname"><a class="el" href="structmsgpack_1_1enable__if.html">msgpack::enable_if</a>&lt; !<a class="el" href="structmsgpack_1_1is__array.html">msgpack::is_array</a>&lt;T&gt;::value, <a class="el" href="structmsgpack_1_1type_1_1array__ref.html">array_ref</a>&lt;T&gt;&gt;::type msgpack::type::make_array_ref </td>
           <td>(</td>
           <td class="paramtype">T &amp;&#160;</td>
           <td class="paramname"><em>t</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ad1463757cf2df3896df07d4c39716a0f"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T , std::size_t N&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structmsgpack_1_1type_1_1array__ref.html">array_ref</a>&lt; const T[N]&gt; msgpack::type::make_array_ref </td>
+          <td>(</td>
+          <td class="paramtype">const T(&amp;)&#160;</td>
+          <td class="paramname"><em>t</em>[N]</td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ad9d4b6d29983d662759c455eb3b85a3d"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T , std::size_t N&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structmsgpack_1_1type_1_1array__ref.html">array_ref</a>&lt; T[N]&gt; msgpack::type::make_array_ref </td>
+          <td>(</td>
+          <td class="paramtype">T(&amp;)&#160;</td>
+          <td class="paramname"><em>t</em>[N]</td><td>)</td>
           <td></td>
         </tr>
       </table>

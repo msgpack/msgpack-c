@@ -139,10 +139,13 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 : <a class="el" href="classmsgpack_1_1detail_1_1unpack__stack.html#aa791d241f3c7584185a862e887aefcb8">msgpack::detail::unpack_stack</a>
 </li>
 <li>set_referenced()
-: <a class="el" href="classmsgpack_1_1detail_1_1unpack__user.html#add02e5b68a217218df422b251bf1adef">msgpack::detail::unpack_user</a>
+: <a class="el" href="classmsgpack_1_1detail_1_1create__object__visitor.html#a308cad73441a0800fa5d912328e94023">msgpack::detail::create_object_visitor</a>
+, <a class="el" href="classmsgpack_1_1detail_1_1unpack__user.html#add02e5b68a217218df422b251bf1adef">msgpack::detail::unpack_user</a>
 </li>
 <li>set_zone()
-: <a class="el" href="classmsgpack_1_1detail_1_1unpack__user.html#ab066fd31f90eb168b3d0416112c35786">msgpack::detail::unpack_user</a>
+: <a class="el" href="classmsgpack_1_1detail_1_1create__object__visitor.html#a6e3bee7743fbc588597d1192c348ae21">msgpack::detail::create_object_visitor</a>
+, <a class="el" href="classmsgpack_1_1detail_1_1unpack__user.html#ab066fd31f90eb168b3d0416112c35786">msgpack::detail::unpack_user</a>
+, <a class="el" href="structmsgpack_1_1zone__push__finalizer.html#aa544620797f5ad151aee96a51f31b311">msgpack::zone_push_finalizer</a>
 </li>
 <li>size
 : <a class="el" href="structmsgpack_1_1object__array.html#a15e7a07017a5fa7018c466a24634ec68">msgpack::object_array</a>
@@ -151,6 +154,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 , <a class="el" href="structmsgpack_1_1object__map.html#a5050f181f092c4f6f22b27d4cdc17289">msgpack::object_map</a>
 , <a class="el" href="structmsgpack_1_1object__str.html#a6115834eebc11241a4d861220daf2e3f">msgpack::object_str</a>
 , <a class="el" href="classmsgpack_1_1sbuffer.html#aa6dfbda7c8ecaf2ab0a8f3d57bc7541c">msgpack::sbuffer</a>
+, <a class="el" href="structmsgpack_1_1type_1_1array__ref.html#ab43c05ff4208c3e8144752060a5061d4">msgpack::type::array_ref&lt; T &gt;</a>
+, <a class="el" href="structmsgpack_1_1type_1_1array__ref_3_01_t[_n]_4.html#ae0780794011420c398e2118c105bd0e5">msgpack::type::array_ref&lt; T[N]&gt;</a>
 , <a class="el" href="classmsgpack_1_1type_1_1ext.html#ac7dd1c15900234281143d79404518bc1">msgpack::type::ext</a>
 , <a class="el" href="classmsgpack_1_1type_1_1ext__ref.html#a4f7b3cf77076054f9a349c4fad3e8d62">msgpack::type::ext_ref</a>
 , <a class="el" href="structmsgpack_1_1type_1_1raw__ref.html#a5103b464256a0956955a16bb282307c8">msgpack::type::raw_ref</a>
@@ -158,10 +163,34 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 , <a class="el" href="classmsgpack_1_1zbuffer.html#ad46bcd7b4de71c0dc7ad9978544eb887">msgpack::zbuffer</a>
 </li>
 <li>size_overflow()
-: <a class="el" href="structmsgpack_1_1size__overflow.html#a898c9236b74661fc00eb42f7abac6771">msgpack::size_overflow</a>
+: <a class="el" href="structmsgpack_1_1size__overflow.html#aa615750dbdca216eaa9737fc3bf7e64f">msgpack::size_overflow</a>
 </li>
 <li>skip_nonparsed_buffer()
-: <a class="el" href="classmsgpack_1_1unpacker.html#addac24de23663926c143992eb61df9af">msgpack::unpacker</a>
+: <a class="el" href="classmsgpack_1_1parser.html#af6003ac15f92a64ecdff9df0968550d5">msgpack::parser&lt; VisitorHolder, ReferencedBufferHook &gt;</a>
+, <a class="el" href="classmsgpack_1_1unpacker.html#addac24de23663926c143992eb61df9af">msgpack::unpacker</a>
+</li>
+<li>stack_elem()
+: <a class="el" href="structmsgpack_1_1detail_1_1context_1_1unpack__stack_1_1stack__elem.html#ad0b32f368632d36bb135987de508b95d">msgpack::detail::context&lt; VisitorHolder &gt;::unpack_stack::stack_elem</a>
+</li>
+<li>start_array()
+: <a class="el" href="classmsgpack_1_1detail_1_1create__object__visitor.html#abcede1d8647e7e6e875ccfb4b27ea2b4">msgpack::detail::create_object_visitor</a>
+, <a class="el" href="structmsgpack_1_1null__visitor.html#a40796f113d0d606d0c9bb402efbb2d1f">msgpack::null_visitor</a>
+</li>
+<li>start_array_item()
+: <a class="el" href="classmsgpack_1_1detail_1_1create__object__visitor.html#ab1165fbd72a2777415491745df767a39">msgpack::detail::create_object_visitor</a>
+, <a class="el" href="structmsgpack_1_1null__visitor.html#a5935e698e2fa152c5fbf90d46e49d38e">msgpack::null_visitor</a>
+</li>
+<li>start_map()
+: <a class="el" href="classmsgpack_1_1detail_1_1create__object__visitor.html#af1b9d0237b969a1e4fd3b0b8d792c045">msgpack::detail::create_object_visitor</a>
+, <a class="el" href="structmsgpack_1_1null__visitor.html#a981c45f52e8739866a0b45edbf4b8f67">msgpack::null_visitor</a>
+</li>
+<li>start_map_key()
+: <a class="el" href="classmsgpack_1_1detail_1_1create__object__visitor.html#a7648bff1e17c150d042a8292120a59e8">msgpack::detail::create_object_visitor</a>
+, <a class="el" href="structmsgpack_1_1null__visitor.html#a079071f0525c6644172f0fc4faf506c7">msgpack::null_visitor</a>
+</li>
+<li>start_map_value()
+: <a class="el" href="classmsgpack_1_1detail_1_1create__object__visitor.html#ae843bf54f8bc3bf2cb964ea3cb80c0ab">msgpack::detail::create_object_visitor</a>
+, <a class="el" href="structmsgpack_1_1null__visitor.html#a2513e15f51caf841c9874bd854d6df93">msgpack::null_visitor</a>
 </li>
 <li>str
 : <a class="el" href="unionmsgpack_1_1object_1_1union__type.html#a3d0bd5fbb11f4ec524897af357b8c528">msgpack::object::union_type</a>
@@ -171,7 +200,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 , <a class="el" href="classmsgpack_1_1unpack__limit.html#aad02fceb7971f6f4c6bc1519f95b4ff6">msgpack::unpack_limit</a>
 </li>
 <li>str_size_overflow()
-: <a class="el" href="structmsgpack_1_1str__size__overflow.html#afb17ea00dfdbec8e9cb7cbf5171da659">msgpack::str_size_overflow</a>
+: <a class="el" href="structmsgpack_1_1str__size__overflow.html#a0debaf774ca8adce1950e01832e35f61">msgpack::str_size_overflow</a>
 </li>
 <li>swap()
 : <a class="el" href="classmsgpack_1_1zone.html#a0c2952d26ff7317e5d6b12a06722dce5">msgpack::zone</a>

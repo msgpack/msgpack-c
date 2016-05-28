@@ -2,6 +2,7 @@ var searchData=
 [
   ['all_5fof_5fimp',['all_of_imp',['../structmsgpack_1_1detail_1_1all__of__imp.html',1,'msgpack::detail']]],
   ['array_5fref',['array_ref',['../structmsgpack_1_1type_1_1array__ref.html',1,'msgpack::type']]],
+  ['array_5fref_3c_20t_5bn_5d_3e',['array_ref&lt; T[N]&gt;',['../structmsgpack_1_1type_1_1array__ref_3_01_t[_n]_4.html',1,'msgpack::type']]],
   ['array_5fsize_5foverflow',['array_size_overflow',['../structmsgpack_1_1array__size__overflow.html',1,'msgpack']]],
   ['as',['as',['../structmsgpack_1_1adaptor_1_1as.html',1,'msgpack::adaptor']]],
   ['as_3c_20boost_3a_3aoptional_3c_20t_20_3e_2c_20typename_20std_3a_3aenable_5fif_3c_20msgpack_3a_3ahas_5fas_3c_20t_20_3e_3a_3avalue_20_3e_3a_3atype_20_3e',['as&lt; boost::optional&lt; T &gt;, typename std::enable_if&lt; msgpack::has_as&lt; T &gt;::value &gt;::type &gt;',['../structmsgpack_1_1adaptor_1_1as_3_01boost_1_1optional_3_01_t_01_4_00_01typename_01std_1_1enable__1b8a234d47c1802b82bae805c8539205.html',1,'msgpack::adaptor']]],

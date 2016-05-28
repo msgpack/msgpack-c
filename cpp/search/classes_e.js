@@ -4,6 +4,7 @@ var searchData=
   ['seq',['seq',['../structmsgpack_1_1seq.html',1,'msgpack']]],
   ['seq_3c_20is_2e_2e_2e_20_3e',['seq&lt; Is... &gt;',['../structmsgpack_1_1seq.html',1,'msgpack']]],
   ['size_5foverflow',['size_overflow',['../structmsgpack_1_1size__overflow.html',1,'msgpack']]],
+  ['stack_5felem',['stack_elem',['../structmsgpack_1_1detail_1_1context_1_1unpack__stack_1_1stack__elem.html',1,'msgpack::detail::context::unpack_stack']]],
   ['stdtupleas',['StdTupleAs',['../structmsgpack_1_1_std_tuple_as.html',1,'msgpack']]],
   ['stdtupleas_3c_3e',['StdTupleAs&lt;&gt;',['../structmsgpack_1_1_std_tuple_as_3_4.html',1,'msgpack']]],
   ['stdtupleasimpl',['StdTupleAsImpl',['../structmsgpack_1_1_std_tuple_as_impl.html',1,'msgpack']]],
