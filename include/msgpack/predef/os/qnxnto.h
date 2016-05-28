@@ -1,5 +1,5 @@
 /*
-Copyright Rene Rivera 2008-2013
+Copyright Rene Rivera 2008-2015
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE_1_0.txt or copy at
 http://www.boost.org/LICENSE_1_0.txt)
@@ -53,8 +53,7 @@ version 4 is specifically detected.
 
 #define MSGPACK_OS_QNX_NAME "QNX"
 
+#endif
+
 #include <msgpack/predef/detail/test.h>
 MSGPACK_PREDEF_DECLARE_TEST(MSGPACK_OS_QNX,MSGPACK_OS_QNX_NAME)
-
-
-#endif

@@ -1,5 +1,5 @@
 /*
-Copyright Rene Rivera 2008-2013
+Copyright Rene Rivera 2008-2015
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE_1_0.txt or copy at
 http://www.boost.org/LICENSE_1_0.txt)
@@ -42,9 +42,6 @@ http://www.boost.org/LICENSE_1_0.txt)
 
 #define MSGPACK_ARCH_RS6000_NAME "RS/6000"
 
-#include <msgpack/predef/detail/test.h>
-MSGPACK_PREDEF_DECLARE_TEST(MSGPACK_ARCH_RS6000,MSGPACK_ARCH_RS6000_NAME)
-
 #define MSGPACK_ARCH_PWR MSGPACK_ARCH_RS6000
 
 #if MSGPACK_ARCH_PWR
@@ -54,3 +51,6 @@ MSGPACK_PREDEF_DECLARE_TEST(MSGPACK_ARCH_RS6000,MSGPACK_ARCH_RS6000_NAME)
 #define MSGPACK_ARCH_PWR_NAME MSGPACK_ARCH_RS6000_NAME
 
 #endif
+
+#include <msgpack/predef/detail/test.h>
+MSGPACK_PREDEF_DECLARE_TEST(MSGPACK_ARCH_RS6000,MSGPACK_ARCH_RS6000_NAME)

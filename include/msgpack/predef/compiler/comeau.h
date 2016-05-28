@@ -1,5 +1,5 @@
 /*
-Copyright Rene Rivera 2008-2014
+Copyright Rene Rivera 2008-2015
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE_1_0.txt or copy at
 http://www.boost.org/LICENSE_1_0.txt)
@@ -29,7 +29,7 @@ Version number available as major, minor, and patch.
  */
 
 #if defined(__COMO__)
-#   if !defined(MSGPACK_COMP_COMO_DETECTION) && defined(__CONO_VERSION__)
+#   if !defined(MSGPACK_COMP_COMO_DETECTION) && defined(__COMO_VERSION__)
 #       define MSGPACK_COMP_COMO_DETECTION MSGPACK_PREDEF_MAKE_0X_VRP(__COMO_VERSION__)
 #   endif
 #   if !defined(MSGPACK_COMP_COMO_DETECTION)
@@ -50,13 +50,12 @@ Version number available as major, minor, and patch.
 
 #define MSGPACK_COMP_COMO_NAME "Comeau C++"
 
+#endif
+
 #include <msgpack/predef/detail/test.h>
 MSGPACK_PREDEF_DECLARE_TEST(MSGPACK_COMP_COMO,MSGPACK_COMP_COMO_NAME)
 
 #ifdef MSGPACK_COMP_COMO_EMULATED
 #include <msgpack/predef/detail/test.h>
 MSGPACK_PREDEF_DECLARE_TEST(MSGPACK_COMP_COMO_EMULATED,MSGPACK_COMP_COMO_NAME)
-#endif
-
-
 #endif
