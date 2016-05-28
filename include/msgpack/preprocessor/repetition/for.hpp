@@ -16,6 +16,8 @@
 #
 # include <msgpack/preprocessor/cat.hpp>
 # include <msgpack/preprocessor/debug/error.hpp>
+# include <msgpack/preprocessor/facilities/empty.hpp>
+# include <msgpack/preprocessor/logical/bool.hpp>
 # include <msgpack/preprocessor/detail/auto_rec.hpp>
 #
 # /* MSGPACK_PP_FOR */
@@ -42,7 +44,23 @@
 #    include <msgpack/preprocessor/repetition/detail/for.hpp>
 # endif
 #
-# define MSGPACK_PP_FOR_257(s, p, o, m) MSGPACK_PP_ERROR(0x0002)
+# if MSGPACK_PP_CONFIG_FLAGS() & MSGPACK_PP_CONFIG_DMC()
+# define MSGPACK_PP_FOR_257_PR(s, p) MSGPACK_PP_BOOL(p##(257, s))
+# else
+# define MSGPACK_PP_FOR_257_PR(s, p) MSGPACK_PP_BOOL(p(257, s))
+# endif
+
+# define MSGPACK_PP_FOR_257_ERROR() MSGPACK_PP_ERROR(0x0002)
+# define MSGPACK_PP_FOR_257(s, p, o, m) \
+	MSGPACK_PP_IIF \
+		( \
+		MSGPACK_PP_FOR_257_PR(s,p), \
+		MSGPACK_PP_FOR_257_ERROR, \
+		MSGPACK_PP_EMPTY \
+		) \
+	() \
+/**/
+// # define MSGPACK_PP_FOR_257(s, p, o, m) MSGPACK_PP_ERROR(0x0002)
 #
 # define MSGPACK_PP_FOR_CHECK_MSGPACK_PP_NIL 1
 #

@@ -1,5 +1,5 @@
 /*
-Copyright Rene Rivera 2008-2014
+Copyright Rene Rivera 2008-2015
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE_1_0.txt or copy at
 http://www.boost.org/LICENSE_1_0.txt)
@@ -42,13 +42,12 @@ MetaWare High C/C++ compiler.
 
 #define MSGPACK_COMP_HIGHC_NAME "MetaWare High C/C++"
 
+#endif
+
 #include <msgpack/predef/detail/test.h>
 MSGPACK_PREDEF_DECLARE_TEST(MSGPACK_COMP_HIGHC,MSGPACK_COMP_HIGHC_NAME)
 
 #ifdef MSGPACK_COMP_HIGHC_EMULATED
 #include <msgpack/predef/detail/test.h>
 MSGPACK_PREDEF_DECLARE_TEST(MSGPACK_COMP_HIGHC_EMULATED,MSGPACK_COMP_HIGHC_NAME)
-#endif
-
-
 #endif
