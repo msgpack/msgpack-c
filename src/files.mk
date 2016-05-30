@@ -70,6 +70,17 @@ nobase_include_HEADERS = \
 	../include/msgpack/predef/detail/os_detected.h \
 	../include/msgpack/predef/detail/platform_detected.h \
 	../include/msgpack/predef/detail/test.h \
+	../include/msgpack/predef/detail/test_def.h \
+	../include/msgpack/predef/hardware.h \
+	../include/msgpack/predef/hardware/simd.h \
+	../include/msgpack/predef/hardware/simd/arm.h \
+	../include/msgpack/predef/hardware/simd/arm/versions.h \
+	../include/msgpack/predef/hardware/simd/ppc.h \
+	../include/msgpack/predef/hardware/simd/ppc/versions.h \
+	../include/msgpack/predef/hardware/simd/x86.h \
+	../include/msgpack/predef/hardware/simd/x86/versions.h \
+	../include/msgpack/predef/hardware/simd/x86_amd.h \
+	../include/msgpack/predef/hardware/simd/x86_amd/versions.h \
 	../include/msgpack/predef/language.h \
 	../include/msgpack/predef/language/objc.h \
 	../include/msgpack/predef/language/stdc.h \
@@ -412,6 +423,7 @@ nobase_include_HEADERS += \
 	../include/msgpack/preprocessor/seq.hpp \
 	../include/msgpack/preprocessor/seq/cat.hpp \
 	../include/msgpack/preprocessor/seq/detail/binary_transform.hpp \
+	../include/msgpack/preprocessor/seq/detail/is_empty.hpp \
 	../include/msgpack/preprocessor/seq/detail/split.hpp \
 	../include/msgpack/preprocessor/seq/elem.hpp \
 	../include/msgpack/preprocessor/seq/enum.hpp \

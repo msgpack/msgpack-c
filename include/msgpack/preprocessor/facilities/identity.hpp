@@ -8,6 +8,7 @@
 #  */
 #
 # /* Revised by Paul Mensonides (2002) */
+# /* Revised by Edward Diener (2015) */
 #
 # /* See http://www.boost.org for most recent version. */
 #
@@ -15,9 +16,12 @@
 # define MSGPACK_PREPROCESSOR_FACILITIES_IDENTITY_HPP
 #
 # include <msgpack/preprocessor/facilities/empty.hpp>
+# include <msgpack/preprocessor/tuple/eat.hpp>
 #
 # /* MSGPACK_PP_IDENTITY */
 #
 # define MSGPACK_PP_IDENTITY(item) item MSGPACK_PP_EMPTY
+#
+# define MSGPACK_PP_IDENTITY_N(item,n) item MSGPACK_PP_TUPLE_EAT_N(n)
 #
 # endif
