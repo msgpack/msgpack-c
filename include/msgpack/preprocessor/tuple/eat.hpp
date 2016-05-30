@@ -8,7 +8,7 @@
 #  */
 #
 # /* Revised by Paul Mensonides (2002-2011) */
-# /* Revised by Edward Diener (2011) */
+# /* Revised by Edward Diener (2011,2015) */
 #
 # /* See http://www.boost.org for most recent version. */
 #
@@ -38,6 +38,15 @@
 #    endif
 #    define MSGPACK_PP_TUPLE_EAT_I(size) MSGPACK_PP_TUPLE_EAT_ ## size
 # endif
+#
+# if ~MSGPACK_PP_CONFIG_FLAGS() & MSGPACK_PP_CONFIG_MWCC()
+#     define MSGPACK_PP_TUPLE_EAT_N(size) MSGPACK_PP_TUPLE_EAT_N_I(size)
+# else
+#     define MSGPACK_PP_TUPLE_EAT_N(size) MSGPACK_PP_TUPLE_EAT_N_OO((size))
+#     define MSGPACK_PP_TUPLE_EAT_N_OO(par) MSGPACK_PP_TUPLE_EAT_N_I ## par
+# endif
+# define MSGPACK_PP_TUPLE_EAT_N_I(size) MSGPACK_PP_TUPLE_EAT_ ## size
+#
 # define MSGPACK_PP_TUPLE_EAT_1(e0)
 # define MSGPACK_PP_TUPLE_EAT_2(e0, e1)
 # define MSGPACK_PP_TUPLE_EAT_3(e0, e1, e2)

@@ -1,5 +1,5 @@
 /*
-Copyright Rene Rivera 2011-2013
+Copyright Rene Rivera 2011-2015
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE_1_0.txt or copy at
 http://www.boost.org/LICENSE_1_0.txt)
@@ -40,8 +40,7 @@ http://www.boost.org/LICENSE_1_0.txt)
 
 #define MSGPACK_LIB_STD_CXX_NAME "libc++"
 
+#endif
+
 #include <msgpack/predef/detail/test.h>
 MSGPACK_PREDEF_DECLARE_TEST(MSGPACK_LIB_STD_CXX,MSGPACK_LIB_STD_CXX_NAME)
-
-
-#endif

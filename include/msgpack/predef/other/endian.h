@@ -1,5 +1,5 @@
 /*
-Copyright Rene Rivera 2013-2014
+Copyright Rene Rivera 2013-2015
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE_1_0.txt or copy at
 http://www.boost.org/LICENSE_1_0.txt)
@@ -140,7 +140,7 @@ information and acquired knowledge:
     !MSGPACK_ENDIAN_LITTLE_BYTE && !MSGPACK_ENDIAN_LITTLE_WORD
 #   include <msgpack/predef/architecture.h>
 #   if MSGPACK_ARCH_M68K || \
-        MSGPACK_ARCH_PARISK || \
+        MSGPACK_ARCH_PARISC || \
         MSGPACK_ARCH_SPARC || \
         MSGPACK_ARCH_SYS370 || \
         MSGPACK_ARCH_SYS390 || \
@@ -189,6 +189,8 @@ information and acquired knowledge:
 #define MSGPACK_ENDIAN_LITTLE_BYTE_NAME "Byte-Swapped Little-Endian"
 #define MSGPACK_ENDIAN_LITTLE_WORD_NAME "Word-Swapped Little-Endian"
 
+#endif
+
 #include <msgpack/predef/detail/test.h>
 MSGPACK_PREDEF_DECLARE_TEST(MSGPACK_ENDIAN_BIG_BYTE,MSGPACK_ENDIAN_BIG_BYTE_NAME)
 
@@ -200,6 +202,3 @@ MSGPACK_PREDEF_DECLARE_TEST(MSGPACK_ENDIAN_LITTLE_BYTE,MSGPACK_ENDIAN_LITTLE_BYT
 
 #include <msgpack/predef/detail/test.h>
 MSGPACK_PREDEF_DECLARE_TEST(MSGPACK_ENDIAN_LITTLE_WORD,MSGPACK_ENDIAN_LITTLE_WORD_NAME)
-
-
-#endif
