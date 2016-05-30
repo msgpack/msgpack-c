@@ -200,6 +200,7 @@ nobase_include_HEADERS += \
 	../include/msgpack/cpp_config_decl.hpp \
 	../include/msgpack/fbuffer.hpp \
 	../include/msgpack/fbuffer_decl.hpp \
+	../include/msgpack/gcc_atomic.hpp \
 	../include/msgpack/iterator.hpp \
 	../include/msgpack/iterator_decl.hpp \
 	../include/msgpack/meta.hpp \
