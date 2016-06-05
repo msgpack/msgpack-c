@@ -18,13 +18,4 @@ cat cpp_headers.tmp | sed -e 's/^/        /g' >> Files.cmake
 echo '    )' >> Files.cmake
 echo 'ENDIF ()' >> Files.cmake
 
-echo 'libmsgpackc_la_SOURCES = \' > src/files.mk
-cat srcs.tmp | sed -e 's/^src\//\t/g' | sed -e 's/$/ \\/g' | sed '$ s/.$//' >> src/files.mk
-echo 'nobase_include_HEADERS = \' >> src/files.mk
-cat c_headers.tmp | sed -e 's/^/\t..\//g' | sed -e 's/$/ \\/g' | sed '$ s/.$//' >> src/files.mk
-echo 'if ENABLE_CXX' >> src/files.mk
-echo 'nobase_include_HEADERS += \' >> src/files.mk
-cat cpp_headers.tmp | sed -e 's/^/\t..\//g' | sed -e 's/$/ \\/g' | sed '$ s/.$//' >> src/files.mk
-echo 'endif' >> src/files.mk
-
 rm -f srcs.tmp c_headers.tmp cpp_headers.tmp
