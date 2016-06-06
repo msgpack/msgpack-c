@@ -45,7 +45,11 @@ struct proc:boost::static_visitor<void> {
                 // You can remove key-value pair from msgpack::type::variant_ref
 
 #if defined(MSGPACK_USE_CPP03)
+#  if MSGPACK_LIB_STD_CXX
+                v.erase(std::multimap<msgpack::type::variant_ref, msgpack::type::variant_ref>::const_iterator(it++));
+#  else  // MSGPACK_LIB_STD_CXX
                 v.erase(it++);
+#  endif // MSGPACK_LIB_STD_CXX
 #else  // defined(MSGPACK_USE_CPP03)
 #  if MSGPACK_LIB_STD_CXX
                 it = v.erase(std::multimap<msgpack::type::variant_ref, msgpack::type::variant_ref>::const_iterator(it));
