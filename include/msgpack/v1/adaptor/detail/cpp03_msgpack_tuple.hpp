@@ -12964,7 +12964,7 @@ struct object_with_zone<type::tuple<> > {
         msgpack::object::with_zone& o,
         const type::tuple<>&) const {
         o.type = msgpack::type::ARRAY;
-        o.via.array.ptr = nullptr;
+        o.via.array.ptr = MSGPACK_NULLPTR;
         o.via.array.size = 0;
     }
 };

@@ -38,7 +38,7 @@ struct define_array<> {
     void msgpack_object(msgpack::object* o, msgpack::zone&) const
     {
         o->type = msgpack::type::ARRAY;
-        o->via.array.ptr = nullptr;
+        o->via.array.ptr = MSGPACK_NULLPTR;
         o->via.array.size = 0;
     }
 };

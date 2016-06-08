@@ -82,7 +82,7 @@ struct object_with_zone<std::set<T, Compare, Alloc> > {
     void operator()(msgpack::object::with_zone& o, const std::set<T, Compare, Alloc>& v) const {
         o.type = msgpack::type::ARRAY;
         if (v.empty()) {
-            o.via.array.ptr = nullptr;
+            o.via.array.ptr = MSGPACK_NULLPTR;
             o.via.array.size = 0;
         }
         else {
@@ -159,7 +159,7 @@ struct object_with_zone<std::multiset<T, Compare, Alloc> > {
     void operator()(msgpack::object::with_zone& o, const std::multiset<T, Compare, Alloc>& v) const {
         o.type = msgpack::type::ARRAY;
         if (v.empty()) {
-            o.via.array.ptr = nullptr;
+            o.via.array.ptr = MSGPACK_NULLPTR;
             o.via.array.size = 0;
         } else {
             uint32_t size = checked_get_container_size(v.size());

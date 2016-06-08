@@ -26,7 +26,7 @@ public:
     sbuffer(size_t initsz = MSGPACK_SBUFFER_INIT_SIZE):m_size(0), m_alloc(initsz)
     {
         if(initsz == 0) {
-            m_data = nullptr;
+            m_data = MSGPACK_NULLPTR;
         } else {
             m_data = (char*)::malloc(initsz);
             if(!m_data) {
@@ -48,7 +48,7 @@ public:
         m_size(other.m_size), m_data(other.m_data), m_alloc(other.m_alloc)
     {
         other.m_size = other.m_alloc = 0;
-        other.m_data = nullptr;
+        other.m_data = MSGPACK_NULLPTR;
     }
 
     sbuffer& operator=(sbuffer&& other)
@@ -60,7 +60,7 @@ public:
         m_data = other.m_data;
 
         other.m_size = other.m_alloc = 0;
-        other.m_data = nullptr;
+        other.m_data = MSGPACK_NULLPTR;
 
         return *this;
     }
@@ -94,7 +94,7 @@ public:
     {
         char* tmp = m_data;
         m_size = 0;
-        m_data = nullptr;
+        m_data = MSGPACK_NULLPTR;
         m_alloc = 0;
         return tmp;
     }

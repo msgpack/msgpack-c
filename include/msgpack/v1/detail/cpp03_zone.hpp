@@ -27,7 +27,7 @@ class zone {
         void* m_data;
     };
     struct finalizer_array {
-        finalizer_array():m_tail(nullptr), m_end(nullptr), m_array(nullptr) {}
+        finalizer_array():m_tail(MSGPACK_NULLPTR), m_end(MSGPACK_NULLPTR), m_array(MSGPACK_NULLPTR) {}
         void call() {
             finalizer* fin = m_tail;
             for(; fin != m_array; --fin) (*(fin-1))();
@@ -93,7 +93,7 @@ class zone {
             m_head = c;
             m_free = chunk_size;
             m_ptr  = reinterpret_cast<char*>(c) + sizeof(chunk);
-            c->m_next = nullptr;
+            c->m_next = MSGPACK_NULLPTR;
         }
         ~chunk_list()
         {
@@ -117,7 +117,7 @@ class zone {
                     break;
                 }
             }
-            m_head->m_next = nullptr;
+            m_head->m_next = MSGPACK_NULLPTR;
             m_free = chunk_size;
             m_ptr  = reinterpret_cast<char*>(m_head) + sizeof(chunk);
         }

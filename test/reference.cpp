@@ -140,12 +140,12 @@ TEST(reference, unpack_int_sized_ref)
     msgpack::pack(sbuf, 1);
 
     bool referenced;
-    s_p = nullptr;
+    s_p = MSGPACK_NULLPTR;
 
     msgpack::object_handle oh =
         msgpack::unpack(sbuf.data(), sbuf.size(), referenced, never_called, &sbuf);
     EXPECT_FALSE(referenced);
-    EXPECT_EQ(nullptr, s_p);
+    EXPECT_EQ(MSGPACK_NULLPTR, s_p);
 }
 
 TEST(reference, unpack_string_sized_ref_4)
@@ -154,7 +154,7 @@ TEST(reference, unpack_string_sized_ref_4)
     msgpack::pack(sbuf, std::string("1234"));
 
     bool referenced;
-    s_p = nullptr;
+    s_p = MSGPACK_NULLPTR;
     // the last argument sbuf is any pointer as a user data.
     // That is stored to s_p in sized_reference
     msgpack::object_handle oh =
@@ -170,7 +170,7 @@ TEST(reference, unpack_string_sized_ref_5)
     msgpack::pack(sbuf, std::string("12345"));
 
     bool referenced;
-    s_p = nullptr;
+    s_p = MSGPACK_NULLPTR;
 
     msgpack::object_handle oh =
         msgpack::unpack(sbuf.data(), sbuf.size(), referenced, sized_reference, &sbuf);
@@ -188,7 +188,7 @@ TEST(reference, unpack_bin_sized_ref_5)
     packer.pack_bin_body(c, sizeof(c));
 
     bool referenced;
-    s_p = nullptr;
+    s_p = MSGPACK_NULLPTR;
 
     msgpack::object_handle oh =
         msgpack::unpack(sbuf.data(), sbuf.size(), referenced, sized_reference, &sbuf);
@@ -205,7 +205,7 @@ TEST(reference, unpack_bin_sized_ref_6)
     packer.pack_bin_body(c, sizeof(c));
 
     bool referenced;
-    s_p = nullptr;
+    s_p = MSGPACK_NULLPTR;
     msgpack::object_handle oh =
         msgpack::unpack(sbuf.data(), sbuf.size(), referenced, sized_reference, &sbuf);
     EXPECT_TRUE(referenced);
@@ -222,7 +222,7 @@ TEST(reference, unpack_ext_sized_ref_6)
     packer.pack_ext_body(buf, sizeof(buf));
 
     bool referenced;
-    s_p = nullptr;
+    s_p = MSGPACK_NULLPTR;
     msgpack::object_handle oh =
         msgpack::unpack(sbuf.data(), sbuf.size(), referenced, sized_reference, &sbuf);
     EXPECT_FALSE(referenced);
@@ -239,7 +239,7 @@ TEST(reference, unpack_ext_sized_ref_7)
     packer.pack_ext_body(buf, sizeof(buf));
 
     bool referenced;
-    s_p = nullptr;
+    s_p = MSGPACK_NULLPTR;
     msgpack::object_handle oh =
         msgpack::unpack(sbuf.data(), sbuf.size(), referenced, sized_reference, &sbuf);
     EXPECT_TRUE(referenced);
@@ -333,11 +333,11 @@ TEST(reference, unpacker_int_sized_ref)
     unp.reserve_buffer(sbuf.size());
     std::memcpy(unp.buffer(), sbuf.data(), sbuf.size());
     unp.buffer_consumed(sbuf.size());
-    s_p = nullptr;
+    s_p = MSGPACK_NULLPTR;
     bool b = unp.next(oh, referenced);
     EXPECT_TRUE(b);
     EXPECT_FALSE(referenced);
-    EXPECT_EQ(nullptr, s_p);
+    EXPECT_EQ(MSGPACK_NULLPTR, s_p);
 }
 
 TEST(reference, unpacker_string_sized_ref_4)
@@ -351,7 +351,7 @@ TEST(reference, unpacker_string_sized_ref_4)
     unp.reserve_buffer(sbuf.size());
     std::memcpy(unp.buffer(), sbuf.data(), sbuf.size());
     unp.buffer_consumed(sbuf.size());
-    s_p = nullptr;
+    s_p = MSGPACK_NULLPTR;
     bool b = unp.next(oh, referenced);
     EXPECT_TRUE(b);
     EXPECT_FALSE(referenced);
@@ -369,7 +369,7 @@ TEST(reference, unpacker_string_sized_ref_5)
     unp.reserve_buffer(sbuf.size());
     std::memcpy(unp.buffer(), sbuf.data(), sbuf.size());
     unp.buffer_consumed(sbuf.size());
-    s_p = nullptr;
+    s_p = MSGPACK_NULLPTR;
     bool b = unp.next(oh, referenced);
     EXPECT_TRUE(b);
     EXPECT_TRUE(referenced);
@@ -391,7 +391,7 @@ TEST(reference, unpacker_bin_sized_ref_5)
     unp.reserve_buffer(sbuf.size());
     std::memcpy(unp.buffer(), sbuf.data(), sbuf.size());
     unp.buffer_consumed(sbuf.size());
-    s_p = nullptr;
+    s_p = MSGPACK_NULLPTR;
     bool b = unp.next(oh, referenced);
     EXPECT_TRUE(b);
     EXPECT_FALSE(referenced);
@@ -412,7 +412,7 @@ TEST(reference, unpacker_bin_sized_ref_6)
     unp.reserve_buffer(sbuf.size());
     std::memcpy(unp.buffer(), sbuf.data(), sbuf.size());
     unp.buffer_consumed(sbuf.size());
-    s_p = nullptr;
+    s_p = MSGPACK_NULLPTR;
     bool b = unp.next(oh, referenced);
     EXPECT_TRUE(b);
     EXPECT_TRUE(referenced);
@@ -434,7 +434,7 @@ TEST(reference, unpacker_ext_sized_ref_6)
     unp.reserve_buffer(sbuf.size());
     std::memcpy(unp.buffer(), sbuf.data(), sbuf.size());
     unp.buffer_consumed(sbuf.size());
-    s_p = nullptr;
+    s_p = MSGPACK_NULLPTR;
     bool b = unp.next(oh, referenced);
     EXPECT_TRUE(b);
     EXPECT_FALSE(referenced);
@@ -456,7 +456,7 @@ TEST(reference, unpacker_ext_sized_ref_7)
     unp.reserve_buffer(sbuf.size());
     std::memcpy(unp.buffer(), sbuf.data(), sbuf.size());
     unp.buffer_consumed(sbuf.size());
-    s_p = nullptr;
+    s_p = MSGPACK_NULLPTR;
     bool b = unp.next(oh, referenced);
     EXPECT_TRUE(b);
     EXPECT_TRUE(referenced);

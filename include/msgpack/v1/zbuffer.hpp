@@ -25,7 +25,7 @@ class zbuffer {
 public:
     zbuffer(int level = Z_DEFAULT_COMPRESSION,
             size_t init_size = MSGPACK_ZBUFFER_INIT_SIZE)
-        : m_data(nullptr), m_init_size(init_size)
+        : m_data(MSGPACK_NULLPTR), m_init_size(init_size)
     {
         m_stream.zalloc = Z_NULL;
         m_stream.zfree = Z_NULL;
@@ -111,8 +111,8 @@ public:
     char* release_buffer()
     {
         char* tmp = m_data;
-        m_data = nullptr;
-        m_stream.next_out = nullptr;
+        m_data = MSGPACK_NULLPTR;
+        m_stream.next_out = MSGPACK_NULLPTR;
         m_stream.avail_out = 0;
         return tmp;
     }
@@ -125,7 +125,7 @@ private:
         size_t nsize = (csize == 0) ? m_init_size : csize * 2;
 
         char* tmp = static_cast<char*>(::realloc(m_data, nsize));
-        if(tmp == nullptr) {
+        if(tmp == MSGPACK_NULLPTR) {
             return false;
         }
 

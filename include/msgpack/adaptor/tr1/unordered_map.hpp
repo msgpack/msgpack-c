@@ -80,7 +80,7 @@ struct object_with_zone<MSGPACK_STD_TR1::unordered_map<K, V, Hash, Pred, Alloc> 
     void operator()(msgpack::object::with_zone& o, const MSGPACK_STD_TR1::unordered_map<K, V, Hash, Pred, Alloc>& v) const {
         o.type = msgpack::type::MAP;
         if(v.empty()) {
-            o.via.map.ptr  = nullptr;
+            o.via.map.ptr  = MSGPACK_NULLPTR;
             o.via.map.size = 0;
         } else {
             uint32_t size = checked_get_container_size(v.size());
@@ -137,7 +137,7 @@ struct object_with_zone<MSGPACK_STD_TR1::unordered_multimap<K, V, Hash, Pred, Al
     void operator()(msgpack::object::with_zone& o, const MSGPACK_STD_TR1::unordered_multimap<K, V, Hash, Pred, Alloc>& v) const {
         o.type = msgpack::type::MAP;
         if(v.empty()) {
-            o.via.map.ptr  = nullptr;
+            o.via.map.ptr  = MSGPACK_NULLPTR;
             o.via.map.size = 0;
         } else {
             uint32_t size = checked_get_container_size(v.size());

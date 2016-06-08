@@ -133,8 +133,8 @@ namespace detail {
 
 class unpack_user {
 public:
-    unpack_user(unpack_reference_func f = nullptr,
-                void* user_data = nullptr,
+    unpack_user(unpack_reference_func f = MSGPACK_NULLPTR,
+                void* user_data = MSGPACK_NULLPTR,
                 unpack_limit const& limit = unpack_limit())
         :m_func(f), m_user_data(user_data), m_limit(limit) {}
     msgpack::zone const& zone() const { return *m_zone; }
@@ -538,7 +538,7 @@ inline int context::execute(const char* data, std::size_t len, std::size_t& off)
     m_start = data;
     m_current = data + off;
     const char* const pe = data + len;
-    const char* n = nullptr;
+    const char* n = MSGPACK_NULLPTR;
 
     msgpack::object obj;
 
@@ -938,7 +938,7 @@ public:
      *
      */
     unpacker(unpack_reference_func f = &unpacker::default_reference_func,
-             void* user_data = nullptr,
+             void* user_data = MSGPACK_NULLPTR,
              std::size_t initial_buffer_size = MSGPACK_UNPACKER_INIT_BUFFER_SIZE,
              unpack_limit const& limit = unpack_limit());
 
@@ -1168,7 +1168,7 @@ inline unpacker::unpacker(unpacker&& other)
      m_z(std::move(other.m_z)),
      m_initial_buffer_size(other.m_initial_buffer_size),
      m_ctx(other.m_ctx) {
-    other.m_buffer = nullptr;
+    other.m_buffer = MSGPACK_NULLPTR;
 }
 
 inline unpacker& unpacker::operator=(unpacker&& other) {
@@ -1345,7 +1345,7 @@ inline msgpack::object const& unpacker::data()
 inline msgpack::zone* unpacker::release_zone()
 {
     if(!flush_zone()) {
-        return nullptr;
+        return MSGPACK_NULLPTR;
     }
 
     msgpack::zone* r =  new msgpack::zone;
@@ -1419,7 +1419,7 @@ namespace detail {
 inline unpack_return
 unpack_imp(const char* data, std::size_t len, std::size_t& off,
            msgpack::zone& result_zone, msgpack::object& result, bool& referenced,
-           unpack_reference_func f = nullptr, void* user_data = nullptr,
+           unpack_reference_func f = MSGPACK_NULLPTR, void* user_data = MSGPACK_NULLPTR,
            unpack_limit const& limit = unpack_limit())
 {
     std::size_t noff = off;

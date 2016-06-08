@@ -38,7 +38,7 @@ struct define_map<> {
     void msgpack_object(msgpack::object* o, msgpack::zone&) const
     {
         o->type = msgpack::type::MAP;
-        o->via.map.ptr = nullptr;
+        o->via.map.ptr = MSGPACK_NULLPTR;
         o->via.map.size = 0;
     }
 };

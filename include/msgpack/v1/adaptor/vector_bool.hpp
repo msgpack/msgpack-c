@@ -61,7 +61,7 @@ struct object_with_zone<std::vector<bool, Alloc> > {
     void operator()(msgpack::object::with_zone& o, const std::vector<bool, Alloc>& v) const {
         o.type = msgpack::type::ARRAY;
         if(v.empty()) {
-            o.via.array.ptr = nullptr;
+            o.via.array.ptr = MSGPACK_NULLPTR;
             o.via.array.size = 0;
         } else {
             uint32_t size = checked_get_container_size(v.size());
