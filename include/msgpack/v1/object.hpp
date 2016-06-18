@@ -179,7 +179,7 @@ inline std::size_t aligned_zone_size(msgpack::object const& obj) {
  */
 inline object_handle clone(msgpack::object const& obj) {
     std::size_t size = msgpack::aligned_zone_size(obj);
-    msgpack::unique_ptr<msgpack::zone> z(size == 0 ? nullptr : new msgpack::zone(size));
+    msgpack::unique_ptr<msgpack::zone> z(size == 0 ? MSGPACK_NULLPTR : new msgpack::zone(size));
     msgpack::object newobj = z.get() ? msgpack::object(obj, *z) : obj;
     return object_handle(newobj, msgpack::move(z));
 }

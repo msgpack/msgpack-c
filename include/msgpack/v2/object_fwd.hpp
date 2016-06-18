@@ -94,7 +94,7 @@ private:
     template <typename>
     static std::false_type check(...);
 public:
-    using type = decltype(check<T>(nullptr));
+    using type = decltype(check<T>(MSGPACK_NULLPTR));
     static constexpr bool value = type::value;
 };
 

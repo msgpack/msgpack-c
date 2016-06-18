@@ -26,7 +26,7 @@ namespace type {
 
 template <typename T>
 struct array_ref {
-    array_ref() : data(nullptr) {}
+    array_ref() : data(MSGPACK_NULLPTR) {}
     array_ref(T& t) : data(&t) {}
 
     T* data;
@@ -67,7 +67,7 @@ struct array_ref {
 
 template <typename T, std::size_t N>
 struct array_ref<T[N]> {
-    array_ref() : data(nullptr) {}
+    array_ref() : data(MSGPACK_NULLPTR) {}
     array_ref(T(&t)[N]) : data(t) {}
 
     T* data;
@@ -248,7 +248,7 @@ struct object_with_zone<msgpack::type::array_ref<T> > {
         if (!v.data) { throw msgpack::type_error(); }
         o.type = msgpack::type::ARRAY;
         if (v.data->empty()) {
-            o.via.array.ptr = nullptr;
+            o.via.array.ptr = MSGPACK_NULLPTR;
             o.via.array.size = 0;
         }
         else {

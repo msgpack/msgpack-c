@@ -77,7 +77,7 @@ struct object_with_zone<std::unordered_map<K, V, Hash, Compare, Alloc>> {
     void operator()(msgpack::object::with_zone& o, const std::unordered_map<K, V, Hash, Compare, Alloc>& v) const {
         o.type = msgpack::type::MAP;
         if(v.empty()) {
-            o.via.map.ptr  = nullptr;
+            o.via.map.ptr  = MSGPACK_NULLPTR;
             o.via.map.size = 0;
         } else {
             uint32_t size = checked_get_container_size(v.size());
@@ -151,7 +151,7 @@ struct object_with_zone<std::unordered_multimap<K, V, Hash, Compare, Alloc>> {
     void operator()(msgpack::object::with_zone& o, const std::unordered_multimap<K, V, Hash, Compare, Alloc>& v) const {
         o.type = msgpack::type::MAP;
         if(v.empty()) {
-            o.via.map.ptr  = nullptr;
+            o.via.map.ptr  = MSGPACK_NULLPTR;
             o.via.map.size = 0;
         } else {
             uint32_t size = checked_get_container_size(v.size());

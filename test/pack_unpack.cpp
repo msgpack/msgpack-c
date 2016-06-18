@@ -170,7 +170,7 @@ TEST(unpack, int_pointer_off_no_ref_explicit)
     std::size_t off = 0;
 
     // obsolete
-    msgpack::unpack(&oh, sbuf.data(), sbuf.size(), &off, nullptr);
+    msgpack::unpack(&oh, sbuf.data(), sbuf.size(), &off, MSGPACK_NULLPTR);
     EXPECT_EQ(1, oh.get().as<int>());
     EXPECT_EQ(off, sbuf.size());
 }
@@ -183,7 +183,7 @@ TEST(unpack, int_pointer_no_off_ref)
     bool referenced;
 
     // obsolete
-    msgpack::unpack(&oh, sbuf.data(), sbuf.size(), nullptr, &referenced);
+    msgpack::unpack(&oh, sbuf.data(), sbuf.size(), MSGPACK_NULLPTR, &referenced);
     EXPECT_EQ(1, oh.get().as<int>());
     EXPECT_EQ(false, referenced);
 }

@@ -97,7 +97,7 @@ public:
          m_stack(std::move(other.m_stack)),
          m_zone(other.m_zone),
          m_referenced(other.m_referenced) {
-        other.m_zone = nullptr;
+        other.m_zone = MSGPACK_NULLPTR;
         m_stack[0] = &m_obj;
     }
     create_object_visitor& operator=(create_object_visitor&& other) {
@@ -212,7 +212,7 @@ public:
         obj->type = msgpack::type::ARRAY;
         obj->via.array.size = num_elements;
         if (num_elements == 0) {
-            obj->via.array.ptr = nullptr;
+            obj->via.array.ptr = MSGPACK_NULLPTR;
         }
         else {
             obj->via.array.ptr =
@@ -239,7 +239,7 @@ public:
         obj->type = msgpack::type::MAP;
         obj->via.map.size = num_kv_pairs;
         if (num_kv_pairs == 0) {
-            obj->via.map.ptr = nullptr;
+            obj->via.map.ptr = MSGPACK_NULLPTR;
         }
         else {
             obj->via.map.ptr =
@@ -478,7 +478,7 @@ inline unpack_return context<VisitorHolder>::execute(const char* data, std::size
     m_start = data;
     m_current = data + off;
     const char* const pe = data + len;
-    const char* n = nullptr;
+    const char* n = MSGPACK_NULLPTR;
 
     msgpack::object obj;
 
@@ -1065,7 +1065,7 @@ inline parser<VisitorHolder, ReferencedBufferHook>::parser(this_type&& other)
      m_parsed(other.m_parsed),
      m_initial_buffer_size(other.m_initial_buffer_size),
      m_referenced_buffer_hook(other.m_referenced_buffer_hook) {
-    other.m_buffer = nullptr;
+    other.m_buffer = MSGPACK_NULLPTR;
     other.m_used = 0;
     other.m_free = 0;
     other.m_off = 0;
@@ -1265,7 +1265,7 @@ class unpacker : public parser<unpacker, zone_push_finalizer>,
     typedef parser<unpacker, zone_push_finalizer> parser;
 public:
     unpacker(unpack_reference_func f = &unpacker::default_reference_func,
-             void* user_data = nullptr,
+             void* user_data = MSGPACK_NULLPTR,
              std::size_t initial_buffer_size = MSGPACK_UNPACKER_INIT_BUFFER_SIZE,
              unpack_limit const& limit = unpack_limit())
         :parser(m_finalizer, initial_buffer_size),
@@ -1340,7 +1340,7 @@ inline bool unpacker::next(msgpack::object_handle& result) {
 inline msgpack::zone* unpacker::release_zone()
 {
     if(!flush_zone()) {
-        return nullptr;
+        return MSGPACK_NULLPTR;
     }
 
     msgpack::zone* r =  new msgpack::zone;
@@ -1599,7 +1599,7 @@ parse_imp(const char* data, size_t len, size_t& off, Visitor& v) {
 inline unpack_return
 unpack_imp(const char* data, std::size_t len, std::size_t& off,
            msgpack::zone& result_zone, msgpack::object& result, bool& referenced,
-           unpack_reference_func f = nullptr, void* user_data = nullptr,
+           unpack_reference_func f = MSGPACK_NULLPTR, void* user_data = MSGPACK_NULLPTR,
            unpack_limit const& limit = unpack_limit())
 {
     create_object_visitor v(f, user_data, limit);

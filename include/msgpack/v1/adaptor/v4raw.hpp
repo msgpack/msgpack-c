@@ -23,7 +23,7 @@ MSGPACK_API_VERSION_NAMESPACE(v1) {
 namespace type {
 
 struct v4raw_ref {
-    v4raw_ref() : size(0), ptr(nullptr) {}
+    v4raw_ref() : size(0), ptr(MSGPACK_NULLPTR) {}
     v4raw_ref(const char* p, uint32_t s) : size(s), ptr(p) {}
 
     uint32_t size;

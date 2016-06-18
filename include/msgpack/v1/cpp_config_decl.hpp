@@ -25,11 +25,15 @@
 
 #if defined(MSGPACK_USE_CPP03)
 
-#if !defined(nullptr)
-#  if _MSC_VER < 1600
-#    define nullptr (0)
-#  endif
-#endif
+#if defined(nullptr)
+#  if defined (__cplusplus_cli)
+#    define MSGPACK_NULLPTR __nullptr
+#  else  // defined (__cplusplus_cli)
+#    define MSGPACK_NULLPTR nullptr
+#  endif // defined (__cplusplus_cli)
+#else  // defined(nullptr)
+#  define MSGPACK_NULLPTR (0)
+#endif // defined(nullptr)
 
 #include <memory>
 
@@ -84,6 +88,12 @@ struct is_pointer;
 
 
 #else  // MSGPACK_USE_CPP03
+
+#if defined (__cplusplus_cli)
+#  define MSGPACK_NULLPTR __nullptr
+#else  // defined (__cplusplus_cli)
+#  define MSGPACK_NULLPTR nullptr
+#endif // defined (__cplusplus_cli)
 
 #include <memory>
 #include <tuple>

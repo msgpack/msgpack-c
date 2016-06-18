@@ -28,7 +28,7 @@ namespace adaptor {
 template <typename T>
 struct as<std::unique_ptr<T>, typename std::enable_if<msgpack::has_as<T>::value>::type> {
     std::unique_ptr<T> operator()(msgpack::object const& o) const {
-        if(o.is_nil()) return nullptr;
+        if(o.is_nil()) return MSGPACK_NULLPTR;
         return std::unique_ptr<T>(new T(o.as<T>()));
     }
 };

@@ -104,7 +104,7 @@ struct object_with_zone<type::assoc_vector<K, V, Compare, Alloc> > {
     void operator()(msgpack::object::with_zone& o, const type::assoc_vector<K, V, Compare, Alloc>& v) const {
         o.type = msgpack::type::MAP;
         if (v.empty()) {
-            o.via.map.ptr  = nullptr;
+            o.via.map.ptr  = MSGPACK_NULLPTR;
             o.via.map.size = 0;
         }
         else {
@@ -189,7 +189,7 @@ struct object_with_zone<std::map<K, V, Compare, Alloc> > {
     void operator()(msgpack::object::with_zone& o, const std::map<K, V, Compare, Alloc>& v) const {
         o.type = msgpack::type::MAP;
         if (v.empty()) {
-            o.via.map.ptr  = nullptr;
+            o.via.map.ptr  = MSGPACK_NULLPTR;
             o.via.map.size = 0;
         }
         else {
@@ -283,7 +283,7 @@ struct object_with_zone<std::multimap<K, V, Compare, Alloc> > {
     void operator()(msgpack::object::with_zone& o, const std::multimap<K, V, Compare, Alloc>& v) const {
         o.type = msgpack::type::MAP;
         if (v.empty()) {
-            o.via.map.ptr  = nullptr;
+            o.via.map.ptr  = MSGPACK_NULLPTR;
             o.via.map.size = 0;
         }
         else {
