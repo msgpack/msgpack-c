@@ -71,7 +71,11 @@ void unpack(receiver* r) {
     while (true) {
         recv_len = receiver_to_unpacker(r, EACH_RECV_SIZE, unp);
         if (recv_len == 0) break; // (reached end of input)
+#if defined(_MSC_VER) || defined(__MINGW32__)
+        printf("receive count: %d %Id bytes received.\n", recv_count++, recv_len);
+#else // defined(_MSC_VER) || defined(__MINGW32__)
         printf("receive count: %d %zd bytes received.\n", recv_count++, recv_len);
+#endif // defined(_MSC_VER) || defined(__MINGW32__)
         ret = msgpack_unpacker_next(unp, &result);
         while (ret == MSGPACK_UNPACK_SUCCESS) {
             msgpack_object obj = result.data;

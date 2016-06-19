@@ -6,11 +6,11 @@
 
 #include <gtest/gtest.h>
 
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) || defined(__MINGW32__)
 #define msgpack_rand() ((double)rand() / RAND_MAX)
-#else  // _MSC_VER
+#else  // _MSC_VER || __MINGW32__
 #define msgpack_rand() drand48()
-#endif // _MSC_VER
+#endif // _MSC_VER || __MINGW32__
 
 using namespace std;
 
