@@ -200,6 +200,8 @@ IF (MSGPACK_ENABLE_CXX)
         include/msgpack/adaptor/raw.hpp
         include/msgpack/adaptor/raw_decl.hpp
         include/msgpack/adaptor/set.hpp
+        include/msgpack/adaptor/size_equal_only.hpp
+        include/msgpack/adaptor/size_equal_only_decl.hpp
         include/msgpack/adaptor/string.hpp
         include/msgpack/adaptor/tr1/unordered_map.hpp
         include/msgpack/adaptor/tr1/unordered_set.hpp
@@ -555,6 +557,8 @@ IF (MSGPACK_ENABLE_CXX)
         include/msgpack/v1/adaptor/raw.hpp
         include/msgpack/v1/adaptor/raw_decl.hpp
         include/msgpack/v1/adaptor/set.hpp
+        include/msgpack/v1/adaptor/size_equal_only.hpp
+        include/msgpack/v1/adaptor/size_equal_only_decl.hpp
         include/msgpack/v1/adaptor/string.hpp
         include/msgpack/v1/adaptor/tr1/unordered_map.hpp
         include/msgpack/v1/adaptor/tr1/unordered_set.hpp
@@ -614,6 +618,7 @@ IF (MSGPACK_ENABLE_CXX)
         include/msgpack/v2/adaptor/msgpack_tuple_decl.hpp
         include/msgpack/v2/adaptor/nil_decl.hpp
         include/msgpack/v2/adaptor/raw_decl.hpp
+        include/msgpack/v2/adaptor/size_equal_only_decl.hpp
         include/msgpack/v2/adaptor/v4raw_decl.hpp
         include/msgpack/v2/cpp_config_decl.hpp
         include/msgpack/v2/detail/cpp03_zone_decl.hpp

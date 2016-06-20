@@ -75,7 +75,7 @@ template <typename T, std::size_t N>
 struct as<std::array<T, N>, typename std::enable_if<msgpack::has_as<T>::value>::type> {
     std::array<T, N> operator()(msgpack::object const& o) const {
         if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-        if(o.via.array.size != N) { throw msgpack::type_error(); }
+        if(o.via.array.size > N) { throw msgpack::type_error(); }
         return detail::array::as_impl<T, N>::as(o);
     }
 };
@@ -84,7 +84,7 @@ template <typename T, std::size_t N>
 struct convert<std::array<T, N>> {
     msgpack::object const& operator()(msgpack::object const& o, std::array<T, N>& v) const {
         if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-        if(o.via.array.size != N) { throw msgpack::type_error(); }
+        if(o.via.array.size > N) { throw msgpack::type_error(); }
         if(o.via.array.size > 0) {
             msgpack::object* p = o.via.array.ptr;
             msgpack::object* const pend = o.via.array.ptr + o.via.array.size;

@@ -93,7 +93,8 @@ struct StdTupleConverter {
         msgpack::object const& o,
         Tuple& v) {
         StdTupleConverter<Tuple, N-1>::convert(o, v);
-        o.via.array.ptr[N-1].convert<typename std::remove_reference<decltype(std::get<N-1>(v))>::type>(std::get<N-1>(v));
+        if (o.via.array.size >= N)
+            o.via.array.ptr[N-1].convert<typename std::remove_reference<decltype(std::get<N-1>(v))>::type>(std::get<N-1>(v));
     }
 };
 
@@ -112,7 +113,7 @@ struct as<std::tuple<Args...>, typename std::enable_if<msgpack::all_of<msgpack::
     std::tuple<Args...> operator()(
         msgpack::object const& o) const {
         if (o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-        if (o.via.array.size < sizeof...(Args)) { throw msgpack::type_error(); }
+        if(o.via.array.size > sizeof...(Args)) { throw msgpack::type_error(); }
         return StdTupleAs<Args...>::as(o);
     }
 };
@@ -123,7 +124,7 @@ struct convert<std::tuple<Args...>> {
         msgpack::object const& o,
         std::tuple<Args...>& v) const {
         if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-        if(o.via.array.size < sizeof...(Args)) { throw msgpack::type_error(); }
+        if(o.via.array.size > sizeof...(Args)) { throw msgpack::type_error(); }
         StdTupleConverter<decltype(v), sizeof...(Args)>::convert(o, v);
         return o;
     }

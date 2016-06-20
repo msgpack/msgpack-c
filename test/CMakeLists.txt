@@ -30,6 +30,7 @@ LIST (APPEND check_PROGRAMS
     pack_unpack_c.cpp
     raw.cpp
     reference.cpp
+    size_equal_only.cpp
     streaming.cpp
     streaming_c.cpp
     user_class.cpp

@@ -89,6 +89,38 @@ TEST(MSGPACK_CPP11, simple_array_empty)
     EXPECT_TRUE(equal(val1.begin(), val1.end(), val2.begin()));
 }
 
+TEST(MSGPACK_CPP11, simple_array_size_less_than)
+{
+    array<int, 2> val1 { 1 , 2 };
+    msgpack::sbuffer sbuf;
+    msgpack::pack(sbuf, val1);
+    msgpack::object_handle oh =
+        msgpack::unpack(sbuf.data(), sbuf.size());
+    EXPECT_EQ(oh.get().type, msgpack::type::ARRAY);
+    array<int, 1> val2;
+    try {
+        oh.get().convert(val2);
+        EXPECT_TRUE(false);
+    }
+    catch (msgpack::type_error const&) {
+        EXPECT_TRUE(true);
+    }
+}
+
+TEST(MSGPACK_CPP11, simple_array_size_greater_than)
+{
+    array<int, 2> val1 { 1 , 2 };
+    msgpack::sbuffer sbuf;
+    msgpack::pack(sbuf, val1);
+    msgpack::object_handle oh =
+        msgpack::unpack(sbuf.data(), sbuf.size());
+    EXPECT_EQ(oh.get().type, msgpack::type::ARRAY);
+    array<int, 3> val2;
+    oh.get().convert(val2);
+    EXPECT_EQ(val1[0], val2[0]);
+    EXPECT_EQ(val1[1], val2[1]);
+}
+
 TEST(MSGPACK_CPP11, simple_buffer_array_char)
 {
     for (unsigned int k = 0; k < kLoop; k++) {
