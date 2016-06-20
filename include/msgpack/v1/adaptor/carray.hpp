@@ -48,9 +48,9 @@ struct convert<char[N]> {
             std::memcpy(v, o.via.bin.ptr, o.via.bin.size);
             break;
         case msgpack::type::STR:
-            if (o.via.str.size + 1 > N) { throw msgpack::type_error(); }
+            if (o.via.str.size > N) { throw msgpack::type_error(); }
             std::memcpy(v, o.via.str.ptr, o.via.str.size);
-            v[o.via.str.size] = '\0';
+            if (o.via.str.size < N) v[o.via.str.size] = '\0';
             break;
         default:
             throw msgpack::type_error();
@@ -69,9 +69,9 @@ struct convert<unsigned char[N]> {
             std::memcpy(v, o.via.bin.ptr, o.via.bin.size);
             break;
         case msgpack::type::STR:
-            if (o.via.str.size + 1 > N) { throw msgpack::type_error(); }
+            if (o.via.str.size > N) { throw msgpack::type_error(); }
             std::memcpy(v, o.via.str.ptr, o.via.str.size);
-            v[o.via.str.size] = '\0';
+            if (o.via.str.size < N) v[o.via.str.size] = '\0';
             break;
         default:
             throw msgpack::type_error();
@@ -86,7 +86,8 @@ template <typename T, std::size_t N>
 struct pack<T[N]> {
     template <typename Stream>
     msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const T(&v)[N]) const {
-        o.pack_array(N);
+        uint32_t size = checked_get_container_size(N);
+        o.pack_array(size);
         const T* ptr = v;
         for (; ptr != &v[N]; ++ptr) o.pack(*ptr);
         return o;
@@ -98,9 +99,11 @@ struct pack<char[N]> {
     template <typename Stream>
     msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const char(&v)[N]) const {
         char const* p = v;
-        uint32_t size = checked_get_container_size(std::strlen(p));
-        o.pack_str(size);
-        o.pack_str_body(p, size);
+        uint32_t size = checked_get_container_size(N);
+        char const* p2 = static_cast<char const*>(std::memchr(p, '\0', size));
+        uint32_t adjusted_size = p2 ? p2 - p : size;
+        o.pack_str(adjusted_size);
+        o.pack_str_body(p, adjusted_size);
         return o;
     }
 };
@@ -109,9 +112,12 @@ template <std::size_t N>
 struct pack<const char[N]> {
     template <typename Stream>
     msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const char(&v)[N]) const {
-        uint32_t size = checked_get_container_size(std::strlen(v));
-        o.pack_str(size);
-        o.pack_str_body(v, size);
+        uint32_t size = checked_get_container_size(N);
+        char const* p = v;
+        char const* p2 = static_cast<char const*>(std::memchr(p, '\0', size));
+        uint32_t adjusted_size = p2 ? p2 - p : size;
+        o.pack_str(adjusted_size);
+        o.pack_str_body(p, adjusted_size);
         return o;
     }
 };
@@ -143,12 +149,13 @@ struct pack<const unsigned char[N]> {
 template <typename T, std::size_t N>
 struct object_with_zone<T[N]> {
     void operator()(msgpack::object::with_zone& o, const T(&v)[N]) const {
+        uint32_t size = checked_get_container_size(N);
         o.type = msgpack::type::ARRAY;
-        msgpack::object* ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object) * N));
+        msgpack::object* ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object) * size));
         o.via.array.ptr = ptr;
-        o.via.array.size = N;
+        o.via.array.size = size;
         const T* pv = v;
-        for (; pv != &v[N]; ++pv) {
+        for (; pv != &v[size]; ++pv) {
             *ptr++ = msgpack::object(*pv, o.zone);
         }
     }
@@ -157,24 +164,30 @@ struct object_with_zone<T[N]> {
 template <std::size_t N>
 struct object_with_zone<char[N]> {
     void operator()(msgpack::object::with_zone& o, const char(&v)[N]) const {
-        uint32_t size = checked_get_container_size(std::strlen(v));
+        char const* p = v;
+        uint32_t size = checked_get_container_size(N);
+        char const* p2 = static_cast<char const*>(std::memchr(p, '\0', size));
+        uint32_t adjusted_size = p2 ? p2 - p : size;
         o.type = msgpack::type::STR;
-        char* ptr = static_cast<char*>(o.zone.allocate_align(size));
+        char* ptr = static_cast<char*>(o.zone.allocate_align(adjusted_size));
         o.via.str.ptr = ptr;
-        o.via.str.size = size;
-        std::memcpy(ptr, v, size);
+        o.via.str.size = adjusted_size;
+        std::memcpy(ptr, p, adjusted_size);
     }
 };
 
 template <std::size_t N>
 struct object_with_zone<const char[N]> {
     void operator()(msgpack::object::with_zone& o, const char(&v)[N]) const {
-        uint32_t size = checked_get_container_size(std::strlen(v));
+        char const* p = v;
+        uint32_t size = checked_get_container_size(N);
+        char const* p2 = static_cast<char const*>(std::memchr(p, '\0', size));
+        uint32_t adjusted_size = p2 ? p2 - p : size;
         o.type = msgpack::type::STR;
-        char* ptr = static_cast<char*>(o.zone.allocate_align(size));
+        char* ptr = static_cast<char*>(o.zone.allocate_align(adjusted_size));
         o.via.str.ptr = ptr;
-        o.via.str.size = size;
-        std::memcpy(ptr, v, size);
+        o.via.str.size = adjusted_size;
+        std::memcpy(ptr, p, adjusted_size);
     }
 };
 
@@ -205,20 +218,26 @@ struct object_with_zone<const unsigned char[N]> {
 template <std::size_t N>
 struct object<char[N]> {
     void operator()(msgpack::object& o, const char(&v)[N]) const {
-        uint32_t size = checked_get_container_size(std::strlen(v));
+        char const* p = v;
+        uint32_t size = checked_get_container_size(N);
+        char const* p2 = static_cast<char const*>(std::memchr(p, '\0', size));
+        uint32_t adjusted_size = p2 ? p2 - p : size;
         o.type = msgpack::type::STR;
-        o.via.str.ptr = v;
-        o.via.str.size = size;
+        o.via.str.ptr = p;
+        o.via.str.size = adjusted_size;
     }
 };
 
 template <std::size_t N>
 struct object<const char[N]> {
     void operator()(msgpack::object& o, const char(&v)[N]) const {
-        uint32_t size = checked_get_container_size(std::strlen(v));
+        char const* p = v;
+        uint32_t size = checked_get_container_size(N);
+        char const* p2 = static_cast<char const*>(std::memchr(p, '\0', size));
+        uint32_t adjusted_size = p2 ? p2 - p : size;
         o.type = msgpack::type::STR;
-        o.via.str.ptr = v;
-        o.via.str.size = size;
+        o.via.str.ptr = p;
+        o.via.str.size = adjusted_size;
     }
 };
 
