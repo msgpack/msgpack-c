@@ -72,6 +72,8 @@ namespace type {
         template< std::size_t I>
         typename tuple_element<I, base >::type&&
         get() && { return std::get<I>(*this); }
+
+        std::size_t size() const { return sizeof...(Types); }
     };
 
     template <class... Args>

@@ -38,11 +38,6 @@ inline std::size_t size(std::tuple<T...> const&) {
     return sizeof...(T);
 }
 
-template <typename... T>
-inline std::size_t size(msgpack::type::tuple<T...> const&) {
-    return sizeof...(T);
-}
-
 #endif // !defined(MSGPACK_USE_CPP03)
 
 

@@ -39,9 +39,6 @@ std::size_t size(const T(&)[N]);
 template <typename... T>
 std::size_t size(std::tuple<T...> const&);
 
-template <typename... T>
-std::size_t size(msgpack::type::tuple<T...> const&);
-
 #endif // !defined(MSGPACK_USE_CPP03)
 
 } // namespace type

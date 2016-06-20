@@ -77,6 +77,61 @@ TEST(size_equal_only, vector)
     }
 }
 
+TEST(size_equal_only, msgpack_tuple)
+{
+    std::stringstream ss;
+    msgpack::type::tuple<int, bool, std::string> buf(1, false, "ABC");
+
+    msgpack::type::size_equal_only<msgpack::type::tuple<int, bool, std::string> > seo(buf);
+
+    msgpack::pack(ss, seo);
+    msgpack::object_handle oh = msgpack::unpack(ss.str().data(), ss.str().size());
+
+    msgpack::type::tuple<int, bool, std::string> ret_buf1;
+    oh.get().convert(ret_buf1);
+    EXPECT_EQ(buf.get<0>(), ret_buf1.get<0>());
+    EXPECT_EQ(buf.get<1>(), ret_buf1.get<1>());
+    EXPECT_EQ(buf.get<2>(), ret_buf1.get<2>());
+
+    msgpack::type::tuple<int, bool, std::string> ret_buf2;
+    msgpack::type::size_equal_only<msgpack::type::tuple<int, bool, std::string> > ret_seo2(ret_buf2);
+    oh.get().convert(ret_seo2);
+    EXPECT_EQ(buf.get<0>(), ret_buf2.get<0>());
+    EXPECT_EQ(buf.get<1>(), ret_buf2.get<1>());
+    EXPECT_EQ(buf.get<2>(), ret_buf2.get<2>());
+
+    msgpack::type::tuple<int, bool, std::string, int> ret_buf3;
+    oh.get().convert(ret_buf3);
+    EXPECT_EQ(buf.get<0>(), ret_buf3.get<0>());
+    EXPECT_EQ(buf.get<1>(), ret_buf3.get<1>());
+    EXPECT_EQ(buf.get<2>(), ret_buf3.get<2>());
+
+    msgpack::type::tuple<int, bool, std::string, int> ret_buf4;
+    msgpack::type::size_equal_only<msgpack::type::tuple<int, bool, std::string, int> > ret_seo4(ret_buf4);
+    try {
+        oh.get().convert(ret_seo4);
+        EXPECT_TRUE(false);
+    }
+    catch (msgpack::type_error const&) {
+        EXPECT_TRUE(true);
+    }
+
+    msgpack::type::tuple<int, bool, std::string> ret_buf5;
+    oh.get().convert(ret_buf5);
+    EXPECT_EQ(buf.get<0>(), ret_buf5.get<0>());
+    EXPECT_EQ(buf.get<1>(), ret_buf5.get<1>());
+
+    msgpack::type::tuple<int, bool, std::string, int> ret_buf6;
+    msgpack::type::size_equal_only<msgpack::type::tuple<int, bool, std::string, int> > ret_seo6(ret_buf6);
+    try {
+        oh.get().convert(ret_seo6);
+        EXPECT_TRUE(false);
+    }
+    catch (msgpack::type_error const&) {
+        EXPECT_TRUE(true);
+    }
+}
+
 #if !defined(MSGPACK_USE_CPP03)
 
 TEST(size_equal_only, tuple)
@@ -120,57 +175,6 @@ TEST(size_equal_only, tuple)
     EXPECT_EQ(std::get<1>(buf), std::get<1>(ret_buf5));
 
     std::tuple<int, bool, std::string, int> ret_buf6;
-    auto ret_seo6 = msgpack::type::make_size_equal_only(ret_buf6);
-    try {
-        oh.get().convert(ret_seo6);
-        EXPECT_TRUE(false);
-    }
-    catch (msgpack::type_error const&) {
-        EXPECT_TRUE(true);
-    }
-}
-
-TEST(size_equal_only, msgpack_tuple)
-{
-    std::stringstream ss;
-    msgpack::type::tuple<int, bool, std::string> buf(1, false, "ABC");
-
-    auto seo = msgpack::type::make_size_equal_only(buf);
-
-    msgpack::pack(ss, seo);
-    msgpack::object_handle oh = msgpack::unpack(ss.str().data(), ss.str().size());
-
-    msgpack::type::tuple<int, bool, std::string> ret_buf1;
-    oh.get().convert(ret_buf1);
-    EXPECT_EQ(buf, ret_buf1);
-
-    msgpack::type::tuple<int, bool, std::string> ret_buf2;
-    auto ret_seo2 = msgpack::type::make_size_equal_only(ret_buf2);
-    oh.get().convert(ret_seo2);
-    EXPECT_EQ(buf, ret_buf2);
-
-    msgpack::type::tuple<int, bool, std::string, int> ret_buf3;
-    oh.get().convert(ret_buf3);
-    EXPECT_EQ(std::get<0>(buf), std::get<0>(ret_buf3));
-    EXPECT_EQ(std::get<1>(buf), std::get<1>(ret_buf3));
-    EXPECT_EQ(std::get<2>(buf), std::get<2>(ret_buf3));
-
-    msgpack::type::tuple<int, bool, std::string, int> ret_buf4;
-    auto ret_seo4 = msgpack::type::make_size_equal_only(ret_buf4);
-    try {
-        oh.get().convert(ret_seo4);
-        EXPECT_TRUE(false);
-    }
-    catch (msgpack::type_error const&) {
-        EXPECT_TRUE(true);
-    }
-
-    msgpack::type::tuple<int, bool, std::string> ret_buf5;
-    oh.get().convert(ret_buf5);
-    EXPECT_EQ(std::get<0>(buf), std::get<0>(ret_buf5));
-    EXPECT_EQ(std::get<1>(buf), std::get<1>(ret_buf5));
-
-    msgpack::type::tuple<int, bool, std::string, int> ret_buf6;
     auto ret_seo6 = msgpack::type::make_size_equal_only(ret_buf6);
     try {
         oh.get().convert(ret_seo6);
