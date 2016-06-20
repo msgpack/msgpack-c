@@ -59,6 +59,58 @@ TEST(MSGPACK_CPP11, simple_tuple_empty)
     EXPECT_EQ(val1, val2);
 }
 
+TEST(MSGPACK_CPP11, simple_tuple_size_greater_than_as)
+{
+    msgpack::sbuffer sbuf;
+    std::tuple<bool, std::string, int> val1(true, "kzk", 42);
+    msgpack::pack(sbuf, val1);
+    msgpack::object_handle oh =
+        msgpack::unpack(sbuf.data(), sbuf.size());
+    std::tuple<bool, std::string, double, int> val2 = oh.get().as<std::tuple<bool, std::string, double, int> >();
+    EXPECT_EQ(std::get<0>(val1), std::get<0>(val2));
+    EXPECT_EQ(std::get<1>(val1), std::get<1>(val2));
+    EXPECT_EQ(std::get<2>(val1), std::get<2>(val2));
+}
+
+TEST(MSGPACK_CPP11, simple_tuple_size_greater_than_convert)
+{
+    msgpack::sbuffer sbuf;
+    std::tuple<bool, std::string, int> val1(true, "kzk", 42);
+    msgpack::pack(sbuf, val1);
+    msgpack::object_handle oh =
+        msgpack::unpack(sbuf.data(), sbuf.size());
+    std::tuple<bool, std::string, double, int> val2;
+    oh.get().convert(val2);
+    EXPECT_EQ(std::get<0>(val1), std::get<0>(val2));
+    EXPECT_EQ(std::get<1>(val1), std::get<1>(val2));
+    EXPECT_EQ(std::get<2>(val1), std::get<2>(val2));
+}
+
+TEST(MSGPACK_CPP11, simple_tuple_size_less_than_as)
+{
+    msgpack::sbuffer sbuf;
+    std::tuple<bool, std::string, int> val1(true, "kzk", 42);
+    msgpack::pack(sbuf, val1);
+    msgpack::object_handle oh =
+        msgpack::unpack(sbuf.data(), sbuf.size());
+    std::tuple<bool, std::string> val2 = oh.get().as<std::tuple<bool, std::string> >();
+    EXPECT_EQ(std::get<0>(val1), std::get<0>(val2));
+    EXPECT_EQ(std::get<1>(val1), std::get<1>(val2));
+}
+
+TEST(MSGPACK_CPP11, simple_tuple_size_less_than_convert)
+{
+    msgpack::sbuffer sbuf;
+    std::tuple<bool, std::string, int> val1(true, "kzk", 42);
+    msgpack::pack(sbuf, val1);
+    msgpack::object_handle oh =
+        msgpack::unpack(sbuf.data(), sbuf.size());
+    std::tuple<bool, std::string> val2;
+    oh.get().convert(val2);
+    EXPECT_EQ(std::get<0>(val1), std::get<0>(val2));
+    EXPECT_EQ(std::get<1>(val1), std::get<1>(val2));
+}
+
 TEST(MSGPACK_CPP11, simple_array)
 {
     for (unsigned int k = 0; k < kLoop; k++) {
