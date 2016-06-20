@@ -143,7 +143,7 @@ TEST(MSGPACK_CPP11, simple_array_empty)
 
 TEST(MSGPACK_CPP11, simple_array_size_less_than)
 {
-    array<int, 2> val1 { 1 , 2 };
+    array<int, 2> val1 { {1 , 2} };
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, val1);
     msgpack::object_handle oh =
@@ -161,7 +161,7 @@ TEST(MSGPACK_CPP11, simple_array_size_less_than)
 
 TEST(MSGPACK_CPP11, simple_array_size_greater_than)
 {
-    array<int, 2> val1 { 1 , 2 };
+    array<int, 2> val1 { {1 , 2} };
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, val1);
     msgpack::object_handle oh =
