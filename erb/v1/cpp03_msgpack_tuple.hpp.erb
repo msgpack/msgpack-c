@@ -83,6 +83,7 @@ struct tuple<> {
     tuple() {}
     tuple(msgpack::object const& o) { o.convert(*this); }
     typedef tuple<> value_type;
+    std::size_t size() const { return 0; }
 };
 
 /// @cond
@@ -90,6 +91,7 @@ struct tuple<> {
 template <typename A0<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
 struct tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> {
     typedef tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> value_type;
+    std::size_t size() const { return <%=i+1%>; }
     tuple() {}
     tuple(typename tuple_type<A0>::transparent_reference _a0<%1.upto(i) {|j|%>, typename tuple_type<A<%=j%>>::transparent_reference _a<%=j%><%}%>) :
         a0(_a0)<%1.upto(i) {|j|%>, a<%=j%>(_a<%=j%>)<%}%> {}
@@ -148,10 +150,10 @@ struct convert<type::tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> > {
         msgpack::object const& o,
         type::tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>>& v) const {
         if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-        if(o.via.array.size < <%=i+1%>) { throw msgpack::type_error(); }
         <%0.upto(i) {|j|%>
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[<%=j%>].msgpack::object::convert<typename type::tuple_type<A<%=j%>>::type>(v.template get<<%=j%>>());<%}%>
+        if(o.via.array.size > <%=j%>)
+            o.via.array.ptr[<%=j%>].msgpack::object::convert<typename type::tuple_type<A<%=j%>>::type>(v.template get<<%=j%>>());<%}%>
         return o;
     }
 };

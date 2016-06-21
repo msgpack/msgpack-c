@@ -15,6 +15,7 @@
 #include "adaptor/raw.hpp"
 #include "adaptor/v4raw.hpp"
 #include "adaptor/set.hpp"
+#include "adaptor/size_equal_only.hpp"
 #include "adaptor/string.hpp"
 #include "adaptor/vector.hpp"
 #include "adaptor/vector_bool.hpp"

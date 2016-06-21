@@ -1,3 +1,4 @@
+#include <iostream>
 #include <msgpack.hpp>
 
 #include <cmath>
@@ -469,6 +470,63 @@ TEST(MSGPACK_TUPLE, simple_tuple_empty)
     EXPECT_EQ(oh.get().via.array.size, 0u);
 }
 
+TEST(MSGPACK_TUPLE, simple_tuple_grater_than_as)
+{
+    msgpack::sbuffer sbuf;
+    msgpack::type::tuple<bool, std::string, int> val1(true, "kzk", 42);
+    msgpack::pack(sbuf, val1);
+    msgpack::object_handle oh =
+        msgpack::unpack(sbuf.data(), sbuf.size());
+    msgpack::type::tuple<bool, std::string, int, int> val2
+        = oh.get().as<msgpack::type::tuple<bool, std::string, int, int> >();
+    EXPECT_EQ(oh.get().via.array.size, 3u);
+    EXPECT_EQ(val1.get<0>(), val2.get<0>());
+    EXPECT_EQ(val1.get<1>(), val2.get<1>());
+    EXPECT_EQ(val1.get<2>(), val2.get<2>());
+}
+
+TEST(MSGPACK_TUPLE, simple_tuple_grater_than_convert)
+{
+    msgpack::sbuffer sbuf;
+    msgpack::type::tuple<bool, std::string, int> val1(true, "kzk", 42);
+    msgpack::pack(sbuf, val1);
+    msgpack::object_handle oh =
+        msgpack::unpack(sbuf.data(), sbuf.size());
+    msgpack::type::tuple<bool, std::string, int, int> val2;
+    oh.get().convert(val2);
+    EXPECT_EQ(oh.get().via.array.size, 3u);
+    EXPECT_EQ(val1.get<0>(), val2.get<0>());
+    EXPECT_EQ(val1.get<1>(), val2.get<1>());
+    EXPECT_EQ(val1.get<2>(), val2.get<2>());
+}
+
+TEST(MSGPACK_TUPLE, simple_tuple_less_than_as)
+{
+    msgpack::sbuffer sbuf;
+    msgpack::type::tuple<bool, std::string, int> val1(true, "kzk", 42);
+    msgpack::pack(sbuf, val1);
+    msgpack::object_handle oh =
+        msgpack::unpack(sbuf.data(), sbuf.size());
+    msgpack::type::tuple<bool, std::string> val2
+        = oh.get().as<msgpack::type::tuple<bool, std::string> >();
+    EXPECT_EQ(oh.get().via.array.size, 3u);
+    EXPECT_EQ(val1.get<0>(), val2.get<0>());
+    EXPECT_EQ(val1.get<1>(), val2.get<1>());
+}
+
+TEST(MSGPACK_TUPLE, simple_tuple_less_than_convert)
+{
+    msgpack::sbuffer sbuf;
+    msgpack::type::tuple<bool, std::string, int> val1(true, "kzk", 42);
+    msgpack::pack(sbuf, val1);
+    msgpack::object_handle oh =
+        msgpack::unpack(sbuf.data(), sbuf.size());
+    msgpack::type::tuple<bool, std::string> val2;
+    oh.get().convert(val2);
+    EXPECT_EQ(oh.get().via.array.size, 3u);
+    EXPECT_EQ(val1.get<0>(), val2.get<0>());
+    EXPECT_EQ(val1.get<1>(), val2.get<1>());
+}
 
 // TR1
 

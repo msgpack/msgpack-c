@@ -59,6 +59,58 @@ TEST(MSGPACK_CPP11, simple_tuple_empty)
     EXPECT_EQ(val1, val2);
 }
 
+TEST(MSGPACK_CPP11, simple_tuple_size_greater_than_as)
+{
+    msgpack::sbuffer sbuf;
+    std::tuple<bool, std::string, int> val1(true, "kzk", 42);
+    msgpack::pack(sbuf, val1);
+    msgpack::object_handle oh =
+        msgpack::unpack(sbuf.data(), sbuf.size());
+    std::tuple<bool, std::string, double, int> val2 = oh.get().as<std::tuple<bool, std::string, double, int> >();
+    EXPECT_EQ(std::get<0>(val1), std::get<0>(val2));
+    EXPECT_EQ(std::get<1>(val1), std::get<1>(val2));
+    EXPECT_EQ(std::get<2>(val1), std::get<2>(val2));
+}
+
+TEST(MSGPACK_CPP11, simple_tuple_size_greater_than_convert)
+{
+    msgpack::sbuffer sbuf;
+    std::tuple<bool, std::string, int> val1(true, "kzk", 42);
+    msgpack::pack(sbuf, val1);
+    msgpack::object_handle oh =
+        msgpack::unpack(sbuf.data(), sbuf.size());
+    std::tuple<bool, std::string, double, int> val2;
+    oh.get().convert(val2);
+    EXPECT_EQ(std::get<0>(val1), std::get<0>(val2));
+    EXPECT_EQ(std::get<1>(val1), std::get<1>(val2));
+    EXPECT_EQ(std::get<2>(val1), std::get<2>(val2));
+}
+
+TEST(MSGPACK_CPP11, simple_tuple_size_less_than_as)
+{
+    msgpack::sbuffer sbuf;
+    std::tuple<bool, std::string, int> val1(true, "kzk", 42);
+    msgpack::pack(sbuf, val1);
+    msgpack::object_handle oh =
+        msgpack::unpack(sbuf.data(), sbuf.size());
+    std::tuple<bool, std::string> val2 = oh.get().as<std::tuple<bool, std::string> >();
+    EXPECT_EQ(std::get<0>(val1), std::get<0>(val2));
+    EXPECT_EQ(std::get<1>(val1), std::get<1>(val2));
+}
+
+TEST(MSGPACK_CPP11, simple_tuple_size_less_than_convert)
+{
+    msgpack::sbuffer sbuf;
+    std::tuple<bool, std::string, int> val1(true, "kzk", 42);
+    msgpack::pack(sbuf, val1);
+    msgpack::object_handle oh =
+        msgpack::unpack(sbuf.data(), sbuf.size());
+    std::tuple<bool, std::string> val2;
+    oh.get().convert(val2);
+    EXPECT_EQ(std::get<0>(val1), std::get<0>(val2));
+    EXPECT_EQ(std::get<1>(val1), std::get<1>(val2));
+}
+
 TEST(MSGPACK_CPP11, simple_array)
 {
     for (unsigned int k = 0; k < kLoop; k++) {
@@ -87,6 +139,38 @@ TEST(MSGPACK_CPP11, simple_array_empty)
     array<int, 0> val2 = oh.get().as<array<int, 0> >();
     EXPECT_EQ(val1.size(), val2.size());
     EXPECT_TRUE(equal(val1.begin(), val1.end(), val2.begin()));
+}
+
+TEST(MSGPACK_CPP11, simple_array_size_less_than)
+{
+    array<int, 2> val1 { {1 , 2} };
+    msgpack::sbuffer sbuf;
+    msgpack::pack(sbuf, val1);
+    msgpack::object_handle oh =
+        msgpack::unpack(sbuf.data(), sbuf.size());
+    EXPECT_EQ(oh.get().type, msgpack::type::ARRAY);
+    array<int, 1> val2;
+    try {
+        oh.get().convert(val2);
+        EXPECT_TRUE(false);
+    }
+    catch (msgpack::type_error const&) {
+        EXPECT_TRUE(true);
+    }
+}
+
+TEST(MSGPACK_CPP11, simple_array_size_greater_than)
+{
+    array<int, 2> val1 { {1 , 2} };
+    msgpack::sbuffer sbuf;
+    msgpack::pack(sbuf, val1);
+    msgpack::object_handle oh =
+        msgpack::unpack(sbuf.data(), sbuf.size());
+    EXPECT_EQ(oh.get().type, msgpack::type::ARRAY);
+    array<int, 3> val2;
+    oh.get().convert(val2);
+    EXPECT_EQ(val1[0], val2[0]);
+    EXPECT_EQ(val1[1], val2[1]);
 }
 
 TEST(MSGPACK_CPP11, simple_buffer_array_char)
