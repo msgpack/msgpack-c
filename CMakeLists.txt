@@ -1,4 +1,7 @@
 CMAKE_MINIMUM_REQUIRED (VERSION 2.8.6)
+
+CMAKE_POLICY(SET CMP0054 NEW)
+
 PROJECT (msgpack)
 
 FILE (READ ${CMAKE_CURRENT_SOURCE_DIR}/include/msgpack/version_master.h contents)
