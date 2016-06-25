@@ -21,6 +21,7 @@ tar --append --file=$filename $prefix/erb
 tar --append --file=$filename $prefix/src
 
 tar --append --file=$filename $prefix/CMakeLists.txt
+tar --append --file=$filename $prefix/Files.cmake
 tar --append --file=$filename $prefix/NOTICE
 tar --append --file=$filename $prefix/Doxyfile
 tar --append --file=$filename $prefix/msgpack.pc.in
@@ -31,6 +32,8 @@ tar --append --file=$filename $prefix/ChangeLog
 tar --append --file=$filename $prefix/NEWS
 tar --append --file=$filename $prefix/COPYING
 tar --append --file=$filename $prefix/README
+tar --append --file=$filename $prefix/msgpack_vc8.sln
+tar --append --file=$filename $prefix/msgpack_vc8.vcproj
 
 rm -f $prefix
 

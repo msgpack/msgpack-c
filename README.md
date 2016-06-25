@@ -3,8 +3,6 @@
 
 Version 2.0.0 (under development)[![Build Status](https://travis-ci.org/msgpack/msgpack-c.svg?branch=master)](https://travis-ci.org/msgpack/msgpack-c) [![Build status](https://ci.appveyor.com/api/projects/status/8kstcgt79qj123mw/branch/master?svg=true)](https://ci.appveyor.com/project/redboltz/msgpack-c/branch/master)
 
-The newest release is version [1.4.1](https://github.com/msgpack/msgpack-c/releases/tag/cpp-1.4.1)
-
 It's like JSON but small and fast.
 
 Overview
