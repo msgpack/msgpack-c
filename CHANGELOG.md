@@ -1,3 +1,41 @@
+# 2016-06-25 version 2.0.0
+
+## << breaking changes >>
+
+  * Removed autotools support. Use cmake instead (#476, #479)
+  * Removed pointer version of msgpack::unpack APIs. Use reference version instead (#453)
+  * Removed MSGPACK_DISABLE_LEGACY_CONVERT. msgpack::object::convert(T*) is removed by default. Use msgpack::object::convert(T&) instead (#451)
+  * Removed msgpacl::type::nil. Use nil_t or define MSGPACK_USE_LECACY_NIL (#444)
+  * Removed std::string to msgpack::object conversion (#434)
+
+## << recommended changes >>
+
+  * Replaced msgpack::unpacked with msgpack::object_handle. msgpack::unpacked is kept as a typedef of msgpack::object_handle. (#448)
+
+## << other updates >>
+
+  * Add strict size checking adaptor. Relaxed tuple conversion (#489)
+  * Fix and Improve example codes (#487)
+  * Add C++/CLI support for nullptr (#481)
+  * Update the boost libraries that are contained by msgpack-c (#475)
+  * Fix gcc_atomic.hpp location (#474)
+  * Add C-Style array support (#466, #488)
+  * Fix include file dependency (#464)
+  * Add a visitor version of unpack API (#461)
+  * Fix JSON string conversion from "nil" to "null" (#458)
+  * Fix and Improve build system (#455, #471, #473, #486, #491)
+  * Fix comments (#452)
+  * Fix unintentional msgpack::zone moving problem (#447)
+  * Fix operator>> and << for msgpack::object (#443)
+  * Fix C++03 msgpack::zone::clear() memory access violation bug (#441)
+  * Fix TARGET_OS_IPHONE checking (#436)
+  * Fix invalid front() call for empty container (#435)
+  * Fix compile error on g++6 (C++11 only) (#426, #430)
+  * Fix zone size expansion logic (#423)
+  * Fix wrong hader file dependency (#421)
+  * Fix msvc specific problem (#420)
+  * Add v2 API support (#415)
+
 # 2016-01-22 version 1.4.0
 
 ## << recommended changes >>
