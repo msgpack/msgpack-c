@@ -9,6 +9,7 @@
  */
 #include "msgpack/object.h"
 #include "msgpack/pack.h"
+#include <ctype.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -112,6 +113,21 @@ int msgpack_pack_object(msgpack_packer* pk, msgpack_object d)
 }
 
 
+static void msgpack_object_bin_print(FILE* out, const char *ptr, size_t size)
+{
+    size_t i;
+    for (i = 0; i < size; i++) {
+        if (ptr[i] == '"') {
+            fputs("\\\"", out);
+        } else if (isprint(ptr[i])) {
+            fputc(ptr[i], out);
+        } else {
+            fprintf(out, "\\x%02x", (unsigned char)ptr[i]);
+        }
+    }
+}
+
+
 void msgpack_object_print(FILE* out, msgpack_object o)
 {
     switch(o.type) {
@@ -159,7 +175,7 @@ void msgpack_object_print(FILE* out, msgpack_object o)
 
     case MSGPACK_OBJECT_BIN:
         fprintf(out, "\"");
-        fwrite(o.via.bin.ptr, o.via.bin.size, 1, out);
+        msgpack_object_bin_print(out, o.via.bin.ptr, o.via.bin.size);
         fprintf(out, "\"");
         break;
 
@@ -170,7 +186,7 @@ void msgpack_object_print(FILE* out, msgpack_object o)
         fprintf(out, "(ext: %d)", (int)o.via.ext.type);
 #endif
         fprintf(out, "\"");
-        fwrite(o.via.ext.ptr, o.via.ext.size, 1, out);
+        msgpack_object_bin_print(out, o.via.ext.ptr, o.via.ext.size);
         fprintf(out, "\"");
         break;
 
