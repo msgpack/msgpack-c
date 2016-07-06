@@ -222,6 +222,205 @@ void msgpack_object_print(FILE* out, msgpack_object o)
     }
 }
 
+int msgpack_object_print_buffer(char *buffer, uint32_t buffer_size, msgpack_object o)
+{
+    char *aux_buffer = buffer;
+    uint32_t aux_buffer_size = buffer_size;
+    int ret;
+    switch(o.type) {
+    case MSGPACK_OBJECT_NIL:
+        ret = snprintf(aux_buffer, aux_buffer_size, "nil");
+        aux_buffer = aux_buffer + ret;
+        aux_buffer_size = aux_buffer_size - ret;
+        break;
+
+    case MSGPACK_OBJECT_BOOLEAN:
+        ret = snprintf(aux_buffer, aux_buffer_size, (o.via.boolean ? "true" : "false"));
+        aux_buffer = aux_buffer + ret;
+        aux_buffer_size = aux_buffer_size - ret;
+        break;
+
+    case MSGPACK_OBJECT_POSITIVE_INTEGER:
+#if defined(PRIu64)
+        ret = snprintf(aux_buffer, aux_buffer_size, "%" PRIu64, o.via.u64);
+        aux_buffer = aux_buffer + ret;
+        aux_buffer_size = aux_buffer_size - ret;
+#else
+        if (o.via.u64 > ULONG_MAX) {
+            ret = snprintf(aux_buffer, aux_buffer_size, "over 4294967295");
+            aux_buffer = aux_buffer + ret;
+            aux_buffer_size = aux_buffer_size - ret;
+        } else {
+            ret = snprintf(aux_buffer, aux_buffer_size, "%lu", (unsigned long)o.via.u64);
+            aux_buffer = aux_buffer + ret;
+            aux_buffer_size = aux_buffer_size - ret;
+        }
+#endif
+        break;
+
+    case MSGPACK_OBJECT_NEGATIVE_INTEGER:
+#if defined(PRIi64)
+        ret = snprintf(aux_buffer, aux_buffer_size, "%" PRIi64, o.via.i64);
+        aux_buffer = aux_buffer + ret;
+        aux_buffer_size = aux_buffer_size - ret;
+#else
+        if (o.via.i64 > LONG_MAX) {
+            ret = snprintf(aux_buffer, aux_buffer_size, "over +2147483647");
+            aux_buffer = aux_buffer + ret;
+            aux_buffer_size = aux_buffer_size - ret;
+        } else if (o.via.i64 < LONG_MIN) {
+            ret = snprintf(aux_buffer, aux_buffer_size, "under -2147483648");
+            aux_buffer = aux_buffer + ret;
+            aux_buffer_size = aux_buffer_size - ret;
+        } else {
+            ret = snprintf(aux_buffer, aux_buffer_size, "%ld", (signed long)o.via.i64);
+            aux_buffer = aux_buffer + ret;
+            aux_buffer_size = aux_buffer_size - ret;
+        }
+#endif
+        break;
+
+    case MSGPACK_OBJECT_FLOAT:
+        ret = snprintf(aux_buffer, aux_buffer_size, "%f", o.via.f64);
+        aux_buffer = aux_buffer + ret;
+        aux_buffer_size = aux_buffer_size - ret;
+        break;
+
+    case MSGPACK_OBJECT_STR:
+        ret = snprintf(aux_buffer, aux_buffer_size, "\"");
+        aux_buffer = aux_buffer + ret;
+        aux_buffer_size = aux_buffer_size - ret;
+        ret = snprintf(aux_buffer, aux_buffer_size, "%.*s", o.via.str.size, o.via.str.ptr);
+        aux_buffer = aux_buffer + ret;
+        aux_buffer_size = aux_buffer_size - ret;
+        ret = snprintf(aux_buffer, aux_buffer_size, "\"");
+        aux_buffer = aux_buffer + ret;
+        aux_buffer_size = aux_buffer_size - ret;
+        break;
+
+    case MSGPACK_OBJECT_BIN:
+        ret = snprintf(aux_buffer, aux_buffer_size, "\"");
+        aux_buffer = aux_buffer + ret;
+        aux_buffer_size = aux_buffer_size - ret;
+        if (o.via.bin.size < aux_buffer_size) {
+            memcpy(aux_buffer, o.via.bin.ptr, o.via.bin.size);
+            aux_buffer = aux_buffer + o.via.bin.size;
+            aux_buffer_size = aux_buffer_size - o.via.bin.size;
+        } else {
+            memcpy(aux_buffer, o.via.bin.ptr, aux_buffer_size);
+            aux_buffer_size = 0;
+	}
+        ret = snprintf(aux_buffer, aux_buffer_size, "\"");
+        aux_buffer = aux_buffer + ret;
+        aux_buffer_size = aux_buffer_size - ret;
+        break;
+
+    case MSGPACK_OBJECT_EXT:
+#if defined(PRIi8)
+        ret = snprintf(aux_buffer, aux_buffer_size, "(ext: %" PRIi8 ")", o.via.ext.type);
+        aux_buffer = aux_buffer + ret;
+        aux_buffer_size = aux_buffer_size - ret;
+#else
+        ret = snprintf(aux_buffer, aux_buffer_size, "(ext: %d)", (int)o.via.ext.type);
+        aux_buffer = aux_buffer + ret;
+        aux_buffer_size = aux_buffer_size - ret;
+#endif
+        ret = snprintf(aux_buffer, aux_buffer_size, "\"");
+        aux_buffer = aux_buffer + ret;
+        aux_buffer_size = aux_buffer_size - ret;
+        ret = snprintf(aux_buffer, aux_buffer_size, "%.*s", o.via.ext.size, o.via.ext.ptr);
+        aux_buffer = aux_buffer + ret;
+        aux_buffer_size = aux_buffer_size - ret;
+        ret = snprintf(aux_buffer, aux_buffer_size, "\"");
+        aux_buffer = aux_buffer + ret;
+        aux_buffer_size = aux_buffer_size - ret;
+        break;
+
+    case MSGPACK_OBJECT_ARRAY:
+        ret = snprintf(aux_buffer, aux_buffer_size, "[");
+        aux_buffer = aux_buffer + ret;
+        aux_buffer_size = aux_buffer_size - ret;
+        if(o.via.array.size != 0) {
+            msgpack_object* p = o.via.array.ptr;
+            msgpack_object* const pend = o.via.array.ptr + o.via.array.size;
+            ret = msgpack_object_print_buffer(aux_buffer, aux_buffer_size, *p);
+            aux_buffer = aux_buffer + ret;
+            aux_buffer_size = aux_buffer_size - ret;
+            ++p;
+            for(; p < pend; ++p) {
+                ret = snprintf(aux_buffer, aux_buffer_size, ", ");
+                aux_buffer = aux_buffer + ret;
+                aux_buffer_size = aux_buffer_size - ret;
+                ret = msgpack_object_print_buffer(aux_buffer, aux_buffer_size, *p);
+                aux_buffer = aux_buffer + ret;
+                aux_buffer_size = aux_buffer_size - ret;
+            }
+        }
+        ret = snprintf(aux_buffer, aux_buffer_size, "]");
+        aux_buffer = aux_buffer + ret;
+        aux_buffer_size = aux_buffer_size - ret;
+        break;
+
+    case MSGPACK_OBJECT_MAP:
+        ret = snprintf(aux_buffer, aux_buffer_size, "{");
+        aux_buffer = aux_buffer + ret;
+        aux_buffer_size = aux_buffer_size - ret;
+        if(o.via.map.size != 0) {
+            msgpack_object_kv* p = o.via.map.ptr;
+            msgpack_object_kv* const pend = o.via.map.ptr + o.via.map.size;
+            ret = msgpack_object_print_buffer(aux_buffer, aux_buffer_size, p->key);
+            aux_buffer = aux_buffer + ret;
+            aux_buffer_size = aux_buffer_size - ret;
+            ret = snprintf(aux_buffer, aux_buffer_size, "=>");
+            aux_buffer = aux_buffer + ret;
+            aux_buffer_size = aux_buffer_size - ret;
+            ret = msgpack_object_print_buffer(aux_buffer, aux_buffer_size, p->val);
+            aux_buffer = aux_buffer + ret;
+            aux_buffer_size = aux_buffer_size - ret;
+            ++p;
+            for(; p < pend; ++p) {
+                ret = snprintf(aux_buffer, aux_buffer_size, ", ");
+                aux_buffer = aux_buffer + ret;
+                aux_buffer_size = aux_buffer_size - ret;
+                ret = msgpack_object_print_buffer(aux_buffer, aux_buffer_size, p->key);
+                aux_buffer = aux_buffer + ret;
+                aux_buffer_size = aux_buffer_size - ret;
+                ret = snprintf(aux_buffer, aux_buffer_size, "=>");
+                aux_buffer = aux_buffer + ret;
+                aux_buffer_size = aux_buffer_size - ret;
+                ret = msgpack_object_print_buffer(aux_buffer, aux_buffer_size, p->val);
+                aux_buffer = aux_buffer + ret;
+                aux_buffer_size = aux_buffer_size - ret;
+            }
+        }
+        ret = snprintf(aux_buffer, aux_buffer_size, "}");
+        aux_buffer = aux_buffer + ret;
+        aux_buffer_size = aux_buffer_size - ret;
+        break;
+
+    default:
+    // FIXME
+#if defined(PRIu64)
+        ret = snprintf(aux_buffer, aux_buffer_size, "#<UNKNOWN %i %" PRIu64 ">", o.type, o.via.u64);
+        aux_buffer = aux_buffer + ret;
+        aux_buffer_size = aux_buffer_size - ret;
+#else
+        if (o.via.u64 > ULONG_MAX) {
+            ret = snprintf(aux_buffer, aux_buffer_size, "#<UNKNOWN %i over 4294967295>", o.type);
+            aux_buffer = aux_buffer + ret;
+            aux_buffer_size = aux_buffer_size - ret;
+        } else {
+            ret = snprintf(aux_buffer, aux_buffer_size, "#<UNKNOWN %i %lu>", o.type, (unsigned long)o.via.u64);
+            aux_buffer = aux_buffer + ret;
+            aux_buffer_size = aux_buffer_size - ret;
+        }
+#endif
+    }
+
+    return buffer_size - aux_buffer_size;
+}
+
+
 bool msgpack_object_equal(const msgpack_object x, const msgpack_object y)
 {
     if(x.type != y.type) { return false; }
