@@ -1262,13 +1262,13 @@ struct zone_push_finalizer {
 
 class unpacker : public parser<unpacker, zone_push_finalizer>,
                  public detail::create_object_visitor {
-    typedef parser<unpacker, zone_push_finalizer> parser;
+    typedef parser<unpacker, zone_push_finalizer> parser_t;
 public:
     unpacker(unpack_reference_func f = &unpacker::default_reference_func,
              void* user_data = MSGPACK_NULLPTR,
              std::size_t initial_buffer_size = MSGPACK_UNPACKER_INIT_BUFFER_SIZE,
              unpack_limit const& limit = unpack_limit())
-        :parser(m_finalizer, initial_buffer_size),
+        :parser_t(m_finalizer, initial_buffer_size),
          detail::create_object_visitor(f, user_data, limit),
          m_z(new msgpack::zone),
          m_finalizer(*m_z) {
@@ -1318,7 +1318,7 @@ private:
 };
 
 inline bool unpacker::next(msgpack::object_handle& result, bool& referenced) {
-    bool ret = parser::next();
+    bool ret = parser_t::next();
     if (ret) {
         referenced = detail::create_object_visitor::referenced();
         result.zone().reset( release_zone() );
