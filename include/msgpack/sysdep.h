@@ -14,6 +14,11 @@
 
 #include <stdlib.h>
 #include <stddef.h>
+
+#if defined(_MSC_VER) && _MSC_VER <= 1800
+#   define snprintf(buf, len, format,...) _snprintf_s(buf, len, len, format, __VA_ARGS__)
+#endif
+
 #if defined(_MSC_VER) && _MSC_VER < 1600
     typedef signed __int8 int8_t;
     typedef unsigned __int8 uint8_t;
