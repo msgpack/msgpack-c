@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <assert.h>
 
+#define UNPACKED_BUFFER_SIZE 2048
+
 void prepare(msgpack_sbuffer* sbuf) {
     msgpack_packer pk;
 
@@ -27,6 +29,7 @@ void unpack(char const* buf, size_t len) {
     size_t off = 0;
     msgpack_unpack_return ret;
     int i = 0;
+    char unpacked_buffer[UNPACKED_BUFFER_SIZE];
     msgpack_unpacked_init(&result);
     ret = msgpack_unpack_next(&result, buf, len, &off);
     while (ret == MSGPACK_UNPACK_SUCCESS) {
@@ -36,6 +39,8 @@ void unpack(char const* buf, size_t len) {
         printf("Object no %d:\n", ++i);
         msgpack_object_print(stdout, obj);
         printf("\n");
+        msgpack_object_print_buffer(unpacked_buffer, UNPACKED_BUFFER_SIZE, obj);
+        printf("%s\n", unpacked_buffer);
         /* If you want to allocate something on the zone, you can use zone. */
         /* msgpack_zone* zone = result.zone; */
         /* The lifetime of the obj and the zone,  */
