@@ -222,10 +222,10 @@ void msgpack_object_print(FILE* out, msgpack_object o)
     }
 }
 
-int msgpack_object_print_buffer(char *buffer, uint32_t buffer_size, msgpack_object o)
+int msgpack_object_print_buffer(char *buffer, size_t buffer_size, msgpack_object o)
 {
     char *aux_buffer = buffer;
-    uint32_t aux_buffer_size = buffer_size;
+    size_t aux_buffer_size = buffer_size;
     int ret;
     switch(o.type) {
     case MSGPACK_OBJECT_NIL:
@@ -309,7 +309,7 @@ int msgpack_object_print_buffer(char *buffer, uint32_t buffer_size, msgpack_obje
         } else {
             memcpy(aux_buffer, o.via.bin.ptr, aux_buffer_size);
             aux_buffer_size = 0;
-	}
+        }
         ret = snprintf(aux_buffer, aux_buffer_size, "\"");
         aux_buffer = aux_buffer + ret;
         aux_buffer_size = aux_buffer_size - ret;
