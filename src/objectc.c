@@ -116,7 +116,7 @@ int msgpack_pack_object(msgpack_packer* pk, msgpack_object d)
 static void msgpack_object_bin_print(FILE* out, const char *ptr, size_t size)
 {
     size_t i;
-    for (i = 0; i < size; i++) {
+    for (i = 0; i < size; ++i) {
         if (ptr[i] == '"') {
             fputs("\\\"", out);
         } else if (isprint(ptr[i])) {
