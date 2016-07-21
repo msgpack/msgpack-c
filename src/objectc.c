@@ -127,6 +127,34 @@ static void msgpack_object_bin_print(FILE* out, const char *ptr, size_t size)
     }
 }
 
+static int msgpack_object_bin_print_buffer(char *buffer, size_t buffer_size, const char *ptr, size_t size)
+{
+    size_t i;
+    char *aux_buffer = buffer;
+    size_t aux_buffer_size = buffer_size;
+    int ret;
+
+    for (i = 0; i < size; ++i) {
+        if (ptr[i] == '"') {
+            ret = snprintf(aux_buffer, aux_buffer_size, "\\\"");
+            aux_buffer = aux_buffer + ret;
+            aux_buffer_size = aux_buffer_size - ret;
+        } else if (isprint(ptr[i])) {
+            if (aux_buffer_size > 0) {
+                memcpy(aux_buffer, ptr + i, 1);
+                aux_buffer = aux_buffer + 1;
+                aux_buffer_size = aux_buffer_size - 1;
+            }
+        } else {
+            ret = snprintf(aux_buffer, aux_buffer_size, "\\x%02x", (unsigned char)ptr[i]);
+            aux_buffer = aux_buffer + ret;
+            aux_buffer_size = aux_buffer_size - ret;
+        }
+    }
+
+    return buffer_size - aux_buffer_size;
+}
+
 
 void msgpack_object_print(FILE* out, msgpack_object o)
 {
@@ -318,14 +346,11 @@ int msgpack_object_print_buffer(char *buffer, size_t buffer_size, msgpack_object
         ret = snprintf(aux_buffer, aux_buffer_size, "\"");
         aux_buffer = aux_buffer + ret;
         aux_buffer_size = aux_buffer_size - ret;
-        if (o.via.bin.size < aux_buffer_size) {
-            memcpy(aux_buffer, o.via.bin.ptr, o.via.bin.size);
-            aux_buffer = aux_buffer + o.via.bin.size;
-            aux_buffer_size = aux_buffer_size - o.via.bin.size;
-        } else {
-            memcpy(aux_buffer, o.via.bin.ptr, aux_buffer_size);
-            aux_buffer_size = 0;
-        }
+
+        ret = msgpack_object_bin_print_buffer(aux_buffer, aux_buffer_size, o.via.bin.ptr, o.via.bin.size);
+        aux_buffer = aux_buffer + ret;
+        aux_buffer_size = aux_buffer_size - ret;
+
         ret = snprintf(aux_buffer, aux_buffer_size, "\"");
         aux_buffer = aux_buffer + ret;
         aux_buffer_size = aux_buffer_size - ret;
@@ -344,9 +369,11 @@ int msgpack_object_print_buffer(char *buffer, size_t buffer_size, msgpack_object
         ret = snprintf(aux_buffer, aux_buffer_size, "\"");
         aux_buffer = aux_buffer + ret;
         aux_buffer_size = aux_buffer_size - ret;
-        ret = snprintf(aux_buffer, aux_buffer_size, "%.*s", o.via.ext.size, o.via.ext.ptr);
+
+        ret = msgpack_object_bin_print_buffer(aux_buffer, aux_buffer_size, o.via.ext.ptr, o.via.ext.size);
         aux_buffer = aux_buffer + ret;
         aux_buffer_size = aux_buffer_size - ret;
+
         ret = snprintf(aux_buffer, aux_buffer_size, "\"");
         aux_buffer = aux_buffer + ret;
         aux_buffer_size = aux_buffer_size - ret;
