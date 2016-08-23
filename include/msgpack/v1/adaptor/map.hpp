@@ -48,7 +48,7 @@ namespace adaptor {
 template <typename K, typename V, typename Compare, typename Alloc>
 struct as<
     type::assoc_vector<K, V, Compare, Alloc>,
-    typename std::enable_if<msgpack::has_as<K>::value && msgpack::has_as<V>::value>::type> {
+    typename std::enable_if<msgpack::has_as<K>::value || msgpack::has_as<V>::value>::type> {
     type::assoc_vector<K, V, Compare, Alloc> operator()(msgpack::object const& o) const {
         if (o.type != msgpack::type::MAP) { throw msgpack::type_error(); }
         type::assoc_vector<K, V, Compare, Alloc> v;
@@ -129,7 +129,7 @@ struct object_with_zone<type::assoc_vector<K, V, Compare, Alloc> > {
 template <typename K, typename V, typename Compare, typename Alloc>
 struct as<
     std::map<K, V, Compare, Alloc>,
-    typename std::enable_if<msgpack::has_as<K>::value && msgpack::has_as<V>::value>::type> {
+    typename std::enable_if<msgpack::has_as<K>::value || msgpack::has_as<V>::value>::type> {
     std::map<K, V, Compare, Alloc> operator()(msgpack::object const& o) const {
         if (o.type != msgpack::type::MAP) { throw msgpack::type_error(); }
         msgpack::object_kv* p(o.via.map.ptr);
@@ -222,7 +222,7 @@ struct object_with_zone<std::map<K, V, Compare, Alloc> > {
 template <typename K, typename V, typename Compare, typename Alloc>
 struct as<
     std::multimap<K, V, Compare, Alloc>,
-    typename std::enable_if<msgpack::has_as<K>::value && msgpack::has_as<V>::value>::type> {
+    typename std::enable_if<msgpack::has_as<K>::value || msgpack::has_as<V>::value>::type> {
     std::multimap<K, V, Compare, Alloc> operator()(msgpack::object const& o) const {
         if (o.type != msgpack::type::MAP) { throw msgpack::type_error(); }
         msgpack::object_kv* p(o.via.map.ptr);
