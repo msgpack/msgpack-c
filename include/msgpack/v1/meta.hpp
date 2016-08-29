@@ -21,10 +21,16 @@ namespace msgpack {
 MSGPACK_API_VERSION_NAMESPACE(v1) {
 /// @endcond
 
+
+
 namespace detail {
 
 template<bool...values> struct all_of_imp
     : std::is_same<bool_pack<values..., true>, bool_pack<true, values...>>{};
+
+template<bool...values> struct any_of_imp {
+    static const bool value = !std::is_same<bool_pack<values..., false>, bool_pack<false, values...>>::value;
+};
 
 } // namespace detail
 

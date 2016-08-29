@@ -28,7 +28,7 @@ namespace adaptor {
 
 template <typename T1, typename T2>
 struct as<std::pair<T1, T2>,
-          typename std::enable_if<msgpack::all_of<msgpack::has_as, T1, T2>::value>::type> {
+          typename std::enable_if<msgpack::any_of<msgpack::has_as, T1, T2>::value>::type> {
     std::pair<T1, T2> operator()(msgpack::object const& o) const {
         if (o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
         if (o.via.array.size != 2) { throw msgpack::type_error(); }

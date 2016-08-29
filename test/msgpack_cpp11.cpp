@@ -612,6 +612,18 @@ TEST(MSGPACK_NO_DEF_CON_ASSOC_VECTOR, simple_buffer)
     EXPECT_EQ(val1, val2);
 }
 
+TEST(MSGPACK_NO_DEF_CON_DEF_CON_ASSOC_VECTOR, simple_buffer)
+{
+    msgpack::type::assoc_vector<no_def_con, int> val1 { {1, 2}, {3, 4}, {5, 6}};
+    msgpack::sbuffer sbuf;
+    msgpack::pack(sbuf, val1);
+    msgpack::object_handle oh =
+        msgpack::unpack(sbuf.data(), sbuf.size());
+    msgpack::type::assoc_vector<no_def_con, int> val2
+        = oh.get().as<msgpack::type::assoc_vector<no_def_con, int>>();
+    EXPECT_EQ(val1, val2);
+}
+
 TEST(MSGPACK_NO_DEF_CON_MAP, simple_buffer)
 {
     std::map<no_def_con, no_def_con_composite> val1 { {1, 2}, {3, 4}, {5, 6}};
@@ -624,6 +636,18 @@ TEST(MSGPACK_NO_DEF_CON_MAP, simple_buffer)
     EXPECT_EQ(val1, val2);
 }
 
+TEST(MSGPACK_NO_DEF_CON_DEF_CON_MAP, simple_buffer)
+{
+    std::map<no_def_con, int> val1 { {1, 2}, {3, 4}, {5, 6}};
+    msgpack::sbuffer sbuf;
+    msgpack::pack(sbuf, val1);
+    msgpack::object_handle oh =
+        msgpack::unpack(sbuf.data(), sbuf.size());
+    std::map<no_def_con, int> val2
+        = oh.get().as<std::map<no_def_con, int>>();
+    EXPECT_EQ(val1, val2);
+}
+
 TEST(MSGPACK_NO_DEF_CON_MULTIMAP, simple_buffer)
 {
     std::multimap<no_def_con, no_def_con_composite> val1 { {1, 2}, {3, 4}, {5, 6}};
@@ -633,6 +657,18 @@ TEST(MSGPACK_NO_DEF_CON_MULTIMAP, simple_buffer)
         msgpack::unpack(sbuf.data(), sbuf.size());
     std::multimap<no_def_con, no_def_con_composite> val2
         = oh.get().as<std::multimap<no_def_con, no_def_con_composite>>();
+    EXPECT_EQ(val1, val2);
+}
+
+TEST(MSGPACK_NO_DEF_CON_DEF_CON_MULTIMAP, simple_buffer)
+{
+    std::multimap<no_def_con, int> val1 { {1, 2}, {3, 4}, {5, 6}};
+    msgpack::sbuffer sbuf;
+    msgpack::pack(sbuf, val1);
+    msgpack::object_handle oh =
+        msgpack::unpack(sbuf.data(), sbuf.size());
+    std::multimap<no_def_con, int> val2
+        = oh.get().as<std::multimap<no_def_con, int>>();
     EXPECT_EQ(val1, val2);
 }
 
@@ -659,6 +695,18 @@ TEST(MSGPACK_NO_DEF_CON_PAIR, simple_buffer)
     EXPECT_EQ(val1, val2);
 }
 
+TEST(MSGPACK_NO_DEF_CON_DEF_CON_PAIR, simple_buffer)
+{
+    std::pair<no_def_con, int> val1 {1, 2};
+    msgpack::sbuffer sbuf;
+    msgpack::pack(sbuf, val1);
+    msgpack::object_handle oh =
+        msgpack::unpack(sbuf.data(), sbuf.size());
+    std::pair<no_def_con, int> val2
+        = oh.get().as<std::pair<no_def_con, int>>();
+    EXPECT_EQ(val1, val2);
+}
+
 
 
 // MSVC2015's std::tuple requires default constructor during 'as' process.
@@ -678,6 +726,18 @@ TEST(MSGPACK_NO_DEF_CON_TUPLE, simple_buffer)
     EXPECT_EQ(val1, val2);
 }
 
+TEST(MSGPACK_NO_DEF_CON_DEF_CON_TUPLE, simple_buffer)
+{
+    std::tuple<no_def_con, no_def_con, int> val1 {1, 2, 3};
+    msgpack::sbuffer sbuf;
+    msgpack::pack(sbuf, val1);
+    msgpack::object_handle oh =
+        msgpack::unpack(sbuf.data(), sbuf.size());
+    std::tuple<no_def_con, no_def_con, int> val2
+        = oh.get().as<std::tuple<no_def_con, no_def_con, int>>();
+    EXPECT_EQ(val1, val2);
+}
+
 TEST(MSGPACK_NO_DEF_CON_MSGPACK_TUPLE, simple_buffer)
 {
     msgpack::type::tuple<no_def_con, no_def_con, no_def_con_composite> val1 {1, 2, 3};
@@ -687,6 +747,18 @@ TEST(MSGPACK_NO_DEF_CON_MSGPACK_TUPLE, simple_buffer)
         msgpack::unpack(sbuf.data(), sbuf.size());
     msgpack::type::tuple<no_def_con, no_def_con, no_def_con_composite> val2
         = oh.get().as<msgpack::type::tuple<no_def_con, no_def_con, no_def_con_composite>>();
+    EXPECT_EQ(val1, val2);
+}
+
+TEST(MSGPACK_NO_DEF_CON_DEF_CON_MSGPACK_TUPLE, simple_buffer)
+{
+    msgpack::type::tuple<no_def_con, no_def_con, int> val1 {1, 2, 3};
+    msgpack::sbuffer sbuf;
+    msgpack::pack(sbuf, val1);
+    msgpack::object_handle oh =
+        msgpack::unpack(sbuf.data(), sbuf.size());
+    msgpack::type::tuple<no_def_con, no_def_con, int> val2
+        = oh.get().as<msgpack::type::tuple<no_def_con, no_def_con, int>>();
     EXPECT_EQ(val1, val2);
 }
 
@@ -737,6 +809,18 @@ TEST(MSGPACK_NO_DEF_CON_UNORDERED_MAP, simple_buffer)
     EXPECT_EQ(val1, val2);
 }
 
+TEST(MSGPACK_NO_DEF_CON_DEF_CON_UNORDERED_MAP, simple_buffer)
+{
+    std::unordered_map<no_def_con, int> val1 { {1, 2}, {3, 4}, {5, 6}};
+    msgpack::sbuffer sbuf;
+    msgpack::pack(sbuf, val1);
+    msgpack::object_handle oh =
+        msgpack::unpack(sbuf.data(), sbuf.size());
+    std::unordered_map<no_def_con, int> val2
+        = oh.get().as<std::unordered_map<no_def_con, int>>();
+    EXPECT_EQ(val1, val2);
+}
+
 TEST(MSGPACK_NO_DEF_CON_UNORDERED_MULTIMAP, simple_buffer)
 {
     std::unordered_multimap<no_def_con, no_def_con_composite> val1 { {1, 2}, {3, 4}, {5, 6}};
@@ -746,6 +830,18 @@ TEST(MSGPACK_NO_DEF_CON_UNORDERED_MULTIMAP, simple_buffer)
         msgpack::unpack(sbuf.data(), sbuf.size());
     std::unordered_multimap<no_def_con, no_def_con_composite> val2
         = oh.get().as<std::unordered_multimap<no_def_con, no_def_con_composite>>();
+    EXPECT_EQ(val1, val2);
+}
+
+TEST(MSGPACK_NO_DEF_CON_DEF_CON_UNORDERED_MULTIMAP, simple_buffer)
+{
+    std::unordered_multimap<no_def_con, int> val1 { {1, 2}, {3, 4}, {5, 6}};
+    msgpack::sbuffer sbuf;
+    msgpack::pack(sbuf, val1);
+    msgpack::object_handle oh =
+        msgpack::unpack(sbuf.data(), sbuf.size());
+    std::unordered_multimap<no_def_con, int> val2
+        = oh.get().as<std::unordered_multimap<no_def_con, int>>();
     EXPECT_EQ(val1, val2);
 }
 
