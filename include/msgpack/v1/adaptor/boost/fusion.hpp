@@ -45,7 +45,7 @@ struct as<
             T,
             boost::mpl::bool_<true>,
             boost::mpl::if_ <
-                boost::mpl::and_<
+                boost::mpl::or_<
                     boost::mpl::_1,
                     msgpack::has_as<boost::mpl::_2>
                 >,

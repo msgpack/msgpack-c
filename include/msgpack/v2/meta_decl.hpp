@@ -27,9 +27,13 @@ using v1::detail::bool_pack;
 
 using v1::detail::all_of_imp;
 
+using v1::detail::any_of_imp;
+
 } // namespace detail
 
 using v1::all_of;
+
+using v1::any_of;
 
 using v1::seq;
 

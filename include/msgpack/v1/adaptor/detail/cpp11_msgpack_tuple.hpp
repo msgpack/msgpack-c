@@ -146,7 +146,7 @@ struct MsgpackTupleConverter<Tuple, 0> {
 namespace adaptor {
 
 template <typename... Args>
-struct as<msgpack::type::tuple<Args...>, typename std::enable_if<msgpack::all_of<msgpack::has_as, Args...>::value>::type>  {
+struct as<msgpack::type::tuple<Args...>, typename std::enable_if<msgpack::any_of<msgpack::has_as, Args...>::value>::type>  {
     msgpack::type::tuple<Args...> operator()(
         msgpack::object const& o) const {
         if (o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }

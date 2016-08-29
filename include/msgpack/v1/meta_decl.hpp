@@ -28,10 +28,15 @@ template<bool...> struct bool_pack;
 
 template<bool...values> struct all_of_imp;
 
+template<bool...values> struct any_of_imp;
+
 } // namespace detail
 
 template<template <class> class T, class... U>
 using all_of = detail::all_of_imp<T<U>::value...>;
+
+template<template <class> class T, class... U>
+using any_of = detail::any_of_imp<(T<U>::value)...>;
 
 template<std::size_t... Is> struct seq;
 
