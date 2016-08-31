@@ -510,7 +510,8 @@ void msgpack_unpacker_reset(msgpack_unpacker* mpac)
     mpac->parsed = 0;
 }
 
-msgpack_unpack_return msgpack_unpacker_next(msgpack_unpacker* mpac, msgpack_unpacked* result)
+static inline msgpack_unpack_return unpacker_next(msgpack_unpacker* mpac,
+                                                  msgpack_unpacked* result)
 {
     int ret;
 
@@ -529,11 +530,37 @@ msgpack_unpack_return msgpack_unpacker_next(msgpack_unpacker* mpac, msgpack_unpa
     }
     result->zone = msgpack_unpacker_release_zone(mpac);
     result->data = msgpack_unpacker_data(mpac);
-    msgpack_unpacker_reset(mpac);
 
     return MSGPACK_UNPACK_SUCCESS;
 }
 
+msgpack_unpack_return msgpack_unpacker_next(msgpack_unpacker* mpac,
+                                            msgpack_unpacked* result)
+{
+    int ret;
+
+    ret = unpacker_next(mpac, result);
+    if (ret == MSGPACK_UNPACK_SUCCESS) {
+        msgpack_unpacker_reset(mpac);
+    }
+
+    return ret;
+}
+
+msgpack_unpack_return
+msgpack_unpacker_next_with_size(msgpack_unpacker* mpac,
+                                msgpack_unpacked* result, size_t *p_bytes)
+{
+    int ret;
+
+    ret = unpacker_next(mpac, result);
+    if (ret == MSGPACK_UNPACK_SUCCESS) {
+        *p_bytes = mpac->parsed;
+        msgpack_unpacker_reset(mpac);
+    }
+
+    return ret;
+}
 
 msgpack_unpack_return
 msgpack_unpack(const char* data, size_t len, size_t* off,
