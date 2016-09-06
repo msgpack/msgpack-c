@@ -554,8 +554,11 @@ msgpack_unpacker_next_with_size(msgpack_unpacker* mpac,
     int ret;
 
     ret = unpacker_next(mpac, result);
-    if (ret == MSGPACK_UNPACK_SUCCESS) {
+    if (ret == MSGPACK_UNPACK_SUCCESS || ret == MSGPACK_UNPACK_CONTINUE) {
         *p_bytes = mpac->parsed;
+    }
+
+    if (ret == MSGPACK_UNPACK_SUCCESS) {
         msgpack_unpacker_reset(mpac);
     }
 
