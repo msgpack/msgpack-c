@@ -120,3 +120,64 @@ TEST(streaming, basic)
     msgpack_unpacked_destroy(&result);
     msgpack_sbuffer_free(buffer);
 }
+
+TEST(streaming, basic_with_size)
+{
+    int ret;
+    size_t bytes;
+    size_t parsed = 0;
+    msgpack_sbuffer* buffer = msgpack_sbuffer_new();
+    msgpack_packer* pk = msgpack_packer_new(buffer, msgpack_sbuffer_write);
+    msgpack_unpacked result;
+    msgpack_unpacker *unp;
+
+    // 1, 2, 3, "str", ["str_data"], "bin", ["bin_data"], {0.3: 0.4}
+    msgpack_pack_int(pk, 1);
+    msgpack_pack_int(pk, 2);
+    msgpack_pack_int(pk, 3);
+    msgpack_pack_str(pk, 3);
+    msgpack_pack_str_body(pk, "str", 3);
+    msgpack_pack_array(pk, 1);
+    msgpack_pack_str(pk, 8);
+    msgpack_pack_str_body(pk, "str_data", 8);
+    msgpack_pack_bin(pk, 3);
+    msgpack_pack_bin_body(pk, "bin", 3);
+    msgpack_pack_array(pk, 1);
+    msgpack_pack_bin(pk, 8);
+    msgpack_pack_bin_body(pk, "bin_data", 8);
+    msgpack_pack_map(pk, 1);
+    msgpack_pack_float(pk, 0.4f);
+    msgpack_pack_double(pk, 0.8);
+    msgpack_packer_free(pk);
+
+    unp = msgpack_unpacker_new(32 * 1024);
+    msgpack_unpacked_init(&result);
+
+    const char* input = buffer->data;
+
+    while (parsed < buffer->size) {
+        memcpy(msgpack_unpacker_buffer(unp), input, 1);
+        msgpack_unpacker_buffer_consumed(unp, 1);
+        input += 1;
+
+        bytes = 0;
+        ret = msgpack_unpacker_next_with_size(unp, &result, &bytes);
+        if (ret == MSGPACK_UNPACK_CONTINUE) {
+            EXPECT_GT(bytes, 0);
+            continue;
+        }
+
+        while (ret == MSGPACK_UNPACK_SUCCESS) {
+            EXPECT_GT(bytes, 0);
+            parsed += bytes;
+            ret = msgpack_unpacker_next_with_size(unp, &result, &bytes);
+        }
+
+    }
+
+    EXPECT_EQ(parsed, buffer->size);
+
+    msgpack_unpacked_destroy(&result);
+    msgpack_unpacker_free(unp);
+    msgpack_sbuffer_free(buffer);
+}
