@@ -147,6 +147,18 @@ MSGPACK_DLLEXPORT
 msgpack_unpack_return msgpack_unpacker_next(msgpack_unpacker* mpac, msgpack_unpacked* pac);
 
 /**
+ * Deserializes one object and set the number of parsed bytes involved.
+ * Returns true if it successes. Otherwise false is returned.
+ * @param mpac    pointer to an initialized msgpack_unpacker object.
+ * @param result  pointer to an initialized msgpack_unpacked object.
+ * @param p_bytes pointer to variable that will be set with the number of parsed bytes.
+ */
+MSGPACK_DLLEXPORT
+msgpack_unpack_return msgpack_unpacker_next_with_size(msgpack_unpacker* mpac,
+                                                      msgpack_unpacked* result,
+                                                      size_t *p_bytes);
+
+/**
  * Initializes a msgpack_unpacked object.
  * The initialized object must be destroyed by msgpack_unpacked_destroy(msgpack_unpacker*).
  * Use the object with msgpack_unpacker_next(msgpack_unpacker*, msgpack_unpacked*) or
@@ -267,4 +279,3 @@ static inline msgpack_zone* msgpack_unpacked_release_zone(msgpack_unpacked* resu
 #endif
 
 #endif /* msgpack/unpack.h */
-
