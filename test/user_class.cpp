@@ -389,7 +389,14 @@ TEST(MSGPACK_INHERIT, define_map_non_virtual)
     msgpack::pack(sbuf, b);
     msgpack::object_handle oh =
         msgpack::unpack(sbuf.data(), sbuf.size());
+#if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) && !defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+#endif // (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) && !defined(__clang__)
     dm_bottom br = oh.get().as<dm_bottom>();
+#if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) && !defined(__clang__)
+#pragma GCC diagnostic pop
+#endif // (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) && !defined(__clang__)
     EXPECT_EQ(b.b, br.b);
     EXPECT_EQ(b.m1, br.m1);
     EXPECT_EQ(b.m2, br.m2);
