@@ -11,7 +11,7 @@
 #ifndef MSGPACK_GCC_ATOMIC_HPP
 #define MSGPACK_GCC_ATOMIC_HPP
 
-#ifdef ENABLE_GCC_CXX_ATOMIC
+#ifdef MSGPACK_ENABLE_GCC_CXX_ATOMIC
 #if defined(__GNUC__) && ((__GNUC__*10 + __GNUC_MINOR__) < 41)
 
 #include "msgpack/gcc_atomic.h"
@@ -28,6 +28,6 @@ int _msgpack_sync_incr_and_fetch(volatile _msgpack_atomic_counter_t* ptr)
 }
 
 #endif // old gcc workaround
-#endif // ENABLE_GCC_CXX_ATOMIC
+#endif // MSGPACK_ENABLE_GCC_CXX_ATOMIC
 
 #endif /* gcc_atomic.hpp */
