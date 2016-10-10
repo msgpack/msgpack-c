@@ -51,9 +51,9 @@
 #elif defined(__GNUC__) && ((__GNUC__*10 + __GNUC_MINOR__) < 41)
 
 #   if defined(__cplusplus)
-#       define _msgpack_atomic_counter_header "gcc_atomic.hpp"
+#       define _msgpack_atomic_counter_header "msgpack/gcc_atomic.hpp"
 #   else
-#       define _msgpack_atomic_counter_header "gcc_atomic.h"
+#       define _msgpack_atomic_counter_header "msgpack/gcc_atomic.h"
 #   endif
 
 #else
