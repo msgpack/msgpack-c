@@ -277,12 +277,17 @@ TEST(object, construct_primitive)
     EXPECT_EQ(msgpack::type::NEGATIVE_INTEGER, obj_int.type);
     EXPECT_EQ(-1, obj_int.via.i64);
 
-    msgpack::object obj_float(1.2);
-    EXPECT_EQ(msgpack::type::FLOAT, obj_float.type);
-    EXPECT_EQ(1.2, obj_float.via.f64);
+    msgpack::object obj_float(1.2F);
+    EXPECT_EQ(msgpack::type::FLOAT32, obj_float.type);
+    EXPECT_EQ(1.2F, obj_float.via.f64);
+
+    msgpack::object obj_double(1.2);
+    EXPECT_EQ(msgpack::type::FLOAT64, obj_double.type);
+    EXPECT_EQ(msgpack::type::FLOAT, obj_double.type);
+    EXPECT_EQ(1.2, obj_double.via.f64);
 #if defined(MSGPACK_USE_LEGACY_NAME_AS_FLOAT)
-    EXPECT_EQ(msgpack::type::DOUBLE, obj_float.type);
-    EXPECT_EQ(1.2, obj_float.via.dec);
+    EXPECT_EQ(msgpack::type::DOUBLE, obj_double.type);
+    EXPECT_EQ(1.2, obj_double.via.dec);
 #endif // MSGPACK_USE_LEGACY_NAME_AS_FLOAT
 
     msgpack::object obj_bool(true);
@@ -417,4 +422,26 @@ TEST(object, clone_map)
     h = msgpack::clone(obj);
     EXPECT_EQ(h.get(), obj);
     EXPECT_EQ(sz1, msgpack::aligned_zone_size(h.get()));
+}
+
+TEST(object, pack_float)
+{
+    msgpack::object obj(1.2F);
+    std::stringstream ss1;
+    msgpack::pack(ss1, obj);
+    std::stringstream ss2;
+    msgpack::pack(ss2, 1.2F);
+    EXPECT_EQ(5, ss1.str().size());
+    EXPECT_EQ(ss1.str(), ss2.str());
+}
+
+TEST(object, pack_double)
+{
+    msgpack::object obj(1.2);
+    std::stringstream ss1;
+    msgpack::pack(ss1, obj);
+    std::stringstream ss2;
+    msgpack::pack(ss2, 1.2);
+    EXPECT_EQ(9, ss1.str().size());
+    EXPECT_EQ(ss1.str(), ss2.str());
 }

@@ -45,7 +45,10 @@ int msgpack_pack_object(msgpack_packer* pk, msgpack_object d)
     case MSGPACK_OBJECT_NEGATIVE_INTEGER:
         return msgpack_pack_int64(pk, d.via.i64);
 
-    case MSGPACK_OBJECT_FLOAT:
+    case MSGPACK_OBJECT_FLOAT32:
+        return msgpack_pack_float(pk, (float)d.via.f64);
+
+    case MSGPACK_OBJECT_FLOAT64:
         return msgpack_pack_double(pk, d.via.f64);
 
     case MSGPACK_OBJECT_STR:
@@ -191,7 +194,8 @@ void msgpack_object_print(FILE* out, msgpack_object o)
 #endif
         break;
 
-    case MSGPACK_OBJECT_FLOAT:
+    case MSGPACK_OBJECT_FLOAT32:
+    case MSGPACK_OBJECT_FLOAT64:
         fprintf(out, "%f", o.via.f64);
         break;
 
@@ -324,7 +328,8 @@ int msgpack_object_print_buffer(char *buffer, size_t buffer_size, msgpack_object
 #endif
         break;
 
-    case MSGPACK_OBJECT_FLOAT:
+    case MSGPACK_OBJECT_FLOAT32:
+    case MSGPACK_OBJECT_FLOAT64:
         ret = snprintf(aux_buffer, aux_buffer_size, "%f", o.via.f64);
         aux_buffer = aux_buffer + ret;
         aux_buffer_size = aux_buffer_size - ret;
@@ -481,7 +486,8 @@ bool msgpack_object_equal(const msgpack_object x, const msgpack_object y)
     case MSGPACK_OBJECT_NEGATIVE_INTEGER:
         return x.via.i64 == y.via.i64;
 
-    case MSGPACK_OBJECT_FLOAT:
+    case MSGPACK_OBJECT_FLOAT32:
+    case MSGPACK_OBJECT_FLOAT64:
         return x.via.f64 == y.via.f64;
 
     case MSGPACK_OBJECT_STR:

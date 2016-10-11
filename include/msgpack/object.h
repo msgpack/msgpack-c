@@ -29,6 +29,8 @@ typedef enum {
     MSGPACK_OBJECT_BOOLEAN              = 0x01,
     MSGPACK_OBJECT_POSITIVE_INTEGER     = 0x02,
     MSGPACK_OBJECT_NEGATIVE_INTEGER     = 0x03,
+    MSGPACK_OBJECT_FLOAT32              = 0x0a,
+    MSGPACK_OBJECT_FLOAT64              = 0x04,
     MSGPACK_OBJECT_FLOAT                = 0x04,
 #if defined(MSGPACK_USE_LEGACY_NAME_AS_FLOAT)
     MSGPACK_OBJECT_DOUBLE               = MSGPACK_OBJECT_FLOAT, /* obsolete */

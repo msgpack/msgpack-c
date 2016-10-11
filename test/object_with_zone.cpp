@@ -176,6 +176,7 @@ TEST(object_with_zone, float)
     float v = 1.23f;
     msgpack::zone z;
     msgpack::object obj(v, z);
+    EXPECT_EQ(obj.type, msgpack::type::FLOAT32);
     EXPECT_TRUE(fabs(obj.as<float>() - v) <= kEPS);
     v = 4.56f;
     EXPECT_TRUE(fabs(obj.as<float>() - static_cast<float>(1.23)) <= kEPS);
@@ -187,6 +188,7 @@ TEST(object_with_zone, double)
     double v = 1.23;
     msgpack::zone z;
     msgpack::object obj(v, z);
+    EXPECT_EQ(obj.type, msgpack::type::FLOAT64);
     EXPECT_TRUE(fabs(obj.as<double>() - v) <= kEPS);
     v = 4.56;
     EXPECT_TRUE(fabs(obj.as<double>() - 1.23) <= kEPS);
