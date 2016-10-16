@@ -209,6 +209,7 @@ public:
         if (num_elements > m_limit.array()) throw msgpack::array_size_overflow("array size overflow");
         if (m_stack.size() > m_limit.depth()) throw msgpack::depth_size_overflow("depth size overflow");
         msgpack::object* obj = m_stack.back();
+
         obj->type = msgpack::type::ARRAY;
         obj->via.array.size = num_elements;
         if (num_elements == 0) {
@@ -216,9 +217,10 @@ public:
         }
         else {
             obj->via.array.ptr =
-                static_cast<msgpack::object*>(m_zone->allocate_align(num_elements*sizeof(msgpack::object)));
+                static_cast<msgpack::object*>(m_zone->allocate_align(num_elements*sizeof(msgpack::object), MSGPACK_ZONE_ALIGNOF(msgpack::object)));
         }
         m_stack.push_back(obj->via.array.ptr);
+
         return true;
     }
     bool start_array_item() {
@@ -243,9 +245,10 @@ public:
         }
         else {
             obj->via.map.ptr =
-                static_cast<msgpack::object_kv*>(m_zone->allocate_align(num_kv_pairs*sizeof(msgpack::object_kv)));
+                static_cast<msgpack::object_kv*>(m_zone->allocate_align(num_kv_pairs*sizeof(msgpack::object_kv), MSGPACK_ZONE_ALIGNOF(msgpack::object_kv)));
         }
         m_stack.push_back(reinterpret_cast<msgpack::object*>(obj->via.map.ptr));
+
         return true;
     }
     bool start_map_key() {
@@ -273,7 +276,6 @@ public:
         throw msgpack::insufficient_bytes("insufficient bytes");
     }
 private:
-public:
     unpack_reference_func m_func;
     void* m_user_data;
     unpack_limit m_limit;

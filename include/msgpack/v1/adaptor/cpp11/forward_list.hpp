@@ -76,7 +76,7 @@ struct object_with_zone<std::forward_list<T, Alloc>> {
             uint32_t size = checked_get_container_size(std::distance(v.begin(), v.end()));
             o.via.array.size = size;
             msgpack::object* p = static_cast<msgpack::object*>(
-                o.zone.allocate_align(sizeof(msgpack::object)*size));
+                o.zone.allocate_align(sizeof(msgpack::object)*size, MSGPACK_ZONE_ALIGNOF(msgpack::object)));
             o.via.array.ptr = p;
             for(auto const& e : v) *p++ = msgpack::object(e, o.zone);
         }

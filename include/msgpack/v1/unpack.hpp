@@ -203,7 +203,7 @@ struct unpack_array {
         if (n > u.limit().array()) throw msgpack::array_size_overflow("array size overflow");
         o.type = msgpack::type::ARRAY;
         o.via.array.size = 0;
-        o.via.array.ptr = static_cast<msgpack::object*>(u.zone().allocate_align(n*sizeof(msgpack::object)));
+        o.via.array.ptr = static_cast<msgpack::object*>(u.zone().allocate_align(n*sizeof(msgpack::object), MSGPACK_ZONE_ALIGNOF(msgpack::object)));
     }
 };
 
@@ -221,7 +221,7 @@ struct unpack_map {
         if (n > u.limit().map()) throw msgpack::map_size_overflow("map size overflow");
         o.type = msgpack::type::MAP;
         o.via.map.size = 0;
-        o.via.map.ptr = static_cast<msgpack::object_kv*>(u.zone().allocate_align(n*sizeof(msgpack::object_kv)));
+        o.via.map.ptr = static_cast<msgpack::object_kv*>(u.zone().allocate_align(n*sizeof(msgpack::object_kv), MSGPACK_ZONE_ALIGNOF(msgpack::object_kv)));
     }
 };
 
@@ -246,7 +246,7 @@ inline void unpack_str(unpack_user& u, const char* p, uint32_t l, msgpack::objec
     }
     else {
         if (l > u.limit().str()) throw msgpack::str_size_overflow("str size overflow");
-        char* tmp = static_cast<char*>(u.zone().allocate_align(l));
+        char* tmp = static_cast<char*>(u.zone().allocate_align(l, MSGPACK_ZONE_ALIGNOF(l)));
         std::memcpy(tmp, p, l);
         o.via.str.ptr = tmp;
     }
@@ -262,7 +262,7 @@ inline void unpack_bin(unpack_user& u, const char* p, uint32_t l, msgpack::objec
     }
     else {
         if (l > u.limit().bin()) throw msgpack::bin_size_overflow("bin size overflow");
-        char* tmp = static_cast<char*>(u.zone().allocate_align(l));
+        char* tmp = static_cast<char*>(u.zone().allocate_align(l, MSGPACK_ZONE_ALIGNOF(l)));
         std::memcpy(tmp, p, l);
         o.via.bin.ptr = tmp;
     }
@@ -278,7 +278,7 @@ inline void unpack_ext(unpack_user& u, const char* p, std::size_t l, msgpack::ob
     }
     else {
         if (l > u.limit().ext()) throw msgpack::ext_size_overflow("ext size overflow");
-        char* tmp = static_cast<char*>(u.zone().allocate_align(l));
+        char* tmp = static_cast<char*>(u.zone().allocate_align(l, MSGPACK_ZONE_ALIGNOF(l)));
         std::memcpy(tmp, p, l);
         o.via.ext.ptr = tmp;
     }

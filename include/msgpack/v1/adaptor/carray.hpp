@@ -151,7 +151,7 @@ struct object_with_zone<T[N]> {
     void operator()(msgpack::object::with_zone& o, const T(&v)[N]) const {
         uint32_t size = checked_get_container_size(N);
         o.type = msgpack::type::ARRAY;
-        msgpack::object* ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object) * size));
+        msgpack::object* ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object) * size, MSGPACK_ZONE_ALIGNOF(msgpack::object)));
         o.via.array.ptr = ptr;
         o.via.array.size = size;
         const T* pv = v;

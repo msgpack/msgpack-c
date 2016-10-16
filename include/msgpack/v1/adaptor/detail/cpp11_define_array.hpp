@@ -77,7 +77,7 @@ struct define_array {
     void msgpack_object(msgpack::object* o, msgpack::zone& z) const
     {
         o->type = msgpack::type::ARRAY;
-        o->via.array.ptr = static_cast<msgpack::object*>(z.allocate_align(sizeof(msgpack::object)*sizeof...(Args)));
+        o->via.array.ptr = static_cast<msgpack::object*>(z.allocate_align(sizeof(msgpack::object)*sizeof...(Args), MSGPACK_ZONE_ALIGNOF(msgpack::object)));
         o->via.array.size = sizeof...(Args);
 
         define_array_imp<std::tuple<Args&...>, sizeof...(Args)>::object(o, z, a);

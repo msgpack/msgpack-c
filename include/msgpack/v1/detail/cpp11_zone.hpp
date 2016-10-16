@@ -184,7 +184,6 @@ public:
 
     void swap(zone& o);
 
-
     static void* operator new(std::size_t size)
     {
         void* p = ::malloc(size);
@@ -329,7 +328,7 @@ inline void zone::undo_allocate(size_t size)
 template <typename T, typename... Args>
 T* zone::allocate(Args... args)
 {
-    void* x = allocate_align(sizeof(T));
+    void* x = allocate_align(sizeof(T), MSGPACK_ZONE_ALIGNOF(T));
     try {
         m_finalizer_array.push(&zone::object_destruct<T>, x);
     } catch (...) {
