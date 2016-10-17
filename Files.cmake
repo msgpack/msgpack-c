@@ -153,7 +153,7 @@ LIST (APPEND msgpackc_HEADERS
     include/msgpack/zone.h
 )
 IF (MSGPACK_ENABLE_CXX)
-    LIST (APPEND msgpack_HEADERS
+    LIST (APPEND msgpackc_HEADERS
         include/msgpack.hpp
         include/msgpack/adaptor/adaptor_base.hpp
         include/msgpack/adaptor/adaptor_base_decl.hpp
