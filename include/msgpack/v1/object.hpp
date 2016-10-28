@@ -802,7 +802,9 @@ inline std::ostream& operator<< (std::ostream& s, const msgpack::object& o)
             default: {
                 unsigned int code = static_cast<unsigned int>(c);
                 if (code < 0x20 || code == 0x7f) {
+                    std::ios::fmtflags flags(s.flags());
                     s << "\\u" << std::hex << std::setw(4) << std::setfill('0') << (code & 0xff);
+                    s.flags(flags);
                 }
                 else {
                     s << c;
