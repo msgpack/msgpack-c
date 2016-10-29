@@ -27,7 +27,7 @@ namespace adaptor {
 template <>
 struct convert<float> {
     msgpack::object const& operator()(msgpack::object const& o, float& v) const {
-        if(o.type == msgpack::type::FLOAT) {
+        if(o.type == msgpack::type::FLOAT32 || o.type == msgpack::type::FLOAT64) {
             v = static_cast<float>(o.via.f64);
         }
         else if (o.type == msgpack::type::POSITIVE_INTEGER) {
@@ -56,7 +56,7 @@ struct pack<float> {
 template <>
 struct convert<double> {
     msgpack::object const& operator()(msgpack::object const& o, double& v) const {
-        if(o.type == msgpack::type::FLOAT) {
+        if(o.type == msgpack::type::FLOAT32 || o.type == msgpack::type::FLOAT64) {
             v = o.via.f64;
         }
         else if (o.type == msgpack::type::POSITIVE_INTEGER) {
@@ -85,7 +85,7 @@ struct pack<double> {
 template <>
 struct object<float> {
     void operator()(msgpack::object& o, float v) const {
-        o.type = msgpack::type::FLOAT;
+        o.type = msgpack::type::FLOAT32;
         o.via.f64 = static_cast<double>(v);
     }
 };
@@ -93,7 +93,7 @@ struct object<float> {
 template <>
 struct object<double> {
     void operator()(msgpack::object& o, double v) const {
-        o.type = msgpack::type::FLOAT;
+        o.type = msgpack::type::FLOAT64;
         o.via.f64 = v;
     }
 };

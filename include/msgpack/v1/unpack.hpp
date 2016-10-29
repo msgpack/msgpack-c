@@ -184,10 +184,10 @@ inline void unpack_int64(int64_t d, msgpack::object& o)
         else { o.type = msgpack::type::NEGATIVE_INTEGER; o.via.i64 = d; } }
 
 inline void unpack_float(float d, msgpack::object& o)
-{ o.type = msgpack::type::FLOAT; o.via.f64 = d; }
+{ o.type = msgpack::type::FLOAT32; o.via.f64 = d; }
 
 inline void unpack_double(double d, msgpack::object& o)
-{ o.type = msgpack::type::FLOAT; o.via.f64 = d; }
+{ o.type = msgpack::type::FLOAT64; o.via.f64 = d; }
 
 inline void unpack_nil(msgpack::object& o)
 { o.type = msgpack::type::NIL; }

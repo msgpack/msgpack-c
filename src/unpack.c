@@ -151,7 +151,7 @@ static inline int template_callback_int64(unpack_user* u, int64_t d, msgpack_obj
 static inline int template_callback_float(unpack_user* u, float d, msgpack_object* o)
 {
     MSGPACK_UNUSED(u);
-    o->type = MSGPACK_OBJECT_FLOAT;
+    o->type = MSGPACK_OBJECT_FLOAT32;
     o->via.f64 = d;
     return 0;
 }
@@ -159,7 +159,7 @@ static inline int template_callback_float(unpack_user* u, float d, msgpack_objec
 static inline int template_callback_double(unpack_user* u, double d, msgpack_object* o)
 {
     MSGPACK_UNUSED(u);
-    o->type = MSGPACK_OBJECT_FLOAT;
+    o->type = MSGPACK_OBJECT_FLOAT64;
     o->via.f64 = d;
     return 0;
 }
