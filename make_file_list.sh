@@ -13,7 +13,7 @@ cat c_headers.tmp | sed -e 's/^/    /g' >> Files.cmake
 echo ')' >> Files.cmake
 
 echo 'IF (MSGPACK_ENABLE_CXX)' >> Files.cmake
-echo '    LIST (APPEND msgpack_HEADERS' >> Files.cmake
+echo '    LIST (APPEND msgpackc_HEADERS' >> Files.cmake
 cat cpp_headers.tmp | sed -e 's/^/        /g' >> Files.cmake
 echo '    )' >> Files.cmake
 echo 'ENDIF ()' >> Files.cmake
