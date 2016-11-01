@@ -561,7 +561,34 @@ TEST(MSGPACK_NVP, combination)
 
     msgpack::pack(sbuf, d1);
     msgpack::object_handle oh = msgpack::unpack(sbuf.data(), sbuf.size());
-    nvp_derived d2 = oh.get().as<nvp_derived>();
+    msgpack::object obj = oh.get();
+
+    EXPECT_EQ(obj.via.map.size, 3);
+
+    EXPECT_EQ(std::string(obj.via.map.ptr[0].key.via.str.ptr, obj.via.map.ptr[0].key.via.str.size), "ccc");
+    EXPECT_EQ(obj.via.map.ptr[0].val.via.i64, 3);
+
+    EXPECT_EQ(std::string(obj.via.map.ptr[1].key.via.str.ptr, obj.via.map.ptr[1].key.via.str.size), "base");
+    EXPECT_EQ(obj.via.map.ptr[1].val.via.map.size, 2);
+    EXPECT_EQ(
+        std::string(
+            obj.via.map.ptr[1].val.via.map.ptr[0].key.via.str.ptr,
+            obj.via.map.ptr[1].val.via.map.ptr[0].key.via.str.size),
+        "aaa"
+    );
+    EXPECT_EQ(obj.via.map.ptr[1].val.via.map.ptr[0].val.via.i64, 1);
+    EXPECT_EQ(
+        std::string(
+            obj.via.map.ptr[1].val.via.map.ptr[1].key.via.str.ptr,
+            obj.via.map.ptr[1].val.via.map.ptr[1].key.via.str.size),
+        "b"
+    );
+    EXPECT_EQ(obj.via.map.ptr[1].val.via.map.ptr[1].val.via.i64, 2);
+
+    EXPECT_EQ(std::string(obj.via.map.ptr[2].key.via.str.ptr, obj.via.map.ptr[2].key.via.str.size), "ddd");
+    EXPECT_EQ(std::string(obj.via.map.ptr[2].val.via.str.ptr, obj.via.map.ptr[2].val.via.str.size), "ABC");
+
+    nvp_derived d2 = obj.as<nvp_derived>();
     EXPECT_EQ(d2.a, 1);
     EXPECT_EQ(d2.b, 2);
     EXPECT_EQ(d2.c, 3);
