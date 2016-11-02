@@ -537,3 +537,60 @@ TEST(MSGPACK_USER_DEFINED, test_non_intrusive)
 
     EXPECT_EQ(t1.name(), t2.name());
 }
+
+struct nvp_base {
+    int a;
+    int b;
+    MSGPACK_DEFINE_MAP(MSGPACK_NVP("aaa", a), b);
+};
+
+struct nvp_derived : nvp_base {
+    int c;
+    std::string d;
+    MSGPACK_DEFINE_MAP(MSGPACK_NVP("ccc", c), MSGPACK_NVP("base", MSGPACK_BASE(nvp_base)), MSGPACK_NVP("ddd", d));
+};
+
+TEST(MSGPACK_NVP, combination)
+{
+    msgpack::sbuffer sbuf;
+    nvp_derived d1;
+    d1.a = 1;
+    d1.b = 2;
+    d1.c = 3;
+    d1.d = "ABC";
+
+    msgpack::pack(sbuf, d1);
+    msgpack::object_handle oh = msgpack::unpack(sbuf.data(), sbuf.size());
+    msgpack::object obj = oh.get();
+
+    EXPECT_EQ(obj.via.map.size, 3);
+
+    EXPECT_EQ(std::string(obj.via.map.ptr[0].key.via.str.ptr, obj.via.map.ptr[0].key.via.str.size), "ccc");
+    EXPECT_EQ(obj.via.map.ptr[0].val.via.i64, 3);
+
+    EXPECT_EQ(std::string(obj.via.map.ptr[1].key.via.str.ptr, obj.via.map.ptr[1].key.via.str.size), "base");
+    EXPECT_EQ(obj.via.map.ptr[1].val.via.map.size, 2);
+    EXPECT_EQ(
+        std::string(
+            obj.via.map.ptr[1].val.via.map.ptr[0].key.via.str.ptr,
+            obj.via.map.ptr[1].val.via.map.ptr[0].key.via.str.size),
+        "aaa"
+    );
+    EXPECT_EQ(obj.via.map.ptr[1].val.via.map.ptr[0].val.via.i64, 1);
+    EXPECT_EQ(
+        std::string(
+            obj.via.map.ptr[1].val.via.map.ptr[1].key.via.str.ptr,
+            obj.via.map.ptr[1].val.via.map.ptr[1].key.via.str.size),
+        "b"
+    );
+    EXPECT_EQ(obj.via.map.ptr[1].val.via.map.ptr[1].val.via.i64, 2);
+
+    EXPECT_EQ(std::string(obj.via.map.ptr[2].key.via.str.ptr, obj.via.map.ptr[2].key.via.str.size), "ddd");
+    EXPECT_EQ(std::string(obj.via.map.ptr[2].val.via.str.ptr, obj.via.map.ptr[2].val.via.str.size), "ABC");
+
+    nvp_derived d2 = obj.as<nvp_derived>();
+    EXPECT_EQ(d2.a, 1);
+    EXPECT_EQ(d2.b, 2);
+    EXPECT_EQ(d2.c, 3);
+    EXPECT_EQ(d2.d, "ABC");
+}

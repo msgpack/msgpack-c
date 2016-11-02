@@ -42,6 +42,7 @@
     }
 
 #define MSGPACK_BASE_ARRAY(base) (*const_cast<base *>(static_cast<base const*>(this)))
+#define MSGPACK_NVP(name, value) (name) (value)
 
 #define MSGPACK_DEFINE_MAP_EACH_PROC(r, data, elem) \
     MSGPACK_PP_IF( \
