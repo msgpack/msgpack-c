@@ -431,7 +431,7 @@ TEST(object, pack_float)
     msgpack::pack(ss1, obj);
     std::stringstream ss2;
     msgpack::pack(ss2, 1.2F);
-    EXPECT_EQ(5, ss1.str().size());
+    EXPECT_EQ((size_t) 5, ss1.str().size());
     EXPECT_EQ(ss1.str(), ss2.str());
 }
 
@@ -442,6 +442,6 @@ TEST(object, pack_double)
     msgpack::pack(ss1, obj);
     std::stringstream ss2;
     msgpack::pack(ss2, 1.2);
-    EXPECT_EQ(9, ss1.str().size());
+    EXPECT_EQ((size_t) 9, ss1.str().size());
     EXPECT_EQ(ss1.str(), ss2.str());
 }

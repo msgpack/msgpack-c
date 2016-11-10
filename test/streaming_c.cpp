@@ -163,12 +163,12 @@ TEST(streaming, basic_with_size)
         bytes = 0;
         ret = msgpack_unpacker_next_with_size(unp, &result, &bytes);
         if (ret == MSGPACK_UNPACK_CONTINUE) {
-            EXPECT_GT(bytes, 0);
+            EXPECT_GT(bytes, (size_t) 0);
             continue;
         }
 
         while (ret == MSGPACK_UNPACK_SUCCESS) {
-            EXPECT_GT(bytes, 0);
+            EXPECT_GT(bytes, (size_t) 0);
             parsed += bytes;
             ret = msgpack_unpacker_next_with_size(unp, &result, &bytes);
         }

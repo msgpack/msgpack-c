@@ -42,7 +42,7 @@ TEST(MSGPACK_REFERENCE_WRAPPER, pack_vector)
     msgpack::pack(ss, val1);
     msgpack::object_handle oh = msgpack::unpack(ss.str().data(), ss.str().size());
     std::vector<int> val2 = oh.get().as<std::vector<int>>();
-    EXPECT_EQ(val2.size(), 1);
+    EXPECT_EQ(val2.size(), (size_t) 1);
     EXPECT_EQ(val1[0], val2[0]);
 }
 
