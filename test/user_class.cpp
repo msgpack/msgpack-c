@@ -563,13 +563,13 @@ TEST(MSGPACK_NVP, combination)
     msgpack::object_handle oh = msgpack::unpack(sbuf.data(), sbuf.size());
     msgpack::object obj = oh.get();
 
-    EXPECT_EQ(obj.via.map.size, 3);
+    EXPECT_EQ(obj.via.map.size, static_cast<size_t>(3));
 
     EXPECT_EQ(std::string(obj.via.map.ptr[0].key.via.str.ptr, obj.via.map.ptr[0].key.via.str.size), "ccc");
     EXPECT_EQ(obj.via.map.ptr[0].val.via.i64, 3);
 
     EXPECT_EQ(std::string(obj.via.map.ptr[1].key.via.str.ptr, obj.via.map.ptr[1].key.via.str.size), "base");
-    EXPECT_EQ(obj.via.map.ptr[1].val.via.map.size, 2);
+    EXPECT_EQ(obj.via.map.ptr[1].val.via.map.size, static_cast<size_t>(2));
     EXPECT_EQ(
         std::string(
             obj.via.map.ptr[1].val.via.map.ptr[0].key.via.str.ptr,

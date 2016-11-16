@@ -12,7 +12,7 @@ TEST(msgpack_tuple, member_get)
     t1.get<1>() = false;
     t1.get<2>() = "DEFG";
     EXPECT_EQ(40, t1.get<0>());
-    EXPECT_EQ(false, t1.get<1>());
+    EXPECT_FALSE(t1.get<1>());
     EXPECT_EQ("DEFG", t1.get<2>());
 }
 
@@ -26,7 +26,7 @@ TEST(msgpack_tuple, non_member_get)
     msgpack::type::get<1>(t1) = false;
     msgpack::type::get<2>(t1) = "DEFG";
     EXPECT_EQ(40, msgpack::type::get<0>(t1));
-    EXPECT_EQ(false, msgpack::type::get<1>(t1));
+    EXPECT_FALSE(msgpack::type::get<1>(t1));
     EXPECT_EQ("DEFG", msgpack::type::get<2>(t1));
 }
 
@@ -41,7 +41,7 @@ TEST(msgpack_tuple, std_non_member_get)
     std::get<1>(t1) = false;
     std::get<2>(t1) = "DEFG";
     EXPECT_EQ(40, std::get<0>(t1));
-    EXPECT_EQ(false, std::get<1>(t1));
+    EXPECT_FALSE(std::get<1>(t1));
     EXPECT_EQ("DEFG", std::get<2>(t1));
 }
 
@@ -55,7 +55,7 @@ TEST(msgpack_tuple, make_tuple)
     t1.get<1>() = false;
     t1.get<2>() = "DEFG";
     EXPECT_EQ(40, t1.get<0>());
-    EXPECT_EQ(false, t1.get<1>());
+    EXPECT_FALSE(t1.get<1>());
     EXPECT_EQ("DEFG", t1.get<2>());
 }
 
@@ -97,7 +97,7 @@ TEST(msgpack_tuple, swap)
     EXPECT_EQ(true, t2.get<1>());
     EXPECT_EQ("ABC", t2.get<2>());
     EXPECT_EQ(40, t1.get<0>());
-    EXPECT_EQ(false, t1.get<1>());
+    EXPECT_FALSE(t1.get<1>());
     EXPECT_EQ("DEFG", t1.get<2>());
 }
 #endif
