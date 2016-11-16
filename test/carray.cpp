@@ -113,7 +113,7 @@ TEST(carray, pack_unpack_char_as_str)
     msgpack::pack(ss, v1);
     msgpack::object_handle oh = msgpack::unpack(ss.str().data(), ss.str().size());
     EXPECT_EQ(oh.get().type, msgpack::type::STR);
-    EXPECT_EQ(oh.get().via.str.size, (size_t) 1);
+    EXPECT_EQ(oh.get().via.str.size, static_cast<size_t>(1));
 
     char v2[2] = { 2, 3 };
     oh.get().convert(v2);
@@ -143,7 +143,7 @@ TEST(carray, obj_with_zone_char_as_str)
 
     msgpack::object o(v1, z);
     EXPECT_EQ(o.type, msgpack::type::STR);
-    EXPECT_EQ(o.via.str.size, (size_t) 1);
+    EXPECT_EQ(o.via.str.size, static_cast<size_t>(1));
 
     char v2[2];
     o.convert(v2);
@@ -175,7 +175,7 @@ TEST(carray, pack_unpack_unsigned_char_as_bin)
     msgpack::pack(ss, v1);
     msgpack::object_handle oh = msgpack::unpack(ss.str().data(), ss.str().size());
     EXPECT_EQ(oh.get().type, msgpack::type::BIN);
-    EXPECT_EQ(oh.get().via.bin.size, (size_t) 2);
+    EXPECT_EQ(oh.get().via.bin.size, static_cast<size_t>(2));
 
     unsigned char v2[2];
     oh.get().convert(v2);
@@ -205,7 +205,7 @@ TEST(carray, obj_with_zone_unsigned_char_as_bin)
 
     msgpack::object o(v1, z);
     EXPECT_EQ(o.type, msgpack::type::BIN);
-    EXPECT_EQ(o.via.bin.size, (size_t) 2);
+    EXPECT_EQ(o.via.bin.size, static_cast<size_t>(2));
 
     unsigned char v2[2];
     o.convert(v2);

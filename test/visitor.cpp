@@ -99,8 +99,8 @@ TEST(visitor, json_like)
 struct parse_error_check_visitor : msgpack::v2::null_visitor {
     parse_error_check_visitor(bool& called):m_called(called) {}
     void parse_error(size_t parsed_offset, size_t error_offset) {
-        EXPECT_EQ((size_t) 1, parsed_offset);
-        EXPECT_EQ((size_t) 2, error_offset);
+        EXPECT_EQ(static_cast<size_t>(1), parsed_offset);
+        EXPECT_EQ(static_cast<size_t>(2), error_offset);
         m_called = true;
     }
     bool& m_called;
@@ -120,8 +120,8 @@ TEST(visitor, parse_error)
 struct insuf_bytes_check_visitor : msgpack::v2::null_visitor {
     insuf_bytes_check_visitor(bool& called):m_called(called) {}
     void insufficient_bytes(size_t parsed_offset, size_t error_offset) {
-        EXPECT_EQ((size_t) 2, parsed_offset);
-        EXPECT_EQ((size_t) 3, error_offset);
+        EXPECT_EQ(static_cast<size_t>(2), parsed_offset);
+        EXPECT_EQ(static_cast<size_t>(3), error_offset);
         m_called = true;
     }
     bool& m_called;
