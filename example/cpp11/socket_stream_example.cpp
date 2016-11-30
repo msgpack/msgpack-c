@@ -115,7 +115,7 @@ struct ref_buffer {
 bool produce( std::stringstream & ss, char* buff, std::size_t& size)
 {
     ss.read(buff, BUFFERING_SIZE_MAX);
-    size = ss.gcount();
+    size = static_cast<std::size_t>(ss.gcount());
     return (size > 0);
 }
 
