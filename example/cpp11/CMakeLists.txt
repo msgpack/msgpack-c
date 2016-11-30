@@ -6,6 +6,7 @@ IF (MSGPACK_CXX11)
     LIST (APPEND exec_PROGRAMS
         container.cpp
         non_def_con_class.cpp
+        socket_stream_example.cpp
     )
 
     FOREACH (source_file ${exec_PROGRAMS})
