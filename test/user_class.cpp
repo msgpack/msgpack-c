@@ -148,26 +148,30 @@ public:
 
     void msgpack_unpack(msgpack::object o)
     {
-        msgpack::type::tuple<bool, msgpack::object> tuple;
-        o.convert(tuple);
-
 #if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) && !defined(__clang__)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
 #endif // (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) && !defined(__clang__)
+        msgpack::type::tuple<bool, msgpack::object> tuple;
+        o.convert(tuple);
+
         is_double = tuple.get<0>();
-#if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) && !defined(__clang__)
-#pragma GCC diagnostic pop
-#endif // (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) && !defined(__clang__)
         if (is_double)
             tuple.get<1>().convert(value.f);
         else
             tuple.get<1>().convert(value.i);
+#if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) && !defined(__clang__)
+#pragma GCC diagnostic pop
+#endif // (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) && !defined(__clang__)
     }
 };
 
 TEST(MSGPACK_USER_DEFINED, simple_buffer_union_member)
 {
+#if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) && !defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+#endif // (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) && !defined(__clang__)
     {
         // double
         TestUnionMemberClass val1(1.0);
@@ -191,6 +195,9 @@ TEST(MSGPACK_USER_DEFINED, simple_buffer_union_member)
         EXPECT_EQ(val1.value.i, 1);
         EXPECT_EQ(val1.value.i, val2.value.i);
     }
+#if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) && !defined(__clang__)
+#pragma GCC diagnostic pop
+#endif // (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) && !defined(__clang__)
 }
 
 // inheritance
