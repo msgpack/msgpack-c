@@ -83,7 +83,7 @@ then
     exit $ret
 fi
 
-if [ "$2" != "32" ]
+if [ "$2" != "32" ] && [ `uname` = "Linux" ]
 then
     ctest -T memcheck | tee memcheck.log
 
