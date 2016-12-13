@@ -189,8 +189,14 @@ static inline int template_callback_false(unpack_user* u, msgpack_object* o)
 
 static inline int template_callback_array(unpack_user* u, unsigned int n, msgpack_object* o)
 {
+    unsigned int size;
     o->type = MSGPACK_OBJECT_ARRAY;
     o->via.array.size = 0;
+    size = n*sizeof(msgpack_object);
+    if (size / sizeof(msgpack_object) != n) {
+        // integer overflow
+        return -1;
+    }
     o->via.array.ptr = (msgpack_object*)msgpack_zone_malloc(u->z, n*sizeof(msgpack_object));
     if(o->via.array.ptr == NULL) { return -1; }
     return 0;
@@ -210,9 +216,15 @@ static inline int template_callback_array_item(unpack_user* u, msgpack_object* c
 
 static inline int template_callback_map(unpack_user* u, unsigned int n, msgpack_object* o)
 {
+    unsigned int size;
     o->type = MSGPACK_OBJECT_MAP;
     o->via.map.size = 0;
-    o->via.map.ptr = (msgpack_object_kv*)msgpack_zone_malloc(u->z, n*sizeof(msgpack_object_kv));
+    size = n*sizeof(msgpack_object_kv);
+    if (size / sizeof(msgpack_object_kv) != n) {
+        // integer overflow
+        return -1;
+    }
+    o->via.map.ptr = (msgpack_object_kv*)msgpack_zone_malloc(u->z, size);
     if(o->via.map.ptr == NULL) { return -1; }
     return 0;
 }
@@ -255,6 +267,9 @@ static inline int template_callback_bin(unpack_user* u, const char* b, const cha
 
 static inline int template_callback_ext(unpack_user* u, const char* b, const char* p, unsigned int l, msgpack_object* o)
 {
+    if (l == 0) {
+        return MSGPACK_UNPACK_PARSE_ERROR;
+    }
     MSGPACK_UNUSED(u);
     MSGPACK_UNUSED(b);
     o->type = MSGPACK_OBJECT_EXT;
