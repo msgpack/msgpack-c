@@ -197,7 +197,7 @@ static inline int template_callback_array(unpack_user* u, unsigned int n, msgpac
         // integer overflow
         return MSGPACK_UNPACK_NOMEM_ERROR;
     }
-    o->via.array.ptr = (msgpack_object*)msgpack_zone_malloc(u->z, n*sizeof(msgpack_object));
+    o->via.array.ptr = (msgpack_object*)msgpack_zone_malloc(u->z, size);
     if(o->via.array.ptr == NULL) { return MSGPACK_UNPACK_NOMEM_ERROR; }
     return 0;
 }
