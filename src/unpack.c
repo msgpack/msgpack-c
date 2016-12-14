@@ -195,10 +195,10 @@ static inline int template_callback_array(unpack_user* u, unsigned int n, msgpac
     size = n*sizeof(msgpack_object);
     if (size / sizeof(msgpack_object) != n) {
         // integer overflow
-        return -1;
+        return MSGPACK_UNPACK_NOMEM_ERROR;
     }
     o->via.array.ptr = (msgpack_object*)msgpack_zone_malloc(u->z, n*sizeof(msgpack_object));
-    if(o->via.array.ptr == NULL) { return -1; }
+    if(o->via.array.ptr == NULL) { return MSGPACK_UNPACK_NOMEM_ERROR; }
     return 0;
 }
 
@@ -222,10 +222,10 @@ static inline int template_callback_map(unpack_user* u, unsigned int n, msgpack_
     size = n*sizeof(msgpack_object_kv);
     if (size / sizeof(msgpack_object_kv) != n) {
         // integer overflow
-        return -1;
+        return MSGPACK_UNPACK_NOMEM_ERROR;
     }
     o->via.map.ptr = (msgpack_object_kv*)msgpack_zone_malloc(u->z, size);
-    if(o->via.map.ptr == NULL) { return -1; }
+    if(o->via.map.ptr == NULL) { return MSGPACK_UNPACK_NOMEM_ERROR; }
     return 0;
 }
 
@@ -537,7 +537,7 @@ static inline msgpack_unpack_return unpacker_next(msgpack_unpacker* mpac,
     if(ret < 0) {
         result->zone = NULL;
         memset(&result->data, 0, sizeof(msgpack_object));
-        return MSGPACK_UNPACK_PARSE_ERROR;
+        return ret;
     }
 
     if(ret == 0) {
@@ -601,7 +601,7 @@ msgpack_unpack(const char* data, size_t len, size_t* off,
 
         e = template_execute(&ctx, data, len, &noff);
         if(e < 0) {
-            return MSGPACK_UNPACK_PARSE_ERROR;
+            return e;
         }
 
         if(off != NULL) { *off = noff; }
@@ -652,7 +652,7 @@ msgpack_unpack_next(msgpack_unpacked* result,
         if(e < 0) {
             msgpack_zone_free(result->zone);
             result->zone = NULL;
-            return MSGPACK_UNPACK_PARSE_ERROR;
+            return e;
         }
 
 
