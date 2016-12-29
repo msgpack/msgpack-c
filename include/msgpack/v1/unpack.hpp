@@ -203,7 +203,11 @@ struct unpack_array {
         if (n > u.limit().array()) throw msgpack::array_size_overflow("array size overflow");
         o.type = msgpack::type::ARRAY;
         o.via.array.size = 0;
-        o.via.array.ptr = static_cast<msgpack::object*>(u.zone().allocate_align(n*sizeof(msgpack::object)));
+        size_t size = n*sizeof(msgpack::object);
+        if (size / sizeof(msgpack::object) != n) {
+            throw msgpack::array_size_overflow("array size overflow");
+        }
+        o.via.array.ptr = static_cast<msgpack::object*>(u.zone().allocate_align(size));
     }
 };
 
@@ -221,7 +225,11 @@ struct unpack_map {
         if (n > u.limit().map()) throw msgpack::map_size_overflow("map size overflow");
         o.type = msgpack::type::MAP;
         o.via.map.size = 0;
-        o.via.map.ptr = static_cast<msgpack::object_kv*>(u.zone().allocate_align(n*sizeof(msgpack::object_kv)));
+        size_t size = n*sizeof(msgpack::object_kv);
+        if (size / sizeof(msgpack::object_kv) != n) {
+            throw msgpack::map_size_overflow("map size overflow");
+        }
+        o.via.map.ptr = static_cast<msgpack::object_kv*>(u.zone().allocate_align(size));
     }
 };
 
