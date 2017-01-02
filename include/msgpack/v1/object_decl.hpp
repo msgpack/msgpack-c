@@ -85,14 +85,17 @@ void operator<< (msgpack::object& o, const msgpack_object& v);
 
 // obsolete
 template <typename T>
+MSGPACK_DEPRECATED("please use member function version of object::convert(T&)")
 void convert(T& v, msgpack::object const& o);
 
 // obsolete
 template <typename Stream, typename T>
+MSGPACK_DEPRECATED("please use member function version of packer::pack(const T&)")
 void pack(msgpack::packer<Stream>& o, const T& v);
 
 // obsolete
 template <typename Stream, typename T>
+MSGPACK_DEPRECATED("please use member function version of packer::pack(const T&)")
 void pack_copy(msgpack::packer<Stream>& o, T v);
 
 template <typename Stream>

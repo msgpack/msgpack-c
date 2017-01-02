@@ -60,7 +60,6 @@ public:
     ) :
         m_obj(obj), m_zone(msgpack::move(z)) { }
 
-    // obsolete
     void set(msgpack::object const& obj)
         { m_obj = obj; }
 
@@ -400,7 +399,6 @@ class define : public Type {
 public:
     typedef Type msgpack_type;
     typedef define<Type> define_type;
-
     define() {}
     define(const msgpack_type& v) : msgpack_type(v) {}
 
