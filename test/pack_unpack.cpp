@@ -156,7 +156,14 @@ TEST(unpack, int_pointer_off_no_ref)
     std::size_t off = 0;
 
     // obsolete
+#if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 2))
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif // (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 2))
     msgpack::unpack(&oh, sbuf.data(), sbuf.size(), &off);
+#if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 2))
+#pragma GCC diagnostic pop
+#endif // (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 2))
     EXPECT_EQ(1, oh.get().as<int>());
     EXPECT_EQ(off, sbuf.size());
 }
@@ -170,7 +177,14 @@ TEST(unpack, int_pointer_off_no_ref_explicit)
     std::size_t off = 0;
 
     // obsolete
+#if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 2))
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif // (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 2))
     msgpack::unpack(&oh, sbuf.data(), sbuf.size(), &off, MSGPACK_NULLPTR);
+#if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 2))
+#pragma GCC diagnostic pop
+#endif // (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 2))
     EXPECT_EQ(1, oh.get().as<int>());
     EXPECT_EQ(off, sbuf.size());
 }
@@ -183,7 +197,14 @@ TEST(unpack, int_pointer_no_off_ref)
     bool referenced;
 
     // obsolete
+#if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 2))
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif // (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 2))
     msgpack::unpack(&oh, sbuf.data(), sbuf.size(), MSGPACK_NULLPTR, &referenced);
+#if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 2))
+#pragma GCC diagnostic pop
+#endif // (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 2))
     EXPECT_EQ(1, oh.get().as<int>());
     EXPECT_FALSE(referenced);
 }
@@ -197,7 +218,14 @@ TEST(unpack, int_pointer_off_ref)
     std::size_t off = 0;
 
     // obsolete
+#if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 2))
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif // (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 2))
     msgpack::unpack(&oh, sbuf.data(), sbuf.size(), &off, &referenced);
+#if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 2))
+#pragma GCC diagnostic pop
+#endif // (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 2))
     EXPECT_EQ(1, oh.get().as<int>());
     EXPECT_EQ(off, sbuf.size());
     EXPECT_FALSE(referenced);
@@ -211,7 +239,14 @@ TEST(unpack, int_default_null_pointer)
     msgpack::object_handle oh;
 
     // obsolete
+#if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 2))
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif // (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 2))
     msgpack::unpack(&oh, sbuf.data(), sbuf.size());
+#if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 2))
+#pragma GCC diagnostic pop
+#endif // (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 2))
     EXPECT_EQ(1, oh.get().as<int>());
 }
 

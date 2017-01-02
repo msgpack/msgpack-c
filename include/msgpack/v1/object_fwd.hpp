@@ -78,6 +78,7 @@ struct object {
         uint64_t u64;
         int64_t  i64;
 #if defined(MSGPACK_USE_LEGACY_NAME_AS_FLOAT)
+        MSGPACK_DEPRECATED("please use f64 instead")
         double   dec; // obsolete
 #endif // MSGPACK_USE_LEGACY_NAME_AS_FLOAT
         double   f64;
@@ -157,6 +158,7 @@ struct object {
      * @return The pointer of `v`.
      */
     template <typename T>
+    MSGPACK_DEPRECATED("please use reference version instead")
     typename msgpack::enable_if<
         msgpack::is_pointer<T>::value,
         T
@@ -214,6 +216,7 @@ struct object {
      * @param z The pointer to the zone that is used by the object.
      */
     template <typename T>
+    MSGPACK_DEPRECATED("please use zone reference version instead of the pointer version")
     object(const T& v, msgpack::zone* z);
 
     template <typename T>

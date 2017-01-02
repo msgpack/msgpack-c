@@ -1011,6 +1011,7 @@ public:
      * This function is obsolete. Use the reference inteface version of next() function instead of
      * the pointer interface version.
      */
+    MSGPACK_DEPRECATED("please use reference version instead")
     bool next(msgpack::object_handle* result);
 
     /// Unpack one msgpack::object.
@@ -1651,6 +1652,7 @@ inline msgpack::object unpack(
 
 // obsolete
 // pointer version
+MSGPACK_DEPRECATED("please use reference version instead")
 inline void unpack(
     msgpack::object_handle* result,
     const char* data, std::size_t len, std::size_t* off, bool* referenced,

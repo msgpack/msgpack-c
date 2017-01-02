@@ -518,8 +518,15 @@ TEST(limit, unpack_array_over_off_ref_pointer)
         bool ref;
         std::size_t off = 0;
         msgpack::object_handle unp;
+#if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 2))
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif // (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 2))
         msgpack::unpack(&unp, ss.str().c_str(), ss.str().size(), &off, &ref, MSGPACK_NULLPTR, MSGPACK_NULLPTR,
                         msgpack::unpack_limit(2, 0, 0, 0, 0));
+#if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 2))
+#pragma GCC diagnostic pop
+#endif // (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 2))
         EXPECT_TRUE(false);
     }
     catch(msgpack::array_size_overflow const&) {

@@ -126,4 +126,10 @@ template<class T> struct is_pointer : detail::is_pointer_helper<typename remove_
 
 #endif // MSGPACK_USE_CPP03
 
+#if __cplusplus >= 201402L
+#define MSGPACK_DEPRECATED(msg) [[deprecated(msg)]]
+#else  // __cplusplus >= 201402L
+#define MSGPACK_DEPRECATED(msg)
+#endif // __cplusplus >= 201402L
+
 #endif // MSGPACK_V1_CPP_CONFIG_HPP
