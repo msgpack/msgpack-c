@@ -48,6 +48,12 @@ IF (MSGPACK_BOOST)
     )
 ENDIF ()
 
+IF (MSGPACK_USE_X3_PARSE)
+    LIST (APPEND check_PROGRAMS
+        msgpack_x3_parse.cpp
+    )
+ENDIF ()
+
 IF (MSGPACK_CXX11)
     LIST (APPEND check_PROGRAMS
         iterator_cpp11.cpp

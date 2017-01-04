@@ -51,7 +51,7 @@ else
     shared=""
 fi
 
-cmake $cpp11 $bit32 $boost $boost_dir $shared -DMSGPACK_CHAR_SIGN=${CHAR_SIGN} -DMSGPACK_DEFAULT_API_VERSION=${API_VERSION} ..
+cmake $cpp11 $bit32 $boost $boost_dir $shared -DMSGPACK_CHAR_SIGN=${CHAR_SIGN} -DMSGPACK_DEFAULT_API_VERSION=${API_VERSION} -DMSGPACK_USE_X3_PARSE=${X3_PARSE} ..
 
 ret=$?
 if [ $ret -ne 0 ]
@@ -59,7 +59,7 @@ then
     exit $ret
 fi
 
-make
+make msgpack_x3_parse VERBOSE=1
 
 ret=$?
 if [ $ret -ne 0 ]
@@ -67,6 +67,7 @@ then
     exit $ret
 fi
 
+test/msgpack_x3_parse
 make test
 
 ret=$?

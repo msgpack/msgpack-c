@@ -14,5 +14,6 @@
 
 #include "msgpack/v1/unpack.hpp"
 #include "msgpack/v2/unpack.hpp"
+#include "msgpack/v2/x3_unpack.hpp"
 
 #endif // MSGPACK_UNPACK_HPP

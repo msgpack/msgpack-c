@@ -152,14 +152,14 @@ inline msgpack::object_handle unpack(
     msgpack::unique_ptr<msgpack::zone> z(new msgpack::zone);
     referenced = false;
     std::size_t noff = off;
-    unpack_return ret = detail::unpack_imp(
+    parse_return ret = detail::unpack_imp(
         data, len, noff, *z, obj, referenced, f, user_data, limit);
 
     switch(ret) {
-    case UNPACK_SUCCESS:
+    case PARSE_SUCCESS:
         off = noff;
         return msgpack::object_handle(obj, msgpack::move(z));
-    case UNPACK_EXTRA_BYTES:
+    case PARSE_EXTRA_BYTES:
         off = noff;
         return msgpack::object_handle(obj, msgpack::move(z));
     default:
@@ -206,16 +206,16 @@ inline void unpack(
     msgpack::unique_ptr<msgpack::zone> z(new msgpack::zone);
     referenced = false;
     std::size_t noff = off;
-    unpack_return ret = detail::unpack_imp(
+    parse_return ret = detail::unpack_imp(
         data, len, noff, *z, obj, referenced, f, user_data, limit);
 
     switch(ret) {
-    case UNPACK_SUCCESS:
+    case PARSE_SUCCESS:
         off = noff;
         result.set(obj);
         result.zone() = msgpack::move(z);
         return;
-    case UNPACK_EXTRA_BYTES:
+    case PARSE_EXTRA_BYTES:
         off = noff;
         result.set(obj);
         result.zone() = msgpack::move(z);
@@ -266,14 +266,14 @@ inline msgpack::object unpack(
     msgpack::object obj;
     std::size_t noff = off;
     referenced = false;
-    unpack_return ret = detail::unpack_imp(
+    parse_return ret = detail::unpack_imp(
         data, len, noff, z, obj, referenced, f, user_data, limit);
 
     switch(ret) {
-    case UNPACK_SUCCESS:
+    case PARSE_SUCCESS:
         off = noff;
         return obj;
-    case UNPACK_EXTRA_BYTES:
+    case PARSE_EXTRA_BYTES:
         off = noff;
         return obj;
     default:
@@ -315,7 +315,7 @@ inline msgpack::object unpack(
 
 namespace detail {
 
-inline unpack_return
+inline parse_return
 unpack_imp(const char* data, std::size_t len, std::size_t& off,
            msgpack::zone& result_zone, msgpack::object& result, bool& referenced,
            unpack_reference_func f = MSGPACK_NULLPTR, void* user_data = MSGPACK_NULLPTR,
@@ -325,13 +325,13 @@ unpack_imp(const char* data, std::size_t len, std::size_t& off,
     v.set_zone(result_zone);
     referenced = false;
     v.set_referenced(referenced);
-    unpack_return ret = parse_imp(data, len, off, v);
+    parse_return ret = parse_imp(data, len, off, v);
     referenced = v.referenced();
     result = v.data();
     return ret;
 }
 
-} // detail
+} // namespace detail
 
 
 /// @cond

@@ -1335,7 +1335,7 @@ inline void unpacker::remove_nonparsed_buffer()
 
 namespace detail {
 
-inline unpack_return
+inline parse_return
 unpack_imp(const char* data, std::size_t len, std::size_t& off,
            msgpack::zone& result_zone, msgpack::object& result, bool& referenced,
            unpack_reference_func f = MSGPACK_NULLPTR, void* user_data = MSGPACK_NULLPTR,
@@ -1345,7 +1345,7 @@ unpack_imp(const char* data, std::size_t len, std::size_t& off,
 
     if(len <= noff) {
         // FIXME
-        return UNPACK_CONTINUE;
+        return PARSE_CONTINUE;
     }
 
     detail::context ctx(f, user_data, limit);
@@ -1357,23 +1357,23 @@ unpack_imp(const char* data, std::size_t len, std::size_t& off,
 
     int e = ctx.execute(data, len, noff);
     if(e < 0) {
-        return UNPACK_PARSE_ERROR;
+        return PARSE_PARSE_ERROR;
     }
 
     referenced = ctx.user().referenced();
     off = noff;
 
     if(e == 0) {
-        return UNPACK_CONTINUE;
+        return PARSE_CONTINUE;
     }
 
     result = ctx.data();
 
     if(noff < len) {
-        return UNPACK_EXTRA_BYTES;
+        return PARSE_EXTRA_BYTES;
     }
 
-    return UNPACK_SUCCESS;
+    return PARSE_SUCCESS;
 }
 
 } // detail
@@ -1390,19 +1390,19 @@ inline msgpack::object_handle unpack(
     msgpack::unique_ptr<msgpack::zone> z(new msgpack::zone);
     referenced = false;
     std::size_t noff = off;
-    unpack_return ret = detail::unpack_imp(
+    parse_return ret = detail::unpack_imp(
         data, len, noff, *z, obj, referenced, f, user_data, limit);
 
     switch(ret) {
-    case UNPACK_SUCCESS:
+    case PARSE_SUCCESS:
         off = noff;
         return msgpack::object_handle(obj, msgpack::move(z));
-    case UNPACK_EXTRA_BYTES:
+    case PARSE_EXTRA_BYTES:
         off = noff;
         return msgpack::object_handle(obj, msgpack::move(z));
-    case UNPACK_CONTINUE:
+    case PARSE_CONTINUE:
         throw msgpack::insufficient_bytes("insufficient bytes");
-    case UNPACK_PARSE_ERROR:
+    case PARSE_PARSE_ERROR:
     default:
         throw msgpack::parse_error("parse error");
     }
@@ -1447,23 +1447,23 @@ inline void unpack(
     msgpack::unique_ptr<msgpack::zone> z(new msgpack::zone);
     referenced = false;
     std::size_t noff = off;
-    unpack_return ret = detail::unpack_imp(
+    parse_return ret = detail::unpack_imp(
         data, len, noff, *z, obj, referenced, f, user_data, limit);
 
     switch(ret) {
-    case UNPACK_SUCCESS:
+    case PARSE_SUCCESS:
         off = noff;
         result.set(obj);
         result.zone() = msgpack::move(z);
         return;
-    case UNPACK_EXTRA_BYTES:
+    case PARSE_EXTRA_BYTES:
         off = noff;
         result.set(obj);
         result.zone() = msgpack::move(z);
         return;
-    case UNPACK_CONTINUE:
+    case PARSE_CONTINUE:
         throw msgpack::insufficient_bytes("insufficient bytes");
-    case UNPACK_PARSE_ERROR:
+    case PARSE_PARSE_ERROR:
     default:
         throw msgpack::parse_error("parse error");
     }
@@ -1510,19 +1510,19 @@ inline msgpack::object unpack(
     msgpack::object obj;
     std::size_t noff = off;
     referenced = false;
-    unpack_return ret = detail::unpack_imp(
+    parse_return ret = detail::unpack_imp(
         data, len, noff, z, obj, referenced, f, user_data, limit);
 
     switch(ret) {
-    case UNPACK_SUCCESS:
+    case PARSE_SUCCESS:
         off = noff;
         return obj;
-    case UNPACK_EXTRA_BYTES:
+    case PARSE_EXTRA_BYTES:
         off = noff;
         return obj;
-    case UNPACK_CONTINUE:
+    case PARSE_CONTINUE:
         throw msgpack::insufficient_bytes("insufficient bytes");
-    case UNPACK_PARSE_ERROR:
+    case PARSE_PARSE_ERROR:
     default:
         throw msgpack::parse_error("parse error");
     }

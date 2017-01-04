@@ -3,18 +3,28 @@ cache:
   - apt
 before_install:
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test; fi
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo add-apt-repository -y ppa:h-rayflood/llvm-upper; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo add-apt-repository -y 'deb http://apt.llvm.org/precise/ llvm-toolchain-precise-3.8 main'; fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get update -qq; fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get update; fi
 install:
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install -qq gcc-4.8-multilib g++-4.8-multilib; fi
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install --allow-unauthenticated -qq clang-3.6; fi
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 90; fi
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 90; fi
+
+  - if [ "$CXX" == "clang++" ]; then export CXXFLAGS="-stdlib=libc++"; fi
+  - if [ "$CXX" == "clang++" ]; then svn co --quiet http://llvm.org/svn/llvm-project/libcxx/tags/RELEASE_380/final libcxx; fi
+  - if [ "$CXX" == "clang++" ]; then cd libcxx/lib && bash buildit; fi
+  - if [ "$CXX" == "clang++" ]; then sudo cp ./libc++.so.1.0 /usr/lib/; fi
+  - if [ "$CXX" == "clang++" ]; then sudo mkdir /usr/include/c++/v1; fi
+  - if [ "$CXX" == "clang++" ]; then cd .. && sudo cp -r include/* /usr/include/c++/v1/; fi
+  - if [ "$CXX" == "clang++" ]; then cd /usr/lib && sudo ln -sf libc++.so.1.0 libc++.so; fi
+  - if [ "$CXX" == "clang++" ]; then sudo ln -sf libc++.so.1.0 libc++.so.1 && cd $cwd; fi
+
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install -qq gcc-5-multilib g++-5-multilib; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install --allow-unauthenticated -qq clang-3.8; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 90; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 90; fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install -y lib32gcc1; fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install -y libc6-i386; fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install -y lib32z1-dev; fi
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install -y lib32stdc++6; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install -y lib32stdc++6-6-dbg; fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install -y bzip2; fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install -y libc6-dbg; fi
   - wget https://github.com/google/googletest/archive/release-1.7.0.zip -O googletest-release-1.7.0.zip
@@ -36,7 +46,7 @@ matrix:
       env: ACTION="ci/build_cmake.sh"  VERSION="cpp03" ARCH="64" LIBPATH="/usr/local/lib"   BOOST="boost" BOOST_INC="/usr/local/boost"              CHAR_SIGN="unsigned" API_VERSION="1"
     - os: osx
       compiler: clang
-      env:  ACTION="ci/build_cmake.sh" VERSION="cpp11" ARCH="64" LIBPATH="/usr/local/lib"   BOOST="boost" BOOST_INC="/usr/local/boost"              CHAR_SIGN="signed"   API_VERSION="2"
+      env:  ACTION="ci/build_cmake.sh" VERSION="cpp11" ARCH="64" LIBPATH="/usr/local/lib"   BOOST="boost" BOOST_INC="/usr/local/boost"              CHAR_SIGN="signed"   API_VERSION="2" X3_PARSE="ON"
     - os: osx
       compiler: clang
       env: ACTION="ci/build_cmake.sh"  VERSION="cpp11" ARCH="64" LIBPATH="/usr/local/lib"   BOOST=""      BOOST_INC=""                              CHAR_SIGN="signed"   API_VERSION="2"
@@ -51,7 +61,7 @@ matrix:
       env: ACTION="ci/build_cmake.sh"  VERSION="cpp03" ARCH="32" LIBPATH="/usr/local/lib32" BOOST=""      BOOST_INC=""                              CHAR_SIGN="signed"   API_VERSION="2"
     - os: linux
       compiler: clang
-      env: ACTION="ci/build_cmake.sh"  VERSION="cpp11" ARCH="64" LIBPATH="/usr/local/lib"   BOOST="boost" BOOST_INC="/usr/local/boost"              CHAR_SIGN="signed"   API_VERSION="2"
+      env: ACTION="ci/build_cmake.sh"  VERSION="cpp11" ARCH="64" LIBPATH="/usr/local/lib"   BOOST="boost" BOOST_INC="/usr/local/boost"              CHAR_SIGN="signed"   API_VERSION="2" X3_PARSE="ON"
     - os: linux
       compiler: clang
       env: ACTION="ci/build_cmake.sh"  VERSION="cpp11" ARCH="32" LIBPATH="/usr/local/lib32" BOOST=""      BOOST_INC=""                 SHARED="OFF" CHAR_SIGN="unsigned" API_VERSION="2"
@@ -60,7 +70,7 @@ matrix:
       env: ACTION="ci/build_cmake.sh"  VERSION="cpp11" ARCH="64" LIBPATH="/usr/local/lib"   BOOST=""      BOOST_INC=""                              CHAR_SIGN="signed"   API_VERSION="2"
     - os: linux
       compiler: gcc
-      env: ACTION="ci/build_cmake.sh"  VERSION="cpp11" ARCH="32" LIBPATH="/usr/local/lib32" BOOST="boost" BOOST_INC="/usr/local/boost"              CHAR_SIGN="unsigned" API_VERSION="2"
+      env: ACTION="ci/build_cmake.sh"  VERSION="cpp11" ARCH="32" LIBPATH="/usr/local/lib32" BOOST="boost" BOOST_INC="/usr/local/boost"              CHAR_SIGN="unsigned" API_VERSION="2" X3_PARSE="ON"
     - os: linux
       compiler: gcc
       env: ACTION="ci/build_cmake.sh"  VERSION="cpp03" ARCH="64" LIBPATH="/usr/local/lib"   BOOST=""      BOOST_INC=""                              CHAR_SIGN="unsigned" API_VERSION="2"
@@ -72,4 +82,4 @@ matrix:
       env: ACTION="ci/build_cmake.sh"  VERSION="cpp03" ARCH="32" LIBPATH="/usr/local/lib32" BOOST="boost" BOOST_INC="/usr/local/boost" SHARED="OFF" CHAR_SIGN="signed"   API_VERSION="2"
 
 script:
-  - git clean -xdf && CMAKE_LIBRARY_PATH=${LIBPATH} ${ACTION} ${VERSION} ${ARCH} ${BOOST} ${BOOST_INC} ${CHAR_SIGN}
+  - git clean -xdf && CMAKE_LIBRARY_PATH=${LIBPATH} ${ACTION} ${VERSION} ${ARCH} ${BOOST} ${BOOST_INC}
