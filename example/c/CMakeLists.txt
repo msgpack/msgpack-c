@@ -1,6 +1,9 @@
-INCLUDE_DIRECTORIES (
-    ../include
-)
+IF (MSGPACK_ENABLE_SHARED)
+    SET (MSGPACK_LIB msgpackc)
+ELSE ()
+    SET (MSGPACK_LIB msgpackc-static)
+ENDIF ()
+
 
 LIST (APPEND exec_PROGRAMS
     lib_buffer_unpack.c
@@ -17,7 +20,7 @@ FOREACH (source_file ${exec_PROGRAMS})
         ${source_file}
     )
     TARGET_LINK_LIBRARIES (${source_file_we}
-        msgpackc
+        ${MSGPACK_LIB}
     )
     IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
         SET_PROPERTY (TARGET ${source_file_we} APPEND_STRING PROPERTY COMPILE_FLAGS "-Wall -Wextra -Werror -g -O3")

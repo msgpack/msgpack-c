@@ -16,42 +16,14 @@ then
     exit $ret
 fi
 
-if [ $1 = "cpp11" ]
+if [ "${ARCH}" == "32" ]
 then
-    cpp11="-DMSGPACK_CXX11=ON"
+    export BIT32="ON"
 else
-    cpp11=""
+    export BIT32="OFF"
 fi
 
-if [ $2 = "32" ]
-then
-    bit32="-DMSGPACK_32BIT=ON"
-else
-    bit32=""
-fi
-
-if [ $3 = "boost" ]
-then
-    boost="-DMSGPACK_BOOST=ON"
-else
-    boost=""
-fi
-
-if [ "$4" != "" ]
-then
-    boost_dir="-DMSGPACK_BOOST_DIR=$4"
-else
-    boost_dir=""
-fi
-
-if [ "$5" = "OFF" ]
-then
-    shared="-DMSGPACK_ENABLE_SHARED=OFF"
-else
-    shared=""
-fi
-
-cmake $cpp11 $bit32 $boost $boost_dir $shared -DMSGPACK_CHAR_SIGN=${CHAR_SIGN} -DMSGPACK_DEFAULT_API_VERSION=${API_VERSION} -DMSGPACK_USE_X3_PARSE=${X3_PARSE} ..
+cmake -DMSGPACK_CXX11=${CXX11} -DMSGPACK_32BIT=${BIT32} -DMSGPACK_BOOST=${BOOST} -DMSGPACK_ENABLE_SHARED=${SHARED} -DMSGPACK_CHAR_SIGN=${CHAR_SIGN} -DMSGPACK_DEFAULT_API_VERSION=${API_VERSION} -DMSGPACK_USE_X3_PARSE=${X3_PARSE} ..
 
 ret=$?
 if [ $ret -ne 0 ]
@@ -59,7 +31,7 @@ then
     exit $ret
 fi
 
-make msgpack_x3_parse VERBOSE=1
+make
 
 ret=$?
 if [ $ret -ne 0 ]
@@ -67,7 +39,6 @@ then
     exit $ret
 fi
 
-test/msgpack_x3_parse
 make test
 
 ret=$?
@@ -84,7 +55,7 @@ then
     exit $ret
 fi
 
-if [ "$2" != "32" ] && [ `uname` = "Linux" ]
+if [ "${ARCH}" != "32" ] && [ `uname` = "Linux" ]
 then
     ctest -T memcheck | tee memcheck.log
 
