@@ -226,6 +226,7 @@ IF (MSGPACK_ENABLE_CXX)
         include/msgpack/object_fwd_decl.hpp
         include/msgpack/pack.hpp
         include/msgpack/pack_decl.hpp
+        include/msgpack/parse_return.hpp
         include/msgpack/preprocessor.hpp
         include/msgpack/preprocessor/arithmetic.hpp
         include/msgpack/preprocessor/arithmetic/add.hpp
@@ -500,6 +501,7 @@ IF (MSGPACK_ENABLE_CXX)
         include/msgpack/type.hpp
         include/msgpack/unpack.hpp
         include/msgpack/unpack_decl.hpp
+        include/msgpack/unpack_exception.hpp
         include/msgpack/v1/adaptor/adaptor_base.hpp
         include/msgpack/v1/adaptor/adaptor_base_decl.hpp
         include/msgpack/v1/adaptor/array_ref.hpp
@@ -586,11 +588,13 @@ IF (MSGPACK_ENABLE_CXX)
         include/msgpack/v1/object_fwd_decl.hpp
         include/msgpack/v1/pack.hpp
         include/msgpack/v1/pack_decl.hpp
+        include/msgpack/v1/parse_return.hpp
         include/msgpack/v1/preprocessor.hpp
         include/msgpack/v1/sbuffer.hpp
         include/msgpack/v1/sbuffer_decl.hpp
         include/msgpack/v1/unpack.hpp
         include/msgpack/v1/unpack_decl.hpp
+        include/msgpack/v1/unpack_exception.hpp
         include/msgpack/v1/version.hpp
         include/msgpack/v1/versioning.hpp
         include/msgpack/v1/vrefbuffer.hpp
@@ -621,20 +625,26 @@ IF (MSGPACK_ENABLE_CXX)
         include/msgpack/v2/adaptor/size_equal_only_decl.hpp
         include/msgpack/v2/adaptor/v4raw_decl.hpp
         include/msgpack/v2/cpp_config_decl.hpp
+        include/msgpack/v2/create_object_visitor.hpp
         include/msgpack/v2/detail/cpp03_zone_decl.hpp
         include/msgpack/v2/detail/cpp11_zone_decl.hpp
         include/msgpack/v2/fbuffer_decl.hpp
         include/msgpack/v2/iterator_decl.hpp
         include/msgpack/v2/meta_decl.hpp
+        include/msgpack/v2/null_visitor.hpp
         include/msgpack/v2/object.hpp
         include/msgpack/v2/object_decl.hpp
         include/msgpack/v2/object_fwd.hpp
         include/msgpack/v2/object_fwd_decl.hpp
         include/msgpack/v2/pack_decl.hpp
+        include/msgpack/v2/parse.hpp
+        include/msgpack/v2/parse_return.hpp
         include/msgpack/v2/sbuffer_decl.hpp
         include/msgpack/v2/unpack.hpp
         include/msgpack/v2/unpack_decl.hpp
         include/msgpack/v2/vrefbuffer_decl.hpp
+        include/msgpack/v2/x3_parse.hpp
+        include/msgpack/v2/x3_unpack.hpp
         include/msgpack/v2/zbuffer_decl.hpp
         include/msgpack/v2/zone_decl.hpp
         include/msgpack/version.hpp

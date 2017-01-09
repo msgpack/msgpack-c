@@ -14,12 +14,12 @@
 #include "msgpack/unpack_decl.hpp"
 #include "msgpack/object.hpp"
 #include "msgpack/zone.hpp"
+#include "msgpack/unpack_exception.hpp"
 #include "msgpack/unpack_define.h"
 #include "msgpack/cpp_config.hpp"
 #include "msgpack/sysdep.h"
 
 #include <memory>
-#include <stdexcept>
 
 #if !defined(MSGPACK_USE_CPP03)
 #include <atomic>
@@ -38,96 +38,6 @@ namespace msgpack {
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
 /// @endcond
-
-struct unpack_error : public std::runtime_error {
-    explicit unpack_error(const std::string& msg)
-        :std::runtime_error(msg) {}
-#if !defined(MSGPACK_USE_CPP03)
-    explicit unpack_error(const char* msg):
-        std::runtime_error(msg) {}
-#endif // !defined(MSGPACK_USE_CPP03)
-};
-
-struct parse_error : public unpack_error {
-    explicit parse_error(const std::string& msg)
-        :unpack_error(msg) {}
-#if !defined(MSGPACK_USE_CPP03)
-    explicit parse_error(const char* msg)
-        :unpack_error(msg) {}
-#endif // !defined(MSGPACK_USE_CPP03)
-};
-
-struct insufficient_bytes : public unpack_error {
-    explicit insufficient_bytes(const std::string& msg)
-        :unpack_error(msg) {}
-#if !defined(MSGPACK_USE_CPP03)
-    explicit insufficient_bytes(const char* msg)
-        :unpack_error(msg) {}
-#endif // !defined(MSGPACK_USE_CPP03)
-};
-
-struct size_overflow : public unpack_error {
-    explicit size_overflow(const std::string& msg)
-        :unpack_error(msg) {}
-#if !defined(MSGPACK_USE_CPP03)
-    explicit size_overflow(const char* msg)
-        :unpack_error(msg) {}
-#endif
-};
-
-struct array_size_overflow : public size_overflow {
-    array_size_overflow(const std::string& msg)
-        :size_overflow(msg) {}
-#if !defined(MSGPACK_USE_CPP03)
-    array_size_overflow(const char* msg)
-        :size_overflow(msg) {}
-#endif
-};
-
-struct map_size_overflow : public size_overflow {
-    map_size_overflow(const std::string& msg)
-        :size_overflow(msg) {}
-#if !defined(MSGPACK_USE_CPP03)
-    map_size_overflow(const char* msg)
-        :size_overflow(msg) {}
-#endif
-};
-
-struct str_size_overflow : public size_overflow {
-    str_size_overflow(const std::string& msg)
-        :size_overflow(msg) {}
-#if !defined(MSGPACK_USE_CPP03)
-    str_size_overflow(const char* msg)
-        :size_overflow(msg) {}
-#endif
-};
-
-struct bin_size_overflow : public size_overflow {
-    bin_size_overflow(const std::string& msg)
-        :size_overflow(msg) {}
-#if !defined(MSGPACK_USE_CPP03)
-    bin_size_overflow(const char* msg)
-        :size_overflow(msg) {}
-#endif
-};
-
-struct ext_size_overflow : public size_overflow {
-    ext_size_overflow(const std::string& msg)
-        :size_overflow(msg) {}
-#if !defined(MSGPACK_USE_CPP03)
-    ext_size_overflow(const char* msg)
-        :size_overflow(msg) {}
-#endif
-};
-
-struct depth_size_overflow : public size_overflow {
-    depth_size_overflow(const std::string& msg)
-        :size_overflow(msg) {}
-#if !defined(MSGPACK_USE_CPP03)
-    depth_size_overflow(const char* msg)
-        :size_overflow(msg) {}
-#endif
-};
 
 namespace detail {
 
@@ -1425,7 +1335,7 @@ inline void unpacker::remove_nonparsed_buffer()
 
 namespace detail {
 
-inline unpack_return
+inline parse_return
 unpack_imp(const char* data, std::size_t len, std::size_t& off,
            msgpack::zone& result_zone, msgpack::object& result, bool& referenced,
            unpack_reference_func f = MSGPACK_NULLPTR, void* user_data = MSGPACK_NULLPTR,
@@ -1435,7 +1345,7 @@ unpack_imp(const char* data, std::size_t len, std::size_t& off,
 
     if(len <= noff) {
         // FIXME
-        return UNPACK_CONTINUE;
+        return PARSE_CONTINUE;
     }
 
     detail::context ctx(f, user_data, limit);
@@ -1447,23 +1357,23 @@ unpack_imp(const char* data, std::size_t len, std::size_t& off,
 
     int e = ctx.execute(data, len, noff);
     if(e < 0) {
-        return UNPACK_PARSE_ERROR;
+        return PARSE_PARSE_ERROR;
     }
 
     referenced = ctx.user().referenced();
     off = noff;
 
     if(e == 0) {
-        return UNPACK_CONTINUE;
+        return PARSE_CONTINUE;
     }
 
     result = ctx.data();
 
     if(noff < len) {
-        return UNPACK_EXTRA_BYTES;
+        return PARSE_EXTRA_BYTES;
     }
 
-    return UNPACK_SUCCESS;
+    return PARSE_SUCCESS;
 }
 
 } // detail
@@ -1480,19 +1390,19 @@ inline msgpack::object_handle unpack(
     msgpack::unique_ptr<msgpack::zone> z(new msgpack::zone);
     referenced = false;
     std::size_t noff = off;
-    unpack_return ret = detail::unpack_imp(
+    parse_return ret = detail::unpack_imp(
         data, len, noff, *z, obj, referenced, f, user_data, limit);
 
     switch(ret) {
-    case UNPACK_SUCCESS:
+    case PARSE_SUCCESS:
         off = noff;
         return msgpack::object_handle(obj, msgpack::move(z));
-    case UNPACK_EXTRA_BYTES:
+    case PARSE_EXTRA_BYTES:
         off = noff;
         return msgpack::object_handle(obj, msgpack::move(z));
-    case UNPACK_CONTINUE:
+    case PARSE_CONTINUE:
         throw msgpack::insufficient_bytes("insufficient bytes");
-    case UNPACK_PARSE_ERROR:
+    case PARSE_PARSE_ERROR:
     default:
         throw msgpack::parse_error("parse error");
     }
@@ -1537,23 +1447,23 @@ inline void unpack(
     msgpack::unique_ptr<msgpack::zone> z(new msgpack::zone);
     referenced = false;
     std::size_t noff = off;
-    unpack_return ret = detail::unpack_imp(
+    parse_return ret = detail::unpack_imp(
         data, len, noff, *z, obj, referenced, f, user_data, limit);
 
     switch(ret) {
-    case UNPACK_SUCCESS:
+    case PARSE_SUCCESS:
         off = noff;
         result.set(obj);
         result.zone() = msgpack::move(z);
         return;
-    case UNPACK_EXTRA_BYTES:
+    case PARSE_EXTRA_BYTES:
         off = noff;
         result.set(obj);
         result.zone() = msgpack::move(z);
         return;
-    case UNPACK_CONTINUE:
+    case PARSE_CONTINUE:
         throw msgpack::insufficient_bytes("insufficient bytes");
-    case UNPACK_PARSE_ERROR:
+    case PARSE_PARSE_ERROR:
     default:
         throw msgpack::parse_error("parse error");
     }
@@ -1600,19 +1510,19 @@ inline msgpack::object unpack(
     msgpack::object obj;
     std::size_t noff = off;
     referenced = false;
-    unpack_return ret = detail::unpack_imp(
+    parse_return ret = detail::unpack_imp(
         data, len, noff, z, obj, referenced, f, user_data, limit);
 
     switch(ret) {
-    case UNPACK_SUCCESS:
+    case PARSE_SUCCESS:
         off = noff;
         return obj;
-    case UNPACK_EXTRA_BYTES:
+    case PARSE_EXTRA_BYTES:
         off = noff;
         return obj;
-    case UNPACK_CONTINUE:
+    case PARSE_CONTINUE:
         throw msgpack::insufficient_bytes("insufficient bytes");
-    case UNPACK_PARSE_ERROR:
+    case PARSE_PARSE_ERROR:
     default:
         throw msgpack::parse_error("parse error");
     }
