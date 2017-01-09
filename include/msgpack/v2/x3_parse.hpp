@@ -332,7 +332,7 @@ const auto mp_object_def =
         )
     ]
     >>
-    x3:: raw [
+    x3::raw [
         *(x3::eps [more] >> x3::char_)
         >> x3::eps [done]
     ][
@@ -340,7 +340,8 @@ const auto mp_object_def =
             [](auto& ctx){
                 auto& app_specific = x3::get<tag_app_specific>(ctx).get();
                 auto const& str = _attr(ctx);
-                app_specific.vis.visit_str(str.size() ? &str[0] : nullptr, str.size());
+                std::size_t size = std::distance(str.begin(), str.end());
+                app_specific.vis.visit_str(size ? &str.front() : nullptr, size);
             }
         )
     ]
@@ -355,7 +356,7 @@ const auto mp_object_def =
         )
     ]
     >>
-    x3:: raw [
+    x3::raw [
         *(x3::eps [more] >> x3::char_)
         >> x3::eps [done]
     ][
@@ -363,7 +364,8 @@ const auto mp_object_def =
             [](auto& ctx){
                 auto& app_specific = x3::get<tag_app_specific>(ctx).get();
                 auto const& str = _attr(ctx);
-                app_specific.vis.visit_str(str.size() ? &str[0] : nullptr, str.size());
+                std::size_t size = std::distance(str.begin(), str.end());
+                app_specific.vis.visit_str(size ? &str.front() : nullptr, size);
             }
         )
     ]
@@ -378,7 +380,7 @@ const auto mp_object_def =
         )
     ]
     >>
-    x3:: raw [
+    x3::raw [
         *(x3::eps [more] >> x3::char_)
         >> x3::eps [done]
     ][
@@ -386,7 +388,8 @@ const auto mp_object_def =
             [](auto& ctx){
                 auto& app_specific = x3::get<tag_app_specific>(ctx).get();
                 auto const& str = _attr(ctx);
-                app_specific.vis.visit_str(str.size() ? &str[0] : nullptr, str.size());
+                std::size_t size = std::distance(str.begin(), str.end());
+                app_specific.vis.visit_str(size ? &str.front() : nullptr, size);
             }
         )
     ]
@@ -401,7 +404,7 @@ const auto mp_object_def =
         )
     ]
     >>
-    x3:: raw [
+    x3::raw [
         *(x3::eps [more] >> x3::char_)
         >> x3::eps [done]
     ][
@@ -409,7 +412,8 @@ const auto mp_object_def =
             [](auto& ctx){
                 auto& app_specific = x3::get<tag_app_specific>(ctx).get();
                 auto const& str = _attr(ctx);
-                app_specific.vis.visit_str(str.size() ? &str[0] : nullptr, str.size());
+                std::size_t size = std::distance(str.begin(), str.end());
+                app_specific.vis.visit_str(size ? &str.front() : nullptr, size);
             }
         )
     ]
@@ -424,7 +428,7 @@ const auto mp_object_def =
         )
     ]
     >>
-    x3:: raw [
+    x3::raw [
         *(x3::eps [more] >> x3::char_)
         >> x3::eps [done]
     ][
@@ -432,7 +436,8 @@ const auto mp_object_def =
             [](auto& ctx){
                 auto& app_specific = x3::get<tag_app_specific>(ctx).get();
                 auto const& bin = _attr(ctx);
-                app_specific.vis.visit_bin(bin.size() ? &bin[0] : nullptr, bin.size());
+                std::size_t size = std::distance(bin.begin(), bin.end());
+                app_specific.vis.visit_bin(size ? &bin.front() : nullptr, size);
             }
         )
     ]
@@ -447,7 +452,7 @@ const auto mp_object_def =
         )
     ]
     >>
-    x3:: raw [
+    x3::raw [
         *(x3::eps [more] >> x3::char_)
         >> x3::eps [done]
     ][
@@ -455,7 +460,8 @@ const auto mp_object_def =
             [](auto& ctx){
                 auto& app_specific = x3::get<tag_app_specific>(ctx).get();
                 auto const& bin = _attr(ctx);
-                app_specific.vis.visit_bin(bin.size() ? &bin[0] : nullptr, bin.size());
+                std::size_t size = std::distance(bin.begin(), bin.end());
+                app_specific.vis.visit_bin(size ? &bin.front() : nullptr, size);
             }
         )
     ]
@@ -470,7 +476,7 @@ const auto mp_object_def =
         )
     ]
     >>
-    x3:: raw [
+    x3::raw [
         *(x3::eps [more] >> x3::char_)
         >> x3::eps [done]
     ][
@@ -478,7 +484,8 @@ const auto mp_object_def =
             [](auto& ctx){
                 auto& app_specific = x3::get<tag_app_specific>(ctx).get();
                 auto const& bin = _attr(ctx);
-                app_specific.vis.visit_bin(bin.size() ? &bin[0] : nullptr, bin.size());
+                std::size_t size = std::distance(bin.begin(), bin.end());
+                app_specific.vis.visit_bin(size ? &bin.front() : nullptr, size);
             }
         )
     ]
@@ -577,7 +584,7 @@ const auto mp_object_def =
         )
     ]
     >>
-    x3:: raw [
+    x3::raw [
         *(x3::eps [more] >> x3::char_)
         >> x3::eps [done]
     ][
@@ -585,7 +592,8 @@ const auto mp_object_def =
             [](auto& ctx){
                 auto& app_specific = x3::get<tag_app_specific>(ctx).get();
                 auto const& ext = _attr(ctx);
-                app_specific.vis.visit_ext(ext.size() ? &ext[0] : nullptr, ext.size());
+                std::size_t size = std::distance(ext.begin(), ext.end());
+                app_specific.vis.visit_ext(size ? &ext.front() : nullptr, size);
             }
         )
     ]
@@ -600,7 +608,7 @@ const auto mp_object_def =
         )
     ]
     >>
-    x3:: raw [
+    x3::raw [
         *(x3::eps [more] >> x3::char_)
         >> x3::eps [done]
     ][
@@ -608,7 +616,8 @@ const auto mp_object_def =
             [](auto& ctx){
                 auto& app_specific = x3::get<tag_app_specific>(ctx).get();
                 auto const& ext = _attr(ctx);
-                app_specific.vis.visit_ext(ext.size() ? &ext[0] : nullptr, ext.size());
+                std::size_t size = std::distance(ext.begin(), ext.end());
+                app_specific.vis.visit_ext(size ? &ext.front() : nullptr, size);
             }
         )
     ]
@@ -623,7 +632,7 @@ const auto mp_object_def =
         )
     ]
     >>
-    x3:: raw [
+    x3::raw [
         *(x3::eps [more] >> x3::char_)
         >> x3::eps [done]
     ][
@@ -631,7 +640,8 @@ const auto mp_object_def =
             [](auto& ctx){
                 auto& app_specific = x3::get<tag_app_specific>(ctx).get();
                 auto const& ext = _attr(ctx);
-                app_specific.vis.visit_ext(ext.size() ? &ext[0] : nullptr, ext.size());
+                std::size_t size = std::distance(ext.begin(), ext.end());
+                app_specific.vis.visit_ext(size ? &ext.front() : nullptr, size);
             }
         )
     ]
@@ -646,7 +656,7 @@ const auto mp_object_def =
         )
     ]
     >>
-    x3:: raw [
+    x3::raw [
         *(x3::eps [more] >> x3::char_)
         >> x3::eps [done]
     ][
@@ -654,7 +664,8 @@ const auto mp_object_def =
             [](auto& ctx){
                 auto& app_specific = x3::get<tag_app_specific>(ctx).get();
                 auto const& ext = _attr(ctx);
-                app_specific.vis.visit_ext(ext.size() ? &ext[0] : nullptr, ext.size());
+                std::size_t size = std::distance(ext.begin(), ext.end());
+                app_specific.vis.visit_ext(size ? &ext.front() : nullptr, size);
             }
         )
     ]
@@ -669,7 +680,7 @@ const auto mp_object_def =
         )
     ]
     >>
-    x3:: raw [
+    x3::raw [
         *(x3::eps [more] >> x3::char_)
         >> x3::eps [done]
     ][
@@ -677,7 +688,8 @@ const auto mp_object_def =
             [](auto& ctx){
                 auto& app_specific = x3::get<tag_app_specific>(ctx).get();
                 auto const& ext = _attr(ctx);
-                app_specific.vis.visit_ext(ext.size() ? &ext[0] : nullptr, ext.size());
+                std::size_t size = std::distance(ext.begin(), ext.end());
+                app_specific.vis.visit_ext(size ? &ext.front() : nullptr, size);
             }
         )
     ]
@@ -692,7 +704,7 @@ const auto mp_object_def =
         )
     ]
     >>
-    x3:: raw [
+    x3::raw [
         *(x3::eps [more] >> x3::char_)
         >> x3::eps [done]
     ][
@@ -700,7 +712,8 @@ const auto mp_object_def =
             [](auto& ctx){
                 auto& app_specific = x3::get<tag_app_specific>(ctx).get();
                 auto const& ext = _attr(ctx);
-                app_specific.vis.visit_ext(ext.size() ? &ext[0] : nullptr, ext.size());
+                std::size_t size = std::distance(ext.begin(), ext.end());
+                app_specific.vis.visit_ext(size ? &ext.front() : nullptr, size);
             }
         )
     ]
@@ -715,7 +728,7 @@ const auto mp_object_def =
         )
     ]
     >>
-    x3:: raw [
+    x3::raw [
         *(x3::eps [more] >> x3::char_)
         >> x3::eps [done]
     ][
@@ -723,7 +736,8 @@ const auto mp_object_def =
             [](auto& ctx){
                 auto& app_specific = x3::get<tag_app_specific>(ctx).get();
                 auto const& ext = _attr(ctx);
-                app_specific.vis.visit_ext(ext.size() ? &ext[0] : nullptr, ext.size());
+                std::size_t size = std::distance(ext.begin(), ext.end());
+                app_specific.vis.visit_ext(size ? &ext.front() : nullptr, size);
             }
         )
     ]
@@ -738,7 +752,7 @@ const auto mp_object_def =
         )
     ]
     >>
-    x3:: raw [
+    x3::raw [
         *(x3::eps [more] >> x3::char_)
         >> x3::eps [done]
     ][
@@ -746,7 +760,8 @@ const auto mp_object_def =
             [](auto& ctx){
                 auto& app_specific = x3::get<tag_app_specific>(ctx).get();
                 auto const& ext = _attr(ctx);
-                app_specific.vis.visit_ext(ext.size() ? &ext[0] : nullptr, ext.size());
+                std::size_t size = std::distance(ext.begin(), ext.end());
+                app_specific.vis.visit_ext(size ? &ext.front() : nullptr, size);
             }
         )
     ];

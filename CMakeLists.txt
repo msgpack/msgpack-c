@@ -88,20 +88,25 @@ IF (MSGPACK_32BIT)
    ENDIF ()
 ENDIF ()
 
+OPTION (MSGPACK_BUILD_EXAMPLES "Build msgpack examples." ON)
+
 IF (MSGPACK_BOOST)
    SET (CMAKE_CXX_FLAGS "-DMSGPACK_USE_BOOST ${CMAKE_CXX_FLAGS}")
-   SET (Boost_USE_STATIC_LIBS        ON) # only find static libs
-   SET (Boost_USE_MULTITHREADED      ON)
-   SET (Boost_USE_STATIC_RUNTIME    OFF)
-   FIND_PACKAGE (Boost COMPONENTS chrono timer system)
-   IF (Boost_INCLUDE_DIRS)
-       INCLUDE_DIRECTORIES (
-           ${Boost_INCLUDE_DIRS}
-       )
-   ENDIF ()
-   INCLUDE_DIRECTORIES (
-       ${MSGPACK_BOOST_DIR}
-   )
+ENDIF ()
+
+SET (Boost_USE_STATIC_LIBS        ON) # only find static libs
+SET (Boost_USE_MULTITHREADED      ON)
+SET (Boost_USE_STATIC_RUNTIME    OFF)
+FIND_PACKAGE (Boost COMPONENTS chrono context timer system)
+IF (Boost_INCLUDE_DIRS)
+    INCLUDE_DIRECTORIES (
+        ${Boost_INCLUDE_DIRS}
+    )
+ENDIF ()
+IF (MSGPACK_BOOST_DIR)
+    INCLUDE_DIRECTORIES (
+        ${MSGPACK_BOOST_DIR}
+    )
 ENDIF ()
 
 IF (MSGPACK_CHAR_SIGN)
@@ -141,7 +146,6 @@ FIND_PACKAGE (Threads)
 IF (GTEST_FOUND AND ZLIB_FOUND AND THREADS_FOUND)
     OPTION (MSGPACK_BUILD_TESTS "Build msgpack tests." ON)
 ENDIF ()
-OPTION (MSGPACK_BUILD_EXAMPLES "Build msgpack examples." ON)
 
 OPTION (MSGPACK_ENABLE_CXX "Enable C++ interface." ON)
 OPTION (MSGPACK_ENABLE_SHARED "Build shared libaries in addition to static libraries." ON)

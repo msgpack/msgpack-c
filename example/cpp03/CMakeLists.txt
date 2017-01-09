@@ -22,13 +22,11 @@ IF (NOT MSVC)
     )
 ENDIF ()
 
-IF (MSGPACK_BOOST)
-    IF (NOT MSVC)
-        LIST (APPEND with_boost_lib_PROGRAMS
-            speed_test.cpp
-            speed_test_nested_array.cpp
-        )
-    ENDIF ()
+IF (Boost_TIMER_LIBRARY AND Boost_CHRONO_LIBRARY AND Boost_SYSTEM_LIBRARY)
+    LIST (APPEND with_boost_lib_PROGRAMS
+        speed_test.cpp
+        speed_test_nested_array.cpp
+    )
 ENDIF ()
 
 FOREACH (source_file ${exec_PROGRAMS})
@@ -56,10 +54,10 @@ FOREACH (source_file ${with_pthread_PROGRAMS})
         ${source_file}
     )
     TARGET_LINK_LIBRARIES (${source_file_we}
-        pthread
+        ${CMAKE_THREAD_LIBS_INIT}
     )
     IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-        SET_PROPERTY (TARGET ${source_file_we} APPEND_STRING PROPERTY COMPILE_FLAGS "-Wall -Wextra -Werror -g -O3 -pthread")
+        SET_PROPERTY (TARGET ${source_file_we} APPEND_STRING PROPERTY COMPILE_FLAGS "-Wall -Wextra -Werror -g -O3")
     ENDIF ()
     IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
         IF (CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
