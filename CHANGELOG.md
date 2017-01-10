@@ -1,3 +1,33 @@
+# 2017-01-10 version 2.1.0
+
+## << breaking changes >>
+
+  * Fix object internal data type is float if msgpack format is float32 (#531)
+
+## << recommended changes >>
+
+  * Add `FLOAT64` type. Please use it instead of `DOUBLE` (#531)
+  * Add `FLOAT32` type. Please use it instead of `FLOAT` (#531)
+
+## << other updates >>
+
+  * Add iterator based parse/unpack function(experimental) (#553)
+  * Add `[[deprecated]]` attribute for C++14 (#552)
+  * Fix `msgpack_unpack()` return code (#548)
+  * Fix integer overflow (#547, #549, #550)
+  * Add example codes (#542)
+  * Add MSGPACK_NVP. You can use not only variable name but also any strings (#535)
+  * Fix and Improve build system (#532, #545)
+  * Fix `gcc_atomic.hpp` include path (#529, #530)
+  * Improve CI environment (#526)
+  * Improve documents (#524)
+  * Add msgpack_unpacker_next_with_size() function (#515)
+  * Fix `as()` applying condition (#511)
+  * Fix fbuffer write (#504)
+  * Add gcc bug workaround (#499)
+  * Improve object print (#497, #500, #505, #533)
+  * Remove some warnings (#495, #506, #508, #513, #528, #538, #545)
+
 # 2016-06-25 version 2.0.0
 
 ## << breaking changes >>
