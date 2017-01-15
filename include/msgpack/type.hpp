@@ -50,5 +50,6 @@
 #include "adaptor/boost/msgpack_variant.hpp"
 #include "adaptor/boost/optional.hpp"
 #include "adaptor/boost/string_ref.hpp"
+#include "adaptor/boost/string_view.hpp"
 
 #endif // defined(MSGPACK_USE_BOOST)
