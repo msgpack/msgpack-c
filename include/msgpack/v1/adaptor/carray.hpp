@@ -101,7 +101,7 @@ struct pack<char[N]> {
         char const* p = v;
         uint32_t size = checked_get_container_size(N);
         char const* p2 = static_cast<char const*>(std::memchr(p, '\0', size));
-        uint32_t adjusted_size = p2 ? p2 - p : size;
+        uint32_t adjusted_size = p2 ? static_cast<uint32_t>(p2 - p) : size;
         o.pack_str(adjusted_size);
         o.pack_str_body(p, adjusted_size);
         return o;
@@ -115,7 +115,7 @@ struct pack<const char[N]> {
         uint32_t size = checked_get_container_size(N);
         char const* p = v;
         char const* p2 = static_cast<char const*>(std::memchr(p, '\0', size));
-        uint32_t adjusted_size = p2 ? p2 - p : size;
+        uint32_t adjusted_size = p2 ? static_cast<uint32_t>(p2 - p) : size;
         o.pack_str(adjusted_size);
         o.pack_str_body(p, adjusted_size);
         return o;
@@ -167,7 +167,7 @@ struct object_with_zone<char[N]> {
         char const* p = v;
         uint32_t size = checked_get_container_size(N);
         char const* p2 = static_cast<char const*>(std::memchr(p, '\0', size));
-        uint32_t adjusted_size = p2 ? p2 - p : size;
+        uint32_t adjusted_size = p2 ? static_cast<uint32_t>(p2 - p) : size;
         o.type = msgpack::type::STR;
         char* ptr = static_cast<char*>(o.zone.allocate_align(adjusted_size));
         o.via.str.ptr = ptr;
@@ -182,7 +182,7 @@ struct object_with_zone<const char[N]> {
         char const* p = v;
         uint32_t size = checked_get_container_size(N);
         char const* p2 = static_cast<char const*>(std::memchr(p, '\0', size));
-        uint32_t adjusted_size = p2 ? p2 - p : size;
+        uint32_t adjusted_size = p2 ? static_cast<uint32_t>(p2 - p) : size;
         o.type = msgpack::type::STR;
         char* ptr = static_cast<char*>(o.zone.allocate_align(adjusted_size));
         o.via.str.ptr = ptr;
@@ -221,7 +221,7 @@ struct object<char[N]> {
         char const* p = v;
         uint32_t size = checked_get_container_size(N);
         char const* p2 = static_cast<char const*>(std::memchr(p, '\0', size));
-        uint32_t adjusted_size = p2 ? p2 - p : size;
+        uint32_t adjusted_size = p2 ? static_cast<uint32_t>(p2 - p) : size;
         o.type = msgpack::type::STR;
         o.via.str.ptr = p;
         o.via.str.size = adjusted_size;
@@ -234,7 +234,7 @@ struct object<const char[N]> {
         char const* p = v;
         uint32_t size = checked_get_container_size(N);
         char const* p2 = static_cast<char const*>(std::memchr(p, '\0', size));
-        uint32_t adjusted_size = p2 ? p2 - p : size;
+        uint32_t adjusted_size = p2 ? static_cast<uint32_t>(p2 - p) : size;
         o.type = msgpack::type::STR;
         o.via.str.ptr = p;
         o.via.str.size = adjusted_size;

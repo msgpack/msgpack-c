@@ -459,7 +459,7 @@ inline parse_return context<VisitorHolder>::execute(const char* data, std::size_
                 load<uint8_t>(tmp, n);
                 m_trail = tmp + 1;
                 if(m_trail == 0) {
-                    bool visret = holder().visitor().visit_ext(n, m_trail);
+                    bool visret = holder().visitor().visit_ext(n, static_cast<uint32_t>(m_trail));
                     parse_return upr = after_visit_proc(visret, off);
                     if (upr != PARSE_CONTINUE) return upr;
                 }
@@ -501,7 +501,7 @@ inline parse_return context<VisitorHolder>::execute(const char* data, std::size_
                 load<uint16_t>(tmp, n);
                 m_trail = tmp + 1;
                 if(m_trail == 0) {
-                    bool visret = holder().visitor().visit_ext(n, m_trail);
+                    bool visret = holder().visitor().visit_ext(n, static_cast<uint32_t>(m_trail));
                     parse_return upr = after_visit_proc(visret, off);
                     if (upr != PARSE_CONTINUE) return upr;
                 }
@@ -545,7 +545,7 @@ inline parse_return context<VisitorHolder>::execute(const char* data, std::size_
                 m_trail = tmp;
                 ++m_trail;
                 if(m_trail == 0) {
-                    bool visret = holder().visitor().visit_ext(n, m_trail);
+                    bool visret = holder().visitor().visit_ext(n, static_cast<uint32_t>(m_trail));
                     parse_return upr = after_visit_proc(visret, off);
                     if (upr != PARSE_CONTINUE) return upr;
                 }
@@ -555,7 +555,7 @@ inline parse_return context<VisitorHolder>::execute(const char* data, std::size_
                 }
             } break;
             case MSGPACK_ACS_STR_VALUE: {
-                bool visret = holder().visitor().visit_str(n, m_trail);
+                bool visret = holder().visitor().visit_str(n, static_cast<uint32_t>(m_trail));
                 parse_return upr = after_visit_proc(visret, off);
                 if (upr != PARSE_CONTINUE) return upr;
             } break;
@@ -565,7 +565,7 @@ inline parse_return context<VisitorHolder>::execute(const char* data, std::size_
                 if (upr != PARSE_CONTINUE) return upr;
             } break;
             case MSGPACK_ACS_EXT_VALUE: {
-                bool visret = holder().visitor().visit_ext(n, m_trail);
+                bool visret = holder().visitor().visit_ext(n, static_cast<uint32_t>(m_trail));
                 parse_return upr = after_visit_proc(visret, off);
                 if (upr != PARSE_CONTINUE) return upr;
             } break;
