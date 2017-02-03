@@ -839,7 +839,7 @@ template <typename VisitorHolder, typename ReferencedBufferHook>
 inline void parser<VisitorHolder, ReferencedBufferHook>::expand_buffer(std::size_t size)
 {
     if(m_used == m_off && detail::get_count(m_buffer) == 1
-       && static_cast<VisitorHolder&>(*this).visitor().referenced()) {
+       && !static_cast<VisitorHolder&>(*this).visitor().referenced()) {
         // rewind buffer
         m_free += m_used - COUNTER_SIZE;
         m_used = COUNTER_SIZE;
