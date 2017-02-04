@@ -1,3 +1,10 @@
+# 2017-02-04 version 2.1.1
+
+  * Fix unpacker's buffer management bug (#561)
+  * Add boost string_view adaptor (#558)
+  * Remove some warnings (#557, #559)
+  * Improve coding style (#556)
+
 # 2017-01-10 version 2.1.0
 
 ## << breaking changes >>
