@@ -78,7 +78,7 @@ int main(void) {
 
         // now starts streaming deserialization.
         msgpack::object_handle oh;
-        while(pac.next(&oh)) {
+        while(pac.next(oh)) {
             std::cout << oh.get() << std::endl;
         }
 
