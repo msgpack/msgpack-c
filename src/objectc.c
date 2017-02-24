@@ -339,7 +339,7 @@ int msgpack_object_print_buffer(char *buffer, size_t buffer_size, msgpack_object
         ret = snprintf(aux_buffer, aux_buffer_size, "\"");
         aux_buffer = aux_buffer + ret;
         aux_buffer_size = aux_buffer_size - ret;
-        ret = snprintf(aux_buffer, aux_buffer_size, "%.*s", o.via.str.size, o.via.str.ptr);
+        ret = snprintf(aux_buffer, aux_buffer_size, "%.*s", (int)o.via.str.size, o.via.str.ptr);
         aux_buffer = aux_buffer + ret;
         aux_buffer_size = aux_buffer_size - ret;
         ret = snprintf(aux_buffer, aux_buffer_size, "\"");
