@@ -94,7 +94,6 @@ IF (MSGPACK_BOOST)
    SET (CMAKE_CXX_FLAGS "-DMSGPACK_USE_BOOST ${CMAKE_CXX_FLAGS}")
 ENDIF ()
 
-SET (Boost_USE_STATIC_LIBS        ON) # only find static libs
 SET (Boost_USE_MULTITHREADED      ON)
 SET (Boost_USE_STATIC_RUNTIME    OFF)
 FIND_PACKAGE (Boost COMPONENTS chrono context timer system)
