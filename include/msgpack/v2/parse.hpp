@@ -75,10 +75,14 @@ private:
             }
         }
         else {
-            m_stack.push(sv.type(), static_cast<uint32_t>(size));
             if (!sv(size)) {
                 off = m_current - m_start;
                 return PARSE_STOP_VISITOR;
+            }
+            parse_return ret = m_stack.push(holder(), sv.type(), static_cast<uint32_t>(size));
+            if (ret != PARSE_CONTINUE) {
+                off = m_current - m_start;
+                return ret;
             }
         }
         m_cs = MSGPACK_CS_HEADER;
@@ -145,8 +149,19 @@ private:
         unpack_stack() {
             m_stack.reserve(MSGPACK_EMBED_STACK_SIZE);
         }
-        void push(msgpack_container_type type, uint32_t rest) {
+        parse_return push(VisitorHolder& visitor_holder, msgpack_container_type type, uint32_t rest) {
             m_stack.push_back(stack_elem(type, rest));
+            switch (type) {
+            case MSGPACK_CT_ARRAY_ITEM:
+                return visitor_holder.visitor().start_array_item() ? PARSE_CONTINUE : PARSE_STOP_VISITOR;
+            case MSGPACK_CT_MAP_KEY:
+                return visitor_holder.visitor().start_map_key() ? PARSE_CONTINUE : PARSE_STOP_VISITOR;
+            case MSGPACK_CT_MAP_VALUE:
+                assert(0);
+                return PARSE_STOP_VISITOR;
+            }
+            assert(0);
+            return PARSE_STOP_VISITOR;
         }
         parse_return consume(VisitorHolder& visitor_holder) {
             while (!m_stack.empty()) {
@@ -287,11 +302,9 @@ inline parse_return context<VisitorHolder>::execute(const char* data, std::size_
             } else if(0x90 <= selector && selector <= 0x9f) { // FixArray
                 parse_return ret = start_aggregate<fix_tag>(array_sv(holder()), array_ev(holder()), m_current, off);
                 if (ret != PARSE_CONTINUE) return ret;
-                if (!holder().visitor().start_array_item()) return PARSE_STOP_VISITOR;
             } else if(0x80 <= selector && selector <= 0x8f) { // FixMap
                 parse_return ret = start_aggregate<fix_tag>(map_sv(holder()), map_ev(holder()), m_current, off);
                 if (ret != PARSE_CONTINUE) return ret;
-                if (!holder().visitor().start_map_key()) return PARSE_STOP_VISITOR;
             } else if(selector == 0xc2) { // false
                 bool visret = holder().visitor().visit_boolean(false);
                 parse_return upr = after_visit_proc(visret, off);
@@ -572,23 +585,19 @@ inline parse_return context<VisitorHolder>::execute(const char* data, std::size_
             case MSGPACK_CS_ARRAY_16: {
                 parse_return ret = start_aggregate<uint16_t>(array_sv(holder()), array_ev(holder()), n, off);
                 if (ret != PARSE_CONTINUE) return ret;
-                if (!holder().visitor().start_array_item()) return PARSE_STOP_VISITOR;
 
             } break;
             case MSGPACK_CS_ARRAY_32: {
                 parse_return ret = start_aggregate<uint32_t>(array_sv(holder()), array_ev(holder()), n, off);
                 if (ret != PARSE_CONTINUE) return ret;
-                if (!holder().visitor().start_array_item()) return PARSE_STOP_VISITOR;
             } break;
             case MSGPACK_CS_MAP_16: {
                 parse_return ret = start_aggregate<uint16_t>(map_sv(holder()), map_ev(holder()), n, off);
                 if (ret != PARSE_CONTINUE) return ret;
-                if (!holder().visitor().start_map_key()) return PARSE_STOP_VISITOR;
             } break;
             case MSGPACK_CS_MAP_32: {
                 parse_return ret = start_aggregate<uint32_t>(map_sv(holder()), map_ev(holder()), n, off);
                 if (ret != PARSE_CONTINUE) return ret;
-                if (!holder().visitor().start_map_key()) return PARSE_STOP_VISITOR;
             } break;
             default:
                 off = m_current - m_start;
