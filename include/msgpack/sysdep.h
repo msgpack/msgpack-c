@@ -74,7 +74,7 @@
 #       endif
 #   endif
 
-#else /* _*/
+#elif defined(unix) || defined(__unix) || defined(__APPLE__)
 
 #include <arpa/inet.h>  /* __BYTE_ORDER */
 #   if defined(linux)
@@ -85,34 +85,34 @@
 
 #if MSGPACK_ENDIAN_LITTLE_BYTE
 
-#   ifdef _WIN32
-#       if defined(ntohs)
+#   if defined(unix) || defined(__unix) || defined(__APPLE__)
 #       define _msgpack_be16(x) ntohs(x)
-#        elif defined(_byteswap_ushort) || (defined(_MSC_VER) && _MSC_VER >= 1400)
-#            define _msgpack_be16(x) ((uint16_t)_byteswap_ushort((unsigned short)x))
-#        else
-#            define _msgpack_be16(x) ( \
-                 ((((uint16_t)x) <<  8) ) | \
-                 ((((uint16_t)x) >>  8) ) )
-#        endif
 #   else
-#        define _msgpack_be16(x) ntohs(x)
+#       if defined(ntohs)
+#           define _msgpack_be16(x) ntohs(x)
+#       elif defined(_byteswap_ushort) || (defined(_MSC_VER) && _MSC_VER >= 1400)
+#           define _msgpack_be16(x) ((uint16_t)_byteswap_ushort((unsigned short)x))
+#       else
+#           define _msgpack_be16(x) ( \
+                ((((uint16_t)x) <<  8) ) | \
+                ((((uint16_t)x) >>  8) ) )
+#        endif
 #   endif
 
-#   ifdef _WIN32
-#        if defined(ntohl)
-#            define _msgpack_be32(x) ntohl(x)
-#        elif defined(_byteswap_ulong) || (defined(_MSC_VER) && _MSC_VER >= 1400)
-#            define _msgpack_be32(x) ((uint32_t)_byteswap_ulong((unsigned long)x))
-#        else
-#            define _msgpack_be32(x) \
-                 ( ((((uint32_t)x) << 24)               ) | \
-                   ((((uint32_t)x) <<  8) & 0x00ff0000U ) | \
-                   ((((uint32_t)x) >>  8) & 0x0000ff00U ) | \
-                   ((((uint32_t)x) >> 24)               ) )
-#        endif
+#   if defined(unix) || defined(__unix) || defined(__APPLE__)
+#       define _msgpack_be32(x) ntohl(x)
 #   else
-#        define _msgpack_be32(x) ntohl(x)
+#       if defined(ntohl)
+#           define _msgpack_be32(x) ntohl(x)
+#       elif defined(_byteswap_ulong) || (defined(_MSC_VER) && _MSC_VER >= 1400)
+#           define _msgpack_be32(x) ((uint32_t)_byteswap_ulong((unsigned long)x))
+#       else
+#           define _msgpack_be32(x) \
+                ( ((((uint32_t)x) << 24)               ) | \
+                  ((((uint32_t)x) <<  8) & 0x00ff0000U ) | \
+                  ((((uint32_t)x) >>  8) & 0x0000ff00U ) | \
+                  ((((uint32_t)x) >> 24)               ) )
+#       endif
 #   endif
 
 #   if defined(_byteswap_uint64) || (defined(_MSC_VER) && _MSC_VER >= 1400)
