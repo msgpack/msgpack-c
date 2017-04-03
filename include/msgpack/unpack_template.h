@@ -8,6 +8,8 @@
  *    http://www.boost.org/LICENSE_1_0.txt)
  */
 
+#include "msgpack/unpack.h"
+
 #ifndef msgpack_unpack_func
 #error msgpack_unpack_func template is not defined
 #endif
