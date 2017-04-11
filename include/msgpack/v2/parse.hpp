@@ -96,12 +96,10 @@ private:
             return PARSE_STOP_VISITOR;
         }
         parse_return ret = m_stack.consume(holder());
-        if (ret == PARSE_CONTINUE) {
-            m_cs = MSGPACK_CS_HEADER;
-        }
-        else {
+        if (ret != PARSE_CONTINUE) {
             off = m_current - m_start;
         }
+        m_cs = MSGPACK_CS_HEADER;
         return ret;
     }
 
