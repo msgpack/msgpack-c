@@ -236,6 +236,7 @@ msgpack_unpack_func(int, _execute)(msgpack_unpack_struct(_context)* ctx, const c
 
             _fixed_trail_again:
                 ++p;
+                // fallthrough
 
             default:
                 if((size_t)(pe - p) < trail) { goto _out; }
