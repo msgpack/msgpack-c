@@ -66,12 +66,6 @@ IF (MSGPACK_CXX11)
     )
 ENDIF ()
 
-IF (MSGPACK_ENABLE_SHARED)
-    SET (MSGPACK_TEST_LIB msgpackc)
-ELSE ()
-    SET (MSGPACK_TEST_LIB msgpackc-static)
-ENDIF ()
-
 FOREACH (source_file ${check_PROGRAMS})
     GET_FILENAME_COMPONENT (source_file_we ${source_file} NAME_WE)
     ADD_EXECUTABLE (
@@ -79,7 +73,7 @@ FOREACH (source_file ${check_PROGRAMS})
         ${source_file}
     )
     TARGET_LINK_LIBRARIES (${source_file_we}
-        ${MSGPACK_TEST_LIB}
+        msgpackc
         ${GTEST_BOTH_LIBRARIES}
         ${ZLIB_LIBRARIES}
         ${CMAKE_THREAD_LIBS_INIT}
@@ -104,5 +98,9 @@ ENDFOREACH ()
 ADD_EXECUTABLE (
     multi_file
     multi_file1.cpp multi_file2.cpp
+)
+TARGET_INCLUDE_DIRECTORIES (multi_file
+    PRIVATE
+        $<TARGET_PROPERTY:msgpackc,INTERFACE_INCLUDE_DIRECTORIES>
 )
 ADD_TEST (multi_file multi_file)

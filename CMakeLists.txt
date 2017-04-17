@@ -1,4 +1,4 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8.6)
+CMAKE_MINIMUM_REQUIRED (VERSION 2.8.12)
 
 IF ((CMAKE_VERSION VERSION_GREATER 3.1) OR
     (CMAKE_VERSION VERSION_EQUAL 3.1))
@@ -172,16 +172,19 @@ CONFIGURE_FILE (
     @ONLY
 )
 
-INCLUDE_DIRECTORIES (
-    ./
-    include/
-    ${CMAKE_CURRENT_BINARY_DIR}/include/
-)
-
 IF (MSGPACK_ENABLE_SHARED)
     ADD_LIBRARY (msgpackc SHARED
         ${msgpackc_SOURCES}
         ${msgpackc_HEADERS}
+    )
+
+    TARGET_INCLUDE_DIRECTORIES (msgpackc
+        PUBLIC
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
+            $<INSTALL_INTERFACE:include>
+        PRIVATE
+            ${CMAKE_CURRENT_SOURCE_DIR}
     )
 ENDIF ()
 
@@ -189,6 +192,20 @@ ADD_LIBRARY (msgpackc-static STATIC
     ${msgpackc_SOURCES}
     ${msgpackc_HEADERS}
 )
+
+TARGET_INCLUDE_DIRECTORIES (msgpackc-static
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
+        $<INSTALL_INTERFACE:include>
+    PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+IF (NOT MSGPACK_ENABLE_SHARED)
+    # Add alias for subdirectories
+    ADD_LIBRARY (msgpackc ALIAS msgpackc-static)
+ENDIF ()
 
 SET_TARGET_PROPERTIES (msgpackc-static PROPERTIES OUTPUT_NAME "msgpackc")
 IF (MSGPACK_ENABLE_SHARED)
@@ -253,9 +270,11 @@ ELSE()
     SET (MSGPACK_INSTALLTARGETS msgpackc-static)
 ENDIF ()
 
-INSTALL (TARGETS ${MSGPACK_INSTALLTARGETS} RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-                                           LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-                                           ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
+INSTALL (TARGETS ${MSGPACK_INSTALLTARGETS} EXPORT msgpack-targets
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+)
 FOREACH (file ${msgpackc_HEADERS})
     GET_FILENAME_COMPONENT (dir ${file} PATH)
     INSTALL (FILES ${file} DESTINATION ${CMAKE_INSTALL_PREFIX}/${dir})
@@ -310,3 +329,39 @@ IF (DOXYGEN_FOUND)
         DEPENDS doxygen_c doxygen_cpp
     )
 ENDIF ()
+
+INCLUDE (CMakePackageConfigHelpers)
+
+SET (CMAKE_INSTALL_CMAKEDIR "${CMAKE_INSTALL_LIBDIR}/cmake/msgpack")
+
+WRITE_BASIC_PACKAGE_VERSION_FILE (
+    msgpack-config-version.cmake
+    VERSION ${VERSION}
+    COMPATIBILITY SameMajorVersion
+)
+
+IF (NOT CMAKE_VERSION VERSION_LESS 3.0)
+    EXPORT (EXPORT msgpack-targets
+        FILE "${CMAKE_CURRENT_BINARY_DIR}/msgpack-targets.cmake"
+    )
+ENDIF ()
+
+CONFIGURE_PACKAGE_CONFIG_FILE (msgpack-config.cmake.in
+    msgpack-config.cmake
+    INSTALL_DESTINATION "${CMAKE_INSTALL_CMAKEDIR}"
+)
+
+INSTALL (EXPORT msgpack-targets
+    FILE
+        msgpack-targets.cmake
+    DESTINATION
+        "${CMAKE_INSTALL_CMAKEDIR}"
+)
+
+INSTALL (
+    FILES
+        "${CMAKE_CURRENT_BINARY_DIR}/msgpack-config.cmake"
+        "${CMAKE_CURRENT_BINARY_DIR}/msgpack-config-version.cmake"
+    DESTINATION
+        "${CMAKE_INSTALL_CMAKEDIR}"
+)
