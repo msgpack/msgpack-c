@@ -105,6 +105,7 @@ struct define_array<A0, A1> {
             switch(size) {
             default:
             case 2: ptr[1].convert(a1);
+            //fallthrough
             case 1: ptr[0].convert(a0);
             }
         }
@@ -193,8 +194,11 @@ struct define_array<A0, A1, A2, A3> {
             switch(size) {
             default:
             case 4: ptr[3].convert(a3);
+            //fallthrough
             case 3: ptr[2].convert(a2);
+            //fallthrough
             case 2: ptr[1].convert(a1);
+            //fallthrough
             case 1: ptr[0].convert(a0);
             }
         }
