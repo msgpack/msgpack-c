@@ -206,10 +206,13 @@ TARGET_INCLUDE_DIRECTORIES (msgpackc-static
         ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-IF (NOT MSGPACK_ENABLE_SHARED)
-    # Add alias for subdirectories
-    ADD_LIBRARY (msgpackc ALIAS msgpackc-static)
+# Add alias for subdirectories
+IF (MSGPACK_ENABLE_SHARED)
+    ADD_LIBRARY (MsgPack::msgpackc ALIAS msgpackc)
+ELSE ()
+    ADD_LIBRARY (MsgPack::msgpackc ALIAS msgpackc-static)
 ENDIF ()
+ADD_LIBRARY (MsgPack::msgpackc-static ALIAS msgpackc-static)
 
 SET_TARGET_PROPERTIES (msgpackc-static PROPERTIES OUTPUT_NAME "msgpackc")
 IF (MSGPACK_ENABLE_SHARED)
@@ -346,6 +349,7 @@ WRITE_BASIC_PACKAGE_VERSION_FILE (
 
 IF (NOT CMAKE_VERSION VERSION_LESS 3.0)
     EXPORT (EXPORT msgpack-targets
+        NAMESPACE MsgPack::
         FILE "${CMAKE_CURRENT_BINARY_DIR}/msgpack-targets.cmake"
     )
 ENDIF ()
@@ -356,6 +360,7 @@ CONFIGURE_PACKAGE_CONFIG_FILE (msgpack-config.cmake.in
 )
 
 INSTALL (EXPORT msgpack-targets
+        NAMESPACE MsgPack::
     FILE
         msgpack-targets.cmake
     DESTINATION

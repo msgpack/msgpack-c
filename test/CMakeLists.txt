@@ -79,7 +79,7 @@ FOREACH (source_file ${check_PROGRAMS})
         ${source_file}
     )
     TARGET_LINK_LIBRARIES (${source_file_we}
-        msgpackc
+        MsgPack::msgpackc
         ${GTEST_BOTH_LIBRARIES}
         ${ZLIB_LIBRARIES}
         ${CMAKE_THREAD_LIBS_INIT}
@@ -107,6 +107,6 @@ ADD_EXECUTABLE (
 )
 TARGET_INCLUDE_DIRECTORIES (multi_file
     PRIVATE
-        $<TARGET_PROPERTY:msgpackc,INTERFACE_INCLUDE_DIRECTORIES>
+        $<TARGET_PROPERTY:MsgPack::msgpackc,INTERFACE_INCLUDE_DIRECTORIES>
 )
 ADD_TEST (multi_file multi_file)

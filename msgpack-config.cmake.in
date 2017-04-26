@@ -6,8 +6,8 @@
 #
 # ::
 #
-#   msgpackc-static
-#   msgpackc
+#   MsgPack::msgpackc-static
+#   MsgPack::msgpackc
 #
 
 @PACKAGE_INIT@
@@ -18,6 +18,6 @@ if(NOT TARGET msgpackc AND NOT TARGET msgpackc-static)
   include("${CMAKE_CURRENT_LIST_DIR}/msgpack-targets.cmake")
 
   if(NOT @MSGPACK_ENABLE_SHARED@)
-    add_library(msgpackc ALIAS msgpackc-static)
+    add_library(MsgPack::msgpackc ALIAS MsgPack::msgpackc-static)
   endif()
 endif()
