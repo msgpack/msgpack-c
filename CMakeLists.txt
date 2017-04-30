@@ -352,6 +352,11 @@ IF (NOT CMAKE_VERSION VERSION_LESS 3.0)
         NAMESPACE MsgPack::
         FILE "${CMAKE_CURRENT_BINARY_DIR}/msgpack-targets.cmake"
     )
+ELSE ()
+    EXPORT (TARGETS ${MSGPACK_INSTALLTARGETS}
+        NAMESPACE MsgPack::
+        FILE "${CMAKE_CURRENT_BINARY_DIR}/msgpack-targets.cmake"
+    )
 ENDIF ()
 
 CONFIGURE_PACKAGE_CONFIG_FILE (msgpack-config.cmake.in
