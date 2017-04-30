@@ -35,10 +35,16 @@ FOREACH (source_file ${exec_PROGRAMS})
         ${source_file_we}
         ${source_file}
     )
-    TARGET_INCLUDE_DIRECTORIES (${source_file_we}
-        PRIVATE
-            $<TARGET_PROPERTY:MsgPack::msgpackc,INTERFACE_INCLUDE_DIRECTORIES>
-    )
+    IF (NOT CMAKE_VERSION VERSION_LESS 3.0)
+        TARGET_LINK_LIBRARIES (${source_file_we}
+            MsgPack::msgpackcpp
+        )
+    ELSE ()
+        TARGET_INCLUDE_DIRECTORIES (${source_file_we}
+            PRIVATE
+                $<TARGET_PROPERTY:MsgPack::msgpackc,INTERFACE_INCLUDE_DIRECTORIES>
+        )
+    ENDIF ()
     IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
         SET_PROPERTY (TARGET ${source_file_we} APPEND_STRING PROPERTY COMPILE_FLAGS "-Wall -Wextra -Werror -g -O3")
     ENDIF ()
@@ -57,10 +63,16 @@ FOREACH (source_file ${with_pthread_PROGRAMS})
         ${source_file_we}
         ${source_file}
     )
-    TARGET_INCLUDE_DIRECTORIES (${source_file_we}
-        PRIVATE
-            $<TARGET_PROPERTY:MsgPack::msgpackc,INTERFACE_INCLUDE_DIRECTORIES>
-    )
+    IF (NOT CMAKE_VERSION VERSION_LESS 3.0)
+        TARGET_LINK_LIBRARIES (${source_file_we}
+            MsgPack::msgpackcpp
+        )
+    ELSE ()
+        TARGET_INCLUDE_DIRECTORIES (${source_file_we}
+            PRIVATE
+                $<TARGET_PROPERTY:MsgPack::msgpackc,INTERFACE_INCLUDE_DIRECTORIES>
+        )
+    ENDIF ()
     TARGET_LINK_LIBRARIES (${source_file_we}
         ${CMAKE_THREAD_LIBS_INIT}
     )
@@ -86,11 +98,17 @@ FOREACH (source_file ${with_boost_lib_PROGRAMS})
         ${source_file_we}
         ${source_file}
     )
-    TARGET_INCLUDE_DIRECTORIES (${source_file_we}
-        PRIVATE
-            $<TARGET_PROPERTY:MsgPack::msgpackc,INTERFACE_INCLUDE_DIRECTORIES>
-    )
     LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
+    IF (NOT CMAKE_VERSION VERSION_LESS 3.0)
+        TARGET_LINK_LIBRARIES (${source_file_we}
+            MsgPack::msgpackcpp
+        )
+    ELSE ()
+        TARGET_INCLUDE_DIRECTORIES (${source_file_we}
+            PRIVATE
+                $<TARGET_PROPERTY:MsgPack::msgpackc,INTERFACE_INCLUDE_DIRECTORIES>
+        )
+    ENDIF ()
     TARGET_LINK_LIBRARIES (${source_file_we}
         ${Boost_TIMER_LIBRARY}
         ${Boost_CHRONO_LIBRARY}
