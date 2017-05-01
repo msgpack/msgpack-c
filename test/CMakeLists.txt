@@ -81,7 +81,7 @@ FOREACH (source_file ${check_C_PROGRAMS})
             ${GTEST_INCLUDE_DIRS}
     )
     TARGET_LINK_LIBRARIES (${source_file_we}
-        MsgPack::msgpackc
+        MsgPack::C
         ${GTEST_BOTH_LIBRARIES}
         ${CMAKE_THREAD_LIBS_INIT}
     )
@@ -96,12 +96,12 @@ FOREACH (source_file ${check_PROGRAMS})
     )
     IF (NOT CMAKE_VERSION VERSION_LESS 3.0)
         TARGET_LINK_LIBRARIES (${source_file_we}
-            MsgPack::msgpackcpp
+            MsgPack::Cpp
         )
     ELSE ()
         TARGET_INCLUDE_DIRECTORIES (${source_file_we}
             PRIVATE
-                $<TARGET_PROPERTY:MsgPack::msgpackc,INTERFACE_INCLUDE_DIRECTORIES>
+                $<TARGET_PROPERTY:MsgPack::C,INTERFACE_INCLUDE_DIRECTORIES>
         )
     ENDIF ()
     TARGET_INCLUDE_DIRECTORIES (${source_file_we}
@@ -124,12 +124,12 @@ ADD_EXECUTABLE (
 )
 IF (NOT CMAKE_VERSION VERSION_LESS 3.0)
     TARGET_LINK_LIBRARIES (multi_file
-        MsgPack::msgpackcpp
+        MsgPack::Cpp
     )
 ELSE ()
     TARGET_INCLUDE_DIRECTORIES (multi_file
         PRIVATE
-            $<TARGET_PROPERTY:MsgPack::msgpackc,INTERFACE_INCLUDE_DIRECTORIES>
+            $<TARGET_PROPERTY:MsgPack::C,INTERFACE_INCLUDE_DIRECTORIES>
     )
 ENDIF ()
 ADD_TEST (multi_file multi_file)

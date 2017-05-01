@@ -18,12 +18,12 @@ IF (MSGPACK_CXX11)
         )
         IF (NOT CMAKE_VERSION VERSION_LESS 3.0)
             TARGET_LINK_LIBRARIES (${source_file_we}
-                MsgPack::msgpackcpp
+                MsgPack::Cpp
             )
         ELSE ()
             TARGET_INCLUDE_DIRECTORIES (${source_file_we}
                 PRIVATE
-                    $<TARGET_PROPERTY:MsgPack::msgpackc,INTERFACE_INCLUDE_DIRECTORIES>
+                    $<TARGET_PROPERTY:MsgPack::C,INTERFACE_INCLUDE_DIRECTORIES>
             )
         ENDIF ()
     ENDFOREACH ()

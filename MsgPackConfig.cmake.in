@@ -6,18 +6,19 @@
 #
 # ::
 #
-#   MsgPack::msgpackc-static
-#   MsgPack::msgpackc
+#   MsgPack::C
+#   MsgPack::C-static
+#   MsgPack::Cpp
 #
 
 @PACKAGE_INIT@
 
 include(CMakeFindDependencyMacro)
 
-if(NOT TARGET msgpackc AND NOT TARGET msgpackc-static AND NOT TARGET msgpackcpp)
+if(NOT TARGET MsgPack::C AND NOT TARGET MsgPack::C-static AND NOT TARGET MsgPack::Cpp)
   include("${CMAKE_CURRENT_LIST_DIR}/MsgPackTargets.cmake")
 
   if(NOT @MSGPACK_ENABLE_SHARED@)
-    add_library(MsgPack::msgpackc ALIAS MsgPack::msgpackc-static)
+    add_library(MsgPack::C ALIAS MsgPack::C-static)
   endif()
 endif()
