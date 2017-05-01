@@ -1,8 +1,4 @@
 IF (MSGPACK_USE_X3_PARSE)
-    INCLUDE_DIRECTORIES (
-        ../include
-    )
-
     LIST (APPEND exec_PROGRAMS
         unpack.cpp
         parse.cpp

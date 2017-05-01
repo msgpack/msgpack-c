@@ -1,8 +1,4 @@
 IF (MSGPACK_CXX11)
-    INCLUDE_DIRECTORIES (
-        ../include
-    )
-
     LIST (APPEND exec_PROGRAMS
         container.cpp
         non_def_con_class.cpp

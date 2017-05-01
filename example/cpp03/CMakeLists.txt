@@ -70,7 +70,6 @@ ENDFOREACH ()
 
 FOREACH (source_file ${with_boost_lib_PROGRAMS})
     INCLUDE_DIRECTORIES (
-        ../include
         ${Boost_INCLUDE_DIRS}
     )
     GET_FILENAME_COMPONENT (source_file_we ${source_file} NAME_WE)
