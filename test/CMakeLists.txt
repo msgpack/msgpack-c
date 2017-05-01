@@ -2,11 +2,6 @@ FIND_PACKAGE (GTest REQUIRED)
 FIND_PACKAGE (ZLIB REQUIRED)
 FIND_PACKAGE (Threads REQUIRED)
 
-INCLUDE_DIRECTORIES (
-    ${GTEST_INCLUDE_DIRS}
-    ${ZLIB_INCLUDE_DIRS}
-)
-
 LIST (APPEND check_C_PROGRAMS
     fixint_c.cpp
     msgpack_c.cpp
@@ -81,6 +76,10 @@ FOREACH (source_file ${check_C_PROGRAMS})
         ${source_file_we}
         ${source_file}
     )
+    TARGET_INCLUDE_DIRECTORIES (${source_file_we}
+        PRIVATE
+            ${GTEST_INCLUDE_DIRS}
+    )
     TARGET_LINK_LIBRARIES (${source_file_we}
         MsgPack::msgpackc
         ${GTEST_BOTH_LIBRARIES}
@@ -105,6 +104,12 @@ FOREACH (source_file ${check_PROGRAMS})
                 $<TARGET_PROPERTY:MsgPack::msgpackc,INTERFACE_INCLUDE_DIRECTORIES>
         )
     ENDIF ()
+    TARGET_INCLUDE_DIRECTORIES (${source_file_we}
+        PRIVATE
+            ${GTEST_INCLUDE_DIRS}
+            ${ZLIB_INCLUDE_DIRS}
+            ${Boost_INCLUDE_DIRS}
+    )
     TARGET_LINK_LIBRARIES (${source_file_we}
         ${GTEST_BOTH_LIBRARIES}
         ${ZLIB_LIBRARIES}
