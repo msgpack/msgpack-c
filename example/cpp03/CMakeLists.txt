@@ -69,9 +69,6 @@ FOREACH (source_file ${with_pthread_PROGRAMS})
 ENDFOREACH ()
 
 FOREACH (source_file ${with_boost_lib_PROGRAMS})
-    INCLUDE_DIRECTORIES (
-        ${Boost_INCLUDE_DIRS}
-    )
     GET_FILENAME_COMPONENT (source_file_we ${source_file} NAME_WE)
     ADD_EXECUTABLE (
         ${source_file_we}
