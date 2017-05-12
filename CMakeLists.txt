@@ -100,6 +100,11 @@ IF (MSGPACK_BOOST)
          ${Boost_INCLUDE_DIRS}
    )
    ENDIF ()
+   IF (Boost_LIBRARY_DIRS)
+      LINK_DIRECTORIES (
+         ${Boost_LIBRARY_DIRS}
+   )
+   ENDIF ()
    IF (MSGPACK_BOOST_DIR)
       INCLUDE_DIRECTORIES (
          ${MSGPACK_BOOST_DIR}
