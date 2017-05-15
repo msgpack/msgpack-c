@@ -10,7 +10,7 @@ install:
  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then export PATH="${BASE}/usr/bin:$PATH"; fi
  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then export LD_LIBRARY_PATH="${BASE}/usr/lib:$LD_LIBRARY_PATH"; fi
  - if [ "$CXX" = "g++" ]; then export CXX="g++-6" CC="gcc-6"; fi
- - if [ "$CXX" = "clang++" ] && [ "$TRAVIS_OS_NAME" == "linux" ]; then export CXX="clang++-3.7" CC="clang-3.7"; fi
+ - if [ "$CXX" = "clang++" ] && [ "$TRAVIS_OS_NAME" == "linux" ]; then export CXX="clang++-3.9" CC="clang-3.9"; fi
 #gtest
  - wget https://github.com/google/googletest/archive/release-1.7.0.zip -O googletest-release-1.7.0.zip
  - unzip -q googletest-release-1.7.0.zip
@@ -50,7 +50,7 @@ matrix:
         apt:
           sources:
             - ubuntu-toolchain-r-test
-            - llvm-toolchain-precise-3.7
+            - llvm-toolchain-precise-3.9
             - llvm-toolchain-precise
           packages:
             - g++-multilib
@@ -58,7 +58,7 @@ matrix:
             - gcc-5-multilib
             - g++-5-multilib
             - bzip2
-            - clang-3.7
+            - clang-3.9
             - libc6-dbg
     - os: linux
       compiler: clang
@@ -67,7 +67,7 @@ matrix:
         apt:
           sources:
             - ubuntu-toolchain-r-test
-            - llvm-toolchain-precise-3.7
+            - llvm-toolchain-precise-3.9
             - llvm-toolchain-precise
           packages:
             - g++-multilib
@@ -79,7 +79,7 @@ matrix:
             - libc6-i386
             - lib32z1-dev
             - bzip2
-            - clang-3.7
+            - clang-3.9
             - libc6-dbg
     - os: linux
       compiler: clang
@@ -88,7 +88,7 @@ matrix:
         apt:
           sources:
             - ubuntu-toolchain-r-test
-            - llvm-toolchain-precise-3.7
+            - llvm-toolchain-precise-3.9
             - llvm-toolchain-precise
           packages:
             - g++-multilib
@@ -96,7 +96,7 @@ matrix:
             - gcc-5-multilib
             - g++-5-multilib
             - bzip2
-            - clang-3.7
+            - clang-3.9
             - libc6-dbg
     - os: linux
       compiler: clang
@@ -105,7 +105,7 @@ matrix:
         apt:
           sources:
             - ubuntu-toolchain-r-test
-            - llvm-toolchain-precise-3.7
+            - llvm-toolchain-precise-3.9
             - llvm-toolchain-precise
           packages:
             - g++-multilib
@@ -117,7 +117,7 @@ matrix:
             - libc6-i386
             - lib32z1-dev
             - bzip2
-            - clang-3.7
+            - clang-3.9
             - libc6-dbg
     - os: linux
       compiler: gcc
