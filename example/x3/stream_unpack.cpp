@@ -21,8 +21,17 @@
 
 #include <boost/asio.hpp>
 #include <boost/coroutine2/all.hpp>
+
+#if defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+#endif // defined(__clang__)
+
 #include <boost/spirit/home/support/multi_pass.hpp>
 
+#if defined(__clang__)
+#pragma GCC diagnostic pop
+#endif // defined(__clang__)
 
 namespace as = boost::asio;
 namespace x3 = boost::spirit::x3;
