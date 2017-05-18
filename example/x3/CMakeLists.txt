@@ -7,7 +7,7 @@ IF (MSGPACK_USE_X3_PARSE)
         unpack.cpp
         parse.cpp
     )
-    IF (Boost_CONTEXT_LIBRARY AND Boost_SYSTEM_LIBRARY AND CMAKE_THREAD_LIBS_INIT)
+    IF (MSGPACK_BOOST)
         LIST (APPEND with_boost_PROGRAMS
             stream_unpack.cpp
         )

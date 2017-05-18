@@ -22,7 +22,7 @@ IF (NOT MSVC)
     )
 ENDIF ()
 
-IF (Boost_TIMER_LIBRARY AND Boost_CHRONO_LIBRARY AND Boost_SYSTEM_LIBRARY)
+IF (MSGPACK_BOOST)
     LIST (APPEND with_boost_lib_PROGRAMS
         speed_test.cpp
         speed_test_nested_array.cpp
