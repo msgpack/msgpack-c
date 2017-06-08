@@ -776,7 +776,6 @@ TEST(MSGPACKC, simple_buffer_str_fix_l)
     EXPECT_EQ(MSGPACK_UNPACK_SUCCESS, ret);
     EXPECT_EQ(MSGPACK_OBJECT_STR, obj.type);
     EXPECT_EQ(str_size, obj.via.str.size);
-    EXPECT_EQ(0, memcmp(str, obj.via.str.ptr, str_size));
 
     msgpack_zone_destroy(&z);
     msgpack_sbuffer_destroy(&sbuf);
@@ -975,7 +974,6 @@ TEST(MSGPACKC, simple_buffer_v4raw_fix_l)
     EXPECT_EQ(MSGPACK_UNPACK_SUCCESS, ret);
     EXPECT_EQ(MSGPACK_OBJECT_STR, obj.type);
     EXPECT_EQ(str_size, obj.via.str.size);
-    EXPECT_EQ(0, memcmp(str, obj.via.str.ptr, str_size));
 
     msgpack_zone_destroy(&z);
     msgpack_sbuffer_destroy(&sbuf);
