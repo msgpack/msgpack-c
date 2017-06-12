@@ -34,6 +34,7 @@ tar --append --file=$filename $prefix/COPYING
 tar --append --file=$filename $prefix/README
 tar --append --file=$filename $prefix/msgpack_vc8.sln
 tar --append --file=$filename $prefix/msgpack_vc8.vcproj
+tar --append --file=$filename $prefix/msgpack-config.cmake.in
 
 rm -f $prefix
 
