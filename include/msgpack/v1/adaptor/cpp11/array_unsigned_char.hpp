@@ -45,6 +45,13 @@ struct convert<std::array<unsigned char, N>> {
     }
 };
 
+template <>
+struct convert<std::array<unsigned char, 0>> {
+    msgpack::object const& operator()(msgpack::object const& o, std::array<unsigned char, 0>&) const {
+        return o;
+    }
+};
+
 template <std::size_t N>
 struct pack<std::array<unsigned char, N>> {
     template <typename Stream>
