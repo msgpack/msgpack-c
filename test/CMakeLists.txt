@@ -66,6 +66,12 @@ IF (MSGPACK_CXX11)
     )
 ENDIF ()
 
+IF (MSGPACK_CXX17)
+    LIST (APPEND check_PROGRAMS
+        msgpack_cpp17.cpp
+    )
+ENDIF ()
+
 FOREACH (source_file ${check_PROGRAMS})
     GET_FILENAME_COMPONENT (source_file_we ${source_file} NAME_WE)
     ADD_EXECUTABLE (
