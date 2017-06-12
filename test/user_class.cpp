@@ -152,7 +152,7 @@ public:
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
 #endif // (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 7)) && !defined(__clang__)
-        msgpack::type::tuple<bool, msgpack::object> tuple;
+        msgpack::type::tuple<bool, msgpack::object> tuple(false, msgpack::object());
         o.convert(tuple);
 
         is_double = tuple.get<0>();
