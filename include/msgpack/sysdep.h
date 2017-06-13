@@ -77,7 +77,7 @@
 #       endif
 #   endif
 
-#elif defined(unix) || defined(__unix) || defined(__APPLE__)
+#elif defined(unix) || defined(__unix) || defined(__APPLE__) || defined(__OpenBSD__)
 
 #include <arpa/inet.h>  /* __BYTE_ORDER */
 #   if defined(linux)
@@ -88,7 +88,7 @@
 
 #if MSGPACK_ENDIAN_LITTLE_BYTE
 
-#   if defined(unix) || defined(__unix) || defined(__APPLE__)
+#   if defined(unix) || defined(__unix) || defined(__APPLE__) || defined(__OpenBSD__)
 #       define _msgpack_be16(x) ntohs(x)
 #   else
 #       if defined(ntohs)
@@ -102,7 +102,7 @@
 #        endif
 #   endif
 
-#   if defined(unix) || defined(__unix) || defined(__APPLE__)
+#   if defined(unix) || defined(__unix) || defined(__APPLE__) || defined(__OpenBSD__)
 #       define _msgpack_be32(x) ntohl(x)
 #   else
 #       if defined(ntohl)
