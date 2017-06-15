@@ -1,3 +1,9 @@
+# 2017-06-15 version 2.1.3
+  * Improve build system (#603)
+  * Add C++17 adaptors `std::optional` and `std::string_view`. (#607, #608)
+  * Improve cross platform configuration (#601)
+  * Remove some warnings (#599, #602, #605)
+
 # 2017-06-07 version 2.1.2
 
 * Improve documents (#565)
