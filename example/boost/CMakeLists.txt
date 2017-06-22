@@ -3,6 +3,20 @@ IF (MSGPACK_BOOST)
         msgpack_variant_capitalize.cpp
         msgpack_variant_mapbased.cpp
     )
+    IF (MSGPACK_CXX11 OR MSGPACK_CXX17)
+        FIND_PACKAGE (Threads REQUIRED)
+        LIST (APPEND exec_PROGRAMS
+            asio_send_recv.cpp
+        )
+        IF (ZLIB_FOUND)
+            INCLUDE_DIRECTORIES (
+                ${ZLIB_INCLUDE_DIRS}
+            )
+            LIST (APPEND exec_PROGRAMS
+                asio_send_recv_zlib.cpp
+            )
+        ENDIF ()
+    ENDIF ()
 ENDIF ()
 
 FOREACH (source_file ${exec_PROGRAMS})
@@ -15,6 +29,15 @@ FOREACH (source_file ${exec_PROGRAMS})
         PRIVATE
             $<TARGET_PROPERTY:msgpackc,INTERFACE_INCLUDE_DIRECTORIES>
     )
+    TARGET_LINK_LIBRARIES (${source_file_we}
+        ${Boost_SYSTEM_LIBRARY}
+        ${CMAKE_THREAD_LIBS_INIT}
+    )
+    IF (ZLIB_FOUND)
+        TARGET_LINK_LIBRARIES (${source_file_we}
+            ${ZLIB_LIBRARIES}
+        )
+    ENDIF()
     IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
         SET_PROPERTY (TARGET ${source_file_we} APPEND_STRING PROPERTY COMPILE_FLAGS "-Wall -Wextra -Werror -g -O3")
     ENDIF ()
