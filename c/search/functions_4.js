@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['while',['while',['../unpack__template_8h.html#a1fafa25475ff2a6db08544093e032826',1,'unpack_template.h']]]
+  ['switch',['switch',['../unpack__template_8h.html#aab4b1a60769c24fd1bef99a207f07370',1,'unpack_template.h']]]
 ];

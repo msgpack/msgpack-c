@@ -10,5 +10,8 @@ var searchData=
   ['inner_5fbuffer',['inner_buffer',['../structmsgpack__vrefbuffer.html#ad591565dda8152a7510fdc6fcc062592',1,'msgpack_vrefbuffer']]],
   ['intel_2eh',['intel.h',['../intel_8h.html',1,'']]],
   ['ios_2eh',['ios.h',['../ios_8h.html',1,'']]],
+  ['iov_5fbase',['iov_base',['../structiovec.html#a07aeddeccf80f14520fdd7ef0759442b',1,'iovec']]],
+  ['iov_5flen',['iov_len',['../structiovec.html#a17b5ac2078fd1adfabb262a95808a07d',1,'iovec']]],
+  ['iovec',['iovec',['../structiovec.html',1,'']]],
   ['irix_2eh',['irix.h',['../irix_8h.html',1,'']]]
 ];

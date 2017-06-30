@@ -8,7 +8,7 @@ var searchData=
   ['pgi_2eh',['pgi.h',['../pgi_8h.html',1,'']]],
   ['platform_2eh',['platform.h',['../platform_8h.html',1,'']]],
   ['platform_5fdetected_2eh',['platform_detected.h',['../platform__detected_8h.html',1,'']]],
-  ['ppc_2eh',['ppc.h',['../ppc_8h.html',1,'']]],
+  ['ppc_2eh',['ppc.h',['../architecture_2ppc_8h.html',1,'(Global Namespace)'],['../hardware_2simd_2ppc_8h.html',1,'(Global Namespace)']]],
   ['predef_2eh',['predef.h',['../predef_8h.html',1,'']]],
   ['pyramid_2eh',['pyramid.h',['../pyramid_8h.html',1,'']]]
 ];

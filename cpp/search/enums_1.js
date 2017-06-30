@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['unpack_5freturn',['unpack_return',['../namespacemsgpack.html#acb783138a9bf52537f466eb620225a98',1,'msgpack::unpack_return()'],['../namespacemsgpack.html#acb783138a9bf52537f466eb620225a98',1,'msgpack::unpack_return()']]]
+  ['parse_5freturn',['parse_return',['../namespacemsgpack.html#ad2aa541d4168ec1c937a76b73f26020e',1,'msgpack::parse_return()'],['../namespacemsgpack.html#ad2aa541d4168ec1c937a76b73f26020e',1,'msgpack::parse_return()']]]
 ];

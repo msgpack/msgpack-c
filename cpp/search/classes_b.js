@@ -1,7 +1,6 @@
 var searchData=
 [
-  ['object',['object',['../structmsgpack_1_1object.html',1,'msgpack']]],
-  ['object',['object',['../structmsgpack_1_1adaptor_1_1object.html',1,'msgpack::adaptor']]],
+  ['object',['object',['../structmsgpack_1_1object.html',1,'msgpack::object'],['../structmsgpack_1_1adaptor_1_1object.html',1,'msgpack::adaptor::object&lt; T, Enabler &gt;']]],
   ['object_3c_20bool_20_3e',['object&lt; bool &gt;',['../structmsgpack_1_1adaptor_1_1object_3_01bool_01_4.html',1,'msgpack::adaptor']]],
   ['object_3c_20boost_3a_3aoptional_3c_20t_20_3e_20_3e',['object&lt; boost::optional&lt; T &gt; &gt;',['../structmsgpack_1_1adaptor_1_1object_3_01boost_1_1optional_3_01_t_01_4_01_4.html',1,'msgpack::adaptor']]],
   ['object_3c_20char_20_2a_20_3e',['object&lt; char * &gt;',['../structmsgpack_1_1adaptor_1_1object_3_01char_01_5_01_4.html',1,'msgpack::adaptor']]],
@@ -36,6 +35,7 @@ var searchData=
   ['object_3c_20type_3a_3afix_5fuint8_20_3e',['object&lt; type::fix_uint8 &gt;',['../structmsgpack_1_1adaptor_1_1object_3_01type_1_1fix__uint8_01_4.html',1,'msgpack::adaptor']]],
   ['object_3c_20type_3a_3anil_5ft_20_3e',['object&lt; type::nil_t &gt;',['../structmsgpack_1_1adaptor_1_1object_3_01type_1_1nil__t_01_4.html',1,'msgpack::adaptor']]],
   ['object_3c_20type_3a_3araw_5fref_20_3e',['object&lt; type::raw_ref &gt;',['../structmsgpack_1_1adaptor_1_1object_3_01type_1_1raw__ref_01_4.html',1,'msgpack::adaptor']]],
+  ['object_3c_20type_3a_3asize_5fequal_5fonly_3c_20t_20_3e_20_3e',['object&lt; type::size_equal_only&lt; T &gt; &gt;',['../structmsgpack_1_1adaptor_1_1object_3_01type_1_1size__equal__only_3_01_t_01_4_01_4.html',1,'msgpack::adaptor']]],
   ['object_3c_20type_3a_3av4raw_5fref_20_3e',['object&lt; type::v4raw_ref &gt;',['../structmsgpack_1_1adaptor_1_1object_3_01type_1_1v4raw__ref_01_4.html',1,'msgpack::adaptor']]],
   ['object_3c_20unsigned_20char_20_3e',['object&lt; unsigned char &gt;',['../structmsgpack_1_1adaptor_1_1object_3_01unsigned_01char_01_4.html',1,'msgpack::adaptor']]],
   ['object_3c_20unsigned_20int_20_3e',['object&lt; unsigned int &gt;',['../structmsgpack_1_1adaptor_1_1object_3_01unsigned_01int_01_4.html',1,'msgpack::adaptor']]],
@@ -112,6 +112,7 @@ var searchData=
   ['object_5fwith_5fzone_3c_20type_3a_3afix_5fuint8_20_3e',['object_with_zone&lt; type::fix_uint8 &gt;',['../structmsgpack_1_1adaptor_1_1object__with__zone_3_01type_1_1fix__uint8_01_4.html',1,'msgpack::adaptor']]],
   ['object_5fwith_5fzone_3c_20type_3a_3anil_5ft_20_3e',['object_with_zone&lt; type::nil_t &gt;',['../structmsgpack_1_1adaptor_1_1object__with__zone_3_01type_1_1nil__t_01_4.html',1,'msgpack::adaptor']]],
   ['object_5fwith_5fzone_3c_20type_3a_3araw_5fref_20_3e',['object_with_zone&lt; type::raw_ref &gt;',['../structmsgpack_1_1adaptor_1_1object__with__zone_3_01type_1_1raw__ref_01_4.html',1,'msgpack::adaptor']]],
+  ['object_5fwith_5fzone_3c_20type_3a_3asize_5fequal_5fonly_3c_20t_20_3e_20_3e',['object_with_zone&lt; type::size_equal_only&lt; T &gt; &gt;',['../structmsgpack_1_1adaptor_1_1object__with__zone_3_01type_1_1size__equal__only_3_01_t_01_4_01_4.html',1,'msgpack::adaptor']]],
   ['object_5fwith_5fzone_3c_20type_3a_3atuple_3c_3e_20_3e',['object_with_zone&lt; type::tuple&lt;&gt; &gt;',['../structmsgpack_1_1adaptor_1_1object__with__zone_3_01type_1_1tuple_3_4_01_4.html',1,'msgpack::adaptor']]],
   ['object_5fwith_5fzone_3c_20type_3a_3av4raw_5fref_20_3e',['object_with_zone&lt; type::v4raw_ref &gt;',['../structmsgpack_1_1adaptor_1_1object__with__zone_3_01type_1_1v4raw__ref_01_4.html',1,'msgpack::adaptor']]],
   ['object_5fwith_5fzone_3c_20unsigned_20char_20_3e',['object_with_zone&lt; unsigned char &gt;',['../structmsgpack_1_1adaptor_1_1object__with__zone_3_01unsigned_01char_01_4.html',1,'msgpack::adaptor']]],
