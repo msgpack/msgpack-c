@@ -92,9 +92,15 @@ public:
         }
         return true;
     }
-    bool visit_float(double v) {
+    bool visit_float32(float v) {
         msgpack::object* obj = m_stack.back();
-        obj->type = msgpack::type::FLOAT;
+        obj->type = msgpack::type::FLOAT32;
+        obj->via.f64 = v;
+        return true;
+    }
+    bool visit_float64(double v) {
+        msgpack::object* obj = m_stack.back();
+        obj->type = msgpack::type::FLOAT64;
         obj->via.f64 = v;
         return true;
     }

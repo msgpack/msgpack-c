@@ -339,7 +339,7 @@ inline parse_return context<VisitorHolder>::execute(const char* data, std::size_
             case MSGPACK_CS_FLOAT: {
                 union { uint32_t i; float f; } mem;
                 load<uint32_t>(mem.i, n);
-                bool visret = holder().visitor().visit_float(mem.f);
+                bool visret = holder().visitor().visit_float32(mem.f);
                 parse_return upr = after_visit_proc(visret, off);
                 if (upr != PARSE_CONTINUE) return upr;
             } break;
@@ -352,7 +352,7 @@ inline parse_return context<VisitorHolder>::execute(const char* data, std::size_
                 // https://github.com/msgpack/msgpack-perl/pull/1
                 mem.i = (mem.i & 0xFFFFFFFFUL) << 32UL | (mem.i >> 32UL);
 #endif
-                bool visret = holder().visitor().visit_float(mem.f);
+                bool visret = holder().visitor().visit_float64(mem.f);
                 parse_return upr = after_visit_proc(visret, off);
                 if (upr != PARSE_CONTINUE) return upr;
             } break;
