@@ -32,7 +32,10 @@ struct null_visitor {
     bool visit_negative_integer(int64_t /*v*/) {
         return true;
     }
-    bool visit_float(double /*v*/) {
+    bool visit_float32(float /*v*/) {
+        return true;
+    }
+    bool visit_float64(double /*v*/) {
         return true;
     }
     bool visit_str(const char* /*v*/, uint32_t /*size*/) {

@@ -298,7 +298,7 @@ const auto mp_object_def =
                 auto& app_specific = x3::get<tag_app_specific>(ctx).get();
                 union { uint32_t i; float f; } mem;
                 mem.i = _attr(ctx);
-                app_specific.vis.visit_float(mem.f);
+                app_specific.vis.visit_float32(mem.f);
             }
         )
     ]
@@ -316,7 +316,7 @@ const auto mp_object_def =
                 // https://github.com/msgpack/msgpack-perl/pull/1
                 mem.i = (mem.i & 0xFFFFFFFFUL) << 32UL | (mem.i >> 32UL);
 #endif
-                app_specific.vis.visit_float(mem.f);
+                app_specific.vis.visit_float64(mem.f);
             }
         )
     ]

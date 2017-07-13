@@ -40,7 +40,13 @@ struct json_like_visitor : msgpack::v2::null_visitor {
         m_s += ss.str();
         return true;
     }
-    bool visit_float(double v) {
+    bool visit_float32(float v) {
+        std::stringstream ss;
+        ss << v;
+        m_s += ss.str();
+        return true;
+    }
+    bool visit_float64(double v) {
         std::stringstream ss;
         ss << v;
         m_s += ss.str();
