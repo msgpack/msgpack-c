@@ -96,7 +96,7 @@ int main(void) {
         /* deserializes it. */
         msgpack_unpacked msg;
         msgpack_unpacked_init(&msg);
-        bool success = msgpack_unpack_next(&msg, buffer->data, buffer->size, NULL);
+        msgpack_unpack_return ret = msgpack_unpack_next(&msg, buffer->data, buffer->size, NULL);
 
         /* prints the deserialized object. */
         msgpack_object obj = msg.data;
@@ -119,7 +119,7 @@ int main(void) {
         /* creates buffer and serializer instance. */
         msgpack_sbuffer* buffer = msgpack_sbuffer_new();
         msgpack_packer* pk = msgpack_packer_new(buffer, msgpack_sbuffer_write);
-        
+
         int j;
 
         for(j = 0; j<23; j++) {
@@ -137,7 +137,7 @@ int main(void) {
            /* deserializes it. */
            msgpack_unpacked msg;
            msgpack_unpacked_init(&msg);
-           bool success = msgpack_unpack_next(&msg, buffer->data, buffer->size, NULL);
+           msgpack_unpack_return ret = msgpack_unpack_next(&msg, buffer->data, buffer->size, NULL);
 
            /* prints the deserialized object. */
            msgpack_object obj = msg.data;
