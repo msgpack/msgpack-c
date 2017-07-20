@@ -22,7 +22,7 @@ void test()
 
     msgpack_unpacked_init(&msg);
 
-    while (msgpack_unpack_next(&msg, buf.data, buf.size, &upk_pos)) {
+    while (msgpack_unpack_next(&msg, buf.data, buf.size, &upk_pos) == MSGPACK_UNPACK_SUCCESS) {
     }
 
     msgpack_sbuffer_destroy(&buf);
