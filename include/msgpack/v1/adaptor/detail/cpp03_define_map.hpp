@@ -83,7 +83,7 @@ struct define_map<A0, A1> {
     void msgpack_object(msgpack::object* o, msgpack::zone& z) const
     {
         o->type = msgpack::type::MAP;
-        o->via.map.ptr = static_cast<msgpack::object_kv*>(z.allocate_align(sizeof(msgpack::object_kv)*1));
+        o->via.map.ptr = static_cast<msgpack::object_kv*>(z.allocate_align(sizeof(msgpack::object_kv)*1, MSGPACK_ZONE_ALIGNOF(msgpack::object_kv)));
         o->via.map.size = 1;
         
         o->via.map.ptr[0].key = msgpack::object(a0, z);
@@ -142,7 +142,7 @@ struct define_map<A0, A1, A2, A3> {
     void msgpack_object(msgpack::object* o, msgpack::zone& z) const
     {
         o->type = msgpack::type::MAP;
-        o->via.map.ptr = static_cast<msgpack::object_kv*>(z.allocate_align(sizeof(msgpack::object_kv)*2));
+        o->via.map.ptr = static_cast<msgpack::object_kv*>(z.allocate_align(sizeof(msgpack::object_kv)*2, MSGPACK_ZONE_ALIGNOF(msgpack::object_kv)));
         o->via.map.size = 2;
         
         o->via.map.ptr[0].key = msgpack::object(a0, z);
@@ -215,7 +215,7 @@ struct define_map<A0, A1, A2, A3, A4, A5> {
     void msgpack_object(msgpack::object* o, msgpack::zone& z) const
     {
         o->type = msgpack::type::MAP;
-        o->via.map.ptr = static_cast<msgpack::object_kv*>(z.allocate_align(sizeof(msgpack::object_kv)*3));
+        o->via.map.ptr = static_cast<msgpack::object_kv*>(z.allocate_align(sizeof(msgpack::object_kv)*3, MSGPACK_ZONE_ALIGNOF(msgpack::object_kv)));
         o->via.map.size = 3;
         
         o->via.map.ptr[0].key = msgpack::object(a0, z);
@@ -302,7 +302,7 @@ struct define_map<A0, A1, A2, A3, A4, A5, A6, A7> {
     void msgpack_object(msgpack::object* o, msgpack::zone& z) const
     {
         o->type = msgpack::type::MAP;
-        o->via.map.ptr = static_cast<msgpack::object_kv*>(z.allocate_align(sizeof(msgpack::object_kv)*4));
+        o->via.map.ptr = static_cast<msgpack::object_kv*>(z.allocate_align(sizeof(msgpack::object_kv)*4, MSGPACK_ZONE_ALIGNOF(msgpack::object_kv)));
         o->via.map.size = 4;
         
         o->via.map.ptr[0].key = msgpack::object(a0, z);
@@ -403,7 +403,7 @@ struct define_map<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9> {
     void msgpack_object(msgpack::object* o, msgpack::zone& z) const
     {
         o->type = msgpack::type::MAP;
-        o->via.map.ptr = static_cast<msgpack::object_kv*>(z.allocate_align(sizeof(msgpack::object_kv)*5));
+        o->via.map.ptr = static_cast<msgpack::object_kv*>(z.allocate_align(sizeof(msgpack::object_kv)*5, MSGPACK_ZONE_ALIGNOF(msgpack::object_kv)));
         o->via.map.size = 5;
         
         o->via.map.ptr[0].key = msgpack::object(a0, z);
@@ -518,7 +518,7 @@ struct define_map<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11> {
     void msgpack_object(msgpack::object* o, msgpack::zone& z) const
     {
         o->type = msgpack::type::MAP;
-        o->via.map.ptr = static_cast<msgpack::object_kv*>(z.allocate_align(sizeof(msgpack::object_kv)*6));
+        o->via.map.ptr = static_cast<msgpack::object_kv*>(z.allocate_align(sizeof(msgpack::object_kv)*6, MSGPACK_ZONE_ALIGNOF(msgpack::object_kv)));
         o->via.map.size = 6;
         
         o->via.map.ptr[0].key = msgpack::object(a0, z);
@@ -647,7 +647,7 @@ struct define_map<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13> {
     void msgpack_object(msgpack::object* o, msgpack::zone& z) const
     {
         o->type = msgpack::type::MAP;
-        o->via.map.ptr = static_cast<msgpack::object_kv*>(z.allocate_align(sizeof(msgpack::object_kv)*7));
+        o->via.map.ptr = static_cast<msgpack::object_kv*>(z.allocate_align(sizeof(msgpack::object_kv)*7, MSGPACK_ZONE_ALIGNOF(msgpack::object_kv)));
         o->via.map.size = 7;
         
         o->via.map.ptr[0].key = msgpack::object(a0, z);
@@ -790,7 +790,7 @@ struct define_map<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A1
     void msgpack_object(msgpack::object* o, msgpack::zone& z) const
     {
         o->type = msgpack::type::MAP;
-        o->via.map.ptr = static_cast<msgpack::object_kv*>(z.allocate_align(sizeof(msgpack::object_kv)*8));
+        o->via.map.ptr = static_cast<msgpack::object_kv*>(z.allocate_align(sizeof(msgpack::object_kv)*8, MSGPACK_ZONE_ALIGNOF(msgpack::object_kv)));
         o->via.map.size = 8;
         
         o->via.map.ptr[0].key = msgpack::object(a0, z);
@@ -947,7 +947,7 @@ struct define_map<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A1
     void msgpack_object(msgpack::object* o, msgpack::zone& z) const
     {
         o->type = msgpack::type::MAP;
-        o->via.map.ptr = static_cast<msgpack::object_kv*>(z.allocate_align(sizeof(msgpack::object_kv)*9));
+        o->via.map.ptr = static_cast<msgpack::object_kv*>(z.allocate_align(sizeof(msgpack::object_kv)*9, MSGPACK_ZONE_ALIGNOF(msgpack::object_kv)));
         o->via.map.size = 9;
         
         o->via.map.ptr[0].key = msgpack::object(a0, z);
@@ -1118,7 +1118,7 @@ struct define_map<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A1
     void msgpack_object(msgpack::object* o, msgpack::zone& z) const
     {
         o->type = msgpack::type::MAP;
-        o->via.map.ptr = static_cast<msgpack::object_kv*>(z.allocate_align(sizeof(msgpack::object_kv)*10));
+        o->via.map.ptr = static_cast<msgpack::object_kv*>(z.allocate_align(sizeof(msgpack::object_kv)*10, MSGPACK_ZONE_ALIGNOF(msgpack::object_kv)));
         o->via.map.size = 10;
         
         o->via.map.ptr[0].key = msgpack::object(a0, z);
@@ -1303,7 +1303,7 @@ struct define_map<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A1
     void msgpack_object(msgpack::object* o, msgpack::zone& z) const
     {
         o->type = msgpack::type::MAP;
-        o->via.map.ptr = static_cast<msgpack::object_kv*>(z.allocate_align(sizeof(msgpack::object_kv)*11));
+        o->via.map.ptr = static_cast<msgpack::object_kv*>(z.allocate_align(sizeof(msgpack::object_kv)*11, MSGPACK_ZONE_ALIGNOF(msgpack::object_kv)));
         o->via.map.size = 11;
         
         o->via.map.ptr[0].key = msgpack::object(a0, z);
@@ -1502,7 +1502,7 @@ struct define_map<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A1
     void msgpack_object(msgpack::object* o, msgpack::zone& z) const
     {
         o->type = msgpack::type::MAP;
-        o->via.map.ptr = static_cast<msgpack::object_kv*>(z.allocate_align(sizeof(msgpack::object_kv)*12));
+        o->via.map.ptr = static_cast<msgpack::object_kv*>(z.allocate_align(sizeof(msgpack::object_kv)*12, MSGPACK_ZONE_ALIGNOF(msgpack::object_kv)));
         o->via.map.size = 12;
         
         o->via.map.ptr[0].key = msgpack::object(a0, z);
@@ -1715,7 +1715,7 @@ struct define_map<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A1
     void msgpack_object(msgpack::object* o, msgpack::zone& z) const
     {
         o->type = msgpack::type::MAP;
-        o->via.map.ptr = static_cast<msgpack::object_kv*>(z.allocate_align(sizeof(msgpack::object_kv)*13));
+        o->via.map.ptr = static_cast<msgpack::object_kv*>(z.allocate_align(sizeof(msgpack::object_kv)*13, MSGPACK_ZONE_ALIGNOF(msgpack::object_kv)));
         o->via.map.size = 13;
         
         o->via.map.ptr[0].key = msgpack::object(a0, z);
@@ -1942,7 +1942,7 @@ struct define_map<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A1
     void msgpack_object(msgpack::object* o, msgpack::zone& z) const
     {
         o->type = msgpack::type::MAP;
-        o->via.map.ptr = static_cast<msgpack::object_kv*>(z.allocate_align(sizeof(msgpack::object_kv)*14));
+        o->via.map.ptr = static_cast<msgpack::object_kv*>(z.allocate_align(sizeof(msgpack::object_kv)*14, MSGPACK_ZONE_ALIGNOF(msgpack::object_kv)));
         o->via.map.size = 14;
         
         o->via.map.ptr[0].key = msgpack::object(a0, z);
@@ -2183,7 +2183,7 @@ struct define_map<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A1
     void msgpack_object(msgpack::object* o, msgpack::zone& z) const
     {
         o->type = msgpack::type::MAP;
-        o->via.map.ptr = static_cast<msgpack::object_kv*>(z.allocate_align(sizeof(msgpack::object_kv)*15));
+        o->via.map.ptr = static_cast<msgpack::object_kv*>(z.allocate_align(sizeof(msgpack::object_kv)*15, MSGPACK_ZONE_ALIGNOF(msgpack::object_kv)));
         o->via.map.size = 15;
         
         o->via.map.ptr[0].key = msgpack::object(a0, z);
@@ -2438,7 +2438,7 @@ struct define_map<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A1
     void msgpack_object(msgpack::object* o, msgpack::zone& z) const
     {
         o->type = msgpack::type::MAP;
-        o->via.map.ptr = static_cast<msgpack::object_kv*>(z.allocate_align(sizeof(msgpack::object_kv)*16));
+        o->via.map.ptr = static_cast<msgpack::object_kv*>(z.allocate_align(sizeof(msgpack::object_kv)*16, MSGPACK_ZONE_ALIGNOF(msgpack::object_kv)));
         o->via.map.size = 16;
         
         o->via.map.ptr[0].key = msgpack::object(a0, z);

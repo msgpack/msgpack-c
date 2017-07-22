@@ -300,7 +300,7 @@ inline std::size_t aligned_size(
 template <typename T<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
 T* zone::allocate(<%=(1..i).map{|j|"A#{j} a#{j}"}.join(', ')%>)
 {
-    void* x = allocate_align(sizeof(T));
+    void* x = allocate_align(sizeof(T), MSGPACK_ZONE_ALIGNOF(T));
     try {
         m_finalizer_array.push(&zone::object_destruct<T>, x);
     } catch (...) {

@@ -26,6 +26,12 @@
 #define MSGPACK_ZONE_ALIGN sizeof(void*)
 #endif
 
+#if defined(_MSC_VER)
+#define MSGPACK_ZONE_ALIGNOF(type) __alignof(type)
+#else
+#define MSGPACK_ZONE_ALIGNOF(type) __alignof__(type)
+#endif
+
 namespace msgpack {
 
 /// @cond

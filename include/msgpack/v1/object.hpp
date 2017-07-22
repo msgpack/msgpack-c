@@ -154,13 +154,14 @@ inline std::size_t aligned_zone_size(msgpack::object const& obj) {
         break;
     case msgpack::type::EXT:
         s += msgpack::aligned_size(
-            detail::add_ext_type_size<sizeof(std::size_t)>(obj.via.ext.size));
+            detail::add_ext_type_size<sizeof(std::size_t)>(obj.via.ext.size),
+            MSGPACK_ZONE_ALIGNOF(msgpack::object));
         break;
     case msgpack::type::STR:
-        s += msgpack::aligned_size(obj.via.str.size);
+        s += msgpack::aligned_size(obj.via.str.size, MSGPACK_ZONE_ALIGNOF(msgpack::object));
         break;
     case msgpack::type::BIN:
-        s += msgpack::aligned_size(obj.via.bin.size);
+        s += msgpack::aligned_size(obj.via.bin.size, MSGPACK_ZONE_ALIGNOF(msgpack::object));
         break;
     default:
         break;
@@ -344,7 +345,7 @@ struct object_with_zone<msgpack::object> {
         }
 
         case msgpack::type::ARRAY:
-            o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object) * v.via.array.size));
+            o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object) * v.via.array.size, MSGPACK_ZONE_ALIGNOF(msgpack::object)));
             o.via.array.size = v.via.array.size;
             for (msgpack::object
                      * po(o.via.array.ptr),
@@ -357,7 +358,7 @@ struct object_with_zone<msgpack::object> {
             return;
 
         case msgpack::type::MAP:
-            o.via.map.ptr = (msgpack::object_kv*)o.zone.allocate_align(sizeof(msgpack::object_kv) * v.via.map.size);
+            o.via.map.ptr = (msgpack::object_kv*)o.zone.allocate_align(sizeof(msgpack::object_kv) * v.via.map.size, MSGPACK_ZONE_ALIGNOF(msgpack::object_kv));
             o.via.map.size = v.via.map.size;
             for(msgpack::object_kv
                     * po(o.via.map.ptr),

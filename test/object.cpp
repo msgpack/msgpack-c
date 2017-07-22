@@ -181,7 +181,7 @@ TEST(object, cross_zone_copy_ext)
     msgpack::object::with_zone obj1(z1);
 
     obj1.type = msgpack::type::EXT;
-    char* ptr = static_cast<char*>(obj1.zone.allocate_align(2));
+    char* ptr = static_cast<char*>(obj1.zone.allocate_align(2, MSGPACK_ZONE_ALIGNOF(char)));
     ptr[0] = 1;
     ptr[1] = 2;
     obj1.via.ext.ptr = ptr;
@@ -204,7 +204,7 @@ TEST(object, cross_zone_copy_construct_ext)
     msgpack::object::with_zone obj1(z1);
 
     obj1.type = msgpack::type::EXT;
-    char* ptr = static_cast<char*>(obj1.zone.allocate_align(2));
+    char* ptr = static_cast<char*>(obj1.zone.allocate_align(2, MSGPACK_ZONE_ALIGNOF(char)));
     ptr[0] = 1;
     ptr[1] = 2;
     obj1.via.ext.ptr = ptr;

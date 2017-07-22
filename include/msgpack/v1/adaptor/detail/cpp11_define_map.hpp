@@ -83,7 +83,7 @@ struct define_map {
     {
         static_assert(sizeof...(Args) % 2 == 0, "");
         o->type = msgpack::type::MAP;
-        o->via.map.ptr = static_cast<msgpack::object_kv*>(z.allocate_align(sizeof(msgpack::object_kv)*sizeof...(Args)/2));
+        o->via.map.ptr = static_cast<msgpack::object_kv*>(z.allocate_align(sizeof(msgpack::object_kv)*sizeof...(Args)/2, MSGPACK_ZONE_ALIGNOF(msgpack::object_kv)));
         o->via.map.size = sizeof...(Args) / 2;
 
         define_map_imp<std::tuple<Args&...>, sizeof...(Args)>::object(o, z, a);

@@ -69,7 +69,7 @@ struct object_with_zone<my_class> {
         o.type = type::ARRAY;
         o.via.array.size = 2;
         o.via.array.ptr = static_cast<msgpack::object*>(
-            o.zone.allocate_align(sizeof(msgpack::object) * o.via.array.size));
+            o.zone.allocate_align(sizeof(msgpack::object) * o.via.array.size, MSGPACK_ZONE_ALIGNOF(msgpack::object)));
         o.via.array.ptr[0] = msgpack::object(v.get_name(), o.zone);
         o.via.array.ptr[1] = msgpack::object(v.get_age(), o.zone);
     }
