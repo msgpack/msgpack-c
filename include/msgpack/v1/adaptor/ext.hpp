@@ -104,7 +104,7 @@ struct object_with_zone<msgpack::type::ext> {
         // size limit has already been checked at ext's constructor
         uint32_t size = v.size();
         o.type = msgpack::type::EXT;
-        char* ptr = static_cast<char*>(o.zone.allocate_align(size + 1));
+        char* ptr = static_cast<char*>(o.zone.allocate_align(size + 1, MSGPACK_ZONE_ALIGNOF(char)));
         o.via.ext.ptr = ptr;
         o.via.ext.size = size;
         ptr[0] = static_cast<char>(v.type());

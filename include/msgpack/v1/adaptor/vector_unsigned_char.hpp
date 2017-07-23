@@ -96,7 +96,7 @@ struct object_with_zone<std::vector<unsigned char, Alloc> > {
         o.type = msgpack::type::BIN;
         o.via.bin.size = size;
         if (size != 0) {
-            char* ptr = static_cast<char*>(o.zone.allocate_align(size));
+            char* ptr = static_cast<char*>(o.zone.allocate_align(size, MSGPACK_ZONE_ALIGNOF(char)));
             o.via.bin.ptr = ptr;
             std::memcpy(ptr, &v.front(), size);
         }

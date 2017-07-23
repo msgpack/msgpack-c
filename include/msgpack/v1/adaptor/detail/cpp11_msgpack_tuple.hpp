@@ -203,7 +203,7 @@ template <typename... Args>
         msgpack::object::with_zone& o,
         msgpack::type::tuple<Args...> const& v) const {
         o.type = msgpack::type::ARRAY;
-        o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*sizeof...(Args)));
+        o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*sizeof...(Args), MSGPACK_ZONE_ALIGNOF(msgpack::object)));
         o.via.array.size = sizeof...(Args);
         MsgpackTupleToObjectWithZone<decltype(v), sizeof...(Args)>::convert(o, v);
     }

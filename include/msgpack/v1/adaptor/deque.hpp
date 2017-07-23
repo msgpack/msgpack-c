@@ -83,7 +83,7 @@ struct object_with_zone<std::deque<T, Alloc> > {
             o.via.array.size = 0;
         } else {
             uint32_t size = checked_get_container_size(v.size());
-            msgpack::object* p = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*size));
+            msgpack::object* p = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*size, MSGPACK_ZONE_ALIGNOF(msgpack::object)));
             msgpack::object* const pend = p + size;
             o.via.array.ptr = p;
             o.via.array.size = size;

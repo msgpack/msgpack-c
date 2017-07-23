@@ -151,7 +151,7 @@ struct object_with_zone<T[N]> {
     void operator()(msgpack::object::with_zone& o, const T(&v)[N]) const {
         uint32_t size = checked_get_container_size(N);
         o.type = msgpack::type::ARRAY;
-        msgpack::object* ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object) * size));
+        msgpack::object* ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object) * size, MSGPACK_ZONE_ALIGNOF(msgpack::object)));
         o.via.array.ptr = ptr;
         o.via.array.size = size;
         const T* pv = v;
@@ -169,7 +169,7 @@ struct object_with_zone<char[N]> {
         char const* p2 = static_cast<char const*>(std::memchr(p, '\0', size));
         uint32_t adjusted_size = p2 ? static_cast<uint32_t>(p2 - p) : size;
         o.type = msgpack::type::STR;
-        char* ptr = static_cast<char*>(o.zone.allocate_align(adjusted_size));
+        char* ptr = static_cast<char*>(o.zone.allocate_align(adjusted_size, MSGPACK_ZONE_ALIGNOF(char)));
         o.via.str.ptr = ptr;
         o.via.str.size = adjusted_size;
         std::memcpy(ptr, p, adjusted_size);
@@ -184,7 +184,7 @@ struct object_with_zone<const char[N]> {
         char const* p2 = static_cast<char const*>(std::memchr(p, '\0', size));
         uint32_t adjusted_size = p2 ? static_cast<uint32_t>(p2 - p) : size;
         o.type = msgpack::type::STR;
-        char* ptr = static_cast<char*>(o.zone.allocate_align(adjusted_size));
+        char* ptr = static_cast<char*>(o.zone.allocate_align(adjusted_size, MSGPACK_ZONE_ALIGNOF(char)));
         o.via.str.ptr = ptr;
         o.via.str.size = adjusted_size;
         std::memcpy(ptr, p, adjusted_size);
@@ -196,7 +196,7 @@ struct object_with_zone<unsigned char[N]> {
     void operator()(msgpack::object::with_zone& o, const unsigned char(&v)[N]) const {
         uint32_t size = checked_get_container_size(N);
         o.type = msgpack::type::BIN;
-        char* ptr = static_cast<char*>(o.zone.allocate_align(size));
+        char* ptr = static_cast<char*>(o.zone.allocate_align(size, MSGPACK_ZONE_ALIGNOF(char)));
         o.via.bin.ptr = ptr;
         o.via.bin.size = size;
         std::memcpy(ptr, v, size);
@@ -208,7 +208,7 @@ struct object_with_zone<const unsigned char[N]> {
     void operator()(msgpack::object::with_zone& o, const unsigned char(&v)[N]) const {
         uint32_t size = checked_get_container_size(N);
         o.type = msgpack::type::BIN;
-        char* ptr = static_cast<char*>(o.zone.allocate_align(size));
+        char* ptr = static_cast<char*>(o.zone.allocate_align(size, MSGPACK_ZONE_ALIGNOF(char)));
         o.via.bin.ptr = ptr;
         o.via.bin.size = size;
         std::memcpy(ptr, v, size);

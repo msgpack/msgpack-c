@@ -20,6 +20,7 @@ namespace msgpack {
 MSGPACK_API_VERSION_NAMESPACE(v2) {
 /// @endcond
 
+
 struct zone_push_finalizer {
     zone_push_finalizer(msgpack::zone& z):m_z(&z) {}
     void set_zone(msgpack::zone& z) { m_z = &z; }

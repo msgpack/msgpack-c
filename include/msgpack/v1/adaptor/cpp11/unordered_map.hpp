@@ -81,7 +81,7 @@ struct object_with_zone<std::unordered_map<K, V, Hash, Compare, Alloc>> {
             o.via.map.size = 0;
         } else {
             uint32_t size = checked_get_container_size(v.size());
-            msgpack::object_kv* p = static_cast<msgpack::object_kv*>(o.zone.allocate_align(sizeof(msgpack::object_kv)*size));
+            msgpack::object_kv* p = static_cast<msgpack::object_kv*>(o.zone.allocate_align(sizeof(msgpack::object_kv)*size, MSGPACK_ZONE_ALIGNOF(msgpack::object_kv)));
             msgpack::object_kv* const pend = p + size;
             o.via.map.ptr  = p;
             o.via.map.size = size;
@@ -155,7 +155,7 @@ struct object_with_zone<std::unordered_multimap<K, V, Hash, Compare, Alloc>> {
             o.via.map.size = 0;
         } else {
             uint32_t size = checked_get_container_size(v.size());
-            msgpack::object_kv* p = static_cast<msgpack::object_kv*>(o.zone.allocate_align(sizeof(msgpack::object_kv)*size));
+            msgpack::object_kv* p = static_cast<msgpack::object_kv*>(o.zone.allocate_align(sizeof(msgpack::object_kv)*size, MSGPACK_ZONE_ALIGNOF(msgpack::object_kv)));
             msgpack::object_kv* const pend = p + size;
             o.via.map.ptr  = p;
             o.via.map.size = size;

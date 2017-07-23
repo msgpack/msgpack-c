@@ -132,7 +132,7 @@ struct object_with_zone<T, typename msgpack::enable_if<boost::fusion::traits::is
     void operator()(msgpack::object::with_zone& o, const T& v) const {
         uint32_t size = checked_get_container_size(boost::fusion::size(v));
         o.type = msgpack::type::ARRAY;
-        o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*size));
+        o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*size, MSGPACK_ZONE_ALIGNOF(msgpack::object)));
         o.via.array.size = size;
         uint32_t count = 0;
         boost::fusion::for_each(v, with_zone_imp(o, count));

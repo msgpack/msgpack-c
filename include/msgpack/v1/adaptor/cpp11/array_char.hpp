@@ -79,7 +79,7 @@ struct object_with_zone<std::array<char, N>> {
     void operator()(msgpack::object::with_zone& o, const std::array<char, N>& v) const {
         uint32_t size = checked_get_container_size(v.size());
         o.type = msgpack::type::BIN;
-        char* ptr = static_cast<char*>(o.zone.allocate_align(size));
+        char* ptr = static_cast<char*>(o.zone.allocate_align(size, MSGPACK_ZONE_ALIGNOF(char)));
         o.via.bin.ptr = ptr;
         o.via.bin.size = size;
         std::memcpy(ptr, v.data(), size);

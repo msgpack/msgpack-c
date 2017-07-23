@@ -223,7 +223,9 @@ private:
     template <typename T>
     static void object_delete(void* obj);
 
-    void* allocate_expand(size_t size);
+    static char* get_aligned(char* ptr, size_t align);
+
+    char* allocate_expand(size_t size);
 private:
     zone(const zone&);
     zone& operator=(const zone&);
@@ -233,37 +235,42 @@ inline zone::zone(size_t chunk_size) /* throw() */ :m_chunk_size(chunk_size), m_
 {
 }
 
-inline void* zone::allocate_align(size_t size, size_t align)
+inline char* zone::get_aligned(char* ptr, size_t align)
 {
-    char* aligned =
+    return
         reinterpret_cast<char*>(
             reinterpret_cast<size_t>(
-                (m_chunk_list.m_ptr + (align - 1))) / align * align);
+            (ptr + (align - 1))) / align * align);
+}
+
+inline void* zone::allocate_align(size_t size, size_t align)
+{
+    char* aligned = get_aligned(m_chunk_list.m_ptr, align);
     size_t adjusted_size = size + (aligned - m_chunk_list.m_ptr);
-    if(m_chunk_list.m_free >= adjusted_size) {
-        m_chunk_list.m_free -= adjusted_size;
-        m_chunk_list.m_ptr  += adjusted_size;
-        return aligned;
+    if (m_chunk_list.m_free < adjusted_size) {
+        size_t enough_size = size + align - 1;
+        char* ptr = allocate_expand(enough_size);
+        aligned = get_aligned(ptr, align);
+        adjusted_size = size + (aligned - m_chunk_list.m_ptr);
     }
-    return reinterpret_cast<char*>(
-        reinterpret_cast<size_t>(
-            allocate_expand(size + (align - 1))) / align * align);
+    m_chunk_list.m_free -= adjusted_size;
+    m_chunk_list.m_ptr  += adjusted_size;
+    return aligned;
 }
 
 inline void* zone::allocate_no_align(size_t size)
 {
-    if(m_chunk_list.m_free < size) {
-        return allocate_expand(size);
-    }
-
     char* ptr = m_chunk_list.m_ptr;
+    if(m_chunk_list.m_free < size) {
+        ptr = allocate_expand(size);
+    }
     m_chunk_list.m_free -= size;
     m_chunk_list.m_ptr  += size;
 
     return ptr;
 }
 
-inline void* zone::allocate_expand(size_t size)
+inline char* zone::allocate_expand(size_t size)
 {
     chunk_list* const cl = &m_chunk_list;
 
@@ -285,8 +292,8 @@ inline void* zone::allocate_expand(size_t size)
 
     c->m_next  = cl->m_head;
     cl->m_head = c;
-    cl->m_free = sz - size;
-    cl->m_ptr  = ptr + size;
+    cl->m_free = sz;
+    cl->m_ptr  = ptr;
 
     return ptr;
 }
@@ -345,7 +352,7 @@ inline std::size_t aligned_size(
 template <typename T>
 T* zone::allocate()
 {
-    void* x = allocate_align(sizeof(T));
+    void* x = allocate_align(sizeof(T), MSGPACK_ZONE_ALIGNOF(T));
     try {
         m_finalizer_array.push(&zone::object_destruct<T>, x);
     } catch (...) {
@@ -364,7 +371,7 @@ T* zone::allocate()
 template <typename T, typename A1>
 T* zone::allocate(A1 a1)
 {
-    void* x = allocate_align(sizeof(T));
+    void* x = allocate_align(sizeof(T), MSGPACK_ZONE_ALIGNOF(T));
     try {
         m_finalizer_array.push(&zone::object_destruct<T>, x);
     } catch (...) {
@@ -383,7 +390,7 @@ T* zone::allocate(A1 a1)
 template <typename T, typename A1, typename A2>
 T* zone::allocate(A1 a1, A2 a2)
 {
-    void* x = allocate_align(sizeof(T));
+    void* x = allocate_align(sizeof(T), MSGPACK_ZONE_ALIGNOF(T));
     try {
         m_finalizer_array.push(&zone::object_destruct<T>, x);
     } catch (...) {
@@ -402,7 +409,7 @@ T* zone::allocate(A1 a1, A2 a2)
 template <typename T, typename A1, typename A2, typename A3>
 T* zone::allocate(A1 a1, A2 a2, A3 a3)
 {
-    void* x = allocate_align(sizeof(T));
+    void* x = allocate_align(sizeof(T), MSGPACK_ZONE_ALIGNOF(T));
     try {
         m_finalizer_array.push(&zone::object_destruct<T>, x);
     } catch (...) {
@@ -421,7 +428,7 @@ T* zone::allocate(A1 a1, A2 a2, A3 a3)
 template <typename T, typename A1, typename A2, typename A3, typename A4>
 T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4)
 {
-    void* x = allocate_align(sizeof(T));
+    void* x = allocate_align(sizeof(T), MSGPACK_ZONE_ALIGNOF(T));
     try {
         m_finalizer_array.push(&zone::object_destruct<T>, x);
     } catch (...) {
@@ -440,7 +447,7 @@ T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4)
 template <typename T, typename A1, typename A2, typename A3, typename A4, typename A5>
 T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5)
 {
-    void* x = allocate_align(sizeof(T));
+    void* x = allocate_align(sizeof(T), MSGPACK_ZONE_ALIGNOF(T));
     try {
         m_finalizer_array.push(&zone::object_destruct<T>, x);
     } catch (...) {
@@ -459,7 +466,7 @@ T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5)
 template <typename T, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6>
 T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6)
 {
-    void* x = allocate_align(sizeof(T));
+    void* x = allocate_align(sizeof(T), MSGPACK_ZONE_ALIGNOF(T));
     try {
         m_finalizer_array.push(&zone::object_destruct<T>, x);
     } catch (...) {
@@ -478,7 +485,7 @@ T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6)
 template <typename T, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7>
 T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7)
 {
-    void* x = allocate_align(sizeof(T));
+    void* x = allocate_align(sizeof(T), MSGPACK_ZONE_ALIGNOF(T));
     try {
         m_finalizer_array.push(&zone::object_destruct<T>, x);
     } catch (...) {
@@ -497,7 +504,7 @@ T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7)
 template <typename T, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8>
 T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8)
 {
-    void* x = allocate_align(sizeof(T));
+    void* x = allocate_align(sizeof(T), MSGPACK_ZONE_ALIGNOF(T));
     try {
         m_finalizer_array.push(&zone::object_destruct<T>, x);
     } catch (...) {
@@ -516,7 +523,7 @@ T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8)
 template <typename T, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9>
 T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9)
 {
-    void* x = allocate_align(sizeof(T));
+    void* x = allocate_align(sizeof(T), MSGPACK_ZONE_ALIGNOF(T));
     try {
         m_finalizer_array.push(&zone::object_destruct<T>, x);
     } catch (...) {
@@ -535,7 +542,7 @@ T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9)
 template <typename T, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10>
 T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10)
 {
-    void* x = allocate_align(sizeof(T));
+    void* x = allocate_align(sizeof(T), MSGPACK_ZONE_ALIGNOF(T));
     try {
         m_finalizer_array.push(&zone::object_destruct<T>, x);
     } catch (...) {
@@ -554,7 +561,7 @@ T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9,
 template <typename T, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11>
 T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11)
 {
-    void* x = allocate_align(sizeof(T));
+    void* x = allocate_align(sizeof(T), MSGPACK_ZONE_ALIGNOF(T));
     try {
         m_finalizer_array.push(&zone::object_destruct<T>, x);
     } catch (...) {
@@ -573,7 +580,7 @@ T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9,
 template <typename T, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12>
 T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11, A12 a12)
 {
-    void* x = allocate_align(sizeof(T));
+    void* x = allocate_align(sizeof(T), MSGPACK_ZONE_ALIGNOF(T));
     try {
         m_finalizer_array.push(&zone::object_destruct<T>, x);
     } catch (...) {
@@ -592,7 +599,7 @@ T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9,
 template <typename T, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13>
 T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11, A12 a12, A13 a13)
 {
-    void* x = allocate_align(sizeof(T));
+    void* x = allocate_align(sizeof(T), MSGPACK_ZONE_ALIGNOF(T));
     try {
         m_finalizer_array.push(&zone::object_destruct<T>, x);
     } catch (...) {
@@ -611,7 +618,7 @@ T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9,
 template <typename T, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14>
 T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11, A12 a12, A13 a13, A14 a14)
 {
-    void* x = allocate_align(sizeof(T));
+    void* x = allocate_align(sizeof(T), MSGPACK_ZONE_ALIGNOF(T));
     try {
         m_finalizer_array.push(&zone::object_destruct<T>, x);
     } catch (...) {
@@ -630,7 +637,7 @@ T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9,
 template <typename T, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15>
 T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11, A12 a12, A13 a13, A14 a14, A15 a15)
 {
-    void* x = allocate_align(sizeof(T));
+    void* x = allocate_align(sizeof(T), MSGPACK_ZONE_ALIGNOF(T));
     try {
         m_finalizer_array.push(&zone::object_destruct<T>, x);
     } catch (...) {
