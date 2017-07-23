@@ -31,6 +31,8 @@
 #else
 #define MSGPACK_ZONE_ALIGNOF(type) __alignof__(type)
 #endif
+// For a compiler that doesn't support __alignof__:
+// #define MSGPACK_ZONE_ALIGNOF(type) MSGPACK_ZONE_ALIGN
 
 namespace msgpack {
 
