@@ -69,7 +69,7 @@ struct object_with_zone<std::string> {
     void operator()(msgpack::object::with_zone& o, const std::string& v) const {
         uint32_t size = checked_get_container_size(v.size());
         o.type = msgpack::type::STR;
-        char* ptr = static_cast<char*>(o.zone.allocate_align(size));
+        char* ptr = static_cast<char*>(o.zone.allocate_align(size, MSGPACK_ZONE_ALIGNOF(char)));
         o.via.str.ptr = ptr;
         o.via.str.size = size;
         std::memcpy(ptr, v.data(), v.size());

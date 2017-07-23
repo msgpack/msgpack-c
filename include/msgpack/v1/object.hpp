@@ -325,7 +325,7 @@ struct object_with_zone<msgpack::object> {
             return;
 
         case msgpack::type::STR: {
-            char* ptr = static_cast<char*>(o.zone.allocate_align(v.via.str.size));
+            char* ptr = static_cast<char*>(o.zone.allocate_align(v.via.str.size, MSGPACK_ZONE_ALIGNOF(char)));
             o.via.str.ptr = ptr;
             o.via.str.size = v.via.str.size;
             std::memcpy(ptr, v.via.str.ptr, v.via.str.size);
@@ -333,7 +333,7 @@ struct object_with_zone<msgpack::object> {
         }
 
         case msgpack::type::BIN: {
-            char* ptr = static_cast<char*>(o.zone.allocate_align(v.via.bin.size));
+            char* ptr = static_cast<char*>(o.zone.allocate_align(v.via.bin.size, MSGPACK_ZONE_ALIGNOF(char)));
             o.via.bin.ptr = ptr;
             o.via.bin.size = v.via.bin.size;
             std::memcpy(ptr, v.via.bin.ptr, v.via.bin.size);
@@ -341,7 +341,7 @@ struct object_with_zone<msgpack::object> {
         }
 
         case msgpack::type::EXT: {
-            char* ptr = static_cast<char*>(o.zone.allocate_align(v.via.ext.size + 1));
+            char* ptr = static_cast<char*>(o.zone.allocate_align(v.via.ext.size + 1, MSGPACK_ZONE_ALIGNOF(char)));
             o.via.ext.ptr = ptr;
             o.via.ext.size = v.via.ext.size;
             std::memcpy(ptr, v.via.ext.ptr, v.via.ext.size + 1);
