@@ -15,6 +15,8 @@
 #include "msgpack/adaptor/check_container_size.hpp"
 #include "msgpack/meta.hpp"
 
+#include "msgpack/adaptor/pair.hpp"
+
 #if !defined (MSGPACK_USE_CPP03)
 #include "msgpack/adaptor/cpp11/tuple.hpp"
 #endif // #if !defined (MSGPACK_USE_CPP03)
@@ -34,13 +36,54 @@ MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 namespace adaptor {
 
+namespace detail {
+
+template <typename T>
+struct is_std_pair {
+    static bool const value = false;
+};
+
+template <typename T, typename U>
+struct is_std_pair<std::pair<T, U> > {
+    static bool const value = true;
+};
+
+#if !defined(MSGPACK_USE_CPP03)
+
+template <typename T>
+struct is_std_tuple {
+    static bool const value = false;
+};
+
+template <typename... Args>
+struct is_std_tuple<std::tuple<Args...>> {
+    static bool const value = true;
+};
+
+#endif // !defined(MSGPACK_USE_CPP03)
+
+template <typename T>
+struct is_seq_no_pair_no_tuple {
+    static bool const value =
+        boost::fusion::traits::is_sequence<T>::value
+        &&
+        !is_std_pair<T>::value
+#if !defined (MSGPACK_USE_CPP03)
+        &&
+        !is_std_tuple<T>::value
+#endif // !defined (MSGPACK_USE_CPP03)
+        ;
+};
+
+} // namespace detail
+
 #if !defined (MSGPACK_USE_CPP03)
 
 template <typename T>
 struct as<
     T,
     typename msgpack::enable_if<
-        boost::fusion::traits::is_sequence<T>::value &&
+        detail::is_seq_no_pair_no_tuple<T>::value &&
         boost::mpl::fold<
             T,
             boost::mpl::bool_<true>,
@@ -82,7 +125,7 @@ struct as<
 #endif // !defined (MSGPACK_USE_CPP03)
 
 template <typename T>
-struct convert<T, typename msgpack::enable_if<boost::fusion::traits::is_sequence<T>::value>::type > {
+struct convert<T, typename msgpack::enable_if<detail::is_seq_no_pair_no_tuple<T>::value>::type > {
     msgpack::object const& operator()(msgpack::object const& o, T& v) const {
         if (o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
         if (o.via.array.size != checked_get_container_size(boost::fusion::size(v))) {
@@ -106,7 +149,7 @@ private:
 };
 
 template <typename T>
-struct pack<T, typename msgpack::enable_if<boost::fusion::traits::is_sequence<T>::value>::type > {
+struct pack<T, typename msgpack::enable_if<detail::is_seq_no_pair_no_tuple<T>::value>::type > {
     template <typename Stream>
     msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const T& v) const {
         uint32_t size = checked_get_container_size(boost::fusion::size(v));
@@ -128,7 +171,7 @@ private:
 };
 
 template <typename T>
-struct object_with_zone<T, typename msgpack::enable_if<boost::fusion::traits::is_sequence<T>::value>::type > {
+struct object_with_zone<T, typename msgpack::enable_if<detail::is_seq_no_pair_no_tuple<T>::value>::type > {
     void operator()(msgpack::object::with_zone& o, const T& v) const {
         uint32_t size = checked_get_container_size(boost::fusion::size(v));
         o.type = msgpack::type::ARRAY;

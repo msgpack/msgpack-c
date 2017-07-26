@@ -212,4 +212,35 @@ TEST(MSGPACK_BOOST, pack_convert_no_def_con_def_con)
 
 #endif // !defined(MSGPACK_USE_CPP03
 
+#include <boost/fusion/include/std_pair.hpp>
+
+TEST(MSGPACK_BOOST, fusion_pack_unpack_convert_pair)
+{
+    std::stringstream ss;
+    std::pair<bool, int> val1(false, 42);
+    msgpack::pack(ss, val1);
+    msgpack::object_handle oh =
+        msgpack::unpack(ss.str().data(), ss.str().size());
+    std::pair<bool, int>  val2 = oh.get().as<std::pair<bool, int> >();
+    EXPECT_TRUE(val1.first == val2.first);
+    EXPECT_TRUE(val1.second == val2.second);
+}
+
+#if !defined(MSGPACK_USE_CPP03)
+
+#include <boost/fusion/include/std_tuple.hpp>
+
+TEST(MSGPACK_BOOST, fusion_pack_unpack_convert_tuple)
+{
+    std::stringstream ss;
+    std::tuple<bool, int> val1(false, 42);
+    msgpack::pack(ss, val1);
+    msgpack::object_handle oh =
+        msgpack::unpack(ss.str().data(), ss.str().size());
+    std::tuple<bool, int> val2 = oh.get().as<std::tuple<bool, int> >();
+    EXPECT_TRUE(val1 == val2);
+}
+
+#endif // !defined(MSGPACK_USE_CPP03)
+
 #endif // defined(MSGPACK_USE_BOOST)
