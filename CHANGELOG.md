@@ -1,3 +1,11 @@
+# 2017-08-03 version 2.1.4
+  * Add boost asio examples (including zlib) (#610)
+  * Remove some warnings (#611)
+  * Fix unpack visitor to treat float32/64 correctly (#613)
+  * Improve documents (#616)
+  * Fix alignment problem on some platform (#617, #518)
+  * Fix conflict std::tuple, std::pair, and boost::fusion::sequence problem (#619)
+
 # 2017-06-15 version 2.1.3
   * Improve build system (#603)
   * Add C++17 adaptors `std::optional` and `std::string_view`. (#607, #608)
