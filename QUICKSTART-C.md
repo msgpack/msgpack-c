@@ -20,7 +20,7 @@ You might need to run `sudo port selfupdate` before installing to update the pac
 You can also install via Homebrew.
 
 ```
-$ sudo brew install msgpack
+$ brew install msgpack
 ```
 
 ## FreeBSD with Ports Collection
