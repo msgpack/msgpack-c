@@ -29,6 +29,7 @@ install:
  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then wget http://valgrind.org/downloads/valgrind-3.12.0.tar.bz2 && tar xjf valgrind-3.12.0.tar.bz2 && cd valgrind-3.12.0 && ./configure --prefix=${BASE}/usr > /dev/null && make -j3 > /dev/null && make install > /dev/null && cd ..; fi
 # boost
  - if [ "$BOOST" == "ON" ]; then wget http://sourceforge.net/projects/boost/files/boost/1.63.0/boost_1_63_0.zip && unzip -q boost_1_63_0.zip && cd boost_1_63_0 && ./bootstrap.sh && ./b2 -j3 --prefix=${BASE}/usr --with-chrono --with-context --with-system --with-timer address-model=${ARCH} install > /dev/null && cd ..; fi
+ - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo ln -s /usr/include/x86_64-linux-gnu/zconf.h /usr/include; fi
 
 matrix:
   include:
