@@ -70,6 +70,18 @@ public:
     const msgpack::object& get() const
         { return m_obj; }
 
+    /**
+     * @return object (to mimic smart pointers).
+     */
+    const msgpack::object& operator*() const 
+        { return get(); }
+
+    /**
+     * @return the address of the object (to mimic smart pointers).
+     */
+    const msgpack::object* operator->() const 
+        { return &get(); }
+
     /// Get unique_ptr reference of zone.
     /**
      * @return unique_ptr reference of zone

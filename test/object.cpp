@@ -445,3 +445,12 @@ TEST(object, pack_double)
     EXPECT_EQ(static_cast<size_t>(9), ss1.str().size());
     EXPECT_EQ(ss1.str(), ss2.str());
 }
+
+TEST(object, handle_operators)
+{
+    int i = 1;
+    msgpack::object obj(i);
+    msgpack::object_handle oh = msgpack::clone(obj);
+    EXPECT_EQ(oh.get(), *oh);
+    EXPECT_EQ(oh->as<int>(), oh.get().as<int>());
+}
