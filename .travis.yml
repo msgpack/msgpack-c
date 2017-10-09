@@ -1,6 +1,6 @@
 language: cpp
 sudo: false
-dist: precise
+dist: trusty
 
 install:
  - export BASE=`pwd`
@@ -79,6 +79,7 @@ matrix:
             - lib32gcc1
             - libc6-i386
             - lib32z1-dev
+            - zlib1g-dev
             - bzip2
             - clang-3.9
             - libc6-dbg
@@ -117,6 +118,7 @@ matrix:
             - lib32gcc1
             - libc6-i386
             - lib32z1-dev
+            - zlib1g-dev
             - bzip2
             - clang-3.9
             - libc6-dbg
@@ -150,6 +152,7 @@ matrix:
             - lib32gcc1
             - libc6-i386
             - lib32z1-dev
+            - zlib1g-dev
             - bzip2
             - libc6-dbg
     - os: linux
@@ -182,6 +185,7 @@ matrix:
             - lib32gcc1
             - libc6-i386
             - lib32z1-dev
+            - zlib1g-dev
             - bzip2
             - libc6-dbg
     - os: linux
@@ -200,6 +204,7 @@ matrix:
             - lib32gcc1
             - libc6-i386
             - lib32z1-dev
+            - zlib1g-dev
             - bzip2
             - libc6-dbg
 
