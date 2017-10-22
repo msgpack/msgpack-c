@@ -83,7 +83,7 @@ TEST(pack, insufficient)
 
     success = msgpack_unpack_next(&msg, sbuf->data, 1, &offset);
     EXPECT_EQ(MSGPACK_UNPACK_CONTINUE, success);
-    EXPECT_EQ(0u, offset);
+    EXPECT_EQ(1u, offset);
 
     msgpack_unpacked_destroy(&msg);
 
