@@ -201,75 +201,91 @@ struct object<type::fix_int64> {
 
 template <>
 struct object<type::fix_uint8> {
-    void operator()(msgpack::object& o, type::fix_uint8 v) const
-    { o.type = msgpack::type::POSITIVE_INTEGER, o.via.u64 = v.get(); }
+    void operator()(msgpack::object& o, type::fix_uint8 v) const {
+        o.type = msgpack::type::POSITIVE_INTEGER;
+        o.via.u64 = v.get();
+    }
 };
 
 template <>
 struct object<type::fix_uint16> {
-    void operator()(msgpack::object& o, type::fix_uint16 v) const
-    { o.type = msgpack::type::POSITIVE_INTEGER, o.via.u64 = v.get(); }
+    void operator()(msgpack::object& o, type::fix_uint16 v) const {
+        o.type = msgpack::type::POSITIVE_INTEGER;
+        o.via.u64 = v.get();
+    }
 };
 
 template <>
 struct object<type::fix_uint32> {
-    void operator()(msgpack::object& o, type::fix_uint32 v) const
-    { o.type = msgpack::type::POSITIVE_INTEGER, o.via.u64 = v.get(); }
+    void operator()(msgpack::object& o, type::fix_uint32 v) const {
+        o.type = msgpack::type::POSITIVE_INTEGER;
+        o.via.u64 = v.get();
+    }
 };
 
 template <>
 struct object<type::fix_uint64> {
-    void operator()(msgpack::object& o, type::fix_uint64 v) const
-    { o.type = msgpack::type::POSITIVE_INTEGER, o.via.u64 = v.get(); }
+    void operator()(msgpack::object& o, type::fix_uint64 v) const {
+        o.type = msgpack::type::POSITIVE_INTEGER;
+        o.via.u64 = v.get();
+    }
 };
 
 template <>
 struct object_with_zone<type::fix_int8> {
-    void operator()(msgpack::object::with_zone& o, type::fix_int8 v) const
-    { static_cast<msgpack::object&>(o) << v; }
+    void operator()(msgpack::object::with_zone& o, type::fix_int8 v) const {
+        static_cast<msgpack::object&>(o) << v;
+    }
 };
 
 template <>
 struct object_with_zone<type::fix_int16> {
-    void operator()(msgpack::object::with_zone& o, type::fix_int16 v) const
-    { static_cast<msgpack::object&>(o) << v; }
+    void operator()(msgpack::object::with_zone& o, type::fix_int16 v) const {
+        static_cast<msgpack::object&>(o) << v;
+    }
 };
 
 template <>
 struct object_with_zone<type::fix_int32> {
-    void operator()(msgpack::object::with_zone& o, type::fix_int32 v) const
-    { static_cast<msgpack::object&>(o) << v; }
+    void operator()(msgpack::object::with_zone& o, type::fix_int32 v) const {
+        static_cast<msgpack::object&>(o) << v;
+    }
 };
 
 template <>
 struct object_with_zone<type::fix_int64> {
-    void operator()(msgpack::object::with_zone& o, type::fix_int64 v) const
-    { static_cast<msgpack::object&>(o) << v; }
+    void operator()(msgpack::object::with_zone& o, type::fix_int64 v) const {
+        static_cast<msgpack::object&>(o) << v;
+    }
 };
 
 
 template <>
 struct object_with_zone<type::fix_uint8> {
-    void operator()(msgpack::object::with_zone& o, type::fix_uint8 v) const
-    { static_cast<msgpack::object&>(o) << v; }
+    void operator()(msgpack::object::with_zone& o, type::fix_uint8 v) const {
+        static_cast<msgpack::object&>(o) << v;
+    }
 };
 
 template <>
 struct object_with_zone<type::fix_uint16> {
-    void operator()(msgpack::object::with_zone& o, type::fix_uint16 v) const
-    { static_cast<msgpack::object&>(o) << v; }
+    void operator()(msgpack::object::with_zone& o, type::fix_uint16 v) const {
+        static_cast<msgpack::object&>(o) << v;
+    }
 };
 
 template <>
 struct object_with_zone<type::fix_uint32> {
-    void operator()(msgpack::object::with_zone& o, type::fix_uint32 v) const
-    { static_cast<msgpack::object&>(o) << v; }
+    void operator()(msgpack::object::with_zone& o, type::fix_uint32 v) const {
+        static_cast<msgpack::object&>(o) << v;
+    }
 };
 
 template <>
 struct object_with_zone<type::fix_uint64> {
-    void operator()(msgpack::object::with_zone& o, type::fix_uint64 v) const
-    { static_cast<msgpack::object&>(o) << v; }
+    void operator()(msgpack::object::with_zone& o, type::fix_uint64 v) const {
+        static_cast<msgpack::object&>(o) << v;
+    }
 };
 
 } // namespace adaptor

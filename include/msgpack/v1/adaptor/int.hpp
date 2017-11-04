@@ -82,7 +82,8 @@ struct object_char_sign<true> {
 template <>
 struct object_char_sign<false> {
     static void make(msgpack::object& o, char v) {
-        o.type = msgpack::type::POSITIVE_INTEGER, o.via.u64 = v;
+        o.type = msgpack::type::POSITIVE_INTEGER;
+        o.via.u64 = v;
     }
 };
 
@@ -320,99 +321,120 @@ struct object<signed long long> {
 
 template <>
 struct object<unsigned char> {
-    void operator()(msgpack::object& o, unsigned char v) const
-    { o.type = msgpack::type::POSITIVE_INTEGER, o.via.u64 = v; }
+    void operator()(msgpack::object& o, unsigned char v) const {
+        o.type = msgpack::type::POSITIVE_INTEGER;
+        o.via.u64 = v;
+    }
 };
 
 template <>
 struct object<unsigned short> {
-    void operator()(msgpack::object& o, unsigned short v) const
-    { o.type = msgpack::type::POSITIVE_INTEGER, o.via.u64 = v; }
+    void operator()(msgpack::object& o, unsigned short v) const {
+        o.type = msgpack::type::POSITIVE_INTEGER;
+        o.via.u64 = v;
+    }
 };
 
 template <>
 struct object<unsigned int> {
-    void operator()(msgpack::object& o, unsigned int v) const
-    { o.type = msgpack::type::POSITIVE_INTEGER, o.via.u64 = v; }
+    void operator()(msgpack::object& o, unsigned int v) const {
+        o.type = msgpack::type::POSITIVE_INTEGER;
+        o.via.u64 = v;
+    }
 };
 
 template <>
 struct object<unsigned long> {
-    void operator()(msgpack::object& o, unsigned long v) const
-    { o.type = msgpack::type::POSITIVE_INTEGER, o.via.u64 = v; }
+    void operator()(msgpack::object& o, unsigned long v) const {
+        o.type = msgpack::type::POSITIVE_INTEGER;
+        o.via.u64 = v;
+    }
 };
 
 template <>
 struct object<unsigned long long> {
-    void operator()(msgpack::object& o, unsigned long long v) const
-    { o.type = msgpack::type::POSITIVE_INTEGER, o.via.u64 = v; }
+    void operator()(msgpack::object& o, unsigned long long v) const {
+        o.type = msgpack::type::POSITIVE_INTEGER;
+        o.via.u64 = v;
+    }
 };
 
 
 template <>
 struct object_with_zone<char> {
-    void operator()(msgpack::object::with_zone& o, char v) const
-    { static_cast<msgpack::object&>(o) << v; }
+    void operator()(msgpack::object::with_zone& o, char v) const {
+        static_cast<msgpack::object&>(o) << v;
+    }
 };
 
 template <>
 struct object_with_zone<signed char> {
-    void operator()(msgpack::object::with_zone& o, signed char v) const
-    { static_cast<msgpack::object&>(o) << v; }
+    void operator()(msgpack::object::with_zone& o, signed char v) const {
+        static_cast<msgpack::object&>(o) << v;
+    }
 };
 
 template <>
 struct object_with_zone<signed short> {
-    void operator()(msgpack::object::with_zone& o, signed short v) const
-    { static_cast<msgpack::object&>(o) << v; }
+    void operator()(msgpack::object::with_zone& o, signed short v) const {
+        static_cast<msgpack::object&>(o) << v;
+    }
 };
 
 template <>
 struct object_with_zone<signed int> {
-    void operator()(msgpack::object::with_zone& o, signed int v) const
-    { static_cast<msgpack::object&>(o) << v; }
+    void operator()(msgpack::object::with_zone& o, signed int v) const {
+        static_cast<msgpack::object&>(o) << v;
+    }
 };
 
 template <>
 struct object_with_zone<signed long> {
-    void operator()(msgpack::object::with_zone& o, signed long v) const
-    { static_cast<msgpack::object&>(o) << v; }
+    void operator()(msgpack::object::with_zone& o, signed long v) const {
+        static_cast<msgpack::object&>(o) << v;
+    }
 };
 
 template <>
 struct object_with_zone<signed long long> {
-    void operator()(msgpack::object::with_zone& o, const signed long long& v) const
-    { static_cast<msgpack::object&>(o) << v; }
+    void operator()(msgpack::object::with_zone& o, const signed long long& v) const {
+        static_cast<msgpack::object&>(o) << v;
+    }
 };
 
 template <>
 struct object_with_zone<unsigned char> {
-    void operator()(msgpack::object::with_zone& o, unsigned char v) const
-    { static_cast<msgpack::object&>(o) << v; }
+    void operator()(msgpack::object::with_zone& o, unsigned char v) const {
+        static_cast<msgpack::object&>(o) << v;
+    }
 };
 
 template <>
 struct object_with_zone<unsigned short> {
-    void operator()(msgpack::object::with_zone& o, unsigned short v) const
-    { static_cast<msgpack::object&>(o) << v; }
+    void operator()(msgpack::object::with_zone& o, unsigned short v) const {
+        static_cast<msgpack::object&>(o) << v;
+    }
 };
 
 template <>
 struct object_with_zone<unsigned int> {
-    void operator()(msgpack::object::with_zone& o, unsigned int v) const
-    { static_cast<msgpack::object&>(o) << v; }
+    void operator()(msgpack::object::with_zone& o, unsigned int v) const {
+        static_cast<msgpack::object&>(o) << v;
+    }
 };
 
 template <>
 struct object_with_zone<unsigned long> {
-    void operator()(msgpack::object::with_zone& o, unsigned long v) const
-    { static_cast<msgpack::object&>(o) << v; }
+    void operator()(msgpack::object::with_zone& o, unsigned long v) const {
+        static_cast<msgpack::object&>(o) << v;
+    }
 };
 
 template <>
 struct object_with_zone<unsigned long long> {
-    void operator()(msgpack::object::with_zone& o, const unsigned long long& v) const
-    { static_cast<msgpack::object&>(o) << v; }
+    void operator()(msgpack::object::with_zone& o, const unsigned long long& v) const {
+        static_cast<msgpack::object&>(o) << v;
+    }
 };
 
 } // namespace adaptor
