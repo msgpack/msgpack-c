@@ -621,11 +621,11 @@ class parser : public detail::context<VisitorHolder> {
 public:
     /// Constructor
     /**
-     * @param referenced If the unpacked object contains reference of the buffer, then set as true, otherwise false.
-     * @param f A judging function that msgpack::object refer to the buffer.
-     * @param user_data This parameter is passed to f.
+     * @param hook The handler that is called when buffer is allocated internally.
+     *             `hook` should be callable with char* parameter.
+     *             `parser` gives a chance to prepare finalizer.
+     *              See https://github.com/msgpack/msgpack-c/wiki/v2_0_cpp_visitor#parse-api
      * @param initial_buffer_size The memory size to allocate when unpacker is constructed.
-     * @param limit The size limit information of msgpack::object.
      *
      */
     parser(ReferencedBufferHook& hook,

@@ -848,7 +848,6 @@ class unpacker {
 public:
     /// Constructor
     /**
-     * @param referenced If the unpacked object contains reference of the buffer, then set as true, otherwise false.
      * @param f A judging function that msgpack::object refer to the buffer.
      * @param user_data This parameter is passed to f.
      * @param initial_buffer_size The memory size to allocate when unpacker is constructed.
