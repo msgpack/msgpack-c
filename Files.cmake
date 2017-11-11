@@ -541,6 +541,7 @@ IF (MSGPACK_ENABLE_CXX)
         include/msgpack/v1/adaptor/detail/cpp03_define_map_decl.hpp
         include/msgpack/v1/adaptor/detail/cpp03_msgpack_tuple.hpp
         include/msgpack/v1/adaptor/detail/cpp03_msgpack_tuple_decl.hpp
+        include/msgpack/v1/adaptor/detail/cpp11_convert_helper.hpp
         include/msgpack/v1/adaptor/detail/cpp11_define_array.hpp
         include/msgpack/v1/adaptor/detail/cpp11_define_array_decl.hpp
         include/msgpack/v1/adaptor/detail/cpp11_define_map.hpp

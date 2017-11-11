@@ -11,6 +11,7 @@
 #define MSGPACK_V1_CPP11_DEFINE_ARRAY_HPP
 
 #include "msgpack/v1/adaptor/detail/cpp11_define_array_decl.hpp"
+#include "msgpack/v1/adaptor/detail/cpp11_convert_helper.hpp"
 
 #include <tuple>
 
@@ -19,6 +20,39 @@ namespace msgpack {
 MSGPACK_API_VERSION_NAMESPACE(v1) {
 /// @endcond
 namespace type {
+
+namespace detail {
+template <int N, typename... Ts>
+struct get;
+
+template <int N, typename T, typename... Ts>
+struct get<N, std::tuple<T, Ts...>>
+{
+    using type = typename get<N - 1, std::tuple<Ts...>>::type;
+};
+
+template <typename T, typename... Ts>
+struct get<0, std::tuple<T, Ts...>>
+{
+    using type = T;
+};
+
+template <typename T>
+inline typename std::enable_if<
+    has_as<T>::value
+>::type
+unpack_impl(msgpack::object const& o, T& t) {
+    t = o.as<T>();
+}
+template <typename T>
+inline typename std::enable_if<
+    !has_as<T>::value
+>::type
+unpack_impl(msgpack::object const& o, T& t) {
+    o.convert(t);
+}
+
+} // namespace detail
 
 template <typename Tuple, std::size_t N>
 struct define_array_imp {
@@ -31,7 +65,7 @@ struct define_array_imp {
         define_array_imp<Tuple, N-1>::unpack(o, t);
         const size_t size = o.via.array.size;
         if(size <= N-1) { return; }
-        o.via.array.ptr[N-1].convert(std::get<N-1>(t));
+        convert_helper(o.via.array.ptr[N-1], std::get<N-1>(t));
     }
     static void object(msgpack::object* o, msgpack::zone& z, Tuple const& t) {
         define_array_imp<Tuple, N-1>::object(o, z, t);
@@ -48,7 +82,7 @@ struct define_array_imp<Tuple, 1> {
     static void unpack(msgpack::object const& o, Tuple& t) {
         const size_t size = o.via.array.size;
         if(size <= 0) { return; }
-        o.via.array.ptr[0].convert(std::get<0>(t));
+        convert_helper(o.via.array.ptr[0], std::get<0>(t));
     }
     static void object(msgpack::object* o, msgpack::zone& z, Tuple const& t) {
         o->via.array.ptr[0] = msgpack::object(std::get<0>(t), z);
