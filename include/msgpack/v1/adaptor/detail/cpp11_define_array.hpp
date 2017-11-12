@@ -21,39 +21,6 @@ MSGPACK_API_VERSION_NAMESPACE(v1) {
 /// @endcond
 namespace type {
 
-namespace detail {
-template <int N, typename... Ts>
-struct get;
-
-template <int N, typename T, typename... Ts>
-struct get<N, std::tuple<T, Ts...>>
-{
-    using type = typename get<N - 1, std::tuple<Ts...>>::type;
-};
-
-template <typename T, typename... Ts>
-struct get<0, std::tuple<T, Ts...>>
-{
-    using type = T;
-};
-
-template <typename T>
-inline typename std::enable_if<
-    has_as<T>::value
->::type
-unpack_impl(msgpack::object const& o, T& t) {
-    t = o.as<T>();
-}
-template <typename T>
-inline typename std::enable_if<
-    !has_as<T>::value
->::type
-unpack_impl(msgpack::object const& o, T& t) {
-    o.convert(t);
-}
-
-} // namespace detail
-
 template <typename Tuple, std::size_t N>
 struct define_array_imp {
     template <typename Packer>
