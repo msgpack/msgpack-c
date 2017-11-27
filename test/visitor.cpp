@@ -115,6 +115,7 @@ TEST(visitor, parse_error)
     bool ret = msgpack::v2::parse(data, sizeof(data), off, v);
     EXPECT_FALSE(ret);
     EXPECT_TRUE(called);
+    EXPECT_EQ(2u, off);
 }
 
 struct insuf_bytes_check_visitor : msgpack::v2::null_visitor {
@@ -136,6 +137,304 @@ TEST(visitor, insuf_bytes)
     bool ret = msgpack::v2::parse(data, sizeof(data), off, v);
     EXPECT_FALSE(ret);
     EXPECT_TRUE(called);
+    EXPECT_EQ(3u, off);
 }
+
+struct return_false_array_val_visitor : msgpack::v2::null_visitor {
+    return_false_array_val_visitor(std::size_t& times):m_times(times) {}
+    bool visit_positive_integer(uint64_t) {
+        if (++m_times == 2) return false;
+        return true;
+    }
+    std::size_t& m_times;
+};
+
+TEST(visitor, return_false_array_val)
+{
+    std::size_t times = 0;
+    return_false_array_val_visitor v(times);
+    std::size_t off = 0;
+    char const data[] = { static_cast<char>(0x93u), 0x01u, 0x02u, 0x03u };
+    bool ret = msgpack::v2::parse(data, sizeof(data), off, v);
+    EXPECT_FALSE(ret);
+    EXPECT_EQ(2u, times);
+    EXPECT_EQ(2u, off);
+}
+
+struct return_false_start_array_item_visitor : msgpack::v2::null_visitor {
+    return_false_start_array_item_visitor(std::size_t& times):m_times(times) {}
+    bool start_array_item() {
+        if (++m_times == 2) return false;
+        return true;
+    }
+    std::size_t& m_times;
+};
+
+TEST(visitor, return_false_start_array_item)
+{
+    std::size_t times = 0;
+    return_false_start_array_item_visitor v(times);
+    std::size_t off = 0;
+    char const data[] = { static_cast<char>(0x93u), 0x01u, 0x02u, 0x03u };
+    bool ret = msgpack::v2::parse(data, sizeof(data), off, v);
+    EXPECT_FALSE(ret);
+    EXPECT_EQ(2u, times);
+    EXPECT_EQ(2u, off);
+}
+
+struct return_false_end_array_item_visitor : msgpack::v2::null_visitor {
+    return_false_end_array_item_visitor(std::size_t& times):m_times(times) {}
+    bool end_array_item() {
+        if (++m_times == 2) return false;
+        return true;
+    }
+    std::size_t& m_times;
+};
+
+TEST(visitor, return_false_end_array_item)
+{
+    std::size_t times = 0;
+    return_false_end_array_item_visitor v(times);
+    std::size_t off = 0;
+    char const data[] = { static_cast<char>(0x93u), 0x01u, 0x02u, 0x03u };
+    bool ret = msgpack::v2::parse(data, sizeof(data), off, v);
+    EXPECT_FALSE(ret);
+    EXPECT_EQ(2u, times);
+    EXPECT_EQ(2u, off);
+}
+
+struct return_false_start_array_visitor : msgpack::v2::null_visitor {
+    bool start_array(uint32_t) {
+        return false;
+    }
+};
+
+TEST(visitor, return_false_start_array)
+{
+    return_false_start_array_visitor v;
+    std::size_t off = 0;
+    char const data[] = { static_cast<char>(0x93u), 0x01u, 0x02u, 0x03u };
+    bool ret = msgpack::v2::parse(data, sizeof(data), off, v);
+    EXPECT_FALSE(ret);
+    EXPECT_EQ(0u, off);
+}
+
+struct return_false_start_array0_visitor : msgpack::v2::null_visitor {
+    bool start_array(uint32_t) {
+        return false;
+    }
+};
+
+TEST(visitor, return_false_start_array0)
+{
+    return_false_start_array0_visitor v;
+    std::size_t off = 0;
+    char const data[] = { static_cast<char>(0x90u) };
+    bool ret = msgpack::v2::parse(data, sizeof(data), off, v);
+    EXPECT_FALSE(ret);
+    EXPECT_EQ(0u, off);
+}
+
+struct return_false_end_array_visitor : msgpack::v2::null_visitor {
+    bool end_array() {
+        return false;
+    }
+};
+
+TEST(visitor, return_false_end_array)
+{
+    return_false_end_array_visitor v;
+    std::size_t off = 0;
+    char const data[] = { static_cast<char>(0x93u), 0x01u, 0x02u, 0x03u };
+    bool ret = msgpack::v2::parse(data, sizeof(data), off, v);
+    EXPECT_FALSE(ret);
+    EXPECT_EQ(3u, off);
+}
+
+struct return_false_end_array0_visitor : msgpack::v2::null_visitor {
+    bool end_array() {
+        return false;
+    }
+};
+
+TEST(visitor, return_false_end_array0)
+{
+    return_false_end_array0_visitor v;
+    std::size_t off = 0;
+    char const data[] = { static_cast<char>(0x90u) };
+    bool ret = msgpack::v2::parse(data, sizeof(data), off, v);
+    EXPECT_FALSE(ret);
+    EXPECT_EQ(0u, off);
+}
+
+struct return_false_map_val_visitor : msgpack::v2::null_visitor {
+    return_false_map_val_visitor(std::size_t& times):m_times(times) {}
+    bool visit_positive_integer(uint64_t) {
+        if (++m_times == 2) return false;
+        return true;
+    }
+    std::size_t& m_times;
+};
+
+TEST(visitor, return_false_map_val)
+{
+    std::size_t times = 0;
+    return_false_map_val_visitor v(times);
+    std::size_t off = 0;
+    char const data[] = { static_cast<char>(0x83u), 0x01u, 0x02u, 0x03u, 0x01u, 0x02u, 0x03u };
+    bool ret = msgpack::v2::parse(data, sizeof(data), off, v);
+    EXPECT_FALSE(ret);
+    EXPECT_EQ(2u, times);
+    EXPECT_EQ(2u, off);
+}
+
+struct return_false_start_map_key_visitor : msgpack::v2::null_visitor {
+    return_false_start_map_key_visitor(std::size_t& times):m_times(times) {}
+    bool start_map_key() {
+        if (++m_times == 2) return false;
+        return true;
+    }
+    std::size_t& m_times;
+};
+
+TEST(visitor, return_false_start_map_key)
+{
+    std::size_t times = 0;
+    return_false_start_map_key_visitor v(times);
+    std::size_t off = 0;
+    char const data[] = { static_cast<char>(0x83u), 0x01u, 0x02u, 0x03u, 0x01u, 0x02u, 0x03u };
+    bool ret = msgpack::v2::parse(data, sizeof(data), off, v);
+    EXPECT_FALSE(ret);
+    EXPECT_EQ(2u, times);
+    EXPECT_EQ(3u, off);
+}
+
+struct return_false_end_map_key_visitor : msgpack::v2::null_visitor {
+    return_false_end_map_key_visitor(std::size_t& times):m_times(times) {}
+    bool end_map_key() {
+        if (++m_times == 2) return false;
+        return true;
+    }
+    std::size_t& m_times;
+};
+
+TEST(visitor, return_false_end_map_key)
+{
+    std::size_t times = 0;
+    return_false_end_map_key_visitor v(times);
+    std::size_t off = 0;
+    char const data[] = { static_cast<char>(0x83u), 0x01u, 0x02u, 0x03u, 0x01u, 0x02u, 0x03u };
+    bool ret = msgpack::v2::parse(data, sizeof(data), off, v);
+    EXPECT_FALSE(ret);
+    EXPECT_EQ(2u, times);
+    EXPECT_EQ(3u, off);
+}
+
+struct return_false_start_map_value_visitor : msgpack::v2::null_visitor {
+    return_false_start_map_value_visitor(std::size_t& times):m_times(times) {}
+    bool start_map_value() {
+        if (++m_times == 2) return false;
+        return true;
+    }
+    std::size_t& m_times;
+};
+
+TEST(visitor, return_false_start_map_value)
+{
+    std::size_t times = 0;
+    return_false_start_map_value_visitor v(times);
+    std::size_t off = 0;
+    char const data[] = { static_cast<char>(0x83u), 0x01u, 0x02u, 0x03u, 0x01u, 0x02u, 0x03u };
+    bool ret = msgpack::v2::parse(data, sizeof(data), off, v);
+    EXPECT_FALSE(ret);
+    EXPECT_EQ(2u, times);
+    EXPECT_EQ(4u, off);
+}
+
+struct return_false_end_map_value_visitor : msgpack::v2::null_visitor {
+    return_false_end_map_value_visitor(std::size_t& times):m_times(times) {}
+    bool end_map_value() {
+        if (++m_times == 2) return false;
+        return true;
+    }
+    std::size_t& m_times;
+};
+
+TEST(visitor, return_false_end_map_value)
+{
+    std::size_t times = 0;
+    return_false_end_map_value_visitor v(times);
+    std::size_t off = 0;
+    char const data[] = { static_cast<char>(0x83u), 0x01u, 0x02u, 0x03u, 0x01u, 0x02u, 0x03u };
+    bool ret = msgpack::v2::parse(data, sizeof(data), off, v);
+    EXPECT_FALSE(ret);
+    EXPECT_EQ(2u, times);
+    EXPECT_EQ(4u, off);
+}
+
+struct return_false_start_map_visitor : msgpack::v2::null_visitor {
+    bool start_map(uint32_t) {
+        return false;
+    }
+};
+
+TEST(visitor, return_false_start_map)
+{
+    return_false_start_map_visitor v;
+    std::size_t off = 0;
+    char const data[] = { static_cast<char>(0x83u), 0x01u, 0x02u, 0x03u, 0x01u, 0x02u, 0x03u };
+    bool ret = msgpack::v2::parse(data, sizeof(data), off, v);
+    EXPECT_FALSE(ret);
+    EXPECT_EQ(0u, off);
+}
+
+struct return_false_start_map0_visitor : msgpack::v2::null_visitor {
+    bool start_map(uint32_t) {
+        return false;
+    }
+};
+
+TEST(visitor, return_false_start_map0)
+{
+    return_false_start_map0_visitor v;
+    std::size_t off = 0;
+    char const data[] = { static_cast<char>(0x80u) };
+    bool ret = msgpack::v2::parse(data, sizeof(data), off, v);
+    EXPECT_FALSE(ret);
+    EXPECT_EQ(0u, off);
+}
+
+struct return_false_end_map_visitor : msgpack::v2::null_visitor {
+    bool end_map() {
+        return false;
+    }
+};
+
+TEST(visitor, return_false_end_map)
+{
+    return_false_end_map_visitor v;
+    std::size_t off = 0;
+    char const data[] = { static_cast<char>(0x83u), 0x01u, 0x02u, 0x03u, 0x01u, 0x02u, 0x03u };
+    bool ret = msgpack::v2::parse(data, sizeof(data), off, v);
+    EXPECT_FALSE(ret);
+    EXPECT_EQ(6u, off);
+}
+
+struct return_false_end_map0_visitor : msgpack::v2::null_visitor {
+    bool end_map() {
+        return false;
+    }
+};
+
+TEST(visitor, return_false_end_map0)
+{
+    return_false_end_map0_visitor v;
+    std::size_t off = 0;
+    char const data[] = { static_cast<char>(0x80u) };
+    bool ret = msgpack::v2::parse(data, sizeof(data), off, v);
+    EXPECT_FALSE(ret);
+    EXPECT_EQ(0u, off);
+}
+
 
 #endif // MSGPACK_DEFAULT_API_VERSION >= 1

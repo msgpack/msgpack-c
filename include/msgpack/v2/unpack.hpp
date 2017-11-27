@@ -152,16 +152,13 @@ inline msgpack::object_handle unpack(
     msgpack::object obj;
     msgpack::unique_ptr<msgpack::zone> z(new msgpack::zone);
     referenced = false;
-    std::size_t noff = off;
     parse_return ret = detail::unpack_imp(
-        data, len, noff, *z, obj, referenced, f, user_data, limit);
+        data, len, off, *z, obj, referenced, f, user_data, limit);
 
     switch(ret) {
     case PARSE_SUCCESS:
-        off = noff;
         return msgpack::object_handle(obj, msgpack::move(z));
     case PARSE_EXTRA_BYTES:
-        off = noff;
         return msgpack::object_handle(obj, msgpack::move(z));
     default:
         break;
@@ -206,18 +203,15 @@ inline void unpack(
     msgpack::object obj;
     msgpack::unique_ptr<msgpack::zone> z(new msgpack::zone);
     referenced = false;
-    std::size_t noff = off;
     parse_return ret = detail::unpack_imp(
-        data, len, noff, *z, obj, referenced, f, user_data, limit);
+        data, len, off, *z, obj, referenced, f, user_data, limit);
 
     switch(ret) {
     case PARSE_SUCCESS:
-        off = noff;
         result.set(obj);
         result.zone() = msgpack::move(z);
         return;
     case PARSE_EXTRA_BYTES:
-        off = noff;
         result.set(obj);
         result.zone() = msgpack::move(z);
         return;
@@ -265,17 +259,14 @@ inline msgpack::object unpack(
     unpack_limit const& limit)
 {
     msgpack::object obj;
-    std::size_t noff = off;
     referenced = false;
     parse_return ret = detail::unpack_imp(
-        data, len, noff, z, obj, referenced, f, user_data, limit);
+        data, len, off, z, obj, referenced, f, user_data, limit);
 
     switch(ret) {
     case PARSE_SUCCESS:
-        off = noff;
         return obj;
     case PARSE_EXTRA_BYTES:
-        off = noff;
         return obj;
     default:
         break;

@@ -58,7 +58,6 @@ private:
         std::size_t& off) {
         typename value<T>::type size;
         load<T>(size, load_pos);
-        ++m_current;
         if (size == 0) {
             if (!sv(size)) {
                 off = m_current - m_start;
@@ -68,7 +67,7 @@ private:
                 off = m_current - m_start;
                 return PARSE_STOP_VISITOR;
             }
-            parse_return ret = m_stack.consume(holder());
+            parse_return ret = m_stack.consume(holder(), m_current);
             if (ret != PARSE_CONTINUE) {
                 off = m_current - m_start;
                 return ret;
@@ -85,17 +84,18 @@ private:
                 return ret;
             }
         }
+        ++m_current;
         m_cs = MSGPACK_CS_HEADER;
         return PARSE_CONTINUE;
     }
 
     parse_return after_visit_proc(bool visit_result, std::size_t& off) {
-        ++m_current;
         if (!visit_result) {
             off = m_current - m_start;
             return PARSE_STOP_VISITOR;
         }
-        parse_return ret = m_stack.consume(holder());
+        parse_return ret = m_stack.consume(holder(), m_current);
+        ++m_current;
         if (ret != PARSE_CONTINUE) {
             off = m_current - m_start;
         }
@@ -161,15 +161,21 @@ private:
             assert(0);
             return PARSE_STOP_VISITOR;
         }
-        parse_return consume(VisitorHolder& visitor_holder) {
+        parse_return consume(VisitorHolder& visitor_holder, char const*& current) {
             while (!m_stack.empty()) {
                 stack_elem& e = m_stack.back();
                 switch (e.m_type) {
                 case MSGPACK_CT_ARRAY_ITEM:
-                    if (!visitor_holder.visitor().end_array_item()) return PARSE_STOP_VISITOR;
+                    if (!visitor_holder.visitor().end_array_item()) {
+                        --current;
+                        return PARSE_STOP_VISITOR;
+                    }
                     if (--e.m_rest == 0)  {
                         m_stack.pop_back();
-                        if (!visitor_holder.visitor().end_array()) return PARSE_STOP_VISITOR;
+                        if (!visitor_holder.visitor().end_array()) {
+                            --current;
+                            return PARSE_STOP_VISITOR;
+                        }
                     }
                     else {
                         if (!visitor_holder.visitor().start_array_item()) return PARSE_STOP_VISITOR;
@@ -177,15 +183,24 @@ private:
                     }
                     break;
                 case MSGPACK_CT_MAP_KEY:
-                    if (!visitor_holder.visitor().end_map_key()) return PARSE_STOP_VISITOR;
+                    if (!visitor_holder.visitor().end_map_key()) {
+                        --current;
+                        return PARSE_STOP_VISITOR;
+                    }
                     if (!visitor_holder.visitor().start_map_value()) return PARSE_STOP_VISITOR;
                     e.m_type = MSGPACK_CT_MAP_VALUE;
                     return PARSE_CONTINUE;
                 case MSGPACK_CT_MAP_VALUE:
-                    if (!visitor_holder.visitor().end_map_value()) return PARSE_STOP_VISITOR;
+                    if (!visitor_holder.visitor().end_map_value()) {
+                        --current;
+                        return PARSE_STOP_VISITOR;
+                    }
                     if (--e.m_rest == 0) {
                         m_stack.pop_back();
-                        if (!visitor_holder.visitor().end_map()) return PARSE_STOP_VISITOR;
+                        if (!visitor_holder.visitor().end_map()) {
+                            --current;
+                            return PARSE_STOP_VISITOR;
+                        }
                     }
                     else {
                         e.m_type = MSGPACK_CT_MAP_KEY;
@@ -1032,13 +1047,12 @@ parse_imp(const char* data, size_t len, size_t& off, Visitor& v) {
     }
     detail::parse_helper<Visitor> h(v);
     parse_return ret = h.execute(data, len, noff);
+    off = noff;
     switch (ret) {
     case PARSE_CONTINUE:
-        off = noff;
         v.insufficient_bytes(noff - 1, noff);
         return ret;
     case PARSE_SUCCESS:
-        off = noff;
         if(noff < len) {
             return PARSE_EXTRA_BYTES;
         }
