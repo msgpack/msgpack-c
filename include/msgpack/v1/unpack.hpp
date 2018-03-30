@@ -24,7 +24,7 @@
 #if !defined(MSGPACK_USE_CPP03)
 #if defined(__APPLE__)
 #include <libkern/OSAtomic.h>
-#else
+#elif
 #include <atomic>
 #endif // __APPLE__
 #endif // MSGPACK_USE_CPP03
