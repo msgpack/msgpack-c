@@ -661,7 +661,7 @@ inline object::object(const msgpack_object& o)
 inline void operator<< (msgpack::object& o, const msgpack_object& v)
 {
     // FIXME beter way?
-    std::memcpy(&o, &v, sizeof(v));
+    std::memcpy(static_cast<void*>(&o), &v, sizeof(v));
 }
 
 inline object::operator msgpack_object() const
