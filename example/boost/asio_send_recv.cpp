@@ -70,13 +70,22 @@ int main() {
     // Client
     auto host = "localhost";
     boost::asio::ip::tcp::resolver r(ios);
+
+#if BOOST_VERSION < 106600
     boost::asio::ip::tcp::resolver::query q(host, boost::lexical_cast<std::string>(port));
     auto it = r.resolve(q);
+    boost::asio::ip::tcp::resolver::iterator end;
+#else  // BOOST_VERSION < 106600
+    auto eps = r.resolve(host, boost::lexical_cast<std::string>(port));
+    auto it = eps.begin();
+    auto end = eps.end();
+#endif // BOOST_VERSION < 106600
+
     boost::asio::ip::tcp::socket cs(ios);
     boost::asio::async_connect(
         cs,
-
         it,
+        end,
         [&]
         (boost::system::error_code const& e, boost::asio::ip::tcp::resolver::iterator) {
             if (e) {
