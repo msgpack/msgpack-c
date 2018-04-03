@@ -25,6 +25,7 @@
 #include <atomic>
 #endif
 
+
 #if defined(_MSC_VER)
 // avoiding confliction std::max, std::min, and macro in windows.h
 #ifndef NOMINMAX
