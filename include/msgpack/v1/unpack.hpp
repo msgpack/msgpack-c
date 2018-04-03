@@ -22,12 +22,8 @@
 #include <memory>
 
 #if !defined(MSGPACK_USE_CPP03)
-#if defined(__APPLE__)
-#include <libkern/OSAtomic.h>
-#elif
 #include <atomic>
-#endif // __APPLE__
-#endif // MSGPACK_USE_CPP03
+#endif
 
 #if defined(_MSC_VER)
 // avoiding confliction std::max, std::min, and macro in windows.h
