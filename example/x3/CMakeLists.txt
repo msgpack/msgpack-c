@@ -23,7 +23,7 @@ IF (MSGPACK_USE_X3_PARSE)
                 $<TARGET_PROPERTY:msgpackc,INTERFACE_INCLUDE_DIRECTORIES>
         )
         IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-            SET_PROPERTY (TARGET ${source_file_we} APPEND_STRING PROPERTY COMPILE_FLAGS "-Wall -Wextra -Werror -g ")
+            SET_PROPERTY (TARGET ${source_file_we} APPEND_STRING PROPERTY COMPILE_FLAGS " -Wall -Wextra")
         ENDIF ()
 
         IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
@@ -54,7 +54,7 @@ IF (MSGPACK_USE_X3_PARSE)
             ${CMAKE_THREAD_LIBS_INIT}
         )
         IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-            SET_PROPERTY (TARGET ${source_file_we} APPEND_STRING PROPERTY COMPILE_FLAGS "-Wall -Wextra -Werror -g ")
+            SET_PROPERTY (TARGET ${source_file_we} APPEND_STRING PROPERTY COMPILE_FLAGS " -Wall -Wextra")
         ENDIF ()
 
         IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
