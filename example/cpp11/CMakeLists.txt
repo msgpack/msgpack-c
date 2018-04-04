@@ -25,7 +25,7 @@ IF (MSGPACK_CXX11)
                 $<TARGET_PROPERTY:msgpackc,INTERFACE_INCLUDE_DIRECTORIES>
         )
         IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-            SET_PROPERTY (TARGET ${source_file_we} APPEND_STRING PROPERTY COMPILE_FLAGS "-Wall -Wextra -Werror -g -O3 ")
+            SET_PROPERTY (TARGET ${source_file_we} APPEND_STRING PROPERTY COMPILE_FLAGS " -Wall -Wextra")
         ENDIF ()
 
         IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
