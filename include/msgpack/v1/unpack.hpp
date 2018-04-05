@@ -1392,11 +1392,12 @@ inline msgpack::object_handle unpack(
     parse_return ret = detail::unpack_imp(
         data, len, noff, *z, obj, referenced, f, user_data, limit);
 
-    off = noff;
     switch(ret) {
     case PARSE_SUCCESS:
+        off = noff;
         return msgpack::object_handle(obj, msgpack::move(z));
     case PARSE_EXTRA_BYTES:
+        off = noff;
         return msgpack::object_handle(obj, msgpack::move(z));
     case PARSE_CONTINUE:
         throw msgpack::insufficient_bytes("insufficient bytes");
@@ -1448,13 +1449,14 @@ inline void unpack(
     parse_return ret = detail::unpack_imp(
         data, len, noff, *z, obj, referenced, f, user_data, limit);
 
-    off = noff;
     switch(ret) {
     case PARSE_SUCCESS:
+        off = noff;
         result.set(obj);
         result.zone() = msgpack::move(z);
         return;
     case PARSE_EXTRA_BYTES:
+        off = noff;
         result.set(obj);
         result.zone() = msgpack::move(z);
         return;
@@ -1510,11 +1512,12 @@ inline msgpack::object unpack(
     parse_return ret = detail::unpack_imp(
         data, len, noff, z, obj, referenced, f, user_data, limit);
 
-    off = noff;
     switch(ret) {
     case PARSE_SUCCESS:
+        off = noff;
         return obj;
     case PARSE_EXTRA_BYTES:
+        off = noff;
         return obj;
     case PARSE_CONTINUE:
         throw msgpack::insufficient_bytes("insufficient bytes");
