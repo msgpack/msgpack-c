@@ -370,7 +370,11 @@ TEST(unpack, insufficient_bytes_ref)
     }
     catch (msgpack::insufficient_bytes const&) {
         EXPECT_TRUE(true);
+#if MSGPACK_DEFAULT_API_VERSION < 3
         EXPECT_EQ(off, 0u);
+#else  // MSGPACK_DEFAULT_API_VERSION < 3
+        EXPECT_EQ(1u, off);
+#endif // MSGPACK_DEFAULT_API_VERSION < 3
     }
 }
 
@@ -387,7 +391,11 @@ TEST(unpack, insufficient_bytes_object_handle)
     }
     catch (msgpack::insufficient_bytes const&) {
         EXPECT_TRUE(true);
+#if MSGPACK_DEFAULT_API_VERSION < 3
         EXPECT_EQ(off, 0u);
+#else  // MSGPACK_DEFAULT_API_VERSION < 3
+        EXPECT_EQ(1u, off);
+#endif // MSGPACK_DEFAULT_API_VERSION < 3
     }
 }
 
@@ -405,7 +413,11 @@ TEST(unpack, insufficient_bytes_zone)
     }
     catch (msgpack::insufficient_bytes const&) {
         EXPECT_TRUE(true);
+#if MSGPACK_DEFAULT_API_VERSION < 3
         EXPECT_EQ(off, 0u);
+#else  // MSGPACK_DEFAULT_API_VERSION < 3
+        EXPECT_EQ(1u, off);
+#endif // MSGPACK_DEFAULT_API_VERSION < 3
     }
 }
 

@@ -10,8 +10,14 @@
 #ifndef MSGPACK_V2_PARSE_HPP
 #define MSGPACK_V2_PARSE_HPP
 
+#if MSGPACK_DEFAULT_API_VERSION >= 2
+
+#include <cstddef>
+
+#include "msgpack/unpack_define.h"
+#include "msgpack/parse_return.hpp"
+#include "msgpack/unpack_exception.hpp"
 #include "msgpack/unpack_decl.hpp"
-#include "msgpack/v2/create_object_visitor.hpp"
 
 namespace msgpack {
 
@@ -20,6 +26,10 @@ MSGPACK_API_VERSION_NAMESPACE(v2) {
 /// @endcond
 
 namespace detail {
+
+using v1::detail::fix_tag;
+using v1::detail::value;
+using v1::detail::load;
 
 template <typename VisitorHolder>
 class context {
@@ -998,23 +1008,23 @@ inline void parser<VisitorHolder, ReferencedBufferHook>::remove_nonparsed_buffer
 
 template <typename Visitor>
 inline bool parse(const char* data, size_t len, size_t& off, Visitor& v) {
-    parse_return ret = detail::parse_imp(data, len, off, v);
+    parse_return ret = msgpack::detail::parse_imp(data, len, off, v);
     return ret == PARSE_SUCCESS || ret == PARSE_EXTRA_BYTES;
 }
 
 template <typename Visitor>
 inline bool parse(const char* data, size_t len, Visitor& v) {
     std::size_t off = 0;
-    return parse(data, len, off, v);
+    return msgpack::parse(data, len, off, v);
 }
 
 namespace detail {
 
 template <typename Visitor>
-struct parse_helper : context<parse_helper<Visitor> > {
+struct parse_helper : detail::context<parse_helper<Visitor> > {
     parse_helper(Visitor& v):m_visitor(v) {}
     parse_return execute(const char* data, std::size_t len, std::size_t& off) {
-        return context<parse_helper<Visitor> >::execute(data, len, off);
+        return detail::context<parse_helper<Visitor> >::execute(data, len, off);
     }
     Visitor& visitor() const { return m_visitor; }
     Visitor& m_visitor;
@@ -1057,5 +1067,6 @@ parse_imp(const char* data, size_t len, size_t& off, Visitor& v) {
 
 }  // namespace msgpack
 
+#endif // MSGPACK_DEFAULT_API_VERSION >= 2
 
 #endif // MSGPACK_V2_PARSE_HPP

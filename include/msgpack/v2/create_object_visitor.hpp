@@ -12,6 +12,7 @@
 
 #include "msgpack/unpack_decl.hpp"
 #include "msgpack/unpack_exception.hpp"
+#include "msgpack/v2/create_object_visitor_decl.hpp"
 #include "msgpack/v2/null_visitor.hpp"
 
 namespace msgpack {

@@ -17,8 +17,9 @@
 #if BOOST_VERSION >= 106100
 
 #include "msgpack/versioning.hpp"
-#include "msgpack/v2/create_object_visitor.hpp"
-#include "msgpack/v2/x3_parse.hpp"
+#include "msgpack/create_object_visitor.hpp"
+#include "msgpack/x3_unpack_decl.hpp"
+#include "msgpack/x3_parse.hpp"
 
 namespace msgpack {
 
@@ -32,8 +33,8 @@ template <typename Iterator>
 inline void
 unpack_imp(Iterator&& begin, Iterator&& end,
            msgpack::zone& result_zone, msgpack::object& result, bool& referenced,
-           unpack_reference_func f = MSGPACK_NULLPTR, void* user_data = MSGPACK_NULLPTR,
-           unpack_limit const& limit = unpack_limit())
+           unpack_reference_func f, void* user_data,
+           unpack_limit const& limit)
 {
     create_object_visitor v(f, user_data, limit);
     v.set_zone(result_zone);
@@ -53,8 +54,8 @@ template <typename Iterator>
 inline msgpack::object_handle unpack(
     Iterator&& begin, Iterator&& end,
     bool& referenced,
-    unpack_reference_func f = MSGPACK_NULLPTR, void* user_data = MSGPACK_NULLPTR,
-    unpack_limit const& limit = unpack_limit())
+    unpack_reference_func f, void* user_data,
+    unpack_limit const& limit)
 {
     msgpack::object obj;
     msgpack::unique_ptr<msgpack::zone> z(new msgpack::zone);
@@ -67,8 +68,8 @@ inline msgpack::object_handle unpack(
 template <typename Iterator>
 inline msgpack::object_handle unpack(
     Iterator&& begin, Iterator&& end,
-    unpack_reference_func f = MSGPACK_NULLPTR, void* user_data = MSGPACK_NULLPTR,
-    unpack_limit const& limit = unpack_limit())
+    unpack_reference_func f, void* user_data,
+    unpack_limit const& limit)
 {
     bool referenced;
     return unpack(std::forward<Iterator>(begin), std::forward<Iterator>(end), referenced, f, user_data, limit);
@@ -79,8 +80,8 @@ inline msgpack::object unpack(
     msgpack::zone& z,
     Iterator&& begin, Iterator&& end,
     bool& referenced,
-    unpack_reference_func f = MSGPACK_NULLPTR, void* user_data = MSGPACK_NULLPTR,
-    unpack_limit const& limit = unpack_limit())
+    unpack_reference_func f, void* user_data,
+    unpack_limit const& limit)
 {
     msgpack::object obj;
     referenced = false;
@@ -93,8 +94,8 @@ template <typename Iterator>
 inline msgpack::object unpack(
     msgpack::zone& z,
     Iterator&& begin, Iterator&& end,
-    unpack_reference_func f = MSGPACK_NULLPTR, void* user_data = MSGPACK_NULLPTR,
-    unpack_limit const& limit = unpack_limit())
+    unpack_reference_func f, void* user_data,
+    unpack_limit const& limit)
 {
     bool referenced;
     return unpack(

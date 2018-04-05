@@ -12,5 +12,6 @@
 
 #include "msgpack/v1/adaptor/ext_decl.hpp"
 #include "msgpack/v2/adaptor/ext_decl.hpp"
+#include "msgpack/v3/adaptor/ext_decl.hpp"
 
 #endif // MSGPACK_TYPE_EXT_DECL_HPP

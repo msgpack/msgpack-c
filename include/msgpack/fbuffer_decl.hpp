@@ -12,5 +12,6 @@
 
 #include "msgpack/v1/fbuffer_decl.hpp"
 #include "msgpack/v2/fbuffer_decl.hpp"
+#include "msgpack/v3/fbuffer_decl.hpp"
 
 #endif // MSGPACK_FBUFFER_DECL_HPP
