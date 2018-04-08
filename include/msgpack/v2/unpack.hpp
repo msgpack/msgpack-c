@@ -36,10 +36,10 @@ class unpacker : public parser<unpacker, zone_push_finalizer>,
                  public detail::create_object_visitor {
     typedef parser<unpacker, zone_push_finalizer> parser_t;
 public:
-    unpacker(msgpack::v2::unpack_reference_func f = &unpacker::default_reference_func,
+    unpacker(unpack_reference_func f = &unpacker::default_reference_func,
              void* user_data = MSGPACK_NULLPTR,
              std::size_t initial_buffer_size = MSGPACK_UNPACKER_INIT_BUFFER_SIZE,
-             msgpack::v2::unpack_limit const& limit = msgpack::v2::unpack_limit())
+             unpack_limit const& limit = unpack_limit())
         :parser_t(m_finalizer, initial_buffer_size),
          detail::create_object_visitor(f, user_data, limit),
          m_z(new msgpack::zone),
@@ -147,8 +147,8 @@ inline bool unpacker::flush_zone()
 
 inline msgpack::object_handle unpack(
     const char* data, std::size_t len, std::size_t& off, bool& referenced,
-    msgpack::v2::unpack_reference_func f, void* user_data,
-    msgpack::v2::unpack_limit const& limit
+    unpack_reference_func f, void* user_data,
+    unpack_limit const& limit
 )
 {
     msgpack::object obj;
@@ -173,8 +173,8 @@ inline msgpack::object_handle unpack(
 
 inline msgpack::object_handle unpack(
     const char* data, std::size_t len, std::size_t& off,
-    msgpack::v2::unpack_reference_func f, void* user_data,
-    msgpack::v2::unpack_limit const& limit)
+    unpack_reference_func f, void* user_data,
+    unpack_limit const& limit)
 {
     bool referenced;
     return msgpack::v2::unpack(data, len, off, referenced, f, user_data, limit);
@@ -182,8 +182,8 @@ inline msgpack::object_handle unpack(
 
 inline msgpack::object_handle unpack(
     const char* data, std::size_t len, bool& referenced,
-    msgpack::v2::unpack_reference_func f, void* user_data,
-    msgpack::v2::unpack_limit const& limit)
+    unpack_reference_func f, void* user_data,
+    unpack_limit const& limit)
 {
     std::size_t off = 0;
     return msgpack::v2::unpack(data, len, off, referenced, f, user_data, limit);
@@ -191,8 +191,8 @@ inline msgpack::object_handle unpack(
 
 inline msgpack::object_handle unpack(
     const char* data, std::size_t len,
-    msgpack::v2::unpack_reference_func f, void* user_data,
-    msgpack::v2::unpack_limit const& limit)
+    unpack_reference_func f, void* user_data,
+    unpack_limit const& limit)
 {
     bool referenced;
     std::size_t off = 0;
@@ -202,8 +202,8 @@ inline msgpack::object_handle unpack(
 inline void unpack(
     msgpack::object_handle& result,
     const char* data, std::size_t len, std::size_t& off, bool& referenced,
-    msgpack::v2::unpack_reference_func f, void* user_data,
-    msgpack::v2::unpack_limit const& limit)
+    unpack_reference_func f, void* user_data,
+    unpack_limit const& limit)
 {
     msgpack::object obj;
     msgpack::unique_ptr<msgpack::zone> z(new msgpack::zone);
@@ -231,8 +231,8 @@ inline void unpack(
 inline void unpack(
     msgpack::object_handle& result,
     const char* data, std::size_t len, std::size_t& off,
-    msgpack::v2::unpack_reference_func f, void* user_data,
-            msgpack::v2::unpack_limit const& limit)
+    unpack_reference_func f, void* user_data,
+            unpack_limit const& limit)
 {
     bool referenced;
     msgpack::v2::unpack(result, data, len, off, referenced, f, user_data, limit);
@@ -241,8 +241,8 @@ inline void unpack(
 inline void unpack(
     msgpack::object_handle& result,
     const char* data, std::size_t len, bool& referenced,
-    msgpack::v2::unpack_reference_func f, void* user_data,
-    msgpack::v2::unpack_limit const& limit)
+    unpack_reference_func f, void* user_data,
+    unpack_limit const& limit)
 {
     std::size_t off = 0;
     msgpack::v2::unpack(result, data, len, off, referenced, f, user_data, limit);
@@ -251,8 +251,8 @@ inline void unpack(
 inline void unpack(
     msgpack::object_handle& result,
     const char* data, std::size_t len,
-    msgpack::v2::unpack_reference_func f, void* user_data,
-    msgpack::v2::unpack_limit const& limit)
+    unpack_reference_func f, void* user_data,
+    unpack_limit const& limit)
 {
     bool referenced;
     std::size_t off = 0;
@@ -263,8 +263,8 @@ inline void unpack(
 inline msgpack::object unpack(
     msgpack::zone& z,
     const char* data, std::size_t len, std::size_t& off, bool& referenced,
-    msgpack::v2::unpack_reference_func f, void* user_data,
-    msgpack::v2::unpack_limit const& limit)
+    unpack_reference_func f, void* user_data,
+    unpack_limit const& limit)
 {
     msgpack::object obj;
     std::size_t noff = off;
@@ -288,8 +288,8 @@ inline msgpack::object unpack(
 inline msgpack::object unpack(
     msgpack::zone& z,
     const char* data, std::size_t len, std::size_t& off,
-    msgpack::v2::unpack_reference_func f, void* user_data,
-    msgpack::v2::unpack_limit const& limit)
+    unpack_reference_func f, void* user_data,
+    unpack_limit const& limit)
 {
     bool referenced;
     return msgpack::v2::unpack(z, data, len, off, referenced, f, user_data, limit);
@@ -298,8 +298,8 @@ inline msgpack::object unpack(
 inline msgpack::object unpack(
     msgpack::zone& z,
     const char* data, std::size_t len, bool& referenced,
-    msgpack::v2::unpack_reference_func f, void* user_data,
-    msgpack::v2::unpack_limit const& limit)
+    unpack_reference_func f, void* user_data,
+    unpack_limit const& limit)
 {
     std::size_t off = 0;
     return msgpack::v2::unpack(z, data, len, off, referenced, f, user_data, limit);
@@ -308,8 +308,8 @@ inline msgpack::object unpack(
 inline msgpack::object unpack(
     msgpack::zone& z,
     const char* data, std::size_t len,
-    msgpack::v2::unpack_reference_func f, void* user_data,
-    msgpack::v2::unpack_limit const& limit)
+    unpack_reference_func f, void* user_data,
+    unpack_limit const& limit)
 {
     bool referenced;
     std::size_t off = 0;
@@ -321,8 +321,8 @@ namespace detail {
 inline parse_return
 unpack_imp(const char* data, std::size_t len, std::size_t& off,
            msgpack::zone& result_zone, msgpack::object& result, bool& referenced,
-           msgpack::v2::unpack_reference_func f = MSGPACK_NULLPTR, void* user_data = MSGPACK_NULLPTR,
-           msgpack::v2::unpack_limit const& limit = msgpack::v2::unpack_limit())
+           unpack_reference_func f = MSGPACK_NULLPTR, void* user_data = MSGPACK_NULLPTR,
+           unpack_limit const& limit = unpack_limit())
 {
     create_object_visitor v(f, user_data, limit);
     v.set_zone(result_zone);

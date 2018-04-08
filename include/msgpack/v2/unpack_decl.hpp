@@ -102,7 +102,7 @@ class basic_unpacker;
  */
 msgpack::object_handle unpack(
     const char* data, std::size_t len, std::size_t& off, bool& referenced,
-    msgpack::v2::unpack_reference_func f = MSGPACK_NULLPTR, void* user_data = MSGPACK_NULLPTR, msgpack::v2::unpack_limit const& limit = msgpack::v2::unpack_limit());
+    unpack_reference_func f = MSGPACK_NULLPTR, void* user_data = MSGPACK_NULLPTR, unpack_limit const& limit = unpack_limit());
 
 /// Unpack msgpack::object from a buffer.
 /**
@@ -118,7 +118,7 @@ msgpack::object_handle unpack(
  */
 msgpack::object_handle unpack(
     const char* data, std::size_t len, std::size_t& off,
-    msgpack::v2::unpack_reference_func f = MSGPACK_NULLPTR, void* user_data = MSGPACK_NULLPTR, msgpack::v2::unpack_limit const& limit = msgpack::v2::unpack_limit());
+    unpack_reference_func f = MSGPACK_NULLPTR, void* user_data = MSGPACK_NULLPTR, unpack_limit const& limit = unpack_limit());
 
 /// Unpack msgpack::object from a buffer.
 /**
@@ -134,7 +134,7 @@ msgpack::object_handle unpack(
  */
 msgpack::object_handle unpack(
     const char* data, std::size_t len, bool& referenced,
-    msgpack::v2::unpack_reference_func f = MSGPACK_NULLPTR, void* user_data = MSGPACK_NULLPTR, msgpack::v2::unpack_limit const& limit = msgpack::v2::unpack_limit());
+    unpack_reference_func f = MSGPACK_NULLPTR, void* user_data = MSGPACK_NULLPTR, unpack_limit const& limit = unpack_limit());
 
 /// Unpack msgpack::object from a buffer.
 /**
@@ -149,7 +149,7 @@ msgpack::object_handle unpack(
  */
 msgpack::object_handle unpack(
     const char* data, std::size_t len,
-    msgpack::v2::unpack_reference_func f = MSGPACK_NULLPTR, void* user_data = MSGPACK_NULLPTR, msgpack::v2::unpack_limit const& limit = msgpack::v2::unpack_limit());
+    unpack_reference_func f = MSGPACK_NULLPTR, void* user_data = MSGPACK_NULLPTR, unpack_limit const& limit = unpack_limit());
 
 
 /// Unpack msgpack::object from a buffer.
@@ -168,7 +168,7 @@ msgpack::object_handle unpack(
 void unpack(
     msgpack::object_handle& result,
     const char* data, std::size_t len, std::size_t& off, bool& referenced,
-    msgpack::v2::unpack_reference_func f = MSGPACK_NULLPTR, void* user_data = MSGPACK_NULLPTR, msgpack::v2::unpack_limit const& limit = msgpack::v2::unpack_limit());
+    unpack_reference_func f = MSGPACK_NULLPTR, void* user_data = MSGPACK_NULLPTR, unpack_limit const& limit = unpack_limit());
 
 /// Unpack msgpack::object from a buffer.
 /**
@@ -185,7 +185,7 @@ void unpack(
 void unpack(
     msgpack::object_handle& result,
     const char* data, std::size_t len, std::size_t& off,
-    msgpack::v2::unpack_reference_func f = MSGPACK_NULLPTR, void* user_data = MSGPACK_NULLPTR, msgpack::v2::unpack_limit const& limit = msgpack::v2::unpack_limit());
+    unpack_reference_func f = MSGPACK_NULLPTR, void* user_data = MSGPACK_NULLPTR, unpack_limit const& limit = unpack_limit());
 
 /// Unpack msgpack::object from a buffer.
 /**
@@ -202,7 +202,7 @@ void unpack(
 void unpack(
     msgpack::object_handle& result,
     const char* data, std::size_t len, bool& referenced,
-    msgpack::v2::unpack_reference_func f = MSGPACK_NULLPTR, void* user_data = MSGPACK_NULLPTR, msgpack::v2::unpack_limit const& limit = msgpack::v2::unpack_limit());
+    unpack_reference_func f = MSGPACK_NULLPTR, void* user_data = MSGPACK_NULLPTR, unpack_limit const& limit = unpack_limit());
 
 /// Unpack msgpack::object from a buffer.
 /**
@@ -218,7 +218,7 @@ void unpack(
 void unpack(
     msgpack::object_handle& result,
     const char* data, std::size_t len,
-    msgpack::v2::unpack_reference_func f = MSGPACK_NULLPTR, void* user_data = MSGPACK_NULLPTR, msgpack::v2::unpack_limit const& limit = msgpack::v2::unpack_limit());
+    unpack_reference_func f = MSGPACK_NULLPTR, void* user_data = MSGPACK_NULLPTR, unpack_limit const& limit = unpack_limit());
 
 /// Unpack msgpack::object from a buffer.
 /**
@@ -237,7 +237,7 @@ void unpack(
 msgpack::object unpack(
     msgpack::zone& z,
     const char* data, std::size_t len, std::size_t& off, bool& referenced,
-    msgpack::v2::unpack_reference_func f = MSGPACK_NULLPTR, void* user_data = MSGPACK_NULLPTR, msgpack::v2::unpack_limit const& limit = msgpack::v2::unpack_limit());
+    unpack_reference_func f = MSGPACK_NULLPTR, void* user_data = MSGPACK_NULLPTR, unpack_limit const& limit = unpack_limit());
 
 /// Unpack msgpack::object from a buffer.
 /**
@@ -255,7 +255,7 @@ msgpack::object unpack(
 msgpack::object unpack(
     msgpack::zone& z,
     const char* data, std::size_t len, std::size_t& off,
-    msgpack::v2::unpack_reference_func f = MSGPACK_NULLPTR, void* user_data = MSGPACK_NULLPTR, msgpack::v2::unpack_limit const& limit = msgpack::v2::unpack_limit());
+    unpack_reference_func f = MSGPACK_NULLPTR, void* user_data = MSGPACK_NULLPTR, unpack_limit const& limit = unpack_limit());
 
 /// Unpack msgpack::object from a buffer.
 /**
@@ -273,7 +273,7 @@ msgpack::object unpack(
 msgpack::object unpack(
     msgpack::zone& z,
     const char* data, std::size_t len, bool& referenced,
-    msgpack::v2::unpack_reference_func f = MSGPACK_NULLPTR, void* user_data = MSGPACK_NULLPTR, msgpack::v2::unpack_limit const& limit = msgpack::v2::unpack_limit());
+    unpack_reference_func f = MSGPACK_NULLPTR, void* user_data = MSGPACK_NULLPTR, unpack_limit const& limit = unpack_limit());
 
 /// Unpack msgpack::object from a buffer.
 /**
@@ -290,15 +290,15 @@ msgpack::object unpack(
 msgpack::object unpack(
     msgpack::zone& z,
     const char* data, std::size_t len,
-    msgpack::v2::unpack_reference_func f = MSGPACK_NULLPTR, void* user_data = MSGPACK_NULLPTR, msgpack::v2::unpack_limit const& limit = msgpack::v2::unpack_limit());
+    unpack_reference_func f = MSGPACK_NULLPTR, void* user_data = MSGPACK_NULLPTR, unpack_limit const& limit = unpack_limit());
 
 namespace detail {
 
 parse_return
 unpack_imp(const char* data, std::size_t len, std::size_t& off,
            msgpack::zone& result_zone, msgpack::object& result, bool& referenced,
-           msgpack::v2::unpack_reference_func f, void* user_data,
-           msgpack::v2::unpack_limit const& limit);
+           unpack_reference_func f, void* user_data,
+           unpack_limit const& limit);
 
 
 } // detail
