@@ -139,5 +139,6 @@
 
 #include "msgpack/v1/adaptor/define_decl.hpp"
 #include "msgpack/v2/adaptor/define_decl.hpp"
+#include "msgpack/v3/adaptor/define_decl.hpp"
 
 #endif // MSGPACK_DEFINE_DECL_HPP

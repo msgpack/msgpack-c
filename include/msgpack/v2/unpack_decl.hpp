@@ -100,7 +100,7 @@ class basic_unpacker;
  * @return object_handle that contains unpacked data.
  *
  */
-object_handle unpack(
+msgpack::object_handle unpack(
     const char* data, std::size_t len, std::size_t& off, bool& referenced,
     unpack_reference_func f = MSGPACK_NULLPTR, void* user_data = MSGPACK_NULLPTR, unpack_limit const& limit = unpack_limit());
 
@@ -116,7 +116,7 @@ object_handle unpack(
  * @return object_handle that contains unpacked data.
  *
  */
-object_handle unpack(
+msgpack::object_handle unpack(
     const char* data, std::size_t len, std::size_t& off,
     unpack_reference_func f = MSGPACK_NULLPTR, void* user_data = MSGPACK_NULLPTR, unpack_limit const& limit = unpack_limit());
 
@@ -132,7 +132,7 @@ object_handle unpack(
  * @return object_handle that contains unpacked data.
  *
  */
-object_handle unpack(
+msgpack::object_handle unpack(
     const char* data, std::size_t len, bool& referenced,
     unpack_reference_func f = MSGPACK_NULLPTR, void* user_data = MSGPACK_NULLPTR, unpack_limit const& limit = unpack_limit());
 
@@ -147,7 +147,7 @@ object_handle unpack(
  * @return object_handle that contains unpacked data.
  *
  */
-object_handle unpack(
+msgpack::object_handle unpack(
     const char* data, std::size_t len,
     unpack_reference_func f = MSGPACK_NULLPTR, void* user_data = MSGPACK_NULLPTR, unpack_limit const& limit = unpack_limit());
 
@@ -166,7 +166,7 @@ object_handle unpack(
  *
  */
 void unpack(
-    object_handle& result,
+    msgpack::object_handle& result,
     const char* data, std::size_t len, std::size_t& off, bool& referenced,
     unpack_reference_func f = MSGPACK_NULLPTR, void* user_data = MSGPACK_NULLPTR, unpack_limit const& limit = unpack_limit());
 
@@ -183,7 +183,7 @@ void unpack(
  *
  */
 void unpack(
-    object_handle& result,
+    msgpack::object_handle& result,
     const char* data, std::size_t len, std::size_t& off,
     unpack_reference_func f = MSGPACK_NULLPTR, void* user_data = MSGPACK_NULLPTR, unpack_limit const& limit = unpack_limit());
 
@@ -200,7 +200,7 @@ void unpack(
  *
  */
 void unpack(
-    object_handle& result,
+    msgpack::object_handle& result,
     const char* data, std::size_t len, bool& referenced,
     unpack_reference_func f = MSGPACK_NULLPTR, void* user_data = MSGPACK_NULLPTR, unpack_limit const& limit = unpack_limit());
 
@@ -216,7 +216,7 @@ void unpack(
  *
  */
 void unpack(
-    object_handle& result,
+    msgpack::object_handle& result,
     const char* data, std::size_t len,
     unpack_reference_func f = MSGPACK_NULLPTR, void* user_data = MSGPACK_NULLPTR, unpack_limit const& limit = unpack_limit());
 
@@ -291,31 +291,6 @@ msgpack::object unpack(
     msgpack::zone& z,
     const char* data, std::size_t len,
     unpack_reference_func f = MSGPACK_NULLPTR, void* user_data = MSGPACK_NULLPTR, unpack_limit const& limit = unpack_limit());
-
-/// Unpack msgpack formatted data via a visitor
-/**
- * @param data The pointer to the buffer.
- * @param len The length of the buffer.
- * @param off The offset position of the buffer. It is read and overwritten.
- * @param v The visitor that satisfies visitor concept. https://github.com/msgpack/msgpack-c/wiki/v2_0_cpp_visitor#visitor-concept
- *
- * @return if unpacking process finishs without error then return true, otherwise return false.
- *
- */
-template <typename Visitor>
-bool parse(const char* data, size_t len, size_t& off, Visitor& v);
-
-/// Unpack msgpack formatted data via a visitor
-/**
- * @param data The pointer to the buffer.
- * @param len The length of the buffer.
- * @param v The visitor that satisfies visitor concept. https://github.com/msgpack/msgpack-c/wiki/v2_0_cpp_visitor#visitor-concept
- *
- * @return if unpacking process finishs without error then return true, otherwise return false.
- *
- */
-template <typename Visitor>
-bool parse(const char* data, size_t len, Visitor& v);
 
 namespace detail {
 
@@ -325,9 +300,6 @@ unpack_imp(const char* data, std::size_t len, std::size_t& off,
            unpack_reference_func f, void* user_data,
            unpack_limit const& limit);
 
-template <typename UnpackVisitor>
-parse_return
-parse_imp(const char* data, size_t len, size_t& off, UnpackVisitor& v);
 
 } // detail
 

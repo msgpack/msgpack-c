@@ -2,10 +2,16 @@
 
 #include <sstream>
 #include <limits>
-
-#if defined(MSGPACK_USE_X3_PARSE)
+#include <cmath>
 
 #include <gtest/gtest.h>
+
+// To avoid link error
+TEST(MSGPACK_X3_PARSE, dummy)
+{
+}
+
+#if defined(MSGPACK_USE_X3_PARSE) && MSGPACK_DEFAULT_API_VERSION >= 2
 
 using namespace std;
 
@@ -826,4 +832,4 @@ TEST(MSGPACK_X3_PARSE, unpack_zone_3)
     EXPECT_EQ(v, obj.as<std::string>());
 }
 
-#endif // defined(MSGPACK_USE_X3_PARSE)
+#endif // defined(MSGPACK_USE_X3_PARSE) && MSGPACK_DEFAULT_API_VERSION >= 2

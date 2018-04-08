@@ -39,7 +39,7 @@ matrix:
       env: ACTION="ci/build_cmake.sh"  CXX11="ON" ARCH="64"   BOOST="ON" SHARED="ON"  CHAR_SIGN="unsigned" API_VERSION="1"
     - os: osx
       compiler: clang
-      env:  ACTION="ci/build_cmake.sh" CXX11="ON" ARCH="64"   BOOST="ON" SHARED="ON"  CHAR_SIGN="signed"   API_VERSION="2"
+      env:  ACTION="ci/build_cmake.sh" CXX11="ON" ARCH="64"   BOOST="ON" SHARED="ON"  CHAR_SIGN="signed"   API_VERSION="3"
     - os: osx
       compiler: clang
       env: ACTION="ci/build_cmake.sh"  CXX11="ON" ARCH="64"              SHARED="ON"  CHAR_SIGN="signed"   API_VERSION="2"
@@ -87,7 +87,7 @@ matrix:
             - libc6-dbg
     - os: linux
       compiler: clang
-      env: ACTION="ci/build_cmake.sh"  CXX11="ON" ARCH="64"   BOOST="ON" SHARED="ON"  CHAR_SIGN="signed"   API_VERSION="2" X3_PARSE="ON"
+      env: ACTION="ci/build_cmake.sh"  CXX11="ON" ARCH="64"   BOOST="ON" SHARED="ON"  CHAR_SIGN="signed"   API_VERSION="3" X3_PARSE="ON"
       addons:
         apt:
           sources:
@@ -140,7 +140,7 @@ matrix:
             - libc6-dbg
     - os: linux
       compiler: gcc
-      env: ACTION="ci/build_cmake.sh"  CXX11="ON" ARCH="32"   BOOST="ON" SHARED="ON"  CHAR_SIGN="unsigned" API_VERSION="2" X3_PARSE="ON"
+      env: ACTION="ci/build_cmake.sh"  CXX11="ON" ARCH="32"   BOOST="ON" SHARED="ON"  CHAR_SIGN="unsigned" API_VERSION="3" X3_PARSE="ON"
       addons:
         apt:
           sources:

@@ -12,5 +12,6 @@
 
 #include "msgpack/v1/adaptor/fixint_decl.hpp"
 #include "msgpack/v2/adaptor/fixint_decl.hpp"
+#include "msgpack/v3/adaptor/fixint_decl.hpp"
 
 #endif // MSGPACK_TYPE_FIXINT_DECL_HPP

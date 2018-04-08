@@ -13,5 +13,6 @@
 
 #include "msgpack/v1/object_fwd_decl.hpp"
 #include "msgpack/v2/object_fwd_decl.hpp"
+#include "msgpack/v3/object_fwd_decl.hpp"
 
 #endif // MSGPACK_OBJECT_FWD_DECL_HPP

@@ -370,7 +370,11 @@ TEST(unpack, insufficient_bytes_ref)
     }
     catch (msgpack::insufficient_bytes const&) {
         EXPECT_TRUE(true);
+#if MSGPACK_DEFAULT_API_VERSION < 3
+        EXPECT_EQ(off, 0u);
+#else  // MSGPACK_DEFAULT_API_VERSION < 3
         EXPECT_EQ(1u, off);
+#endif // MSGPACK_DEFAULT_API_VERSION < 3
     }
 }
 
@@ -387,7 +391,11 @@ TEST(unpack, insufficient_bytes_object_handle)
     }
     catch (msgpack::insufficient_bytes const&) {
         EXPECT_TRUE(true);
+#if MSGPACK_DEFAULT_API_VERSION < 3
+        EXPECT_EQ(off, 0u);
+#else  // MSGPACK_DEFAULT_API_VERSION < 3
         EXPECT_EQ(1u, off);
+#endif // MSGPACK_DEFAULT_API_VERSION < 3
     }
 }
 
@@ -405,7 +413,11 @@ TEST(unpack, insufficient_bytes_zone)
     }
     catch (msgpack::insufficient_bytes const&) {
         EXPECT_TRUE(true);
+#if MSGPACK_DEFAULT_API_VERSION < 3
+        EXPECT_EQ(off, 0u);
+#else  // MSGPACK_DEFAULT_API_VERSION < 3
         EXPECT_EQ(1u, off);
+#endif // MSGPACK_DEFAULT_API_VERSION < 3
     }
 }
 
@@ -500,4 +512,88 @@ TEST(unpack, int_off_larger_than_length)
     }
     EXPECT_TRUE(thrown);
     EXPECT_EQ(off, 2u);
+}
+
+TEST(unpack, empty_array_fix)
+{
+    std::string buf;
+    buf.push_back(static_cast<char>(0x90));
+    std::size_t off = 0;
+
+    msgpack::object_handle oh = msgpack::unpack(buf.data(), buf.size(), off);
+    EXPECT_EQ(oh.get().type, msgpack::type::ARRAY);
+    EXPECT_EQ(oh.get().via.array.size, 0u);
+    EXPECT_EQ(off, 1u);
+}
+
+TEST(unpack, empty_array_16)
+{
+    std::string buf;
+    buf.push_back(static_cast<char>(0xdc));
+    buf.push_back(static_cast<char>(0x00));
+    buf.push_back(static_cast<char>(0x00));
+    std::size_t off = 0;
+
+    msgpack::object_handle oh = msgpack::unpack(buf.data(), buf.size(), off);
+    EXPECT_EQ(oh.get().type, msgpack::type::ARRAY);
+    EXPECT_EQ(oh.get().via.array.size, 0u);
+    EXPECT_EQ(off, 3u);
+}
+
+TEST(unpack, empty_array_32)
+{
+    std::string buf;
+    buf.push_back(static_cast<char>(0xdd));
+    buf.push_back(static_cast<char>(0x00));
+    buf.push_back(static_cast<char>(0x00));
+    buf.push_back(static_cast<char>(0x00));
+    buf.push_back(static_cast<char>(0x00));
+    std::size_t off = 0;
+
+    msgpack::object_handle oh = msgpack::unpack(buf.data(), buf.size(), off);
+    EXPECT_EQ(oh.get().type, msgpack::type::ARRAY);
+    EXPECT_EQ(oh.get().via.array.size, 0u);
+    EXPECT_EQ(off, 5u);
+}
+
+TEST(unpack, empty_map_fix)
+{
+    std::string buf;
+    buf.push_back(static_cast<char>(0x80));
+    std::size_t off = 0;
+
+    msgpack::object_handle oh = msgpack::unpack(buf.data(), buf.size(), off);
+    EXPECT_EQ(oh.get().type, msgpack::type::MAP);
+    EXPECT_EQ(oh.get().via.map.size, 0u);
+    EXPECT_EQ(off, 1u);
+}
+
+TEST(unpack, empty_map_16)
+{
+    std::string buf;
+    buf.push_back(static_cast<char>(0xde));
+    buf.push_back(static_cast<char>(0x00));
+    buf.push_back(static_cast<char>(0x00));
+    std::size_t off = 0;
+
+    msgpack::object_handle oh = msgpack::unpack(buf.data(), buf.size(), off);
+    EXPECT_EQ(oh.get().type, msgpack::type::MAP);
+    EXPECT_EQ(oh.get().via.map.size, 0u);
+    EXPECT_EQ(off, 3u);
+}
+
+TEST(unpack, empty_map_32)
+{
+    std::string buf;
+    buf.push_back(static_cast<char>(0xdf));
+    buf.push_back(static_cast<char>(0x00));
+    buf.push_back(static_cast<char>(0x00));
+    buf.push_back(static_cast<char>(0x00));
+    buf.push_back(static_cast<char>(0x00));
+    std::size_t off = 0;
+
+    msgpack::object_handle oh = msgpack::unpack(buf.data(), buf.size(), off);
+    EXPECT_EQ(oh.get().type, msgpack::type::MAP);
+    EXPECT_EQ(oh.get().via.map.size, 0u);
+    EXPECT_EQ(off, 5u);
 }

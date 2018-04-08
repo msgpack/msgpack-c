@@ -10,8 +10,14 @@
 #ifndef MSGPACK_V2_PARSE_HPP
 #define MSGPACK_V2_PARSE_HPP
 
+#if MSGPACK_DEFAULT_API_VERSION >= 2
+
+#include <cstddef>
+
+#include "msgpack/unpack_define.h"
+#include "msgpack/parse_return.hpp"
+#include "msgpack/unpack_exception.hpp"
 #include "msgpack/unpack_decl.hpp"
-#include "msgpack/v2/create_object_visitor.hpp"
 
 namespace msgpack {
 
@@ -20,6 +26,10 @@ MSGPACK_API_VERSION_NAMESPACE(v2) {
 /// @endcond
 
 namespace detail {
+
+using v1::detail::fix_tag;
+using v1::detail::value;
+using v1::detail::load;
 
 template <typename VisitorHolder>
 class context {
@@ -58,6 +68,7 @@ private:
         std::size_t& off) {
         typename value<T>::type size;
         load<T>(size, load_pos);
+        ++m_current;
         if (size == 0) {
             if (!sv(size)) {
                 off = m_current - m_start;
@@ -67,7 +78,7 @@ private:
                 off = m_current - m_start;
                 return PARSE_STOP_VISITOR;
             }
-            parse_return ret = m_stack.consume(holder(), m_current);
+            parse_return ret = m_stack.consume(holder());
             if (ret != PARSE_CONTINUE) {
                 off = m_current - m_start;
                 return ret;
@@ -84,18 +95,17 @@ private:
                 return ret;
             }
         }
-        ++m_current;
         m_cs = MSGPACK_CS_HEADER;
         return PARSE_CONTINUE;
     }
 
     parse_return after_visit_proc(bool visit_result, std::size_t& off) {
+        ++m_current;
         if (!visit_result) {
             off = m_current - m_start;
             return PARSE_STOP_VISITOR;
         }
-        parse_return ret = m_stack.consume(holder(), m_current);
-        ++m_current;
+        parse_return ret = m_stack.consume(holder());
         if (ret != PARSE_CONTINUE) {
             off = m_current - m_start;
         }
@@ -161,21 +171,15 @@ private:
             assert(0);
             return PARSE_STOP_VISITOR;
         }
-        parse_return consume(VisitorHolder& visitor_holder, char const*& current) {
+        parse_return consume(VisitorHolder& visitor_holder) {
             while (!m_stack.empty()) {
                 stack_elem& e = m_stack.back();
                 switch (e.m_type) {
                 case MSGPACK_CT_ARRAY_ITEM:
-                    if (!visitor_holder.visitor().end_array_item()) {
-                        --current;
-                        return PARSE_STOP_VISITOR;
-                    }
+                    if (!visitor_holder.visitor().end_array_item()) return PARSE_STOP_VISITOR;
                     if (--e.m_rest == 0)  {
                         m_stack.pop_back();
-                        if (!visitor_holder.visitor().end_array()) {
-                            --current;
-                            return PARSE_STOP_VISITOR;
-                        }
+                        if (!visitor_holder.visitor().end_array()) return PARSE_STOP_VISITOR;
                     }
                     else {
                         if (!visitor_holder.visitor().start_array_item()) return PARSE_STOP_VISITOR;
@@ -183,24 +187,15 @@ private:
                     }
                     break;
                 case MSGPACK_CT_MAP_KEY:
-                    if (!visitor_holder.visitor().end_map_key()) {
-                        --current;
-                        return PARSE_STOP_VISITOR;
-                    }
+                    if (!visitor_holder.visitor().end_map_key()) return PARSE_STOP_VISITOR;
                     if (!visitor_holder.visitor().start_map_value()) return PARSE_STOP_VISITOR;
                     e.m_type = MSGPACK_CT_MAP_VALUE;
                     return PARSE_CONTINUE;
                 case MSGPACK_CT_MAP_VALUE:
-                    if (!visitor_holder.visitor().end_map_value()) {
-                        --current;
-                        return PARSE_STOP_VISITOR;
-                    }
+                    if (!visitor_holder.visitor().end_map_value()) return PARSE_STOP_VISITOR;
                     if (--e.m_rest == 0) {
                         m_stack.pop_back();
-                        if (!visitor_holder.visitor().end_map()) {
-                            --current;
-                            return PARSE_STOP_VISITOR;
-                        }
+                        if (!visitor_holder.visitor().end_map()) return PARSE_STOP_VISITOR;
                     }
                     else {
                         e.m_type = MSGPACK_CT_MAP_KEY;
@@ -1013,23 +1008,23 @@ inline void parser<VisitorHolder, ReferencedBufferHook>::remove_nonparsed_buffer
 
 template <typename Visitor>
 inline bool parse(const char* data, size_t len, size_t& off, Visitor& v) {
-    parse_return ret = detail::parse_imp(data, len, off, v);
+    parse_return ret = msgpack::detail::parse_imp(data, len, off, v);
     return ret == PARSE_SUCCESS || ret == PARSE_EXTRA_BYTES;
 }
 
 template <typename Visitor>
 inline bool parse(const char* data, size_t len, Visitor& v) {
     std::size_t off = 0;
-    return parse(data, len, off, v);
+    return msgpack::parse(data, len, off, v);
 }
 
 namespace detail {
 
 template <typename Visitor>
-struct parse_helper : context<parse_helper<Visitor> > {
+struct parse_helper : detail::context<parse_helper<Visitor> > {
     parse_helper(Visitor& v):m_visitor(v) {}
     parse_return execute(const char* data, std::size_t len, std::size_t& off) {
-        return context<parse_helper<Visitor> >::execute(data, len, off);
+        return detail::context<parse_helper<Visitor> >::execute(data, len, off);
     }
     Visitor& visitor() const { return m_visitor; }
     Visitor& m_visitor;
@@ -1047,12 +1042,13 @@ parse_imp(const char* data, size_t len, size_t& off, Visitor& v) {
     }
     detail::parse_helper<Visitor> h(v);
     parse_return ret = h.execute(data, len, noff);
-    off = noff;
     switch (ret) {
     case PARSE_CONTINUE:
+        off = noff;
         v.insufficient_bytes(noff - 1, noff);
         return ret;
     case PARSE_SUCCESS:
+        off = noff;
         if(noff < len) {
             return PARSE_EXTRA_BYTES;
         }
@@ -1071,5 +1067,6 @@ parse_imp(const char* data, size_t len, size_t& off, Visitor& v) {
 
 }  // namespace msgpack
 
+#endif // MSGPACK_DEFAULT_API_VERSION >= 2
 
 #endif // MSGPACK_V2_PARSE_HPP

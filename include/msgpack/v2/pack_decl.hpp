@@ -22,6 +22,7 @@ using v1::packer;
 
 using v1::pack;
 
+
 #if MSGPACK_ENDIAN_LITTLE_BYTE
 
 using v1::take8_8;
