@@ -71,6 +71,7 @@ private:
                 return PARSE_STOP_VISITOR;
             }
             parse_return ret = m_stack.consume(holder(), m_current);
+            ++m_current;
             if (ret != PARSE_CONTINUE) {
                 off = m_current - m_start;
                 return ret;
@@ -82,12 +83,12 @@ private:
                 return PARSE_STOP_VISITOR;
             }
             parse_return ret = m_stack.push(holder(), sv.type(), static_cast<uint32_t>(size));
+            ++m_current;
             if (ret != PARSE_CONTINUE) {
                 off = m_current - m_start;
                 return ret;
             }
         }
-        ++m_current;
         m_cs = MSGPACK_CS_HEADER;
         return PARSE_CONTINUE;
     }
