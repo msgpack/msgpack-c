@@ -51,7 +51,7 @@ private:
             v1::has_as<U>::value,
             std::true_type
         >::type;
-    template <typename>
+    template <typename...>
     static std::false_type check(...);
 public:
     using type = decltype(check<T>(MSGPACK_NULLPTR));

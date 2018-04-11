@@ -59,7 +59,7 @@ private:
             decltype(adaptor::as<U>()(std::declval<msgpack::object>())),
             T
         >::type;
-    template <typename>
+    template <typename...>
     static std::false_type check(...);
 public:
     using type = decltype(check<T>(MSGPACK_NULLPTR));
