@@ -37,7 +37,6 @@ LIST (APPEND check_PROGRAMS
     version.cpp
     visitor.cpp
     zone.cpp
-
 )
 
 IF (MSGPACK_BOOST)
