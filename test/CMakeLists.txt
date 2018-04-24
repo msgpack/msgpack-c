@@ -38,8 +38,6 @@ LIST (APPEND check_PROGRAMS
     visitor.cpp
     zone.cpp
 
-    # fuzzer tests
-    fuzz_unpack_pack_fuzzer.cpp
 )
 
 IF (MSGPACK_BOOST)
@@ -66,6 +64,9 @@ IF (MSGPACK_CXX11)
         reference_wrapper_cpp11.cpp
         shared_ptr_cpp11.cpp
         unique_ptr_cpp11.cpp
+
+        # fuzzer tests are cpp11 only
+        fuzz_unpack_pack_fuzzer.cpp
     )
 ENDIF ()
 
