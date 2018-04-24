@@ -37,6 +37,9 @@ LIST (APPEND check_PROGRAMS
     version.cpp
     visitor.cpp
     zone.cpp
+
+    # fuzzer tests
+    fuzz_unpack_pack_fuzzer.cpp
 )
 
 IF (MSGPACK_BOOST)
