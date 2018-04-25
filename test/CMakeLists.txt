@@ -64,8 +64,8 @@ IF (MSGPACK_CXX11)
         shared_ptr_cpp11.cpp
         unique_ptr_cpp11.cpp
 
-        # fuzzer tests are cpp11 only
-        fuzz_unpack_pack_fuzzer.cpp
+        # fuzzers are cpp11 only
+        fuzz_unpack_pack_fuzzer_cpp11.cpp
     )
 ENDIF ()
 

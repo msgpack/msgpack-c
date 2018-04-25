@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "../fuzz/unpack_pack_fuzzer.cc"
+#include "../fuzz/unpack_pack_fuzzer.cpp"
 
 TEST(FUZZ_UNPACK_PACK_FUZZER, works)
 {
