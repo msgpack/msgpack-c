@@ -72,6 +72,7 @@ struct define_map {
         if(o.type != msgpack::type::MAP) { throw msgpack::type_error(); }
         std::map<std::string, msgpack::object const*> kvmap;
         for (uint32_t i = 0; i < o.via.map.size; ++i) {
+            if (o.via.map.ptr[i].key.type != msgpack::type::STR) { throw msgpack::type_error(); }
             kvmap.emplace(
                 std::string(
                     o.via.map.ptr[i].key.via.str.ptr,
