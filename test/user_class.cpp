@@ -601,3 +601,28 @@ TEST(MSGPACK_NVP, combination)
     EXPECT_EQ(d2.c, 3);
     EXPECT_EQ(d2.d, "ABC");
 }
+
+struct invalid_key {
+    int val;
+    MSGPACK_DEFINE_MAP(val);
+};
+
+TEST(MSGPACK_USER_DEFINED, test_invalid_key_type)
+{
+    msgpack::sbuffer sbuf;
+    msgpack::packer<msgpack::sbuffer> pk(sbuf);
+    pk.pack_map(1);
+    pk.pack_int(42);
+    pk.pack_int(43);
+    msgpack::object_handle oh = msgpack::unpack(sbuf.data(), sbuf.size());
+    try {
+        oh.get().as<invalid_key>();
+        EXPECT_TRUE(false);
+    }
+    catch (msgpack::type_error const&) {
+        EXPECT_TRUE(true);
+    }
+    catch (...) {
+        EXPECT_TRUE(false);
+    }
+}
