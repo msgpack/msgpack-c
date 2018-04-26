@@ -12,6 +12,8 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
                                                       msgpack::unpack_limit(test_limit,
                                                                             test_limit,
                                                                             test_limit,
+                                                                            test_limit,
+                                                                            test_limit,
                                                                             test_limit));
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, unpacked.get());
