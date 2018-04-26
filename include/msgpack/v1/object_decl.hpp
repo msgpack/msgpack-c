@@ -111,7 +111,7 @@ msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const msgpack::
 template <typename Stream>
 msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const msgpack::object::with_zone& v);
 
-std::ostream& operator<< (std::ostream& s, const msgpack::object& o);
+std::ostream& operator<< (std::ostream& s, const msgpack::object& v);
 
 /// @cond
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
