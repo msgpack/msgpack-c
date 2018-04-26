@@ -37,6 +37,10 @@ using v1::detail::packer_serializer;
 
 } // namespace detail
 
+using v1::object_parser;
+using v1::object_pack_visitor;
+using v1::object_stringize_visitor;
+
 using v1::operator==;
 using v1::operator!=;
 

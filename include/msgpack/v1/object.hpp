@@ -11,6 +11,7 @@
 #define MSGPACK_V1_OBJECT_HPP
 
 #include "msgpack/object_decl.hpp"
+#include "msgpack/adaptor/check_container_size.hpp"
 
 #include <cstring>
 #include <stdexcept>
@@ -73,13 +74,13 @@ public:
     /**
      * @return object (to mimic smart pointers).
      */
-    const msgpack::object& operator*() const 
+    const msgpack::object& operator*() const
         { return get(); }
 
     /**
      * @return the address of the object (to mimic smart pointers).
      */
-    const msgpack::object* operator->() const 
+    const msgpack::object* operator->() const
         { return &get(); }
 
     /// Get unique_ptr reference of zone.
@@ -147,6 +148,361 @@ inline std::size_t add_ext_type_size<4>(std::size_t size) {
 }
 
 } // namespace detail
+class object_parser {
+private:
+    struct elem {
+        elem(msgpack::object const* p, std::size_t r)
+            : rest(r), is_map(false), is_key(false) {
+            as.obj_ptr = p;
+        }
+
+        elem(msgpack::object_kv const* p, std::size_t r)
+            : rest(r), is_map(true), is_key(true) {
+            as.kv_ptr = p;
+        }
+
+        msgpack::object const& get() const {
+            if (is_map) {
+                if (is_key) {
+                    return as.kv_ptr->key;
+                }
+                else {
+                    return as.kv_ptr->val;
+                }
+            }
+            else {
+                return *as.obj_ptr;
+            }
+        }
+
+        template <typename Visitor>
+        bool next(Visitor& v) {
+            if (rest == 0) {
+                if (is_map) {
+                    v.end_map();
+                }
+                else {
+                    v.end_array();
+                }
+                return false;
+            }
+            else {
+                if (is_map) {
+                    if (is_key) {
+                        v.end_map_key();
+                        v.start_map_value();
+                        is_key = false;
+                    }
+                    else {
+                        v.end_map_value();
+                        --rest;
+                        if (rest == 0) {
+                            v.end_map();
+                            return false;
+                        }
+                        v.start_map_key();
+                        ++as.kv_ptr;
+                        is_key = true;
+                    }
+                }
+                else {
+                    v.end_array_item();
+                    --rest;
+                    if (rest == 0) {
+                        v.end_array();
+                        return false;
+                    }
+                    ++as.obj_ptr;
+                }
+                return true;
+            }
+        }
+
+        union {
+            msgpack::object const* obj_ptr;
+            msgpack::object_kv const* kv_ptr;
+        } as;
+        std::size_t rest;
+        bool is_map;
+        bool is_key;
+    };
+public:
+    object_parser(msgpack::object const& obj):m_current(&obj) {}
+    template <typename Visitor>
+    void parse(Visitor& v) {
+        while (true) {
+            bool start_collection = false;
+            switch(m_current->type) {
+            case msgpack::type::NIL:
+                v.visit_nil();
+                break;
+            case msgpack::type::BOOLEAN:
+                v.visit_boolean(m_current->via.boolean);
+                break;
+            case msgpack::type::POSITIVE_INTEGER:
+                v.visit_positive_integer(m_current->via.u64);
+                break;
+            case msgpack::type::NEGATIVE_INTEGER:
+                v.visit_negative_integer(m_current->via.i64);
+                break;
+            case msgpack::type::FLOAT32:
+                v.visit_float32(static_cast<float>(m_current->via.f64));
+                break;
+            case msgpack::type::FLOAT64:
+                v.visit_float64(m_current->via.f64);
+                break;
+            case msgpack::type::STR:
+                v.visit_str(m_current->via.str.ptr, m_current->via.str.size);
+                break;
+            case msgpack::type::BIN:
+                v.visit_bin(m_current->via.bin.ptr, m_current->via.bin.size);
+                break;
+            case msgpack::type::EXT:
+                msgpack::detail::check_container_size<sizeof(std::size_t)>(m_current->via.ext.size);
+                v.visit_ext(m_current->via.ext.ptr, m_current->via.ext.size + 1);
+                break;
+            case msgpack::type::ARRAY:
+                v.start_array(m_current->via.array.size);
+                m_ctx.push_back(elem(m_current->via.array.ptr, m_current->via.array.size));
+                start_collection = m_current->via.array.size != 0;
+                break;
+            case msgpack::type::MAP:
+                v.start_map(m_current->via.map.size);
+                m_ctx.push_back(elem(m_current->via.map.ptr, m_current->via.map.size));
+                start_collection = m_current->via.map.size != 0;
+                break;
+            default:
+                throw msgpack::type_error();
+                break;
+            }
+            if (m_ctx.empty()) return;
+            if (!start_collection) {
+                while (!m_ctx.back().next(v)) {
+                    m_ctx.pop_back();
+                    if (m_ctx.empty()) return;
+                }
+            }
+            m_current = &m_ctx.back().get();
+        }
+    }
+private:
+    msgpack::object const* m_current;
+    std::vector<elem> m_ctx;
+};
+
+template <typename Stream>
+struct object_pack_visitor {
+    object_pack_visitor(msgpack::packer<Stream>& pk)
+        :m_packer(pk) {}
+    bool visit_nil() {
+        m_packer.pack_nil();
+        return true;
+    }
+    bool visit_boolean(bool v) {
+        if (v) m_packer.pack_true();
+        else m_packer.pack_false();
+        return true;
+    }
+    bool visit_positive_integer(uint64_t v) {
+        m_packer.pack_uint64(v);
+        return true;
+    }
+    bool visit_negative_integer(int64_t v) {
+        m_packer.pack_int64(v);
+        return true;
+    }
+    bool visit_float32(float v) {
+        m_packer.pack_float(v);
+        return true;
+    }
+    bool visit_float64(double v) {
+        m_packer.pack_double(v);
+        return true;
+    }
+    bool visit_str(const char* v, uint32_t size) {
+        m_packer.pack_str(size);
+        m_packer.pack_str_body(v, size);
+        return true;
+    }
+    bool visit_bin(const char* v, uint32_t size) {
+        m_packer.pack_bin(size);
+        m_packer.pack_bin_body(v, size);
+        return true;
+    }
+    bool visit_ext(const char* v, uint32_t size) {
+        m_packer.pack_ext(size, *v);
+        m_packer.pack_ext_body(v, size);
+        return true;
+    }
+    bool start_array(uint32_t num_elements) {
+        m_packer.pack_array(num_elements);
+        return true;
+    }
+    bool start_array_item() {
+        return true;
+    }
+    bool end_array_item() {
+        return true;
+    }
+    bool end_array() {
+        return true;
+    }
+    bool start_map(uint32_t num_kv_pairs) {
+        m_packer.pack_array(num_kv_pairs);
+        return true;
+    }
+    bool start_map_key() {
+        return true;
+    }
+    bool end_map_key() {
+        return true;
+    }
+    bool start_map_value() {
+        return true;
+    }
+    bool end_map_value() {
+        return true;
+    }
+    bool end_map() {
+        return true;
+    }
+private:
+    msgpack::packer<Stream>& m_packer;
+};
+
+
+struct object_stringize_visitor {
+    object_stringize_visitor(std::ostream& os)
+        :m_os(os) {}
+    bool visit_nil() {
+        m_os << "null";
+        return true;
+    }
+    bool visit_boolean(bool v) {
+        if (v) m_os << "true";
+        else m_os << "false";
+        return true;
+    }
+    bool visit_positive_integer(uint64_t v) {
+        m_os << v;
+        return true;
+    }
+    bool visit_negative_integer(int64_t v) {
+        m_os << v;
+        return true;
+    }
+    bool visit_float32(float v) {
+        m_os << v;
+        return true;
+    }
+    bool visit_float64(double v) {
+        m_os << v;
+        return true;
+    }
+    bool visit_str(const char* v, uint32_t size) {
+        m_os << '"';
+        for (uint32_t i = 0; i < size; ++i) {
+            char c = v[i];
+            switch (c) {
+            case '\\':
+                m_os << "\\\\";
+                break;
+            case '"':
+                m_os << "\\\"";
+                break;
+            case '/':
+                m_os << "\\/";
+                break;
+            case '\b':
+                m_os << "\\b";
+                break;
+            case '\f':
+                m_os << "\\f";
+                break;
+            case '\n':
+                m_os << "\\n";
+                break;
+            case '\r':
+                m_os << "\\r";
+                break;
+            case '\t':
+                m_os << "\\t";
+                break;
+            default: {
+                unsigned int code = static_cast<unsigned int>(c);
+                if (code < 0x20 || code == 0x7f) {
+                    std::ios::fmtflags flags(m_os.flags());
+                    m_os << "\\u" << std::hex << std::setw(4) << std::setfill('0') << (code & 0xff);
+                    m_os.flags(flags);
+                }
+                else {
+                    m_os << c;
+                }
+            } break;
+            }
+        }
+        m_os << '"';
+        return true;
+    }
+    bool visit_bin(const char* v, uint32_t size) {
+        (m_os << '"').write(v, size) << '"';
+        return true;
+    }
+    bool visit_ext(const char* /*v*/, uint32_t /*size*/) {
+        m_os << "EXT";
+        return true;
+    }
+    bool start_array(uint32_t num_elements) {
+        m_current_size.push_back(num_elements);
+        m_os << "[";
+        return true;
+    }
+    bool start_array_item() {
+        return true;
+    }
+    bool end_array_item() {
+        --m_current_size.back();
+        if (m_current_size.back() != 0) {
+            m_os << ",";
+        }
+        return true;
+    }
+    bool end_array() {
+        m_current_size.pop_back();
+        m_os << "]";
+        return true;
+    }
+    bool start_map(uint32_t num_kv_pairs) {
+        m_current_size.push_back(num_kv_pairs);
+        m_os << "{";
+        return true;
+    }
+    bool start_map_key() {
+        return true;
+    }
+    bool end_map_key() {
+        m_os << ":";
+        return true;
+    }
+    bool start_map_value() {
+        return true;
+    }
+    bool end_map_value() {
+        --m_current_size.back();
+        if (m_current_size.back() != 0) {
+            m_os << ",";
+        }
+        return true;
+    }
+    bool end_map() {
+        m_current_size.pop_back();
+        m_os << "}";
+        return true;
+    }
+private:
+    std::ostream& m_os;
+    std::vector<uint32_t> m_current_size;
+};
 
 inline std::size_t aligned_zone_size(msgpack::object const& obj) {
     std::size_t s = 0;
@@ -252,6 +608,10 @@ template <>
 struct pack<msgpack::object> {
     template <typename Stream>
     msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, msgpack::object const& v) const {
+        object_pack_visitor<Stream> vis(o);
+        msgpack::object_parser(v).parse(vis);
+        return o;
+#if 0
         switch(v.type) {
         case msgpack::type::NIL:
             o.pack_nil();
@@ -318,6 +678,7 @@ struct pack<msgpack::object> {
         default:
             throw msgpack::type_error();
         }
+#endif
     }
 };
 
@@ -694,76 +1055,12 @@ inline void pack_copy(msgpack::packer<Stream>& o, T v)
     pack(o, v);
 }
 
-
 template <typename Stream>
 inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const msgpack::object& v)
 {
-    switch(v.type) {
-    case msgpack::type::NIL:
-        o.pack_nil();
-        return o;
-
-    case msgpack::type::BOOLEAN:
-        if(v.via.boolean) {
-            o.pack_true();
-        } else {
-            o.pack_false();
-        }
-        return o;
-
-    case msgpack::type::POSITIVE_INTEGER:
-        o.pack_uint64(v.via.u64);
-        return o;
-
-    case msgpack::type::NEGATIVE_INTEGER:
-        o.pack_int64(v.via.i64);
-        return o;
-
-    case msgpack::type::FLOAT32:
-        o.pack_float(v.via.f64);
-        return o;
-
-    case msgpack::type::FLOAT64:
-        o.pack_double(v.via.f64);
-        return o;
-
-    case msgpack::type::STR:
-        o.pack_str(v.via.str.size);
-        o.pack_str_body(v.via.str.ptr, v.via.str.size);
-        return o;
-
-    case msgpack::type::BIN:
-        o.pack_bin(v.via.bin.size);
-        o.pack_bin_body(v.via.bin.ptr, v.via.bin.size);
-        return o;
-
-    case msgpack::type::EXT:
-        o.pack_ext(v.via.ext.size, v.via.ext.type());
-        o.pack_ext_body(v.via.ext.data(), v.via.ext.size);
-        return o;
-
-    case msgpack::type::ARRAY:
-        o.pack_array(v.via.array.size);
-        for(msgpack::object* p(v.via.array.ptr),
-                * const pend(v.via.array.ptr + v.via.array.size);
-                p < pend; ++p) {
-            msgpack::operator<<(o, *p);
-        }
-        return o;
-
-    case msgpack::type::MAP:
-        o.pack_map(v.via.map.size);
-        for(msgpack::object_kv* p(v.via.map.ptr),
-                * const pend(v.via.map.ptr + v.via.map.size);
-                p < pend; ++p) {
-            msgpack::operator<<(o, p->key);
-            msgpack::operator<<(o, p->val);
-        }
-        return o;
-
-    default:
-        throw msgpack::type_error();
-    }
+    object_pack_visitor<Stream> vis(o);
+    msgpack::object_parser(v).parse(vis);
+    return o;
 }
 
 template <typename Stream>
@@ -772,115 +1069,10 @@ inline msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const ms
     return o << static_cast<msgpack::object>(v);
 }
 
-inline std::ostream& operator<< (std::ostream& s, const msgpack::object& o)
+inline std::ostream& operator<< (std::ostream& s, const msgpack::object& v)
 {
-    switch(o.type) {
-    case msgpack::type::NIL:
-        s << "null";
-        break;
-
-    case msgpack::type::BOOLEAN:
-        s << (o.via.boolean ? "true" : "false");
-        break;
-
-    case msgpack::type::POSITIVE_INTEGER:
-        s << o.via.u64;
-        break;
-
-    case msgpack::type::NEGATIVE_INTEGER:
-        s << o.via.i64;
-        break;
-
-    case msgpack::type::FLOAT32:
-    case msgpack::type::FLOAT64:
-        s << o.via.f64;
-        break;
-
-    case msgpack::type::STR:
-        s << '"';
-        for (uint32_t i = 0; i < o.via.str.size; ++i) {
-            char c = o.via.str.ptr[i];
-            switch (c) {
-            case '\\':
-                s << "\\\\";
-                break;
-            case '"':
-                s << "\\\"";
-                break;
-            case '/':
-                s << "\\/";
-                break;
-            case '\b':
-                s << "\\b";
-                break;
-            case '\f':
-                s << "\\f";
-                break;
-            case '\n':
-                s << "\\n";
-                break;
-            case '\r':
-                s << "\\r";
-                break;
-            case '\t':
-                s << "\\t";
-                break;
-            default: {
-                unsigned int code = static_cast<unsigned int>(c);
-                if (code < 0x20 || code == 0x7f) {
-                    std::ios::fmtflags flags(s.flags());
-                    s << "\\u" << std::hex << std::setw(4) << std::setfill('0') << (code & 0xff);
-                    s.flags(flags);
-                }
-                else {
-                    s << c;
-                }
-            } break;
-            }
-        }
-        s << '"';
-        break;
-
-    case msgpack::type::BIN:
-        (s << '"').write(o.via.bin.ptr, o.via.bin.size) << '"';
-        break;
-
-    case msgpack::type::EXT:
-        s << "EXT";
-        break;
-
-    case msgpack::type::ARRAY:
-        s << "[";
-        if(o.via.array.size != 0) {
-            msgpack::object* p(o.via.array.ptr);
-            s << *p;
-            ++p;
-            for(msgpack::object* const pend(o.via.array.ptr + o.via.array.size);
-                    p < pend; ++p) {
-                s << ", " << *p;
-            }
-        }
-        s << "]";
-        break;
-
-    case msgpack::type::MAP:
-        s << "{";
-        if(o.via.map.size != 0) {
-            msgpack::object_kv* p(o.via.map.ptr);
-            s << p->key << ':' << p->val;
-            ++p;
-            for(msgpack::object_kv* const pend(o.via.map.ptr + o.via.map.size);
-                    p < pend; ++p) {
-                s << ", " << p->key << ':' << p->val;
-            }
-        }
-        s << "}";
-        break;
-
-    default:
-        // FIXME
-        s << "#<UNKNOWN " << static_cast<uint16_t>(o.type) << ">";
-    }
+    object_stringize_visitor vis(s);
+    msgpack::object_parser(v).parse(vis);
     return s;
 }
 
