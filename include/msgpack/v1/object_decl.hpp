@@ -83,6 +83,13 @@ bool operator!=(const T& y, const msgpack::object& x);
 
 void operator<< (msgpack::object& o, const msgpack_object& v);
 
+class object_parser;
+
+template <typename Stream>
+struct object_pack_visitor;
+
+struct object_stringize_visitor;
+
 // obsolete
 template <typename T>
 MSGPACK_DEPRECATED("please use member function version of object::convert(T&)")
@@ -104,7 +111,7 @@ msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const msgpack::
 template <typename Stream>
 msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const msgpack::object::with_zone& v);
 
-std::ostream& operator<< (std::ostream& s, const msgpack::object& o);
+std::ostream& operator<< (std::ostream& s, const msgpack::object& v);
 
 /// @cond
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
