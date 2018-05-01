@@ -1,5 +1,8 @@
 #!/bin/bash
 
+set -e
+set +x
+
 if [ -d build ]; then
     rm -rf build
 fi
