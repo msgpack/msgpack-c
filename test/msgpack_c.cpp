@@ -226,16 +226,16 @@ TEST(MSGPACKC, simple_buffer_float)
             msgpack_unpack(sbuf.data, sbuf.size, NULL, &z, &obj);
         EXPECT_EQ(MSGPACK_UNPACK_SUCCESS, ret);
         EXPECT_EQ(MSGPACK_OBJECT_FLOAT32, obj.type);
-        if (isnan(val)) {
-            EXPECT_TRUE(isnan(obj.via.f64));
+        if (::isnan(val)) {
+            EXPECT_TRUE(::isnan(obj.via.f64));
 #if defined(MSGPACK_USE_LEGACY_NAME_AS_FLOAT)
-            EXPECT_TRUE(isnan(obj.via.dec));
+            EXPECT_TRUE(::isnan(obj.via.dec));
 #endif // MSGPACK_USE_LEGACY_NAME_AS_FLOAT
         }
-        else if (isinf(val)) {
-            EXPECT_TRUE(isinf(obj.via.f64));
+        else if (::isinf(val)) {
+            EXPECT_TRUE(::isinf(obj.via.f64));
 #if defined(MSGPACK_USE_LEGACY_NAME_AS_FLOAT)
-            EXPECT_TRUE(isinf(obj.via.dec));
+            EXPECT_TRUE(::isinf(obj.via.dec));
 #endif // MSGPACK_USE_LEGACY_NAME_AS_FLOAT
         }
         else {
@@ -292,16 +292,16 @@ TEST(MSGPACKC, simple_buffer_double)
 #if defined(MSGPACK_USE_LEGACY_NAME_AS_FLOAT)
         EXPECT_EQ(MSGPACK_OBJECT_DOUBLE, obj.type);
 #endif // MSGPACK_USE_LEGACY_NAME_AS_FLOAT
-        if (isnan(val)) {
-            EXPECT_TRUE(isnan(obj.via.f64));
+        if (::isnan(val)) {
+            EXPECT_TRUE(::isnan(obj.via.f64));
 #if defined(MSGPACK_USE_LEGACY_NAME_AS_FLOAT)
-            EXPECT_TRUE(isnan(obj.via.dec));
+            EXPECT_TRUE(::isnan(obj.via.dec));
 #endif // MSGPACK_USE_LEGACY_NAME_AS_FLOAT
         }
-        else if (isinf(val)) {
-            EXPECT_TRUE(isinf(obj.via.f64));
+        else if (::isinf(val)) {
+            EXPECT_TRUE(::isinf(obj.via.f64));
 #if defined(MSGPACK_USE_LEGACY_NAME_AS_FLOAT)
-            EXPECT_TRUE(isinf(obj.via.dec));
+            EXPECT_TRUE(::isinf(obj.via.dec));
 #endif // MSGPACK_USE_LEGACY_NAME_AS_FLOAT
         }
         else {
