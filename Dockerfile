@@ -6,7 +6,7 @@ RUN apt-get update \
     && apt-get install -y curl \
     && curl -L http://llvm.org/apt/llvm-snapshot.gpg.key |apt-key add - \
     && add-apt-repository 'deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial main' \
-    && apt-get -y install clang-5.0 lldb-5.0 wget unzip
+    && apt-get -y install clang-5.0 lldb-5.0 wget unzip valgrind build-essential zlib1g-dev
 
 RUN mkdir -p /src /work
 
@@ -43,8 +43,6 @@ RUN cd $SRC \
     && wget http://sourceforge.net/projects/boost/files/boost/1.66.0/boost_1_66_0.zip \
     && unzip -q boost_1_66_0.zip
 
-# RUN apt-get -y install libstdc++
-
 RUN cd $SRC/boost_1_66_0 \
     && mkdir $WORK/boost \
     && ln -s /usr/bin/clang++-5.0 /usr/bin/clang++ \
@@ -60,8 +58,6 @@ RUN cd $SRC/boost_1_66_0 \
        --with-chrono --with-context --with-system --with-timer install \
     && rm -rf $SRC/boost_1_66_0 \
     && rm $SRC/boost_1_66_0.zip
-
-RUN apt-get -y install build-essential zlib1g-dev
 
 ENV BASE="/work"
 ENV PATH="${BASE}/cmake/bin:$PATH"
