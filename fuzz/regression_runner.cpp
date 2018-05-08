@@ -1,8 +1,9 @@
-#include "unpack_pack_fuzzer.cpp"
 #include <gtest/gtest.h>
 #include <fstream>
 #include <iostream>
 #include <vector>
+
+#include "unpack_pack_fuzzer.cpp"
 
 namespace {
 
@@ -19,17 +20,14 @@ namespace {
     auto fpath = GetParam();
     std::ifstream in(fpath, std::ifstream::binary);
     if (!in) {
-      FAIL() << fpath << " not found" << std::endl;
+      FAIL() << fpath << " not found";
     }
-
     in.seekg(0, in.end);
     size_t length = in.tellg();
     in.seekg(0, in.beg);
     std::vector<char> bytes(length);
     in.read(bytes.data(), bytes.size());
-
     assert(in);
-
     EXPECT_EQ(0, LLVMFuzzerTestOneInput(reinterpret_cast<const uint8_t *>(bytes.data()),
                                         bytes.size()));
   }
