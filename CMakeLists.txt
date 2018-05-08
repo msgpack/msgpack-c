@@ -229,7 +229,7 @@ ENDIF ()
 IF (MSGPACK_BUILD_TESTS)
     ENABLE_TESTING ()
     IF ("${MSGPACK_SAN}" STREQUAL "VALGRIND")
-        MEMORYCHECK_COMMAND_OPTIONS needs to place prior to CTEST_MEMORYCHECK_COMMAND
+        # MEMORYCHECK_COMMAND_OPTIONS needs to place prior to CTEST_MEMORYCHECK_COMMAND
         SET (MEMORYCHECK_COMMAND_OPTIONS "--leak-check=full --show-leak-kinds=definite,possible --error-exitcode=1")
         FIND_PROGRAM(CTEST_MEMORYCHECK_COMMAND NAMES valgrind)
     ENDIF()
