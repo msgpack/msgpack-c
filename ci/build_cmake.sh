@@ -1,6 +1,6 @@
 #!/bin/bash
 
-mkdir build
+mkdir -p build
 
 ret=$?
 if [ $ret -ne 0 ]
