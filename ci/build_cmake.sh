@@ -55,7 +55,7 @@ then
     exit $ret
 fi
 
-if [ "${ARCH}" != "32" ] && [ `uname` = "Linux" ]
+if [ "${ARCH}" != "32" ] && [ `uname` = "Linux" ]  && ["${MSGPACK_SAN}" = "VALGRIND"]
 then
     ctest -T memcheck | tee memcheck.log
 
