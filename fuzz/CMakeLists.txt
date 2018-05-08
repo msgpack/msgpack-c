@@ -7,7 +7,7 @@ INCLUDE_DIRECTORIES (
 )
 
 LIST (APPEND check_PROGRAMS
-       fuzz_unpack_pack_fuzzer_cpp11.cpp
+    regression_runner.cpp
 )
 
 FOREACH (source_file ${check_PROGRAMS})

@@ -99,7 +99,7 @@ ENDIF ()
 OPTION (MSGPACK_BUILD_EXAMPLES "Build msgpack examples." ON)
 
 IF (MSGPACK_BOOST)
-  SET (CMAKE_CXX_FLAGS "-DMSGPACK_USE_BOOST ${CMAKE_CXX_FLAGS}")
+   SET (CMAKE_CXX_FLAGS "-DMSGPACK_USE_BOOST ${CMAKE_CXX_FLAGS}")
    SET (Boost_USE_MULTITHREADED      ON)
    SET (Boost_USE_STATIC_RUNTIME    OFF)
    FIND_PACKAGE (Boost REQUIRED COMPONENTS chrono context system timer)
@@ -152,6 +152,11 @@ FIND_PACKAGE (ZLIB)
 FIND_PACKAGE (Threads)
 IF (GTEST_FOUND AND ZLIB_FOUND AND THREADS_FOUND)
     OPTION (MSGPACK_BUILD_TESTS "Build msgpack tests." ON)
+ENDIF ()
+
+# enable regression testing
+IF (GTEST_FOUND AND ZLIB_FOUND AND THREADS_FOUND AND "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" AND MSGPACK_C11 AND "${MSGPACK_FUZZ_REGRESSION}" STREQUAL "ON")
+  ADD_SUBDIRECTORY (fuzz)
 ENDIF ()
 
 OPTION (MSGPACK_ENABLE_CXX "Enable C++ interface." ON)
@@ -234,23 +239,18 @@ IF (MSGPACK_BUILD_TESTS)
         FIND_PROGRAM(CTEST_MEMORYCHECK_COMMAND NAMES valgrind)
     ENDIF()
 
-    # we're only going to use the sanitizers with clang due to the effort involved in setting them up on GCC
     IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
         IF ("${MSGPACK_SAN}" STREQUAL "ASAN")
             SET (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-omit-frame-pointer -fsanitize=address")
             SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-omit-frame-pointer -fsanitize=address")
-        ENDIF()
-
-        IF ("${MSGPACK_SAN}" STREQUAL "UBSAN")
+        ELSEIF ("${MSGPACK_SAN}" STREQUAL "UBSAN")
             SET (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fsanitize=undefined")
             SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=undefined")
-        ENDIF()
-
-        IF ("${MSGPACK_SAN}" STREQUAL "MSAN")
+        ELSEIF ("${MSGPACK_SAN}" STREQUAL "MSAN")
             SET (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-omit-frame-pointer -fsanitize=memory -fsanitize-memory-track-origins=2")
             SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-omit-frame-pointer -fsanitize=memory -fsanitize-memory-track-origins=2")
-        ENDIF()
-    ENDIF()
+        ENDIF ()
+    ENDIF ()
 
     INCLUDE(Dart)
     ADD_SUBDIRECTORY (test)
