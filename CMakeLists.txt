@@ -231,7 +231,7 @@ ENDIF ()
 IF ("${MSGPACK_FUZZ_REGRESSION}" STREQUAL "ON")
   enable_testing ()
   ADD_SUBDIRECTORY (fuzz)
-  SET (MSGPACK_BUILD_EXAMPLES "OFF" "Don't build examples with fuzzer regressions")
+  SET (MSGPACK_BUILD_EXAMPLES OFF)
 ENDIF ()
 
 
