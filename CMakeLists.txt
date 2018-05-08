@@ -237,25 +237,9 @@ ENDIF ()
 
 IF (MSGPACK_BUILD_TESTS)
     ENABLE_TESTING ()
-    IF ("${MSGPACK_SAN}" STREQUAL "VALGRIND")
-        # MEMORYCHECK_COMMAND_OPTIONS needs to place prior to CTEST_MEMORYCHECK_COMMAND
-        SET (MEMORYCHECK_COMMAND_OPTIONS "--leak-check=full --show-leak-kinds=definite,possible --error-exitcode=1")
-        FIND_PROGRAM(CTEST_MEMORYCHECK_COMMAND NAMES valgrind)
-    ENDIF()
-
-    IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-        IF ("${MSGPACK_SAN}" STREQUAL "ASAN")
-            SET (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-omit-frame-pointer -fsanitize=address")
-            SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-omit-frame-pointer -fsanitize=address")
-        ELSEIF ("${MSGPACK_SAN}" STREQUAL "UBSAN")
-            SET (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fsanitize=undefined")
-            SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=undefined")
-        ELSEIF ("${MSGPACK_SAN}" STREQUAL "MSAN")
-            SET (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-omit-frame-pointer -fsanitize=memory -fsanitize-memory-track-origins=2")
-            SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-omit-frame-pointer -fsanitize=memory -fsanitize-memory-track-origins=2")
-        ENDIF ()
-    ENDIF ()
-
+    # MEMORYCHECK_COMMAND_OPTIONS needs to place prior to CTEST_MEMORYCHECK_COMMAND
+    SET (MEMORYCHECK_COMMAND_OPTIONS "--leak-check=full --show-leak-kinds=definite,possible --error-exitcode=1")
+    FIND_PROGRAM(CTEST_MEMORYCHECK_COMMAND NAMES valgrind)
     INCLUDE(Dart)
     ADD_SUBDIRECTORY (test)
 ENDIF ()
