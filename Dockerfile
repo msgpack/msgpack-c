@@ -8,10 +8,6 @@ RUN apt-get update \
     && add-apt-repository 'deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial main' \
     && apt-get -y install clang-5.0 lldb-5.0 wget unzip
 
-# COPY checkout_build_install_mpack_deps.sh /root/
-# RUN /root/checkout_build_install_mpack_deps.sh
-# RUN rm /root/checkout_build_install_mpack_deps.sh
-
 RUN mkdir -p /src /work
 
 ENV SRC=/src
@@ -71,4 +67,4 @@ ENV BASE="/work"
 ENV PATH="${BASE}/cmake/bin:$PATH"
 ENV LD_LIBRARY_PATH="$BASE/:$LD_LIBRARY_PATH"
 
-# CXX11="ON" BOOST="ON" SHARED="ON" CHAR_SIGN="unsigned" API_VERSION="3" X3_PARSE="ON" CMAKE_CXX_COMPILER="${CXX}" CMAKE_C_COMPILER="${CC}" CMAKE_LIBRARY_PATH="${BASE}/boost:${BASE}" GTEST_ROOT="${BASE}/gtest" BOOST_ROOT="${BASE}/boost" CFLAGS="-Werror -g" CXXFLAGS="-Werror -g" ci/build_cmake.sh
+#   CXX11="ON" BOOST="ON" SHARED="ON" CHAR_SIGN="unsigned" API_VERSION="3" X3_PARSE="ON" CMAKE_CXX_COMPILER="${CXX}" CMAKE_C_COMPILER="${CC}" CMAKE_LIBRARY_PATH="${BASE}/boost:${BASE}" GTEST_ROOT="${BASE}/gtest" BOOST_ROOT="${BASE}/boost" CFLAGS="-Werror -g" CXXFLAGS="-Werror -g" ci/build_cmake.sh
