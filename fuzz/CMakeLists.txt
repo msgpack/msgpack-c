@@ -24,7 +24,7 @@ FOREACH (source_file ${check_PROGRAMS})
     )
     ADD_TEST (${source_file_we} ${source_file_we})
     IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-        SET_PROPERTY (TARGET ${source_file_we} APPEND_STRING PROPERTY COMPILE_FLAGS "-Wall -Wextra -Wno-mismatched-tags")
+        SET_PROPERTY (TARGET ${source_file_we} APPEND_STRING PROPERTY COMPILE_FLAGS "-Wall -Wextra -Wno-mismatched-tags -g")
 
         IF ("${MSGPACK_SAN}" STREQUAL "ASAN")
             SET (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-omit-frame-pointer -fsanitize=address")
