@@ -1,3 +1,22 @@
+# 2018-05-09 version 3.0.0
+
+## << breaking changes >>
+
+  * Change offset parameter updating rule. If parse error is happend, offset is updated to the error position. (#639, #666)
+
+## << other updates >>
+
+  * Improve cross platform configuration (#655, #677)
+  * Improve build system (#647)
+  * Improve user class adaptor (#645, #673)
+  * Improve msgpack::object visitation logic (#676)
+  * Remove some warnings (#641, 659)
+  * Add `->` and `*` operators to object_handle (#635)
+  * Improve CI environment (#631, #634, #643, #657, #662, #668)
+  * Improve documents (#630, #661)
+  * Refactoring (#670)
+  * Add OSS-Fuzz support (#672, #674, #675, #678)
+
 # 2017-08-04 version 2.1.5
   * Improve cross platform configuration (#624)
   * Add boost asio examples (including zlib) (#610)
