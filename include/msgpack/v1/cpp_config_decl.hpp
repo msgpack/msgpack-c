@@ -128,4 +128,10 @@ MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 #endif // MSGPACK_USE_CPP03
 
+#if defined(__has_include)
+#define MSGPACK_HAS_INCLUDE __has_include
+#else  // defined(__has_include)
+#define MSGPACK_HAS_INCLUDE(header) 0
+#endif // defined(__has_include)
+
 #endif // MSGPACK_V1_CPP_CONFIG_DECL_HPP
