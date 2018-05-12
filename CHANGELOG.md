@@ -1,3 +1,8 @@
+# 2018-05-12 version 3.0.1
+
+  * Add fuzz directory to release tar ball (#686)
+  * Add include file checking for X-Code (#683)
+
 # 2018-05-09 version 3.0.0
 
 ## << breaking changes >>

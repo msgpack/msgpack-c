@@ -19,6 +19,7 @@ tar --append --file=$filename $prefix/test
 tar --append --file=$filename $prefix/include
 tar --append --file=$filename $prefix/erb
 tar --append --file=$filename $prefix/src
+tar --append --file=$filename $prefix/fuzz
 
 tar --append --file=$filename $prefix/CMakeLists.txt
 tar --append --file=$filename $prefix/Files.cmake
