@@ -30,7 +30,7 @@ install:
 # valgrind
  - if [ "$TRAVIS_OS_NAME" == "linux" ] && [ "$MSGPACK_FUZZ_REGRESSION" != "ON" ]; then wget http://valgrind.org/downloads/valgrind-3.12.0.tar.bz2 && tar xjf valgrind-3.12.0.tar.bz2 && cd valgrind-3.12.0 && ./configure --prefix=${BASE}/usr > /dev/null && make -j3 > /dev/null && make install > /dev/null && cd ..; fi
 # boost
- - if [ "$BOOST" == "ON" ]; then wget http://sourceforge.net/projects/boost/files/boost/1.66.0/boost_1_66_0.zip && unzip -q boost_1_66_0.zip && cd boost_1_66_0 && ./bootstrap.sh && ./b2 -j3 --prefix=${BASE}/usr --with-chrono --with-context --with-system --with-timer --with-filesystem address-model=${ARCH} install > /dev/null && cd ..; fi
+ - if [ "$BOOST" == "ON" ]; then wget http://sourceforge.net/projects/boost/files/boost/1.66.0/boost_1_66_0.zip && unzip -q boost_1_66_0.zip && cd boost_1_66_0 && ./bootstrap.sh && ./b2 -j $(nproc) --prefix=${BASE}/usr --with-chrono --with-context --with-system --with-timer --with-filesystem address-model=${ARCH} install > /dev/null && cd ..; fi
  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo ln -s /usr/include/x86_64-linux-gnu/zconf.h /usr/include; fi
 
 matrix:
@@ -239,6 +239,7 @@ matrix:
             - clang-5.0
 
       script:
+        - env
         - CMAKE_CXX_COMPILER="${CXX}" CMAKE_C_COMPILER="${CC}" CMAKE_LIBRARY_PATH="${BASE}" GTEST_ROOT="${BASE}/gtest" BOOST_ROOT="${BASE}/boost" CTEST_OUTPUT_ON_FAILURE=1 MSGPACK_SAN="${SAN}" ci/build_regression.sh
 
 script:
