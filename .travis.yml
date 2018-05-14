@@ -209,6 +209,34 @@ matrix:
             - zlib1g-dev
             - bzip2
             - libc6-dbg
+    - os: linux
+      compiler: clang
+      env: ACTION="ci/build_regression.sh" BOOST="ON" SAN="ASAN"
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.9
+            - llvm-toolchain-precise
+          packages:
+            - bzip2
+            - clang-3.9
+      script:
+        - CMAKE_CXX_COMPILER="${CXX}" CMAKE_C_COMPILER="${CC}" CMAKE_LIBRARY_PATH="${BASE}/boost:${BASE}" GTEST_ROOT="${BASE}/gtest" BOOST_ROOT="${BASE}/boost" CTEST_OUTPUT_ON_FAILURE=1 MSGPACK_SAN="${ASAN}" ci/build_regression.sh
+    - os: linux
+      compiler: clang
+      env: ACTION="ci/build_regression.sh" BOOST="ON" SAN="UBSAN"
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.9
+            - llvm-toolchain-precise
+          packages:
+            - bzip2
+            - clang-3.9
+      script:
+        - CMAKE_CXX_COMPILER="${CXX}" CMAKE_C_COMPILER="${CC}" CMAKE_LIBRARY_PATH="${BASE}/boost:${BASE}" GTEST_ROOT="${BASE}/gtest" BOOST_ROOT="${BASE}/boost" CTEST_OUTPUT_ON_FAILURE=1 MSGPACK_SAN="${SAN}" ci/build_regression.sh
 
 script:
   - CMAKE_CXX_COMPILER="${CXX}" CMAKE_C_COMPILER="${CC}" CMAKE_LIBRARY_PATH="${BASE}/usr/lib:${BASE}/build" GTEST_ROOT="${BASE}/usr" BOOST_ROOT="${BASE}/usr" CFLAGS="-Werror -g" CXXFLAGS="-Werror -g" ${ACTION}
