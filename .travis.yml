@@ -211,7 +211,7 @@ matrix:
             - libc6-dbg
     - os: linux
       compiler: clang
-      env: ACTION="ci/build_regression.sh" BOOST="ON" SAN="ASAN"
+      env: ACTION="ci/build_regression.sh" ARCH="64 BOOST="ON" SAN="ASAN"
       addons:
         apt:
           sources:
@@ -225,7 +225,7 @@ matrix:
         - CMAKE_CXX_COMPILER="${CXX}" CMAKE_C_COMPILER="${CC}" CMAKE_LIBRARY_PATH="${BASE}/boost:${BASE}" GTEST_ROOT="${BASE}/gtest" BOOST_ROOT="${BASE}/boost" CTEST_OUTPUT_ON_FAILURE=1 MSGPACK_SAN="${SAN}" ci/build_regression.sh
     - os: linux
       compiler: clang
-      env: ACTION="ci/build_regression.sh" BOOST="ON" SAN="UBSAN"
+      env: ACTION="ci/build_regression.sh" ARCH="64" BOOST="ON" SAN="UBSAN"
       addons:
         apt:
           sources:
