@@ -235,8 +235,7 @@ matrix:
             - llvm-toolchain-precise
           packages:
             - bzip2
-            - clang-3.9
-            - compiler-rt
+            - clang-5.0
 
       script:
         - CMAKE_CXX_COMPILER="${CXX}" CMAKE_C_COMPILER="${CC}" CMAKE_LIBRARY_PATH="${BASE}" GTEST_ROOT="${BASE}/gtest" BOOST_ROOT="${BASE}/boost" CTEST_OUTPUT_ON_FAILURE=1 MSGPACK_SAN="${SAN}" ci/build_regression.sh
