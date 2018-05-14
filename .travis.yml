@@ -32,7 +32,7 @@ install:
 # boost
  - if [ "$BOOST" == "ON" ] && [ "MSGPACK_FUZZ_REGRESSION" != "ON" ]; then wget http://sourceforge.net/projects/boost/files/boost/1.66.0/boost_1_66_0.zip && unzip -q boost_1_66_0.zip && cd boost_1_66_0 && ./bootstrap.sh --with-toolset=clang && ./b2 toolset=clang -j $(nproc) --prefix=${BASE}/usr --with-chrono --with-context --with-system --with-timer --with-filesystem address-model=${ARCH} install > /dev/null && cd ..; fi
  # boost for regressions
-- if [ "$MSGPACK_FUZZ_REGRESSION" == "ON" ]; then wget http://sourceforge.net/projects/boost/files/boost/1.66.0/boost_1_66_0.zip && unzip -q boost_1_66_0.zip && cd boost_1_66_0 && ./bootstrap.sh --with-toolset=clang && ./b2 toolset=clang -j $(nproc) --prefix=${BASE}/usr --with-chrono --with-context --with-system --with-timer --with-filesystem address-model=${ARCH} install > /dev/null && cd ..; fi
+- if [ "$MSGPACK_FUZZ_REGRESSION" == "ON" ]; then wget http://sourceforge.net/projects/boost/files/boost/1.66.0/boost_1_66_0.zip && unzip -q boost_1_66_0.zip && cd boost_1_66_0 && ./bootstrap.sh --with-toolset=clang && ./b2 toolset=clang -j $(nproc) --prefix=${BASE}/usr --with-system -with-filesystem address-model=${ARCH} install > /dev/null && cd ..; fi
  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo ln -s /usr/include/x86_64-linux-gnu/zconf.h /usr/include; fi
 
 matrix:
@@ -229,7 +229,7 @@ matrix:
     #     - CMAKE_CXX_COMPILER="${CXX}" CMAKE_C_COMPILER="${CC}" CMAKE_LIBRARY_PATH="${BASE}" GTEST_ROOT="${BASE}/usr/lib/gtest" BOOST_ROOT="${BASE}/usr/lib/boost" CTEST_OUTPUT_ON_FAILURE=1 MSGPACK_SAN="${SAN}" ci/build_regression.sh
     - os: linux
       compiler: clang
-      env: ACTION="ci/build_regression.sh" ARCH="64" BOOST="ON" SAN="UBSAN" MSGPACK_FUZZ_REGRESSION="ON"
+      env: ACTION="ci/build_regression.sh" ARCH="64" SAN="UBSAN" MSGPACK_FUZZ_REGRESSION="ON"
       addons:
         apt:
           sources:
@@ -239,9 +239,7 @@ matrix:
           packages:
             - bzip2
             - clang-5.0
-
       script:
-        - env
         - CMAKE_CXX_COMPILER="${CXX}" CMAKE_C_COMPILER="${CC}" CMAKE_LIBRARY_PATH="${BASE}" GTEST_ROOT="${BASE}/gtest" BOOST_ROOT="${BASE}/boost" CTEST_OUTPUT_ON_FAILURE=1 MSGPACK_SAN="${SAN}" ci/build_regression.sh
 
 script:
