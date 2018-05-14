@@ -29,7 +29,7 @@ install:
 # valgrind
  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then wget http://valgrind.org/downloads/valgrind-3.12.0.tar.bz2 && tar xjf valgrind-3.12.0.tar.bz2 && cd valgrind-3.12.0 && ./configure --prefix=${BASE}/usr > /dev/null && make -j3 > /dev/null && make install > /dev/null && cd ..; fi
 # boost
- - if [ "$BOOST" == "ON" ]; then wget http://sourceforge.net/projects/boost/files/boost/1.66.0/boost_1_66_0.zip && unzip -q boost_1_66_0.zip && cd boost_1_66_0 && ./bootstrap.sh && ./b2 -j3 --prefix=${BASE}/usr --with-chrono --with-context --with-system --with-timer address-model=${ARCH} install > /dev/null && cd ..; fi
+ - if [ "$BOOST" == "ON" ] && [ "$MSGPACK_FUZZ_REGRESSION" != "ON" ]; then wget http://sourceforge.net/projects/boost/files/boost/1.66.0/boost_1_66_0.zip && unzip -q boost_1_66_0.zip && cd boost_1_66_0 && ./bootstrap.sh && ./b2 -j3 --prefix=${BASE}/usr --with-chrono --with-context --with-system --with-timer --with-filesystem address-model=${ARCH} install > /dev/null && cd ..; fi
  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo ln -s /usr/include/x86_64-linux-gnu/zconf.h /usr/include; fi
 
 matrix:
@@ -190,28 +190,28 @@ matrix:
     #         - zlib1g-dev
     #         - bzip2
     #         - libc6-dbg
-    - os: linux
-      compiler: gcc
-      env: ACTION="ci/build_cmake.sh"             ARCH="32"   BOOST="ON" SHARED="OFF" CHAR_SIGN="signed"   API_VERSION="2"
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-multilib
-            - gcc-multilib
-            - gcc-6-multilib
-            - g++-6-multilib
-            - lib32stdc++6-6-dbg
-            - lib32gcc1
-            - libc6-i386
-            - lib32z1-dev
-            - zlib1g-dev
-            - bzip2
-            - libc6-dbg
+    # - os: linux
+    #   compiler: gcc
+    #   env: ACTION="ci/build_cmake.sh"             ARCH="32"   BOOST="ON" SHARED="OFF" CHAR_SIGN="signed"   API_VERSION="2"
+    #   addons:
+    #     apt:
+    #       sources:
+    #         - ubuntu-toolchain-r-test
+    #       packages:
+    #         - g++-multilib
+    #         - gcc-multilib
+    #         - gcc-6-multilib
+    #         - g++-6-multilib
+    #         - lib32stdc++6-6-dbg
+    #         - lib32gcc1
+    #         - libc6-i386
+    #         - lib32z1-dev
+    #         - zlib1g-dev
+    #         - bzip2
+    #         - libc6-dbg
     - os: linux
       compiler: clang
-      env: ACTION="ci/build_regression.sh" ARCH="64 BOOST="ON" SAN="ASAN"
+      env: ACTION="ci/build_regression.sh" ARCH="64" BOOST="ON" SAN="ASAN"
       addons:
         apt:
           sources:
@@ -222,7 +222,7 @@ matrix:
             - bzip2
             - clang-3.9
       script:
-        - CMAKE_CXX_COMPILER="${CXX}" CMAKE_C_COMPILER="${CC}" CMAKE_LIBRARY_PATH="${BASE}/boost:${BASE}" GTEST_ROOT="${BASE}/gtest" BOOST_ROOT="${BASE}/boost" CTEST_OUTPUT_ON_FAILURE=1 MSGPACK_SAN="${SAN}" ci/build_regression.sh
+        - CMAKE_CXX_COMPILER="${CXX}" CMAKE_C_COMPILER="${CC}" CMAKE_LIBRARY_PATH="${BASE}" GTEST_ROOT="${BASE}/usr/lib/gtest" BOOST_ROOT="${BASE}/usr/lib/boost" CTEST_OUTPUT_ON_FAILURE=1 MSGPACK_SAN="${SAN}" ci/build_regression.sh
     - os: linux
       compiler: clang
       env: ACTION="ci/build_regression.sh" ARCH="64" BOOST="ON" SAN="UBSAN"
@@ -236,7 +236,7 @@ matrix:
             - bzip2
             - clang-3.9
       script:
-        - CMAKE_CXX_COMPILER="${CXX}" CMAKE_C_COMPILER="${CC}" CMAKE_LIBRARY_PATH="${BASE}/boost:${BASE}" GTEST_ROOT="${BASE}/gtest" BOOST_ROOT="${BASE}/boost" CTEST_OUTPUT_ON_FAILURE=1 MSGPACK_SAN="${SAN}" ci/build_regression.sh
+        - CMAKE_CXX_COMPILER="${CXX}" CMAKE_C_COMPILER="${CC}" CMAKE_LIBRARY_PATH="${BASE}" GTEST_ROOT="${BASE}/gtest" BOOST_ROOT="${BASE}/boost" CTEST_OUTPUT_ON_FAILURE=1 MSGPACK_SAN="${SAN}" ci/build_regression.sh
 
 script:
   - CMAKE_CXX_COMPILER="${CXX}" CMAKE_C_COMPILER="${CC}" CMAKE_LIBRARY_PATH="${BASE}/usr/lib:${BASE}/build" GTEST_ROOT="${BASE}/usr" BOOST_ROOT="${BASE}/usr" CFLAGS="-Werror -g" CXXFLAGS="-Werror -g" ${ACTION}
