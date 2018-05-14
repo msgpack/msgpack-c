@@ -25,10 +25,6 @@ std::vector<std::string> ListDirectory(const std::string& path) {
   return v;
 }
 
-TEST(FileLoaderTest, ListsFiles) {
-  EXPECT_EQ(ListDirectory(".")[0], "./CMakeFiles");
-}
-
 class UnpackPackFuzzerRegressionTest : public ::testing::TestWithParam<std::string> {
 public:
 };
