@@ -33,7 +33,7 @@ install:
 # boost
 #  - if [ "$BOOST" == "ON" ] && [ "MSGPACK_FUZZ_REGRESSION" != "ON" ]; then wget http://sourceforge.net/projects/boost/files/boost/1.66.0/boost_1_66_0.zip && unzip -q boost_1_66_0.zip && cd boost_1_66_0 && ./bootstrap.sh --with-toolset=clang && ./b2 toolset=clang -j $(nproc) --prefix=${BASE}/usr --with-chrono --with-context --with-system --with-timer --with-filesystem address-model=${ARCH} install > /dev/null && cd ..; fi
  # boost for regressions
- - if [ "MSGPACK_FUZZ_REGRESSION" == "ON" ]; then wget http://sourceforge.net/projects/boost/files/boost/1.66.0/boost_1_66_0.zip && unzip -q boost_1_66_0.zip && cd boost_1_66_0 && ./bootstrap.sh --with-toolset=clang && ./b2 toolset=clang -j $(nproc) --prefix=${BASE}/usr --with-system --with-filesystem address-model=${ARCH} install > /dev/null && cd ..; fi
+ - if [ "$MSGPACK_FUZZ_REGRESSION" == "ON" ]; then wget http://sourceforge.net/projects/boost/files/boost/1.66.0/boost_1_66_0.zip && unzip -q boost_1_66_0.zip && cd boost_1_66_0 && ./bootstrap.sh --with-toolset=clang && ./b2 toolset=clang -j $(nproc) --prefix=${BASE}/usr --with-system --with-filesystem address-model=${ARCH} install > /dev/null && cd ..; fi
  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo ln -s /usr/include/x86_64-linux-gnu/zconf.h /usr/include; fi
 
 matrix:
