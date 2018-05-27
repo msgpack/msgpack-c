@@ -370,7 +370,7 @@ struct object_pack_visitor {
         return true;
     }
     bool start_map(uint32_t num_kv_pairs) {
-        m_packer.pack_array(num_kv_pairs);
+        m_packer.pack_map(num_kv_pairs);
         return true;
     }
     bool start_map_key() {
