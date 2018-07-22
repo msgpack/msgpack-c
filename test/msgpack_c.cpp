@@ -627,6 +627,105 @@ TEST(MSGPACKC, simple_buffer_fixext_4byte_65536)
     msgpack_sbuffer_destroy(&sbuf);
 }
 
+TEST(MSGPACKC, simple_buffer_timestamp_32)
+{
+    msgpack_timestamp ts = {
+        0xffffffff,
+        0
+    };
+
+    msgpack_sbuffer sbuf;
+    msgpack_sbuffer_init(&sbuf);
+    msgpack_packer pk;
+    msgpack_packer_init(&pk, &sbuf, msgpack_sbuffer_write);
+
+    msgpack_pack_timestamp(&pk, &ts);
+    msgpack_zone z;
+    msgpack_zone_init(&z, 2048);
+    msgpack_object obj;
+    msgpack_unpack_return ret =
+        msgpack_unpack(sbuf.data, sbuf.size, NULL, &z, &obj);
+    EXPECT_EQ(MSGPACK_UNPACK_SUCCESS, ret);
+    EXPECT_EQ(MSGPACK_OBJECT_EXT, obj.type);
+    EXPECT_EQ(4u, obj.via.ext.size);
+    EXPECT_EQ(-1, obj.via.ext.type);
+    msgpack_timestamp ts2;
+    bool r = msgpack_object_to_timestamp(&obj, &ts2);
+
+    EXPECT_TRUE(r);
+    EXPECT_EQ(ts.tv_sec, ts2.tv_sec);
+    EXPECT_EQ(ts.tv_nsec, ts2.tv_nsec);
+
+    msgpack_zone_destroy(&z);
+    msgpack_sbuffer_destroy(&sbuf);
+}
+
+TEST(MSGPACKC, simple_buffer_timestamp_64)
+{
+    msgpack_timestamp ts = {
+        0x3ffffffffL,
+        999999999
+    };
+
+    msgpack_sbuffer sbuf;
+    msgpack_sbuffer_init(&sbuf);
+    msgpack_packer pk;
+    msgpack_packer_init(&pk, &sbuf, msgpack_sbuffer_write);
+
+    msgpack_pack_timestamp(&pk, &ts);
+    msgpack_zone z;
+    msgpack_zone_init(&z, 2048);
+    msgpack_object obj;
+    msgpack_unpack_return ret =
+        msgpack_unpack(sbuf.data, sbuf.size, NULL, &z, &obj);
+    EXPECT_EQ(MSGPACK_UNPACK_SUCCESS, ret);
+    EXPECT_EQ(MSGPACK_OBJECT_EXT, obj.type);
+    EXPECT_EQ(8u, obj.via.ext.size);
+    EXPECT_EQ(-1, obj.via.ext.type);
+    msgpack_timestamp ts2;
+    bool r = msgpack_object_to_timestamp(&obj, &ts2);
+
+    EXPECT_TRUE(r);
+    EXPECT_EQ(ts.tv_sec, ts2.tv_sec);
+    EXPECT_EQ(ts.tv_nsec, ts2.tv_nsec);
+
+    msgpack_zone_destroy(&z);
+    msgpack_sbuffer_destroy(&sbuf);
+}
+
+TEST(MSGPACKC, simple_buffer_timestamp_96)
+{
+    msgpack_timestamp ts = {
+        0x7fffffffffffffffLL,
+        999999999
+    };
+
+    msgpack_sbuffer sbuf;
+    msgpack_sbuffer_init(&sbuf);
+    msgpack_packer pk;
+    msgpack_packer_init(&pk, &sbuf, msgpack_sbuffer_write);
+
+    msgpack_pack_timestamp(&pk, &ts);
+    msgpack_zone z;
+    msgpack_zone_init(&z, 2048);
+    msgpack_object obj;
+    msgpack_unpack_return ret =
+        msgpack_unpack(sbuf.data, sbuf.size, NULL, &z, &obj);
+    EXPECT_EQ(MSGPACK_UNPACK_SUCCESS, ret);
+    EXPECT_EQ(MSGPACK_OBJECT_EXT, obj.type);
+    EXPECT_EQ(12u, obj.via.ext.size);
+    EXPECT_EQ(-1, obj.via.ext.type);
+    msgpack_timestamp ts2;
+    bool r = msgpack_object_to_timestamp(&obj, &ts2);
+
+    EXPECT_TRUE(r);
+    EXPECT_EQ(ts.tv_sec, ts2.tv_sec);
+    EXPECT_EQ(ts.tv_nsec, ts2.tv_nsec);
+
+    msgpack_zone_destroy(&z);
+    msgpack_sbuffer_destroy(&sbuf);
+}
+
 TEST(MSGPACKC, simple_buffer_array)
 {
     unsigned int array_size = 5;

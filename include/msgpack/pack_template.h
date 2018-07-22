@@ -890,6 +890,34 @@ msgpack_pack_inline_func(_ext_body)(msgpack_pack_user x, const void* b, size_t l
     msgpack_pack_append_buffer(x, (const unsigned char*)b, l);
 }
 
+msgpack_pack_inline_func(_timestamp)(msgpack_pack_user x, const msgpack_timestamp* d)
+{
+    if ((((int64_t)d->tv_sec) >> 34) == 0) {
+        uint64_t data64 = ((uint64_t) d->tv_nsec << 34) | d->tv_sec;
+        if ((data64 & 0xffffffff00000000L) == 0)   {
+            // timestamp 32
+            char buf[4];
+            uint32_t data32 = (uint32_t)data64;
+            msgpack_pack_ext(x, 4, -1);
+            _msgpack_store32(buf, data32);
+            msgpack_pack_append_buffer(x, buf, 4);
+        } else {
+            // timestamp 64
+            char buf[8];
+            msgpack_pack_ext(x, 8, -1);
+            _msgpack_store64(buf, data64);
+            msgpack_pack_append_buffer(x, buf, 8);
+        }
+    } else  {
+        // timestamp 96
+        char buf[12];
+        _msgpack_store32(&buf[0], d->tv_nsec);
+        _msgpack_store64(&buf[4], d->tv_sec);
+        msgpack_pack_ext(x, 12, -1);
+        msgpack_pack_append_buffer(x, buf, 12);
+    }
+}
+
 #undef msgpack_pack_inline_func
 #undef msgpack_pack_user
 #undef msgpack_pack_append_buffer
