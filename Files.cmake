@@ -142,6 +142,7 @@ LIST (APPEND msgpackc_HEADERS
     include/msgpack/predef/version_number.h
     include/msgpack/sbuffer.h
     include/msgpack/sysdep.h
+    include/msgpack/timestamp.h
     include/msgpack/unpack.h
     include/msgpack/unpack_define.h
     include/msgpack/unpack_template.h
