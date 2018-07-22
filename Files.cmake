@@ -173,6 +173,7 @@ IF (MSGPACK_ENABLE_CXX)
         include/msgpack/adaptor/cpp11/array.hpp
         include/msgpack/adaptor/cpp11/array_char.hpp
         include/msgpack/adaptor/cpp11/array_unsigned_char.hpp
+        include/msgpack/adaptor/cpp11/chrono.hpp
         include/msgpack/adaptor/cpp11/forward_list.hpp
         include/msgpack/adaptor/cpp11/reference_wrapper.hpp
         include/msgpack/adaptor/cpp11/shared_ptr.hpp
@@ -529,6 +530,7 @@ IF (MSGPACK_ENABLE_CXX)
         include/msgpack/v1/adaptor/cpp11/array.hpp
         include/msgpack/v1/adaptor/cpp11/array_char.hpp
         include/msgpack/v1/adaptor/cpp11/array_unsigned_char.hpp
+        include/msgpack/v1/adaptor/cpp11/chrono.hpp
         include/msgpack/v1/adaptor/cpp11/forward_list.hpp
         include/msgpack/v1/adaptor/cpp11/reference_wrapper.hpp
         include/msgpack/v1/adaptor/cpp11/shared_ptr.hpp

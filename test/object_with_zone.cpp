@@ -953,6 +953,70 @@ TEST(object_with_zone, tuple_empty)
     EXPECT_TRUE(obj.as<test_t>() == v);
 }
 
+TEST(object_with_zone, system_clock)
+{
+    std::chrono::system_clock::time_point v;
+    msgpack::zone z;
+    msgpack::object obj(v, z);
+    EXPECT_TRUE(obj.as<std::chrono::system_clock::time_point>() == v);
+}
+
+TEST(object_with_zone, system_clock_32)
+{
+    std::chrono::system_clock::time_point v(std::chrono::seconds(0x12345678L));
+    msgpack::zone z;
+    msgpack::object obj(v, z);
+    EXPECT_TRUE(obj.as<std::chrono::system_clock::time_point>() == v);
+}
+
+TEST(object_with_zone, system_clock_32_max)
+{
+    std::chrono::system_clock::time_point v(std::chrono::seconds(0xffffffffL));
+    msgpack::zone z;
+    msgpack::object obj(v, z);
+    EXPECT_TRUE(obj.as<std::chrono::system_clock::time_point>() == v);
+}
+
+TEST(object_with_zone, system_clock_64)
+{
+    std::chrono::system_clock::time_point v(std::chrono::seconds(0x31234567L));
+    v +=
+        std::chrono::duration_cast<std::chrono::system_clock::duration>(
+            std::chrono::nanoseconds(0x312345678L)
+        );
+    msgpack::zone z;
+    msgpack::object obj(v, z);
+    EXPECT_TRUE(obj.as<std::chrono::system_clock::time_point>() == v);
+}
+
+TEST(object_with_zone, system_clock_64_max)
+{
+    std::chrono::system_clock::time_point v(std::chrono::seconds(0xffffffffL));
+    v +=
+        std::chrono::duration_cast<std::chrono::system_clock::duration>(
+            std::chrono::nanoseconds(0x3b9ac9ffL) // 999,999,999
+        );
+    msgpack::zone z;
+    msgpack::object obj(v, z);
+    EXPECT_TRUE(obj.as<std::chrono::system_clock::time_point>() == v);
+}
+
+TEST(object_with_zone, system_clock_impl_min)
+{
+    std::chrono::system_clock::time_point v(std::chrono::system_clock::time_point::min());
+    msgpack::zone z;
+    msgpack::object obj(v, z);
+    EXPECT_TRUE(obj.as<std::chrono::system_clock::time_point>() == v);
+}
+
+TEST(object_with_zone, system_clock_impl_max)
+{
+    std::chrono::system_clock::time_point v(std::chrono::system_clock::time_point::max());
+    msgpack::zone z;
+    msgpack::object obj(v, z);
+    EXPECT_TRUE(obj.as<std::chrono::system_clock::time_point>() == v);
+}
+
 #endif // !defined(MSGPACK_USE_CPP03)
 
 TEST(object_with_zone, ext_empty)
