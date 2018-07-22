@@ -43,10 +43,10 @@ public:
         return static_cast<int8_t>(m_data[0]);
     }
     const char* data() const {
-        return &m_data[1];
+        return &m_data[0] + 1;
     }
     char* data() {
-        return &m_data[1];
+        return &m_data[0] + 1;
     }
     uint32_t size() const {
         return static_cast<uint32_t>(m_data.size()) - 1;
