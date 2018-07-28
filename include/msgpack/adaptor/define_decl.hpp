@@ -27,18 +27,18 @@
 
 #define MSGPACK_DEFINE_ARRAY(...) \
     template <typename Packer> \
-    void msgpack_pack(Packer& pk) const \
+    void msgpack_pack(Packer& msgpack_pk) const \
     { \
-        msgpack::type::make_define_array(__VA_ARGS__).msgpack_pack(pk); \
+        msgpack::type::make_define_array(__VA_ARGS__).msgpack_pack(msgpack_pk); \
     } \
-    void msgpack_unpack(msgpack::object const& o) \
+    void msgpack_unpack(msgpack::object const& msgpack_o) \
     { \
-        msgpack::type::make_define_array(__VA_ARGS__).msgpack_unpack(o); \
+        msgpack::type::make_define_array(__VA_ARGS__).msgpack_unpack(msgpack_o); \
     }\
     template <typename MSGPACK_OBJECT> \
-    void msgpack_object(MSGPACK_OBJECT* o, msgpack::zone& z) const \
+    void msgpack_object(MSGPACK_OBJECT* msgpack_o, msgpack::zone& msgpack_z) const \
     { \
-        msgpack::type::make_define_array(__VA_ARGS__).msgpack_object(o, z); \
+        msgpack::type::make_define_array(__VA_ARGS__).msgpack_object(msgpack_o, msgpack_z); \
     }
 
 #define MSGPACK_BASE_ARRAY(base) (*const_cast<base *>(static_cast<base const*>(this)))
@@ -62,24 +62,24 @@
 
 #define MSGPACK_DEFINE_MAP(...) \
     template <typename Packer> \
-    void msgpack_pack(Packer& pk) const \
+    void msgpack_pack(Packer& msgpack_pk) const \
     { \
         msgpack::type::make_define_map \
             MSGPACK_DEFINE_MAP_IMPL(__VA_ARGS__) \
-            .msgpack_pack(pk); \
+            .msgpack_pack(msgpack_pk); \
     } \
-    void msgpack_unpack(msgpack::object const& o) \
+    void msgpack_unpack(msgpack::object const& msgpack_o) \
     { \
         msgpack::type::make_define_map \
             MSGPACK_DEFINE_MAP_IMPL(__VA_ARGS__) \
-            .msgpack_unpack(o); \
+            .msgpack_unpack(msgpack_o); \
     }\
     template <typename MSGPACK_OBJECT> \
-    void msgpack_object(MSGPACK_OBJECT* o, msgpack::zone& z) const \
+    void msgpack_object(MSGPACK_OBJECT* msgpack_o, msgpack::zone& msgpack_z) const \
     { \
         msgpack::type::make_define_map \
             MSGPACK_DEFINE_MAP_IMPL(__VA_ARGS__) \
-            .msgpack_object(o, z); \
+            .msgpack_object(msgpack_o, msgpack_z); \
     }
 
 #define MSGPACK_BASE_MAP(base) \
@@ -94,32 +94,32 @@
   namespace adaptor { \
     template<> \
     struct convert<enum_name> { \
-      msgpack::object const& operator()(msgpack::object const& o, enum_name& v) const { \
+      msgpack::object const& operator()(msgpack::object const& msgpack_o, enum_name& msgpack_v) const { \
         msgpack::underlying_type<enum_name>::type tmp; \
-        msgpack::operator>>(o, tmp);                   \
-        v = static_cast<enum_name>(tmp);   \
-        return o; \
+        msgpack::operator>>(msgpack_o, tmp);                   \
+        msgpack_v = static_cast<enum_name>(tmp);   \
+        return msgpack_o; \
       } \
     }; \
     template<> \
     struct object<enum_name> { \
-      void operator()(msgpack::object& o, const enum_name& v) const { \
-        msgpack::underlying_type<enum_name>::type tmp = static_cast<msgpack::underlying_type<enum_name>::type>(v); \
-        msgpack::operator<<(o, tmp);                                    \
+      void operator()(msgpack::object& msgpack_o, const enum_name& msgpack_v) const { \
+        msgpack::underlying_type<enum_name>::type tmp = static_cast<msgpack::underlying_type<enum_name>::type>(msgpack_v); \
+        msgpack::operator<<(msgpack_o, tmp);                                    \
       } \
     }; \
     template<> \
     struct object_with_zone<enum_name> { \
-      void operator()(msgpack::object::with_zone& o, const enum_name& v) const {  \
-        msgpack::underlying_type<enum_name>::type tmp = static_cast<msgpack::underlying_type<enum_name>::type>(v); \
-        msgpack::operator<<(o, tmp);                                    \
+      void operator()(msgpack::object::with_zone& msgpack_o, const enum_name& msgpack_v) const {  \
+        msgpack::underlying_type<enum_name>::type tmp = static_cast<msgpack::underlying_type<enum_name>::type>(msgpack_v); \
+        msgpack::operator<<(msgpack_o, tmp);                                    \
       } \
     }; \
     template <> \
     struct pack<enum_name> { \
       template <typename Stream> \
-      msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const enum_name& v) const { \
-          return msgpack::operator<<(o, static_cast<msgpack::underlying_type<enum_name>::type>(v)); \
+      msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& msgpack_o, const enum_name& msgpack_v) const { \
+          return msgpack::operator<<(msgpack_o, static_cast<msgpack::underlying_type<enum_name>::type>(msgpack_v)); \
       } \
     }; \
   } \
