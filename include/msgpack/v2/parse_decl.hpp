@@ -39,7 +39,7 @@ class parser;
  * @param off The offset position of the buffer. It is read and overwritten.
  * @param v The visitor that satisfies visitor concept. https://github.com/msgpack/msgpack-c/wiki/v2_0_cpp_visitor#visitor-concept
  *
- * @return if unpacking process finishs without error then return true, otherwise return false.
+ * @return if unpacking process finishes without error then return true, otherwise return false.
  *
  */
 template <typename Visitor>
@@ -52,7 +52,7 @@ bool parse(const char* data, size_t len, size_t& off, Visitor& v);
  * @param len The length of the buffer.
  * @param v The visitor that satisfies visitor concept. https://github.com/msgpack/msgpack-c/wiki/v2_0_cpp_visitor#visitor-concept
  *
- * @return if unpacking process finishs without error then return true, otherwise return false.
+ * @return if unpacking process finishes without error then return true, otherwise return false.
  *
  */
 template <typename Visitor>
