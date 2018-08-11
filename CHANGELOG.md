@@ -7,7 +7,7 @@
 
 ## << breaking changes >>
 
-  * Change offset parameter updating rule. If parse error is happend, offset is updated to the error position. (#639, #666)
+  * Change offset parameter updating rule. If parse error happens, offset is updated to the error position. (#639, #666)
 
 ## << other updates >>
 

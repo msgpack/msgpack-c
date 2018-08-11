@@ -170,7 +170,7 @@ the binaries:' text box.
 
 ### Documentation
 
-You can get addtional information on the
+You can get additional information on the
 [wiki](https://github.com/msgpack/msgpack-c/wiki).
 
 Contributing

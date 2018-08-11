@@ -329,7 +329,7 @@ TEST(MSGPACK_BOOST, object_with_zone_variant_str_ref)
     EXPECT_EQ(val1.as_boost_string_ref(), "ABC");
     msgpack::object obj(val1, z);
     msgpack::type::variant val2 = obj.as<msgpack::type::variant>();
-    // Coverted as std::string.
+    // Converted as std::string.
     EXPECT_TRUE(val2.is_string());
     EXPECT_EQ(val2.as_string(), "ABC");
     EXPECT_NO_THROW(boost::get<std::string>(val2));
@@ -399,7 +399,7 @@ TEST(MSGPACK_BOOST, object_with_zone_variant_raw_ref)
     EXPECT_EQ(val1.as_raw_ref(), msgpack::type::raw_ref(&v.front(), v.size()));
     msgpack::object obj(val1, z);
     msgpack::type::variant val2 = obj.as<msgpack::type::variant>();
-    // Coverted as std::vector<char>.
+    // Converted as std::vector<char>.
     EXPECT_TRUE(val2.is_vector_char());
     EXPECT_EQ(val2.as_vector_char(), v);
     EXPECT_NO_THROW(boost::get<std::vector<char> >(val2));
@@ -469,7 +469,7 @@ TEST(MSGPACK_BOOST, object_with_zone_variant_ext_ref)
     EXPECT_EQ(val1.as_ext_ref(), e);
     msgpack::object obj(val1, z);
     msgpack::type::variant val2 = obj.as<msgpack::type::variant>();
-    // Coverted as msgpack::type::ext.
+    // Converted as msgpack::type::ext.
     EXPECT_TRUE(val2.is_ext());
     EXPECT_EQ(val2.as_ext(), e);
     EXPECT_NO_THROW(boost::get<msgpack::type::ext>(val2));
