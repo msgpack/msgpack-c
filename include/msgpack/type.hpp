@@ -51,6 +51,10 @@
 #include "adaptor/cpp17/string_view.hpp"
 #endif // MSGPACK_HAS_INCLUDE(<string_view>)
 
+#include "adaptor/cpp17/byte.hpp"
+#include "adaptor/cpp17/carray_byte.hpp"
+#include "adaptor/cpp17/vector_byte.hpp"
+
 #endif // defined(MSGPACK_USE_CPP03)
 
 #if defined(MSGPACK_USE_BOOST)

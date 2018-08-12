@@ -182,8 +182,11 @@ IF (MSGPACK_ENABLE_CXX)
         include/msgpack/adaptor/cpp11/unique_ptr.hpp
         include/msgpack/adaptor/cpp11/unordered_map.hpp
         include/msgpack/adaptor/cpp11/unordered_set.hpp
+        include/msgpack/adaptor/cpp17/byte.hpp
+        include/msgpack/adaptor/cpp17/carray_byte.hpp
         include/msgpack/adaptor/cpp17/optional.hpp
         include/msgpack/adaptor/cpp17/string_view.hpp
+        include/msgpack/adaptor/cpp17/vector_byte.hpp
         include/msgpack/adaptor/define.hpp
         include/msgpack/adaptor/define_decl.hpp
         include/msgpack/adaptor/deque.hpp
@@ -539,8 +542,11 @@ IF (MSGPACK_ENABLE_CXX)
         include/msgpack/v1/adaptor/cpp11/unique_ptr.hpp
         include/msgpack/v1/adaptor/cpp11/unordered_map.hpp
         include/msgpack/v1/adaptor/cpp11/unordered_set.hpp
+        include/msgpack/v1/adaptor/cpp17/byte.hpp
+        include/msgpack/v1/adaptor/cpp17/carray_byte.hpp
         include/msgpack/v1/adaptor/cpp17/optional.hpp
         include/msgpack/v1/adaptor/cpp17/string_view.hpp
+        include/msgpack/v1/adaptor/cpp17/vector_byte.hpp
         include/msgpack/v1/adaptor/define.hpp
         include/msgpack/v1/adaptor/define_decl.hpp
         include/msgpack/v1/adaptor/deque.hpp
