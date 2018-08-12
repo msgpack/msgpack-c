@@ -297,8 +297,7 @@ const auto mp_object_def =
         (
             [](auto& ctx){
                 auto& app_specific = x3::get<tag_app_specific>(ctx).get();
-                union { uint32_t i; float f; } mem;
-                mem.i = _attr(ctx);
+                union { uint32_t i; float f; } mem = { _attr(ctx) };
                 app_specific.vis.visit_float32(mem.f);
             }
         )
@@ -309,8 +308,7 @@ const auto mp_object_def =
         (
             [](auto& ctx){
                 auto& app_specific = x3::get<tag_app_specific>(ctx).get();
-                union { uint64_t i; double f; } mem;
-                mem.i = _attr(ctx);
+                union { uint64_t i; double f; } mem = { _attr(ctx) };
 #if defined(TARGET_OS_IPHONE)
                 // ok
 #elif defined(__arm__) && !(__ARM_EABI__) // arm-oabi
