@@ -10,6 +10,8 @@
 
 // C++17
 
+#if MSGPACK_HAS_INCLUDE(<optional>)
+
 TEST(MSGPACK_CPP17, optional_pack_convert_nil)
 {
     std::stringstream ss;
@@ -171,7 +173,11 @@ TEST(MSGPACK_CPP17, optional_pack_convert_no_def_con)
     EXPECT_TRUE(val1 == val2);
 }
 
-TEST(MSGPACK_CPP17, string_view_pack_convert_string_view)
+#endif // MSGPACK_HAS_INCLUDE(<optional>)
+
+#if MSGPACK_HAS_INCLUDE(<string_view>)
+
+TEST(MSGPACK_CPP17, string_view_pack_convert)
 {
     std::stringstream ss;
     std::string s = "ABC";
@@ -185,7 +191,7 @@ TEST(MSGPACK_CPP17, string_view_pack_convert_string_view)
     EXPECT_TRUE(val1 == val2);
 }
 
-TEST(MSGPACK_CPP17, string_view_object_strinf_view)
+TEST(MSGPACK_CPP17, string_view_object)
 {
     std::string s = "ABC";
     std::string_view val1(s);
@@ -194,7 +200,7 @@ TEST(MSGPACK_CPP17, string_view_object_strinf_view)
     EXPECT_TRUE(val1 == val2);
 }
 
-TEST(MSGPACK_CPP17, string_view_object_with_zone_string_view)
+TEST(MSGPACK_CPP17, string_view_object_with_zone)
 {
     msgpack::zone z;
     std::string s = "ABC";
@@ -202,6 +208,121 @@ TEST(MSGPACK_CPP17, string_view_object_with_zone_string_view)
     msgpack::object obj(val1, z);
     std::string_view val2 = obj.as<std::string_view>();
     EXPECT_TRUE(val1 == val2);
+}
+
+#endif // MSGPACK_HAS_INCLUDE(<string_view>)
+
+TEST(MSGPACK_CPP17, byte_pack_convert)
+{
+    std::stringstream ss;
+    std::byte val1{0xff};
+
+    msgpack::pack(ss, val1);
+
+    msgpack::object_handle oh;
+    msgpack::unpack(oh, ss.str().data(), ss.str().size());
+    std::byte val2 = oh.get().as<std::byte>();
+    EXPECT_EQ(val1, val2);
+}
+
+TEST(MSGPACK_CPP17, byte_object)
+{
+    std::byte val1{0x00};
+    msgpack::object obj(val1);
+    std::byte val2 = obj.as<std::byte>();
+    EXPECT_EQ(val1, val2);
+}
+
+TEST(MSGPACK_CPP17, byte_object_with_zone)
+{
+    msgpack::zone z;
+    std::byte val1{80};
+    msgpack::object obj(val1, z);
+    std::byte val2 = obj.as<std::byte>();
+    EXPECT_EQ(val1, val2);
+}
+
+TEST(MSGPACK_CPP17, vector_byte_pack_convert)
+{
+    std::stringstream ss;
+    std::vector<std::byte> val1{
+        std::byte{0x01}, std::byte{0x02}, std::byte{0x7f}, std::byte{0x80}, std::byte{0xff}
+    };
+
+    msgpack::pack(ss, val1);
+
+    char packed[] = { char(0xc4), char(0x05), char(0x01), char(0x02), char(0x7f), char(0x80), char(0xff) };
+    for (size_t i = 0; i != sizeof(packed); ++i) {
+        EXPECT_EQ(ss.str()[i], packed[i]);
+    }
+
+    msgpack::object_handle oh;
+    msgpack::unpack(oh, ss.str().data(), ss.str().size());
+    std::vector<std::byte> val2 = oh.get().as<std::vector<std::byte>>();
+    EXPECT_EQ(val1, val2);
+}
+
+TEST(MSGPACK_CPP17, vector_byte_object)
+{
+    std::vector<std::byte> val1{
+        std::byte{0x01}, std::byte{0x02}, std::byte{0x7f}, std::byte{0x80}, std::byte{0xff}
+    };
+
+    // Caller need to manage val1's lifetime. The Data is not copied.
+    msgpack::object obj(val1);
+
+    std::vector<std::byte> val2 = obj.as<std::vector<std::byte>>();
+    EXPECT_EQ(val1, val2);
+}
+
+TEST(MSGPACK_CPP17, vector_byte_object_with_zone)
+{
+    msgpack::zone z;
+    std::vector<std::byte> val1{
+        std::byte{0x01}, std::byte{0x02}, std::byte{0x7f}, std::byte{0x80}, std::byte{0xff}
+    };
+    msgpack::object obj(val1, z);
+
+    std::vector<std::byte> val2 = obj.as<std::vector<std::byte>>();
+    EXPECT_EQ(val1, val2);
+}
+
+TEST(MSGPACK_CPP17, carray_byte_pack_convert)
+{
+    std::stringstream ss;
+    std::byte val1[] = {
+        std::byte{0x01}, std::byte{0x02}, std::byte{0x7f}, std::byte{0x80}, std::byte{0xff}
+    };
+
+    msgpack::pack(ss, val1);
+
+    char packed[] = { char(0xc4), char(0x05), char(0x01), char(0x02), char(0x7f), char(0x80), char(0xff) };
+    for (size_t i = 0; i != sizeof(packed); ++i) {
+        EXPECT_EQ(ss.str()[i], packed[i]);
+    }
+
+    msgpack::object_handle oh;
+    msgpack::unpack(oh, ss.str().data(), ss.str().size());
+    std::byte val2[sizeof(val1)];
+    oh.get().convert(val2);
+    for (size_t i = 0; i != sizeof(val1); ++i) {
+        EXPECT_EQ(val1[i], val2[i]);
+    }
+}
+
+TEST(MSGPACK_CPP17, carray_byte_object_with_zone)
+{
+    msgpack::zone z;
+    std::byte val1[] = {
+        std::byte{0x01}, std::byte{0x02}, std::byte{0x7f}, std::byte{0x80}, std::byte{0xff}
+    };
+    msgpack::object obj(val1, z);
+
+    std::byte val2[sizeof(val1)];
+    obj.convert(val2);
+    for (size_t i = 0; i != sizeof(val1); ++i) {
+        EXPECT_EQ(val1[i], val2[i]);
+    }
 }
 
 #endif // !defined(MSGPACK_USE_CPP03) && __cplusplus >= 201703
