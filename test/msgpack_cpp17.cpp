@@ -6,6 +6,11 @@
 #include "config.h"
 #endif
 
+// To avoid link error
+TEST(MSGPACK_CPP17, dummy)
+{
+}
+
 #if !defined(MSGPACK_USE_CPP03) && __cplusplus >= 201703
 
 // C++17
