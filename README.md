@@ -97,6 +97,10 @@ int main(void)
     msgpack::type::tuple<int, bool, std::string> dst;
     deserialized.convert(dst);
 
+    // or create the new instance
+    msgpack::type::tuple<int, bool, std::string> dst2 =
+        deserialized.as<msgpack::type::tuple<int, bool, std::string> >();
+
     return 0;
 }
 ```
@@ -108,7 +112,7 @@ Usage
 
 ### C++ Header Only Library
 
-When you use msgpack on C++03 and C++11, you can just add
+When you use msgpack on C++, you can just add
 msgpack-c/include to your include path:
 
     g++ -I msgpack-c/include your_source_file.cpp
@@ -135,13 +139,17 @@ C and C++03:
     $ make
     $ sudo make install
 
-If you want to setup C++11 version of msgpack instead,
+If you want to setup C++11 or C++17 version of msgpack instead,
 execute the following commands:
 
     $ git clone https://github.com/msgpack/msgpack-c.git
     $ cd msgpack-c
-    $ cmake -DMSGPACK_CXX11=ON .
+    $ cmake -DMSGPACK_CXX[11|17]=ON .
     $ sudo make install
+
+`MSGPACK_CXX[11|17]` flags are not affected to installing files. Just switching test cases. All files are installed in every settings.
+
+When you use the C part of `msgpack-c`, you need to build and link the library. By default, both static/shared libraries are built. If you want to build only static library, set `BUILD_SHARED_LIBS=OFF` to cmake. If you want to build only shared library, set `BUILD_SHARED_L
 
 #### GUI on Windows
 
@@ -170,7 +178,7 @@ the binaries:' text box.
 
 ### Documentation
 
-You can get additional information on the
+You can get additional information including the tutorial on the
 [wiki](https://github.com/msgpack/msgpack-c/wiki).
 
 Contributing
