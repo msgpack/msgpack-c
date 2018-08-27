@@ -171,12 +171,13 @@ int msgpack_vrefbuffer_append_copy(msgpack_vrefbuffer* vbuf,
 int msgpack_vrefbuffer_migrate(msgpack_vrefbuffer* vbuf, msgpack_vrefbuffer* to)
 {
     size_t sz = vbuf->chunk_size;
+    msgpack_vrefbuffer_chunk* empty = NULL;
 
     if((sizeof(msgpack_vrefbuffer_chunk) + sz) < sz){
         return -1;
     }
 
-    msgpack_vrefbuffer_chunk* empty = (msgpack_vrefbuffer_chunk*)malloc(
+    empty = (msgpack_vrefbuffer_chunk*)malloc(
             sizeof(msgpack_vrefbuffer_chunk) + sz);
     if(empty == NULL) {
         return -1;
