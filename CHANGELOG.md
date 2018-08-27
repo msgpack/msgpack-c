@@ -1,3 +1,7 @@
+# 2018-08-28 version 3.1.1
+
+  * Fix msgpack_timestamp type mismatch bug (#726)
+
 # 2018-08-10 version 3.1.0
 
   * Improve documents (#687, #718)
