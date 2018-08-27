@@ -41,7 +41,7 @@ struct as<std::chrono::system_clock::time_point> {
             uint64_t value;
             _msgpack_load64(uint64_t, o.via.ext.data(), &value);
             uint32_t nanosec = static_cast<uint32_t>(value >> 34);
-            uint64_t sec = value & 0x00000003ffffffffL;
+            uint64_t sec = value & 0x00000003ffffffffLL;
             tp += std::chrono::duration_cast<std::chrono::system_clock::duration>(
                 std::chrono::nanoseconds(nanosec));
             tp += std::chrono::seconds(sec);
@@ -79,7 +79,7 @@ struct convert<std::chrono::system_clock::time_point> {
             uint64_t value;
             _msgpack_load64(uint64_t, o.via.ext.data(), &value);
             uint32_t nanosec = static_cast<uint32_t>(value >> 34);
-            uint64_t sec = value & 0x00000003ffffffffL;
+            uint64_t sec = value & 0x00000003ffffffffLL;
             tp += std::chrono::duration_cast<std::chrono::system_clock::duration>(
                 std::chrono::nanoseconds(nanosec));
             tp += std::chrono::seconds(sec);
