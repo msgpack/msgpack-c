@@ -71,6 +71,12 @@ public:
         m_end   = array + nfirst;
         m_array = array;
 
+        
+        if((sizeof(chunk) + chunk_size) < chunk_size){
+            throw std::bad_alloc();
+        }
+        
+
         chunk* c = static_cast<chunk*>(::malloc(sizeof(chunk) + chunk_size));
         if(!c) {
             ::free(array);
@@ -141,7 +147,11 @@ public:
             if(sz < len) {
                 sz = len;
             }
-
+             
+            if(sizeof(chunk) + sz < sz){
+                throw std::bad_alloc();
+            }
+            
             chunk* c = static_cast<chunk*>(::malloc(sizeof(chunk) + sz));
             if(!c) {
                 throw std::bad_alloc();
@@ -182,6 +192,10 @@ public:
     void migrate(vrefbuffer* to)
     {
         size_t sz = m_chunk_size;
+
+        if((sizeof(chunk) + sz) < sz){
+            throw std::bad_alloc();
+        }
 
         chunk* empty = static_cast<chunk*>(::malloc(sizeof(chunk) + sz));
         if(!empty) {
