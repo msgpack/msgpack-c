@@ -1359,9 +1359,7 @@ TEST(MSGPACKC, vreff_buffer_overflow)
     msgpack_vrefbuffer vbuf;
     msgpack_vrefbuffer to;
     size_t ref_size = 0;
-    size_t len = 0x1000;
     size_t chunk_size = std::numeric_limits<size_t>::max();
-    char *buf = (char *)malloc(len);
     EXPECT_FALSE(msgpack_vrefbuffer_init(&vbuf, ref_size, chunk_size));
     EXPECT_EQ(-1, msgpack_vrefbuffer_migrate(&vbuf, &to));
 }
