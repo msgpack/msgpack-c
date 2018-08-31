@@ -19,7 +19,19 @@
 #
 # /* MSGPACK_PP_SEQ_TO_LIST */
 #
+# if MSGPACK_PP_CONFIG_FLAGS() & MSGPACK_PP_CONFIG_MSVC()
+# include <msgpack/preprocessor/seq/size.hpp>
+# include <msgpack/preprocessor/seq/detail/to_list_msvc.hpp>
+# define MSGPACK_PP_SEQ_TO_LIST(seq) \
+    MSGPACK_PP_SEQ_DETAIL_TO_LIST_MSVC \
+        ( \
+        MSGPACK_PP_SEQ_TO_LIST_I(MSGPACK_PP_SEQ_BINARY_TRANSFORM(seq)), \
+        MSGPACK_PP_SEQ_SIZE(seq) \
+        ) \
+/**/
+# else
 # define MSGPACK_PP_SEQ_TO_LIST(seq) MSGPACK_PP_SEQ_TO_LIST_I(MSGPACK_PP_SEQ_BINARY_TRANSFORM(seq))
+# endif
 # define MSGPACK_PP_SEQ_TO_LIST_I(bseq) MSGPACK_PP_SEQ_TO_LIST_A bseq MSGPACK_PP_NIL MSGPACK_PP_SEQ_TO_LIST_B bseq
 # define MSGPACK_PP_SEQ_TO_LIST_A(m, e) m(MSGPACK_PP_LPAREN() e MSGPACK_PP_COMMA() MSGPACK_PP_SEQ_TO_LIST_A_ID)
 # define MSGPACK_PP_SEQ_TO_LIST_A_ID() MSGPACK_PP_SEQ_TO_LIST_A

@@ -25,7 +25,7 @@
 #    define MSGPACK_PP_CAT_OO(par) MSGPACK_PP_CAT_I ## par
 # endif
 #
-# if ~MSGPACK_PP_CONFIG_FLAGS() & MSGPACK_PP_CONFIG_MSVC()
+# if (~MSGPACK_PP_CONFIG_FLAGS() & MSGPACK_PP_CONFIG_MSVC()) || (defined(__INTEL_COMPILER) && __INTEL_COMPILER >= 1700)
 #    define MSGPACK_PP_CAT_I(a, b) a ## b
 # else
 #    define MSGPACK_PP_CAT_I(a, b) MSGPACK_PP_CAT_II(~, a ## b)

@@ -19,6 +19,7 @@ http://www.boost.org/LICENSE_1_0.txt)
 #include <msgpack/predef/architecture/mips.h>
 #include <msgpack/predef/architecture/parisc.h>
 #include <msgpack/predef/architecture/ppc.h>
+#include <msgpack/predef/architecture/ptx.h>
 #include <msgpack/predef/architecture/pyramid.h>
 #include <msgpack/predef/architecture/rs6k.h>
 #include <msgpack/predef/architecture/sparc.h>
