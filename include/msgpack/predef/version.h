@@ -10,6 +10,6 @@ http://www.boost.org/LICENSE_1_0.txt)
 
 #include <msgpack/predef/version_number.h>
 
-#define MSGPACK_PREDEF_VERSION MSGPACK_VERSION_NUMBER(1,4,1)
+#define MSGPACK_PREDEF_VERSION MSGPACK_VERSION_NUMBER(1,8,0)
 
 #endif

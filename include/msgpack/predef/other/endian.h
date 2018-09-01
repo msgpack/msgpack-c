@@ -148,8 +148,7 @@ information and acquired knowledge:
 #       undef MSGPACK_ENDIAN_BIG_BYTE
 #       define MSGPACK_ENDIAN_BIG_BYTE MSGPACK_VERSION_NUMBER_AVAILABLE
 #   endif
-#   if MSGPACK_ARCH_AMD64 || \
-        MSGPACK_ARCH_IA64 || \
+#   if MSGPACK_ARCH_IA64 || \
         MSGPACK_ARCH_X86 || \
         MSGPACK_ARCH_BLACKFIN
 #       undef MSGPACK_ENDIAN_LITTLE_BYTE

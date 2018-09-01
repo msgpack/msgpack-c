@@ -25,18 +25,16 @@
 # define MSGPACK_PP_CONFIG_DMC() 0x0040
 #
 # ifndef MSGPACK_PP_CONFIG_FLAGS
-#    if defined(__GCCXML__)
-#        define MSGPACK_PP_CONFIG_FLAGS() (MSGPACK_PP_CONFIG_STRICT())
-#    elif defined(__WAVE__)
-#        define MSGPACK_PP_CONFIG_FLAGS() (MSGPACK_PP_CONFIG_STRICT())
-#    elif defined(__MWERKS__) && __MWERKS__ >= 0x3200
+#    if defined(__GCCXML__) || defined(__WAVE__) || defined(__MWERKS__) && __MWERKS__ >= 0x3200
 #        define MSGPACK_PP_CONFIG_FLAGS() (MSGPACK_PP_CONFIG_STRICT())
 #    elif defined(__EDG__) || defined(__EDG_VERSION__)
-#        if defined(_MSC_VER) && (defined(__INTELLISENSE__) || __EDG_VERSION__ >= 308)
+#        if defined(_MSC_VER) && !defined(__clang__) && (defined(__INTELLISENSE__) || __EDG_VERSION__ >= 308)
 #            define MSGPACK_PP_CONFIG_FLAGS() (MSGPACK_PP_CONFIG_MSVC())
 #        else
 #            define MSGPACK_PP_CONFIG_FLAGS() (MSGPACK_PP_CONFIG_EDG() | MSGPACK_PP_CONFIG_STRICT())
 #        endif
+#    elif defined(_MSC_VER) && defined(__clang__)
+#        define MSGPACK_PP_CONFIG_FLAGS() (MSGPACK_PP_CONFIG_STRICT())
 #    elif defined(__MWERKS__)
 #        define MSGPACK_PP_CONFIG_FLAGS() (MSGPACK_PP_CONFIG_MWCC())
 #    elif defined(__DMC__)
@@ -45,7 +43,7 @@
 #        define MSGPACK_PP_CONFIG_FLAGS() (MSGPACK_PP_CONFIG_STRICT())
 #    elif defined(__BORLANDC__) || defined(__IBMC__) || defined(__IBMCPP__) || defined(__SUNPRO_CC)
 #        define MSGPACK_PP_CONFIG_FLAGS() (MSGPACK_PP_CONFIG_BCC())
-#    elif defined(_MSC_VER) && !defined(__clang__)
+#    elif defined(_MSC_VER)
 #        define MSGPACK_PP_CONFIG_FLAGS() (MSGPACK_PP_CONFIG_MSVC())
 #    else
 #        define MSGPACK_PP_CONFIG_FLAGS() (MSGPACK_PP_CONFIG_STRICT())
@@ -73,10 +71,14 @@
 # define MSGPACK_PP_VARIADICS_MSVC 0
 # if !defined MSGPACK_PP_VARIADICS
 #    /* variadic support explicitly disabled for all untested compilers */
-#    if defined __GCCXML__ || defined __CUDACC__ || defined __PATHSCALE__ || defined __DMC__ || defined __CODEGEARC__ || defined __BORLANDC__ || defined __MWERKS__ || ( defined __SUNPRO_CC && __SUNPRO_CC < 0x5120 ) || defined __HP_aCC && !defined __EDG__ || defined __MRC__ || defined __SC__ || defined __IBMCPP__ || defined __PGI
+#    if defined __GCCXML__ || defined __PATHSCALE__ || defined __DMC__ || defined __CODEGEARC__ || defined __BORLANDC__ || defined __MWERKS__ || ( defined __SUNPRO_CC && __SUNPRO_CC < 0x5120 ) || defined __HP_aCC && !defined __EDG__ || defined __MRC__ || defined __SC__ || defined __PGI
 #        define MSGPACK_PP_VARIADICS 0
-#    /* VC++ (C/C++) */
-#    elif defined _MSC_VER && _MSC_VER >= 1400 && (!defined __EDG__ || defined(__INTELLISENSE__)) && !defined __clang__
+#    elif defined(__CUDACC__)
+#        define MSGPACK_PP_VARIADICS 1
+#    elif defined(_MSC_VER) && defined(__clang__)
+#        define MSGPACK_PP_VARIADICS 1
+#    /* VC++ (C/C++) and Intel C++ Compiler >= 17.0 with MSVC */
+#    elif defined _MSC_VER && _MSC_VER >= 1400 && (!defined __EDG__ || defined(__INTELLISENSE__) || defined(__INTEL_COMPILER) && __INTEL_COMPILER >= 1700)
 #        define MSGPACK_PP_VARIADICS 1
 #        undef MSGPACK_PP_VARIADICS_MSVC
 #        define MSGPACK_PP_VARIADICS_MSVC 1
@@ -92,7 +94,7 @@
 # elif !MSGPACK_PP_VARIADICS + 1 < 2
 #    undef MSGPACK_PP_VARIADICS
 #    define MSGPACK_PP_VARIADICS 1
-#    if defined _MSC_VER && _MSC_VER >= 1400 && (defined(__INTELLISENSE__) || !(defined __EDG__ || defined __GCCXML__ || defined __CUDACC__ || defined __PATHSCALE__ || defined __clang__ || defined __DMC__ || defined __CODEGEARC__ || defined __BORLANDC__ || defined __MWERKS__ || defined __SUNPRO_CC || defined __HP_aCC || defined __MRC__ || defined __SC__ || defined __IBMCPP__ || defined __PGI))
+#    if defined _MSC_VER && _MSC_VER >= 1400 && !defined(__clang__) && (defined(__INTELLISENSE__) || (defined(__INTEL_COMPILER) && __INTEL_COMPILER >= 1700) || !(defined __EDG__ || defined __GCCXML__ || defined __CUDACC__ || defined __PATHSCALE__ || defined __DMC__ || defined __CODEGEARC__ || defined __BORLANDC__ || defined __MWERKS__ || defined __SUNPRO_CC || defined __HP_aCC || defined __MRC__ || defined __SC__ || defined __IBMCPP__ || defined __PGI))
 #        undef MSGPACK_PP_VARIADICS_MSVC
 #        define MSGPACK_PP_VARIADICS_MSVC 1
 #    endif

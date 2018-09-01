@@ -24,6 +24,7 @@ LIST (APPEND msgpackc_HEADERS
     include/msgpack/predef/architecture/mips.h
     include/msgpack/predef/architecture/parisc.h
     include/msgpack/predef/architecture/ppc.h
+    include/msgpack/predef/architecture/ptx.h
     include/msgpack/predef/architecture/pyramid.h
     include/msgpack/predef/architecture/rs6k.h
     include/msgpack/predef/architecture/sparc.h
@@ -57,6 +58,7 @@ LIST (APPEND msgpackc_HEADERS
     include/msgpack/predef/compiler/metrowerks.h
     include/msgpack/predef/compiler/microtec.h
     include/msgpack/predef/compiler/mpw.h
+    include/msgpack/predef/compiler/nvcc.h
     include/msgpack/predef/compiler/palm.h
     include/msgpack/predef/compiler/pgi.h
     include/msgpack/predef/compiler/sgi_mipspro.h
@@ -83,12 +85,14 @@ LIST (APPEND msgpackc_HEADERS
     include/msgpack/predef/hardware/simd/x86_amd.h
     include/msgpack/predef/hardware/simd/x86_amd/versions.h
     include/msgpack/predef/language.h
+    include/msgpack/predef/language/cuda.h
     include/msgpack/predef/language/objc.h
     include/msgpack/predef/language/stdc.h
     include/msgpack/predef/language/stdcpp.h
     include/msgpack/predef/library.h
     include/msgpack/predef/library/c.h
     include/msgpack/predef/library/c/_prefix.h
+    include/msgpack/predef/library/c/cloudabi.h
     include/msgpack/predef/library/c/gnu.h
     include/msgpack/predef/library/c/uc.h
     include/msgpack/predef/library/c/vms.h
@@ -132,12 +136,20 @@ LIST (APPEND msgpackc_HEADERS
     include/msgpack/predef/os/windows.h
     include/msgpack/predef/other.h
     include/msgpack/predef/other/endian.h
+    include/msgpack/predef/other/workaround.h
     include/msgpack/predef/platform.h
+    include/msgpack/predef/platform/cloudabi.h
+    include/msgpack/predef/platform/ios.h
     include/msgpack/predef/platform/mingw.h
+    include/msgpack/predef/platform/mingw32.h
+    include/msgpack/predef/platform/mingw64.h
     include/msgpack/predef/platform/windows_desktop.h
     include/msgpack/predef/platform/windows_phone.h
     include/msgpack/predef/platform/windows_runtime.h
+    include/msgpack/predef/platform/windows_server.h
     include/msgpack/predef/platform/windows_store.h
+    include/msgpack/predef/platform/windows_system.h
+    include/msgpack/predef/platform/windows_uwp.h
     include/msgpack/predef/version.h
     include/msgpack/predef/version_number.h
     include/msgpack/sbuffer.h
@@ -444,6 +456,7 @@ IF (MSGPACK_ENABLE_CXX)
         include/msgpack/preprocessor/seq/detail/binary_transform.hpp
         include/msgpack/preprocessor/seq/detail/is_empty.hpp
         include/msgpack/preprocessor/seq/detail/split.hpp
+        include/msgpack/preprocessor/seq/detail/to_list_msvc.hpp
         include/msgpack/preprocessor/seq/elem.hpp
         include/msgpack/preprocessor/seq/enum.hpp
         include/msgpack/preprocessor/seq/filter.hpp

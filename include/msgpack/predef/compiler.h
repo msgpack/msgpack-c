@@ -32,6 +32,7 @@ http://www.boost.org/LICENSE_1_0.txt)
 #include <msgpack/predef/compiler/metrowerks.h>
 #include <msgpack/predef/compiler/microtec.h>
 #include <msgpack/predef/compiler/mpw.h>
+#include <msgpack/predef/compiler/nvcc.h>
 #include <msgpack/predef/compiler/palm.h>
 #include <msgpack/predef/compiler/pgi.h>
 #include <msgpack/predef/compiler/sgi_mipspro.h>
