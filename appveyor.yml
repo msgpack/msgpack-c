@@ -4,7 +4,7 @@ image:
 - Visual Studio 2015
 environment:
   global:
-    BOOST_ROOT: C:\Libraries\boost_1_60_0
+    BOOST_ROOT: C:\Libraries\boost_1_67_0
   matrix:
     - cpp11: -DMSGPACK_CXX11=OFF
       boost: -DMSGPACK_BOOST=OFF
