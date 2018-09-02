@@ -537,7 +537,7 @@ static inline msgpack_unpack_return unpacker_next(msgpack_unpacker* mpac,
     if(ret < 0) {
         result->zone = NULL;
         memset(&result->data, 0, sizeof(msgpack_object));
-        return ret;
+        return (msgpack_unpack_return)ret;
     }
 
     if(ret == 0) {
@@ -552,7 +552,7 @@ static inline msgpack_unpack_return unpacker_next(msgpack_unpacker* mpac,
 msgpack_unpack_return msgpack_unpacker_next(msgpack_unpacker* mpac,
                                             msgpack_unpacked* result)
 {
-    int ret;
+    msgpack_unpack_return ret;
 
     ret = unpacker_next(mpac, result);
     if (ret == MSGPACK_UNPACK_SUCCESS) {
@@ -566,7 +566,7 @@ msgpack_unpack_return
 msgpack_unpacker_next_with_size(msgpack_unpacker* mpac,
                                 msgpack_unpacked* result, size_t *p_bytes)
 {
-    int ret;
+    msgpack_unpack_return ret;
 
     ret = unpacker_next(mpac, result);
     if (ret == MSGPACK_UNPACK_SUCCESS || ret == MSGPACK_UNPACK_CONTINUE) {
@@ -601,7 +601,7 @@ msgpack_unpack(const char* data, size_t len, size_t* off,
 
         e = template_execute(&ctx, data, len, &noff);
         if(e < 0) {
-            return e;
+            return (msgpack_unpack_return)e;
         }
 
         if(off != NULL) { *off = noff; }
@@ -655,7 +655,7 @@ msgpack_unpack_next(msgpack_unpacked* result,
         if(e < 0) {
             msgpack_zone_free(result->zone);
             result->zone = NULL;
-            return e;
+            return (msgpack_unpack_return)e;
         }
 
         if(e == 0) {
