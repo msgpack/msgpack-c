@@ -71,11 +71,10 @@ public:
         m_end   = array + nfirst;
         m_array = array;
 
-        
         if((sizeof(chunk) + chunk_size) < chunk_size){
+            ::free(array);
             throw std::bad_alloc();
         }
-        
 
         chunk* c = static_cast<chunk*>(::malloc(sizeof(chunk) + chunk_size));
         if(!c) {

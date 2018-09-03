@@ -1354,7 +1354,7 @@ TEST(MSGPACKC, unpack_array_uint64)
 }
 
 
-TEST(MSGPACKC, vreff_buffer_overflow)
+TEST(MSGPACKC, vref_buffer_overflow)
 {
     msgpack_vrefbuffer vbuf;
     msgpack_vrefbuffer to;
