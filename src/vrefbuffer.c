@@ -44,6 +44,7 @@ bool msgpack_vrefbuffer_init(msgpack_vrefbuffer* vbuf,
     vbuf->array = array;
 
     if((sizeof(msgpack_vrefbuffer_chunk) + chunk_size) < chunk_size){
+        free(array);
         return false;
     }
 
