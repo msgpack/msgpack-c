@@ -272,4 +272,5 @@ TEST(MSGPACK, vref_buffer_overflow)
     ASSERT_THROW(msgpack::vrefbuffer vbuf(0, chunk_size), std::bad_alloc);
     msgpack::vrefbuffer vbuf(0,0x1000);
     ASSERT_THROW(vbuf.append_copy(buf, chunk_size), std::bad_alloc);
+    free(buf);
 }
