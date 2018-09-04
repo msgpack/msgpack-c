@@ -73,6 +73,7 @@ public:
 
         
         if((sizeof(chunk) + chunk_size) < chunk_size){
+            ::free(array); 
             throw std::bad_alloc();
         }
         
