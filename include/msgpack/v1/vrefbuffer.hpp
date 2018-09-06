@@ -58,6 +58,10 @@ public:
         :m_ref_size(std::max(ref_size, detail::packer_max_buffer_size + 1)),
          m_chunk_size(chunk_size)
     {
+        if((sizeof(chunk) + chunk_size) < chunk_size) {
+            throw std::bad_alloc();
+        }
+
         size_t nfirst = (sizeof(iovec) < 72/2) ?
             72 / sizeof(iovec) : 8;
 
@@ -70,11 +74,6 @@ public:
         m_tail  = array;
         m_end   = array + nfirst;
         m_array = array;
-
-        if((sizeof(chunk) + chunk_size) < chunk_size){
-            ::free(array);
-            throw std::bad_alloc();
-        }
 
         chunk* c = static_cast<chunk*>(::malloc(sizeof(chunk) + chunk_size));
         if(!c) {

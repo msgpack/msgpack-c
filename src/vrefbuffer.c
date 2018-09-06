@@ -30,6 +30,10 @@ bool msgpack_vrefbuffer_init(msgpack_vrefbuffer* vbuf,
         ref_size > MSGPACK_PACKER_MAX_BUFFER_SIZE + 1 ?
         ref_size : MSGPACK_PACKER_MAX_BUFFER_SIZE + 1 ;
 
+    if((sizeof(msgpack_vrefbuffer_chunk) + chunk_size) < chunk_size) {
+        return false;
+    }
+
     nfirst = (sizeof(struct iovec) < 72/2) ?
             72 / sizeof(struct iovec) : 8;
 
@@ -42,11 +46,6 @@ bool msgpack_vrefbuffer_init(msgpack_vrefbuffer* vbuf,
     vbuf->tail  = array;
     vbuf->end   = array + nfirst;
     vbuf->array = array;
-
-    if((sizeof(msgpack_vrefbuffer_chunk) + chunk_size) < chunk_size){
-        free(array);
-        return false;
-    }
 
     chunk = (msgpack_vrefbuffer_chunk*)malloc(
             sizeof(msgpack_vrefbuffer_chunk) + chunk_size);
