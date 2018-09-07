@@ -58,6 +58,10 @@ public:
         :m_ref_size(std::max(ref_size, detail::packer_max_buffer_size + 1)),
          m_chunk_size(chunk_size)
     {
+        if((sizeof(chunk) + chunk_size) < chunk_size) {
+            throw std::bad_alloc();
+        }
+
         size_t nfirst = (sizeof(iovec) < 72/2) ?
             72 / sizeof(iovec) : 8;
 
@@ -141,7 +145,11 @@ public:
             if(sz < len) {
                 sz = len;
             }
-
+             
+            if(sizeof(chunk) + sz < sz){
+                throw std::bad_alloc();
+            }
+            
             chunk* c = static_cast<chunk*>(::malloc(sizeof(chunk) + sz));
             if(!c) {
                 throw std::bad_alloc();
@@ -182,6 +190,10 @@ public:
     void migrate(vrefbuffer* to)
     {
         size_t sz = m_chunk_size;
+
+        if((sizeof(chunk) + sz) < sz){
+            throw std::bad_alloc();
+        }
 
         chunk* empty = static_cast<chunk*>(::malloc(sizeof(chunk) + sz));
         if(!empty) {

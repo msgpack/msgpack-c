@@ -264,3 +264,14 @@ TEST(MSGPACK, vrefbuffer_small_int64)
     msgpack::vrefbuffer vbuf(0, 0);
     GEN_TEST_VREF(int64_t, vbuf);
 }
+
+TEST(MSGPACK, vref_buffer_overflow)
+{
+    size_t ref_size = 0;
+    size_t chunk_size = std::numeric_limits<size_t>::max();
+    char *buf = (char *)malloc(0x1000);
+    ASSERT_THROW(msgpack::vrefbuffer vbuf(ref_size, chunk_size), std::bad_alloc);
+    msgpack::vrefbuffer vbuf2(0, 0x1000);
+    ASSERT_THROW(vbuf2.append_copy(buf, chunk_size), std::bad_alloc);
+    free(buf);
+}
