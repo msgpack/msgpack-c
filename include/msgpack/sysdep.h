@@ -10,8 +10,6 @@
 #ifndef MSGPACK_SYSDEP_H
 #define MSGPACK_SYSDEP_H
 
-#include <msgpack/predef.h>
-
 #include <stdlib.h>
 #include <stddef.h>
 
@@ -85,6 +83,10 @@
 #   endif
 
 #endif
+
+#if !defined(MSGPACK_ENDIAN_LITTLE_BYTE) && !defined(MSGPACK_ENDIAN_BIG_BYTE)
+#include <msgpack/predef/other/endian.h>
+#endif // !defined(MSGPACK_ENDIAN_LITTLE_BYTE) && !defined(MSGPACK_ENDIAN_BIG_BYTE)
 
 #if MSGPACK_ENDIAN_LITTLE_BYTE
 
