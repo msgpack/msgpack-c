@@ -1,3 +1,11 @@
+# 2018-09-09 version 3.1.1
+
+  * Add force endian set functionality (#736)
+  * Fix vrefbuffer memory management problem (#733)
+  * Fix msvc specific problem (#731, #732)
+  * Update boost from 1.61.0 to 1.68.0 (#730)
+  * Fix msgpack_timestamp type mismatch bug (#726)
+
 # 2018-08-10 version 3.1.0
 
   * Improve documents (#687, #718)
