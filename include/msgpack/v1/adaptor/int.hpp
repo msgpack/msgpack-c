@@ -64,10 +64,9 @@ inline T convert_integer(msgpack::object const& o)
 }
 
 template <>
-struct object_char_sign<true> {
+struct object_sign<true> {
     template <typename T>
-    static typename msgpack::enable_if<msgpack::is_same<T, char>::value>::type
-    make(msgpack::object& o, T v) {
+    static void make(msgpack::object& o, T v) {
         if (v < 0) {
             o.type = msgpack::type::NEGATIVE_INTEGER;
             o.via.i64 = v;
@@ -80,15 +79,17 @@ struct object_char_sign<true> {
 };
 
 template <>
-struct object_char_sign<false> {
-    static void make(msgpack::object& o, char v) {
+struct object_sign<false> {
+    template <typename T>
+    static void make(msgpack::object& o, T v) {
         o.type = msgpack::type::POSITIVE_INTEGER;
         o.via.u64 = v;
     }
 };
 
-inline void object_char(msgpack::object& o, char v) {
-    return object_char_sign<is_signed<char>::value>::make(o, v);
+template <typename T>
+inline void object_char(msgpack::object& o, T v) {
+    return object_sign<is_signed<T>::value>::make(o, v);
 }
 
 }  // namespace detail
@@ -100,6 +101,12 @@ template <>
 struct convert<char> {
     msgpack::object const& operator()(msgpack::object const& o, char& v) const
     { v = type::detail::convert_integer<char>(o); return o; }
+};
+
+template <>
+struct convert<wchar_t> {
+    msgpack::object const& operator()(msgpack::object const& o, wchar_t& v) const
+    { v = type::detail::convert_integer<wchar_t>(o); return o; }
 };
 
 template <>
@@ -169,6 +176,13 @@ struct pack<char> {
     template <typename Stream>
     msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, char v) const
     { o.pack_char(v); return o; }
+};
+
+template <>
+struct pack<wchar_t> {
+    template <typename Stream>
+    msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, wchar_t v) const
+    { o.pack_wchar(v); return o; }
 };
 
 template <>
@@ -246,6 +260,12 @@ struct pack<unsigned long long> {
 template <>
 struct object<char> {
     void operator()(msgpack::object& o, char v) const
+    { type::detail::object_char(o, v); }
+};
+
+template <>
+struct object<wchar_t> {
+    void operator()(msgpack::object& o, wchar_t v) const
     { type::detail::object_char(o, v); }
 };
 
@@ -363,6 +383,13 @@ struct object<unsigned long long> {
 template <>
 struct object_with_zone<char> {
     void operator()(msgpack::object::with_zone& o, char v) const {
+        static_cast<msgpack::object&>(o) << v;
+    }
+};
+
+template <>
+struct object_with_zone<wchar_t> {
+    void operator()(msgpack::object::with_zone& o, wchar_t v) const {
         static_cast<msgpack::object&>(o) << v;
     }
 };

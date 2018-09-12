@@ -33,9 +33,10 @@ template <typename T>
 T convert_integer(msgpack::object const& o);
 
 template <bool Signed>
-struct object_char_sign;
+struct object_sign;
 
-void object_char(msgpack::object& o, char v);
+template <typename T>
+void object_char(msgpack::object& o, T v);
 
 }  // namespace detail
 }  // namespace type

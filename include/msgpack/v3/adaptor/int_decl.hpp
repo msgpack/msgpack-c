@@ -30,7 +30,7 @@ struct is_signed;
 
 
 template <bool Signed>
-struct object_char_sign;
+struct object_sign;
 
 //using v2::type::detail::convert_integer_sign;
 

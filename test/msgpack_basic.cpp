@@ -614,3 +614,22 @@ TEST(MSGPACK_STL, simple_buffer_non_const_cstring)
         EXPECT_EQ(val1, val2);
     }
 }
+
+TEST(MSGPACK_STL, simple_buffer_wstring)
+{
+    for (unsigned int k = 0; k < kLoop; k++) {
+        wstring val1;
+        for (unsigned int i = 0; i < kElements; i++)
+            val1 += L'a' + rand() % 26;
+        msgpack::sbuffer sbuf;
+        msgpack::pack(sbuf, val1);
+        msgpack::object_handle oh =
+            msgpack::unpack(sbuf.data(), sbuf.size());
+        EXPECT_EQ(oh.get().type, msgpack::type::ARRAY);
+        wstring val2 = oh.get().as<wstring>();
+        EXPECT_EQ(val1, val2);
+        wstring val3;
+        oh.get().convert(val3);
+        EXPECT_EQ(val1, val3);
+    }
+}

@@ -271,6 +271,20 @@ public:
      */
     packer<Stream>& pack_char(char d);
 
+    /// Packing wchar_t
+    /**
+     * The byte size of the packed data depends on `d`.
+     * If `d` is zero or positive, the packed type is positive fixnum, or uint*,
+     * else the packed type is negative fixnum, or int*
+     * The minimum byte size expression is used.
+     * See https://github.com/msgpack/msgpack/blob/master/spec.md#formats-int
+     *
+     * @param d a packing object.
+     *
+     * @return The reference of `*this`.
+     */
+    packer<Stream>& pack_wchar(wchar_t d);
+
     /// Packing signed char
     /**
      * The byte size of the packed data depends on `d`.
@@ -817,6 +831,18 @@ inline packer<Stream>& packer<Stream>::pack_char(char d)
 #else
 #error CHAR_MIN is not defined
 #endif
+    return *this;
+}
+
+template <typename Stream>
+inline packer<Stream>& packer<Stream>::pack_wchar(wchar_t d)
+{
+    if (d < 0) {
+        pack_imp_int64(static_cast<int64_t>(d));
+    }
+    else {
+        pack_imp_uint64(static_cast<uint64_t>(d));
+    }
     return *this;
 }
 
