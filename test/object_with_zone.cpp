@@ -332,6 +332,17 @@ TEST(object_without_zone, string)
 
 #endif // MSGPACK_DEFAULT_API_VERSION == 1
 
+// wstring
+TEST(object_with_zone, wstring)
+{
+    wstring v = L"abc";
+    msgpack::zone z;
+    msgpack::object obj(v, z);
+    EXPECT_EQ(obj.as<wstring>(), v);
+    v[0] = 'd';
+    EXPECT_EQ(obj.as<wstring>()[0], L'a');
+}
+
 // char*
 TEST(object_with_zone, char_ptr)
 {

@@ -231,6 +231,7 @@ IF (MSGPACK_ENABLE_CXX)
         include/msgpack/adaptor/vector_bool.hpp
         include/msgpack/adaptor/vector_char.hpp
         include/msgpack/adaptor/vector_unsigned_char.hpp
+        include/msgpack/adaptor/wstring.hpp
         include/msgpack/cpp_config.hpp
         include/msgpack/cpp_config_decl.hpp
         include/msgpack/create_object_visitor.hpp
@@ -605,6 +606,7 @@ IF (MSGPACK_ENABLE_CXX)
         include/msgpack/v1/adaptor/vector_bool.hpp
         include/msgpack/v1/adaptor/vector_char.hpp
         include/msgpack/v1/adaptor/vector_unsigned_char.hpp
+        include/msgpack/v1/adaptor/wstring.hpp
         include/msgpack/v1/cpp_config.hpp
         include/msgpack/v1/cpp_config_decl.hpp
         include/msgpack/v1/detail/cpp03_zone.hpp
