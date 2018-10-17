@@ -53,7 +53,7 @@ struct MsgpackTuplePacker {
         msgpack::packer<Stream>& o,
         const Tuple& v) {
         MsgpackTuplePacker<Stream, Tuple, N-1>::pack(o, v);
-        o.pack(type::get<N-1>(v));
+        o.pack(v.template get<N-1>());
     }
 };
 
@@ -62,7 +62,7 @@ struct MsgpackTuplePacker<Stream, Tuple, 1> {
     static void pack (
         msgpack::packer<Stream>& o,
         const Tuple& v) {
-        o.pack(type::get<0>(v));
+        o.pack(v.template get<0>());
     }
 };
 
@@ -122,7 +122,7 @@ struct MsgpackTupleConverter {
         Tuple& v) {
         MsgpackTupleConverter<Tuple, N-1>::convert(o, v);
         if (o.via.array.size >= N)
-            o.via.array.ptr[N-1].convert<typename std::remove_reference<decltype(type::get<N-1>(v))>::type>(type::get<N-1>(v));
+            o.via.array.ptr[N-1].convert<typename std::remove_reference<decltype(v.template get<N-1>())>::type>(v.template get<N-1>());
     }
 };
 
@@ -131,7 +131,7 @@ struct MsgpackTupleConverter<Tuple, 1> {
     static void convert (
         msgpack::object const& o,
         Tuple& v) {
-        o.via.array.ptr[0].convert<typename std::remove_reference<decltype(type::get<0>(v))>::type>(type::get<0>(v));
+        o.via.array.ptr[0].convert<typename std::remove_reference<decltype(v.template get<0>())>::type>(v.template get<0>());
     }
 };
 
@@ -174,7 +174,7 @@ struct MsgpackTupleToObjectWithZone {
         msgpack::object::with_zone& o,
         const Tuple& v) {
         MsgpackTupleToObjectWithZone<Tuple, N-1>::convert(o, v);
-        o.via.array.ptr[N-1] = msgpack::object(type::get<N-1>(v), o.zone);
+        o.via.array.ptr[N-1] = msgpack::object(v.template get<N-1>(), o.zone);
     }
 };
 
@@ -183,7 +183,7 @@ struct MsgpackTupleToObjectWithZone<Tuple, 1> {
     static void convert (
         msgpack::object::with_zone& o,
         const Tuple& v) {
-        o.via.array.ptr[0] = msgpack::object(type::get<0>(v), o.zone);
+        o.via.array.ptr[0] = msgpack::object(v.template get<0>(), o.zone);
     }
 };
 

@@ -528,6 +528,18 @@ TEST(MSGPACK_TUPLE, simple_tuple_less_than_convert)
     EXPECT_EQ(val1.get<1>(), val2.get<1>());
 }
 
+TEST(MSGPACK_TUPLE, simple_tuple_nest)
+{
+    msgpack::sbuffer sbuf;
+    msgpack::type::tuple<msgpack::type::tuple<> > val1;
+    msgpack::pack(sbuf, val1);
+    msgpack::object_handle oh =
+        msgpack::unpack(sbuf.data(), sbuf.size());
+    msgpack::type::tuple<msgpack::type::tuple<> > val2;
+    oh.get().convert(val2);
+    EXPECT_EQ(oh.get().via.array.size, 1u);
+}
+
 // TR1
 
 #if defined(MSGPACK_HAS_STD_TR1_UNORDERED_MAP) || defined(MSGPACK_HAS_STD_TR1_UNORDERED_SET)

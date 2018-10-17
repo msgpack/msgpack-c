@@ -54,7 +54,7 @@ tuple<> make_tuple();
 /// @cond
 <%0.upto(GENERATION_LIMIT) {|i|%>
 template <typename A0<%1.upto(i) {|j|%>, typename A<%=j%><%}%>>
-tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> make_tuple(typename tuple_type<A0>::transparent_reference a0<%1.upto(i) {|j|%>, typename tuple_type<A<%=j%>>::transparent_reference a<%=j%><%}%>);
+tuple<A0<%1.upto(i) {|j|%>, A<%=j%><%}%>> make_tuple(A0 const& a0<%1.upto(i) {|j|%>, A<%=j%> const& a<%=j%><%}%>);
 <%}%>
 /// @endcond
 
