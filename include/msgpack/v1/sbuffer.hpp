@@ -66,12 +66,20 @@ public:
     }
 #endif // !defined(MSGPACK_USE_CPP03)
 
-    void write(const char* buf, size_t len)
-    {
+    void* reserve(size_t len)
+	{
         if(m_alloc - m_size < len) {
             expand_buffer(len);
         }
-        std::memcpy(m_data + m_size, buf, len);
+        void* data = m_data + m_size;
+        m_size += len;
+		return data;
+	}
+
+    void write(const char* buf, size_t len)
+    {
+        void* data = reserve(len);
+        std::memcpy(data, buf, len);
         m_size += len;
     }
 
