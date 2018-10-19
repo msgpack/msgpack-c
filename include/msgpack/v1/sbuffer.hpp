@@ -67,14 +67,14 @@ public:
 #endif // !defined(MSGPACK_USE_CPP03)
 
     void* reserve(size_t len)
-	{
+    {
         if(m_alloc - m_size < len) {
             expand_buffer(len);
         }
         void* data = m_data + m_size;
         m_size += len;
-		return data;
-	}
+        return data;
+    }
 
     void write(const char* buf, size_t len)
     {
