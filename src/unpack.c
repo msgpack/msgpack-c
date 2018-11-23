@@ -18,7 +18,7 @@
 
 
 typedef struct {
-    msgpack_zone* z;
+    msgpack_zone** z;
     bool referenced;
 } unpack_user;
 
@@ -197,7 +197,13 @@ static inline int template_callback_array(unpack_user* u, unsigned int n, msgpac
         // integer overflow
         return MSGPACK_UNPACK_NOMEM_ERROR;
     }
-    o->via.array.ptr = (msgpack_object*)msgpack_zone_malloc(u->z, size);
+    if (*u->z == NULL) {
+        *u->z = msgpack_zone_new(MSGPACK_ZONE_CHUNK_SIZE);
+        if(*u->z == NULL) {
+            return MSGPACK_UNPACK_NOMEM_ERROR;
+        }
+    }
+    o->via.array.ptr = (msgpack_object*)msgpack_zone_malloc(*u->z, size);
     if(o->via.array.ptr == NULL) { return MSGPACK_UNPACK_NOMEM_ERROR; }
     return 0;
 }
@@ -224,7 +230,13 @@ static inline int template_callback_map(unpack_user* u, unsigned int n, msgpack_
         // integer overflow
         return MSGPACK_UNPACK_NOMEM_ERROR;
     }
-    o->via.map.ptr = (msgpack_object_kv*)msgpack_zone_malloc(u->z, size);
+    if (*u->z == NULL) {
+        *u->z = msgpack_zone_new(MSGPACK_ZONE_CHUNK_SIZE);
+        if(*u->z == NULL) {
+            return MSGPACK_UNPACK_NOMEM_ERROR;
+        }
+    }
+    o->via.map.ptr = (msgpack_object_kv*)msgpack_zone_malloc(*u->z, size);
     if(o->via.map.ptr == NULL) { return MSGPACK_UNPACK_NOMEM_ERROR; }
     return 0;
 }
@@ -245,8 +257,13 @@ static inline int template_callback_map_item(unpack_user* u, msgpack_object* c, 
 
 static inline int template_callback_str(unpack_user* u, const char* b, const char* p, unsigned int l, msgpack_object* o)
 {
-    MSGPACK_UNUSED(u);
     MSGPACK_UNUSED(b);
+    if (*u->z == NULL) {
+        *u->z = msgpack_zone_new(MSGPACK_ZONE_CHUNK_SIZE);
+        if(*u->z == NULL) {
+            return MSGPACK_UNPACK_NOMEM_ERROR;
+        }
+    }
     o->type = MSGPACK_OBJECT_STR;
     o->via.str.ptr = p;
     o->via.str.size = l;
@@ -256,8 +273,13 @@ static inline int template_callback_str(unpack_user* u, const char* b, const cha
 
 static inline int template_callback_bin(unpack_user* u, const char* b, const char* p, unsigned int l, msgpack_object* o)
 {
-    MSGPACK_UNUSED(u);
     MSGPACK_UNUSED(b);
+    if (*u->z == NULL) {
+        *u->z = msgpack_zone_new(MSGPACK_ZONE_CHUNK_SIZE);
+        if(*u->z == NULL) {
+            return MSGPACK_UNPACK_NOMEM_ERROR;
+        }
+    }
     o->type = MSGPACK_OBJECT_BIN;
     o->via.bin.ptr = p;
     o->via.bin.size = l;
@@ -267,11 +289,16 @@ static inline int template_callback_bin(unpack_user* u, const char* b, const cha
 
 static inline int template_callback_ext(unpack_user* u, const char* b, const char* p, unsigned int l, msgpack_object* o)
 {
+    MSGPACK_UNUSED(b);
     if (l == 0) {
         return MSGPACK_UNPACK_PARSE_ERROR;
     }
-    MSGPACK_UNUSED(u);
-    MSGPACK_UNUSED(b);
+    if (*u->z == NULL) {
+        *u->z = msgpack_zone_new(MSGPACK_ZONE_CHUNK_SIZE);
+        if(*u->z == NULL) {
+            return MSGPACK_UNPACK_NOMEM_ERROR;
+        }
+    }
     o->type = MSGPACK_OBJECT_EXT;
     o->via.ext.type = *p;
     o->via.ext.ptr = p + 1;
@@ -317,7 +344,6 @@ bool msgpack_unpacker_init(msgpack_unpacker* mpac, size_t initial_buffer_size)
 {
     char* buffer;
     void* ctx;
-    msgpack_zone* z;
 
     if(initial_buffer_size < COUNTER_SIZE) {
         initial_buffer_size = COUNTER_SIZE;
@@ -334,26 +360,19 @@ bool msgpack_unpacker_init(msgpack_unpacker* mpac, size_t initial_buffer_size)
         return false;
     }
 
-    z = msgpack_zone_new(MSGPACK_ZONE_CHUNK_SIZE);
-    if(z == NULL) {
-        free(ctx);
-        free(buffer);
-        return false;
-    }
-
     mpac->buffer = buffer;
     mpac->used = COUNTER_SIZE;
     mpac->free = initial_buffer_size - mpac->used;
     mpac->off = COUNTER_SIZE;
     mpac->parsed = 0;
     mpac->initial_buffer_size = initial_buffer_size;
-    mpac->z = z;
+    mpac->z = NULL;
     mpac->ctx = ctx;
 
     init_count(mpac->buffer);
 
     template_init(CTX_CAST(mpac->ctx));
-    CTX_CAST(mpac->ctx)->user.z = mpac->z;
+    CTX_CAST(mpac->ctx)->user.z = &mpac->z;
     CTX_CAST(mpac->ctx)->user.referenced = false;
 
     return true;
@@ -480,21 +499,15 @@ msgpack_object msgpack_unpacker_data(msgpack_unpacker* mpac)
 
 msgpack_zone* msgpack_unpacker_release_zone(msgpack_unpacker* mpac)
 {
-    msgpack_zone* r;
-    msgpack_zone* old;
+    msgpack_zone* old = mpac->z;
 
+    if (old == NULL) return NULL;
     if(!msgpack_unpacker_flush_zone(mpac)) {
         return NULL;
     }
 
-    r = msgpack_zone_new(MSGPACK_ZONE_CHUNK_SIZE);
-    if(r == NULL) {
-        return NULL;
-    }
-
-    old = mpac->z;
-    mpac->z = r;
-    CTX_CAST(mpac->ctx)->user.z = mpac->z;
+    mpac->z = NULL;
+    CTX_CAST(mpac->ctx)->user.z = &mpac->z;
 
     return old;
 }
@@ -596,7 +609,7 @@ msgpack_unpack(const char* data, size_t len, size_t* off,
         template_context ctx;
         template_init(&ctx);
 
-        ctx.user.z = result_zone;
+        ctx.user.z = &result_zone;
         ctx.user.referenced = false;
 
         e = template_execute(&ctx, data, len, &noff);
@@ -633,19 +646,12 @@ msgpack_unpack_next(msgpack_unpacked* result,
         return MSGPACK_UNPACK_CONTINUE;
     }
 
-    if (!result->zone) {
-        result->zone = msgpack_zone_new(MSGPACK_ZONE_CHUNK_SIZE);
-    }
-
-    if (!result->zone) {
-        return MSGPACK_UNPACK_NOMEM_ERROR;
-    }
-    else {
+    {
         int e;
         template_context ctx;
         template_init(&ctx);
 
-        ctx.user.z = result->zone;
+        ctx.user.z = &result->zone;
         ctx.user.referenced = false;
 
         e = template_execute(&ctx, data, len, &noff);
