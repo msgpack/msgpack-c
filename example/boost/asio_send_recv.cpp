@@ -38,8 +38,8 @@ int main() {
                     std::cout << __LINE__ << ":" << e.message() << std::endl;
                     return;
                 }
-                unp.reserve_buffer(window_size);
                 do_async_read_some = [&] {
+                    unp.reserve_buffer(window_size);
                     ss.async_read_some(
                         boost::asio::buffer(unp.buffer(), window_size),
                         [&](boost::system::error_code const& e, std::size_t bytes_transferred) {
