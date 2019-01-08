@@ -352,8 +352,8 @@ struct object_pack_visitor {
         return true;
     }
     bool visit_ext(const char* v, uint32_t size) {
-        m_packer.pack_ext(size, *v);
-        m_packer.pack_ext_body(v, size);
+        m_packer.pack_ext(size - 1, *v);
+        m_packer.pack_ext_body(v + 1, size - 1);
         return true;
     }
     bool start_array(uint32_t num_elements) {
@@ -938,7 +938,7 @@ struct object_equal_visitor {
     }
     bool visit_ext(const char* v, uint32_t size) {
         if (m_ptr->type != msgpack::type::EXT ||
-            m_ptr->via.ext.size != size ||
+            m_ptr->via.ext.size != size - 1 ||
             std::memcmp(m_ptr->via.ext.ptr, v, size) != 0) {
             m_result = false;
             return false;
