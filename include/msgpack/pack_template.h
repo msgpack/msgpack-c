@@ -34,6 +34,10 @@
 #error msgpack_pack_append_buffer callback is not defined
 #endif
 
+#if defined(_MSC_VER)
+#   pragma warning(push)
+#   pragma warning(disable : 4204)   /* nonstandard extension used: non-constant aggregate initializer */
+#endif
 
 /*
  * Integer
@@ -935,3 +939,7 @@ msgpack_pack_inline_func(_timestamp)(msgpack_pack_user x, const msgpack_timestam
 #undef msgpack_pack_real_int16
 #undef msgpack_pack_real_int32
 #undef msgpack_pack_real_int64
+
+#if defined(_MSC_VER)
+#   pragma warning(pop)
+#endif

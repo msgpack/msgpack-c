@@ -42,10 +42,14 @@
 #endif
 
 #ifdef _WIN32
-#   define _msgpack_atomic_counter_header <windows.h>
-#   if !defined(WIN32_LEAN_AND_MEAN)
-#       define WIN32_LEAN_AND_MEAN
-#   endif /* WIN32_LEAN_AND_MEAN */
+#   if defined(_KERNEL_MODE)
+#       define _msgpack_atomic_counter_header <ntddk.h>
+#   else
+#       define _msgpack_atomic_counter_header <windows.h>
+#       if !defined(WIN32_LEAN_AND_MEAN)
+#           define WIN32_LEAN_AND_MEAN
+#       endif /* WIN32_LEAN_AND_MEAN */
+#   endif
     typedef long _msgpack_atomic_counter_t;
 #   define _msgpack_sync_decr_and_fetch(ptr) InterlockedDecrement(ptr)
 #   define _msgpack_sync_incr_and_fetch(ptr) InterlockedIncrement(ptr)
@@ -180,11 +184,13 @@
 
 
 #if !defined(__cplusplus) && defined(_MSC_VER)
-#  if !defined(FALSE)
-#    define FALSE (0)
-#  endif
-#  if !defined(TRUE)
-#    define TRUE (!FALSE)
+#  if !defined(_KERNEL_MODE)
+#    if !defined(FALSE)
+#      define FALSE (0)
+#    endif
+#    if !defined(TRUE)
+#      define TRUE (!FALSE)
+#    endif
 #  endif
 #  if _MSC_VER >= 1800
 #    include <stdbool.h>

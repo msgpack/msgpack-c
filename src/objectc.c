@@ -7,9 +7,15 @@
  *    (See accompanying file LICENSE_1_0.txt or copy at
  *    http://www.boost.org/LICENSE_1_0.txt)
  */
+#if defined(_KERNEL_MODE)
+#  undef  _NO_CRT_STDIO_INLINE
+#  define _NO_CRT_STDIO_INLINE
+#endif
+
 #include "msgpack/object.h"
 #include "msgpack/pack.h"
 #include <ctype.h>
+
 #include <stdio.h>
 #include <string.h>
 
@@ -25,6 +31,10 @@
 #include <inttypes.h>
 #endif
 
+#if defined(_KERNEL_MODE)
+#  undef  snprintf
+#  define snprintf _snprintf
+#endif
 
 int msgpack_pack_object(msgpack_packer* pk, msgpack_object d)
 {
@@ -115,6 +125,7 @@ int msgpack_pack_object(msgpack_packer* pk, msgpack_object d)
     }
 }
 
+#if !defined(_KERNEL_MODE)
 
 static void msgpack_object_bin_print(FILE* out, const char *ptr, size_t size)
 {
@@ -129,35 +140,6 @@ static void msgpack_object_bin_print(FILE* out, const char *ptr, size_t size)
         }
     }
 }
-
-static int msgpack_object_bin_print_buffer(char *buffer, size_t buffer_size, const char *ptr, size_t size)
-{
-    size_t i;
-    char *aux_buffer = buffer;
-    size_t aux_buffer_size = buffer_size;
-    int ret;
-
-    for (i = 0; i < size; ++i) {
-        if (ptr[i] == '"') {
-            ret = snprintf(aux_buffer, aux_buffer_size, "\\\"");
-            aux_buffer = aux_buffer + ret;
-            aux_buffer_size = aux_buffer_size - ret;
-        } else if (isprint((unsigned char)ptr[i])) {
-            if (aux_buffer_size > 0) {
-                memcpy(aux_buffer, ptr + i, 1);
-                aux_buffer = aux_buffer + 1;
-                aux_buffer_size = aux_buffer_size - 1;
-            }
-        } else {
-            ret = snprintf(aux_buffer, aux_buffer_size, "\\x%02x", (unsigned char)ptr[i]);
-            aux_buffer = aux_buffer + ret;
-            aux_buffer_size = aux_buffer_size - ret;
-        }
-    }
-
-    return buffer_size - aux_buffer_size;
-}
-
 
 void msgpack_object_print(FILE* out, msgpack_object o)
 {
@@ -268,6 +250,36 @@ void msgpack_object_print(FILE* out, msgpack_object o)
 #endif
 
     }
+}
+
+#endif
+
+static int msgpack_object_bin_print_buffer(char *buffer, size_t buffer_size, const char *ptr, size_t size)
+{
+    size_t i;
+    char *aux_buffer = buffer;
+    size_t aux_buffer_size = buffer_size;
+    int ret;
+
+    for (i = 0; i < size; ++i) {
+        if (ptr[i] == '"') {
+            ret = snprintf(aux_buffer, aux_buffer_size, "\\\"");
+            aux_buffer = aux_buffer + ret;
+            aux_buffer_size = aux_buffer_size - ret;
+        } else if (isprint((unsigned char)ptr[i])) {
+            if (aux_buffer_size > 0) {
+                memcpy(aux_buffer, ptr + i, 1);
+                aux_buffer = aux_buffer + 1;
+                aux_buffer_size = aux_buffer_size - 1;
+            }
+        } else {
+            ret = snprintf(aux_buffer, aux_buffer_size, "\\x%02x", (unsigned char)ptr[i]);
+            aux_buffer = aux_buffer + ret;
+            aux_buffer_size = aux_buffer_size - ret;
+        }
+    }
+
+    return (int)(buffer_size - aux_buffer_size);
 }
 
 int msgpack_object_print_buffer(char *buffer, size_t buffer_size, msgpack_object o)
@@ -465,7 +477,7 @@ int msgpack_object_print_buffer(char *buffer, size_t buffer_size, msgpack_object
 #endif
     }
 
-    return buffer_size - aux_buffer_size;
+    return (int)(buffer_size - aux_buffer_size);
 }
 
 

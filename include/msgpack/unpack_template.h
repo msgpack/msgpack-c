@@ -38,6 +38,11 @@
 #endif
 #endif
 
+#if defined(_KERNEL_MODE)
+#undef  assert
+#define assert NT_ASSERT
+#endif
+
 msgpack_unpack_struct_decl(_stack) {
     msgpack_unpack_object obj;
     size_t count;
