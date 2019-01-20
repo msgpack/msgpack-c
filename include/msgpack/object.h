@@ -97,8 +97,10 @@ typedef struct msgpack_object_kv {
     msgpack_object val;
 } msgpack_object_kv;
 
+#if !defined(_KERNEL_MODE)
 MSGPACK_DLLEXPORT
 void msgpack_object_print(FILE* out, msgpack_object o);
+#endif
 
 MSGPACK_DLLEXPORT
 int msgpack_object_print_buffer(char *buffer, size_t buffer_size, msgpack_object o);
