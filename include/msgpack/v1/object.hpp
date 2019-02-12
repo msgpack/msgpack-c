@@ -527,7 +527,7 @@ private:
 };
 
 struct aligned_zone_size_visitor {
-    explicit aligned_zone_size_visitor(std::size_t s)
+    explicit aligned_zone_size_visitor(std::size_t& s)
         :m_size(s) {}
     bool visit_nil() {
         return true;
@@ -596,7 +596,7 @@ struct aligned_zone_size_visitor {
         return true;
     }
 private:
-    std::size_t m_size;
+    std::size_t& m_size;
 };
 
 inline std::size_t aligned_zone_size(msgpack::object const& obj) {
