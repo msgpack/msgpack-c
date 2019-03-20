@@ -838,31 +838,31 @@ msgpack_pack_inline_func(_ext)(msgpack_pack_user x, size_t l, int8_t type)
     case 1: {
         unsigned char buf[2];
         buf[0] = 0xd4;
-        buf[1] = type;
+        buf[1] = (unsigned char)type;
         msgpack_pack_append_buffer(x, buf, 2);
     } break;
     case 2: {
         unsigned char buf[2];
         buf[0] = 0xd5;
-        buf[1] = type;
+        buf[1] = (unsigned char)type;
         msgpack_pack_append_buffer(x, buf, 2);
     } break;
     case 4: {
         unsigned char buf[2];
         buf[0] = 0xd6;
-        buf[1] = type;
+        buf[1] = (unsigned char)type;
         msgpack_pack_append_buffer(x, buf, 2);
     } break;
     case 8: {
         unsigned char buf[2];
         buf[0] = 0xd7;
-        buf[1] = type;
+        buf[1] = (unsigned char)type;
         msgpack_pack_append_buffer(x, buf, 2);
     } break;
     case 16: {
         unsigned char buf[2];
         buf[0] = 0xd8;
-        buf[1] = type;
+        buf[1] = (unsigned char)type;
         msgpack_pack_append_buffer(x, buf, 2);
     } break;
     default:
@@ -870,19 +870,19 @@ msgpack_pack_inline_func(_ext)(msgpack_pack_user x, size_t l, int8_t type)
             unsigned char buf[3];
             buf[0] = 0xc7;
             buf[1] = (unsigned char)l;
-            buf[2] = type;
+            buf[2] = (unsigned char)type;
             msgpack_pack_append_buffer(x, buf, 3);
         } else if(l < 65536) {
             unsigned char buf[4];
             buf[0] = 0xc8;
             _msgpack_store16(&buf[1], l);
-            buf[3] = type;
+            buf[3] = (unsigned char)type;
             msgpack_pack_append_buffer(x, buf, 4);
         } else {
             unsigned char buf[6];
             buf[0] = 0xc9;
             _msgpack_store32(&buf[1], l);
-            buf[5] = type;
+            buf[5] = (unsigned char)type;
             msgpack_pack_append_buffer(x, buf, 6);
         }
         break;
@@ -897,7 +897,7 @@ msgpack_pack_inline_func(_ext_body)(msgpack_pack_user x, const void* b, size_t l
 msgpack_pack_inline_func(_timestamp)(msgpack_pack_user x, const msgpack_timestamp* d)
 {
     if ((((int64_t)d->tv_sec) >> 34) == 0) {
-        uint64_t data64 = ((uint64_t) d->tv_nsec << 34) | d->tv_sec;
+        uint64_t data64 = ((uint64_t) d->tv_nsec << 34) | (uint64_t)d->tv_sec;
         if ((data64 & 0xffffffff00000000L) == 0)   {
             // timestamp 32
             char buf[4];

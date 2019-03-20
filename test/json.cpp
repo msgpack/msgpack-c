@@ -1,7 +1,13 @@
 #include <msgpack.hpp>
 #include <fstream>
 #include <sstream>
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wconversion"
+
 #include <gtest/gtest.h>
+
+#pragma GCC diagnostic pop
 
 TEST(json, basic_elements)
 {

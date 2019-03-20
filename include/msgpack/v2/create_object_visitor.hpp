@@ -85,7 +85,7 @@ public:
         msgpack::object* obj = m_stack.back();
         if(v >= 0) {
             obj->type = msgpack::type::POSITIVE_INTEGER;
-            obj->via.u64 = v;
+            obj->via.u64 = static_cast<uint64_t>(v);
         }
         else {
             obj->type = msgpack::type::NEGATIVE_INTEGER;

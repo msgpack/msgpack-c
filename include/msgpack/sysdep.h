@@ -95,7 +95,7 @@
 #if MSGPACK_ENDIAN_LITTLE_BYTE
 
 #   if defined(unix) || defined(__unix) || defined(__APPLE__) || defined(__OpenBSD__)
-#       define _msgpack_be16(x) ntohs(x)
+#       define _msgpack_be16(x) ntohs((uint16_t)x)
 #   else
 #       if defined(ntohs)
 #           define _msgpack_be16(x) ntohs(x)
@@ -109,7 +109,7 @@
 #   endif
 
 #   if defined(unix) || defined(__unix) || defined(__APPLE__) || defined(__OpenBSD__)
-#       define _msgpack_be32(x) ntohl(x)
+#       define _msgpack_be32(x) ntohl((uint32_t)x)
 #   else
 #       if defined(ntohl)
 #           define _msgpack_be32(x) ntohl(x)
@@ -154,16 +154,16 @@
 
 #define _msgpack_load16(cast, from, to) do {       \
         memcpy((cast*)(to), (from), sizeof(cast)); \
-        *(to) = _msgpack_be16(*(to));              \
+        *(to) = (cast)_msgpack_be16(*(to));      \
     } while (0);
 
 #define _msgpack_load32(cast, from, to) do {       \
         memcpy((cast*)(to), (from), sizeof(cast)); \
-        *(to) = _msgpack_be32(*(to));              \
+        *(to) = (cast)_msgpack_be32(*(to));        \
     } while (0);
 #define _msgpack_load64(cast, from, to) do {       \
         memcpy((cast*)(to), (from), sizeof(cast)); \
-        *(to) = _msgpack_be64(*(to));              \
+        *(to) = (cast)_msgpack_be64(*(to));        \
     } while (0);
 
 #define _msgpack_store16(to, num) \

@@ -352,7 +352,7 @@ struct object_pack_visitor {
         return true;
     }
     bool visit_ext(const char* v, uint32_t size) {
-        m_packer.pack_ext(size - 1, *v);
+        m_packer.pack_ext(size - 1, static_cast<int8_t>(*v));
         m_packer.pack_ext_body(v + 1, size - 1);
         return true;
     }
@@ -467,7 +467,7 @@ struct object_stringize_visitor {
         return true;
     }
     bool visit_bin(const char* v, uint32_t size) {
-        (m_os << '"').write(v, size) << '"';
+        (m_os << '"').write(v, static_cast<std::streamsize>(size)) << '"';
         return true;
     }
     bool visit_ext(const char* /*v*/, uint32_t /*size*/) {

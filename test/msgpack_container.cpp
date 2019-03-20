@@ -12,7 +12,12 @@
 
 #include "test_allocator.hpp"
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wconversion"
+
 #include <gtest/gtest.h>
+
+#pragma GCC diagnostic pop
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -75,7 +80,7 @@ TEST(MSGPACK_STL, simple_buffer_vector_char)
     for (unsigned int k = 0; k < kLoop; k++) {
         type val1;
         for (unsigned int i = 0; i < kElements; i++)
-            val1.push_back(rand());
+            val1.push_back(static_cast<char>(rand()));
         msgpack::sbuffer sbuf;
         msgpack::pack(sbuf, val1);
         msgpack::object_handle oh =
@@ -107,7 +112,7 @@ TEST(MSGPACK_STL, simple_buffer_vector_unsigned_char)
     for (unsigned int k = 0; k < kLoop; k++) {
         type val1;
         for (unsigned int i = 0; i < kElements; i++)
-            val1.push_back(rand());
+            val1.push_back(static_cast<unsigned char>(rand()));
         msgpack::sbuffer sbuf;
         msgpack::pack(sbuf, val1);
         msgpack::object_handle oh =
@@ -140,7 +145,7 @@ TEST(MSGPACK_STL, simple_buffer_vector_uint8_t)
     for (unsigned int k = 0; k < kLoop; k++) {
         type val1;
         for (unsigned int i = 0; i < kElements; i++)
-            val1.push_back(rand());
+            val1.push_back(static_cast<uint8_t>(rand()));
         msgpack::sbuffer sbuf;
         msgpack::pack(sbuf, val1);
         msgpack::object_handle oh =

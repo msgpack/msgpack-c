@@ -3,7 +3,14 @@
 #include <msgpack/fbuffer.h>
 #include <msgpack/zbuffer.hpp>
 #include <msgpack/zbuffer.h>
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wconversion"
+
 #include <gtest/gtest.h>
+
+#pragma GCC diagnostic pop
+
 #include <string.h>
 
 TEST(buffer, sbuffer)

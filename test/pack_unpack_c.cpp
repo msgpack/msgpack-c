@@ -1,5 +1,12 @@
 #include <msgpack.h>
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wconversion"
+
 #include <gtest/gtest.h>
+
+#pragma GCC diagnostic pop
+
 #include <stdio.h>
 
 TEST(pack, num)

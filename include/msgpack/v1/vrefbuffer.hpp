@@ -117,7 +117,7 @@ public:
     void append_ref(const char* buf, size_t len)
     {
         if(m_tail == m_end) {
-            const size_t nused = m_tail - m_array;
+            const size_t nused = static_cast<size_t>(m_tail - m_array);
             const size_t nnext = nused * 2;
 
             iovec* nvec = static_cast<iovec*>(::realloc(
@@ -145,11 +145,11 @@ public:
             if(sz < len) {
                 sz = len;
             }
-             
+
             if(sizeof(chunk) + sz < sz){
                 throw std::bad_alloc();
             }
-            
+
             chunk* c = static_cast<chunk*>(::malloc(sizeof(chunk) + sz));
             if(!c) {
                 throw std::bad_alloc();
@@ -184,7 +184,7 @@ public:
 
     size_t vector_size() const
     {
-        return m_tail - m_array;
+        return static_cast<size_t>(m_tail - m_array);
     }
 
     void migrate(vrefbuffer* to)
@@ -202,11 +202,11 @@ public:
 
         empty->next = MSGPACK_NULLPTR;
 
-        const size_t nused = m_tail - m_array;
+        const size_t nused = static_cast<size_t>(m_tail - m_array);
         if(to->m_tail + nused < m_end) {
-            const size_t tosize = to->m_tail - to->m_array;
+            const size_t tosize = static_cast<size_t>(to->m_tail - to->m_array);
             const size_t reqsize = nused + tosize;
-            size_t nnext = (to->m_end - to->m_array) * 2;
+            size_t nnext = static_cast<size_t>(to->m_end - to->m_array) * 2;
             while(nnext < reqsize) {
                 size_t tmp_nnext = nnext * 2;
                 if (tmp_nnext <= nnext) {

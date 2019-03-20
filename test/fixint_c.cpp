@@ -1,5 +1,11 @@
 #include <msgpack.h>
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wconversion"
+
 #include <gtest/gtest.h>
+
+#pragma GCC diagnostic pop
 
 TEST(fixint, size)
 {
@@ -29,4 +35,3 @@ TEST(fixint, size)
     msgpack_sbuffer_free(sbuf);
     msgpack_packer_free(pk);
 }
-

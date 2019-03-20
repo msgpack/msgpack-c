@@ -4,7 +4,12 @@
 #include <vector>
 #include <limits>
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wconversion"
+
 #include <gtest/gtest.h>
+
+#pragma GCC diagnostic pop
 
 #if defined(_MSC_VER) || defined(__MINGW32__)
 #define msgpack_rand() ((double)rand() / RAND_MAX)
@@ -26,7 +31,7 @@ const double kEPS = 1e-10;
         v.push_back(numeric_limits<test_type>::min());                  \
         v.push_back(numeric_limits<test_type>::max());                  \
         for (unsigned int i = 0; i < kLoop; i++)                        \
-            v.push_back(rand());                                        \
+            v.push_back(static_cast<test_type>(rand()));                \
         for (unsigned int i = 0; i < v.size() ; i++) {                  \
             test_type val = v[i];                                       \
             msgpack_sbuffer sbuf;                                       \
@@ -61,7 +66,7 @@ const double kEPS = 1e-10;
         v.push_back(numeric_limits<test_type>::min());                  \
         v.push_back(numeric_limits<test_type>::max());                  \
         for (unsigned int i = 0; i < kLoop; i++)                        \
-            v.push_back(rand());                                        \
+            v.push_back(static_cast<test_type>(rand()));                \
         for (unsigned int i = 0; i < v.size() ; i++) {                  \
             test_type val = v[i];                                       \
             msgpack_sbuffer sbuf;                                       \

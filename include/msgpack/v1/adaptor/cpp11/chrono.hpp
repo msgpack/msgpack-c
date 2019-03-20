@@ -122,7 +122,7 @@ struct pack<std::chrono::system_clock::time_point> {
             * std::chrono::system_clock::duration::period::ratio::num
             / std::chrono::system_clock::duration::period::ratio::den;
         if ((sec >> 34) == 0) {
-            uint64_t data64 = (nanosec << 34) | sec;
+            uint64_t data64 = (static_cast<uint64_t>(nanosec) << 34) | static_cast<uint64_t>(sec);
             if ((data64 & 0xffffffff00000000L) == 0) {
                 // timestamp 32
                 o.pack_ext(4, -1);
@@ -170,13 +170,13 @@ struct object_with_zone<std::chrono::system_clock::time_point> {
             * std::chrono::system_clock::duration::period::ratio::num
             / std::chrono::system_clock::duration::period::ratio::den;
         if ((sec >> 34) == 0) {
-            uint64_t data64 = (nanosec << 34) | sec;
+            uint64_t data64 = (static_cast<uint64_t>(nanosec) << 34) | static_cast<uint64_t>(sec);
             if ((data64 & 0xffffffff00000000L) == 0) {
                 // timestamp 32
                 o.type = msgpack::type::EXT;
                 o.via.ext.size = 4;
                 char* p = static_cast<char*>(o.zone.allocate_no_align(o.via.ext.size + 1));
-                p[0] = -1;
+                p[0] = static_cast<char>(-1);
                 uint32_t data32 = static_cast<uint32_t>(data64);
                 _msgpack_store32(&p[1], data32);
                 o.via.ext.ptr = p;
@@ -186,7 +186,7 @@ struct object_with_zone<std::chrono::system_clock::time_point> {
                 o.type = msgpack::type::EXT;
                 o.via.ext.size = 8;
                 char* p = static_cast<char*>(o.zone.allocate_no_align(o.via.ext.size + 1));
-                p[0] = -1;
+                p[0] = static_cast<char>(-1);
                 _msgpack_store64(&p[1], data64);
                 o.via.ext.ptr = p;
             }
@@ -196,7 +196,7 @@ struct object_with_zone<std::chrono::system_clock::time_point> {
             o.type = msgpack::type::EXT;
             o.via.ext.size = 12;
             char* p = static_cast<char*>(o.zone.allocate_no_align(o.via.ext.size + 1));
-            p[0] = -1;
+            p[0] = static_cast<char>(-1);
             _msgpack_store32(&p[1], static_cast<uint32_t>(nanosec));
             _msgpack_store64(&p[1 + 4], sec);
             o.via.ext.ptr = p;

@@ -40,7 +40,7 @@ struct object_bin {
 };
 
 struct object_ext {
-    int8_t type() const { return ptr[0]; }
+    int8_t type() const { return static_cast<int8_t>(ptr[0]); }
     const char* data() const { return &ptr[1]; }
     uint32_t size;
     const char* ptr;

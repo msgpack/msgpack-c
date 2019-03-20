@@ -55,7 +55,7 @@ class zone {
             ++m_tail;
         }
         void push_expand(void (*func)(void*), void* data) {
-            const size_t nused = m_end - m_array;
+            const size_t nused = static_cast<size_t>(m_end - m_array);
             size_t nnext;
             if(nused == 0) {
                 nnext = (sizeof(finalizer) < 72/2) ?
@@ -246,12 +246,12 @@ inline char* zone::get_aligned(char* ptr, size_t align)
 inline void* zone::allocate_align(size_t size, size_t align)
 {
     char* aligned = get_aligned(m_chunk_list.m_ptr, align);
-    size_t adjusted_size = size + (aligned - m_chunk_list.m_ptr);
+    size_t adjusted_size = size + static_cast<size_t>(aligned - m_chunk_list.m_ptr);
     if (m_chunk_list.m_free < adjusted_size) {
         size_t enough_size = size + align - 1;
         char* ptr = allocate_expand(enough_size);
         aligned = get_aligned(ptr, align);
-        adjusted_size = size + (aligned - m_chunk_list.m_ptr);
+        adjusted_size = size + static_cast<size_t>(aligned - m_chunk_list.m_ptr);
     }
     m_chunk_list.m_free -= adjusted_size;
     m_chunk_list.m_ptr  += adjusted_size;

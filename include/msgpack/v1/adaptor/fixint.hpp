@@ -22,6 +22,7 @@ namespace type {
 
 template <typename T>
 struct fix_int {
+    typedef T value_type;
     fix_int() : value(0) { }
     fix_int(T value) : value(value) { }
 
@@ -152,7 +153,7 @@ struct object<type::fix_int8> {
         }
         else {
             o.type = msgpack::type::POSITIVE_INTEGER;
-            o.via.u64 = v.get();
+            o.via.u64 = static_cast<uint64_t>(v.get());
         }
     }
 };
@@ -166,7 +167,7 @@ struct object<type::fix_int16> {
         }
         else {
             o.type = msgpack::type::POSITIVE_INTEGER;
-            o.via.u64 = v.get();
+            o.via.u64 = static_cast<uint64_t>(v.get());
         }
     }
 };
@@ -180,7 +181,7 @@ struct object<type::fix_int32> {
         }
         else {
             o.type = msgpack::type::POSITIVE_INTEGER;
-            o.via.u64 = v.get();
+            o.via.u64 = static_cast<uint64_t>(v.get());
         }
     }
 };
@@ -194,7 +195,7 @@ struct object<type::fix_int64> {
         }
         else {
             o.type = msgpack::type::POSITIVE_INTEGER;
-            o.via.u64 = v.get();
+            o.via.u64 = static_cast<uint64_t>(v.get());
         }
     }
 };

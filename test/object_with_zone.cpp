@@ -1,5 +1,12 @@
 #include <msgpack.hpp>
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wconversion"
+
 #include <gtest/gtest.h>
+
+#pragma GCC diagnostic pop
+
 #include <cmath>
 
 #ifdef HAVE_CONFIG_H
@@ -202,7 +209,7 @@ TEST(object_with_zone, vector)
         vector<int> v1;
         v1.push_back(1);
         for (unsigned int i = 1; i < kElements; i++)
-            v1.push_back(i);
+            v1.push_back(static_cast<int>(i));
         msgpack::zone z;
         msgpack::object obj(v1, z);
         EXPECT_TRUE(obj.as<vector<int> >() == v1);
@@ -282,7 +289,7 @@ TEST(object_with_zone, list)
         list<int> v1;
         v1.push_back(1);
         for (unsigned int i = 1; i < kElements; i++)
-            v1.push_back(i);
+            v1.push_back(static_cast<int>(i));
         msgpack::zone z;
         msgpack::object obj(v1, z);
         EXPECT_TRUE(obj.as<list<int> >() == v1);
@@ -298,7 +305,7 @@ TEST(object_with_zone, deque)
         deque<int> v1;
         v1.push_back(1);
         for (unsigned int i = 1; i < kElements; i++)
-            v1.push_back(i);
+            v1.push_back(static_cast<int>(i));
         msgpack::zone z;
         msgpack::object obj(v1, z);
         EXPECT_TRUE(obj.as<deque<int> >() == v1);
@@ -412,7 +419,7 @@ TEST(object_with_zone, set)
     for (unsigned int k = 0; k < kLoop; k++) {
         set<int> v1;
         for (unsigned int i = 0; i < kElements; i++)
-            v1.insert(i);
+            v1.insert(static_cast<int>(i));
         msgpack::zone z;
         msgpack::object obj(v1, z);
         EXPECT_TRUE(obj.as<set<int> >() == v1);
@@ -872,7 +879,7 @@ TEST(object_with_zone, array_char)
         test_t v1;
         v1[0] = 1;
         for (unsigned int i = 1; i < kElements; i++)
-            v1[i] = rand();
+            v1[i] = static_cast<char>(rand());
         msgpack::zone z;
         msgpack::object obj(v1, z);
         EXPECT_TRUE(obj.as<test_t>() == v1);
@@ -888,7 +895,7 @@ TEST(object_without_zone, array_char)
         test_t v1;
         v1[0] = 1;
         for (unsigned int i = 1; i < kElements; i++)
-            v1[i] = rand();
+            v1[i] = static_cast<char>(rand());
         msgpack::object obj(v1);
         EXPECT_TRUE(obj.as<test_t>() == v1);
         v1.front() = 42;
@@ -905,7 +912,7 @@ TEST(object_with_zone, array_unsigned_char)
         test_t v1;
         v1[0] = 1;
         for (unsigned int i = 1; i < kElements; i++)
-            v1[i] = rand();
+            v1[i] = static_cast<unsigned char>(rand());
         msgpack::zone z;
         msgpack::object obj(v1, z);
         EXPECT_TRUE(obj.as<test_t>() == v1);
@@ -922,7 +929,7 @@ TEST(object_without_zone, array_unsigned_char)
         test_t v1;
         v1[0] = 1;
         for (unsigned int i = 1; i < kElements; i++)
-            v1[i] = rand();
+            v1[i] = static_cast<unsigned char>(rand());
         msgpack::object obj(v1);
         EXPECT_TRUE(obj.as<test_t>() == v1);
         v1.front() = 42;
@@ -937,7 +944,7 @@ TEST(object_with_zone, forward_list)
     for (unsigned int k = 0; k < kLoop; k++) {
         forward_list<int> v1;
         for (unsigned int i = 0; i < kElements; i++)
-            v1.push_front(i);
+            v1.push_front(static_cast<int>(i));
         msgpack::zone z;
         msgpack::object obj(v1, z);
         EXPECT_TRUE(obj.as<forward_list<int> >() == v1);
@@ -1042,7 +1049,7 @@ TEST(object_with_zone, ext_empty)
 TEST(object_with_zone, ext)
 {
     msgpack::type::ext v(42, 10);
-    for (int i = 0; i < 10; ++i) v.data()[i] = i;
+    for (int i = 0; i < 10; ++i) v.data()[i] = static_cast<char>(i);
     msgpack::zone z;
     msgpack::object obj(v, z);
     EXPECT_TRUE(obj.as<msgpack::type::ext>() == v);

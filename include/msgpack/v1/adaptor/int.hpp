@@ -73,7 +73,7 @@ struct object_sign<true> {
         }
         else {
             o.type = msgpack::type::POSITIVE_INTEGER;
-            o.via.u64 = v;
+            o.via.u64 = static_cast<uint64_t>(v);
         }
     }
 };
@@ -278,7 +278,7 @@ struct object<signed char> {
         }
         else {
             o.type = msgpack::type::POSITIVE_INTEGER;
-            o.via.u64 = v;
+            o.via.u64 = static_cast<uint64_t>(v);
         }
     }
 };
@@ -292,7 +292,7 @@ struct object<signed short> {
         }
         else {
             o.type = msgpack::type::POSITIVE_INTEGER;
-            o.via.u64 = v;
+            o.via.u64 = static_cast<uint64_t>(v);
         }
     }
 };
@@ -306,7 +306,7 @@ struct object<signed int> {
         }
         else {
             o.type = msgpack::type::POSITIVE_INTEGER;
-            o.via.u64 = v;
+            o.via.u64 = static_cast<uint64_t>(v);
         }
     }
 };
@@ -320,7 +320,7 @@ struct object<signed long> {
         }
         else {
             o.type = msgpack::type::POSITIVE_INTEGER;
-            o.via.u64 = v;
+            o.via.u64 = static_cast<uint64_t>(v);
         }
     }
 };
@@ -334,7 +334,7 @@ struct object<signed long long> {
         }
         else{
             o.type = msgpack::type::POSITIVE_INTEGER;
-            o.via.u64 = v;
+            o.via.u64 = static_cast<uint64_t>(v);
         }
     }
 };
