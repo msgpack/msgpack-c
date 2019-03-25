@@ -2,7 +2,13 @@
 #include <msgpack.hpp>
 #include <sstream>
 #include <iterator>
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wconversion"
+
 #include <gtest/gtest.h>
+
+#pragma GCC diagnostic pop
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -393,10 +399,10 @@ TEST(MSGPACK_BOOST, object_with_zone_variant_raw_ref)
     v.push_back('a');
     v.push_back('b');
     v.push_back('c');
-    msgpack::type::raw_ref rr(&v.front(), v.size());
+    msgpack::type::raw_ref rr(&v.front(), static_cast<uint32_t>(v.size()));
     msgpack::type::variant val1 = rr;
     EXPECT_TRUE(val1.is_raw_ref());
-    EXPECT_EQ(val1.as_raw_ref(), msgpack::type::raw_ref(&v.front(), v.size()));
+    EXPECT_EQ(val1.as_raw_ref(), msgpack::type::raw_ref(&v.front(), static_cast<uint32_t>(v.size())));
     msgpack::object obj(val1, z);
     msgpack::type::variant val2 = obj.as<msgpack::type::variant>();
     // Converted as std::vector<char>.
@@ -418,7 +424,7 @@ TEST(MSGPACK_BOOST, pack_convert_variant_ext)
     v.push_back('a');
     v.push_back('b');
     v.push_back('c');
-    msgpack::type::ext e(42, v.data(), v.size());
+    msgpack::type::ext e(42, v.data(), static_cast<uint32_t>(v.size()));
     msgpack::type::variant val1(e);
     EXPECT_TRUE(val1.is_ext());
     EXPECT_EQ(val1.as_ext(), e);
@@ -443,7 +449,7 @@ TEST(MSGPACK_BOOST, object_with_zone_variant_ext)
     v.push_back('a');
     v.push_back('b');
     v.push_back('c');
-    msgpack::type::ext e(42, v.data(), v.size());
+    msgpack::type::ext e(42, v.data(), static_cast<uint32_t>(v.size()));
     msgpack::type::variant val1(e);
     EXPECT_TRUE(val1.is_ext());
     EXPECT_EQ(val1.as_ext(), e);
@@ -463,7 +469,7 @@ TEST(MSGPACK_BOOST, object_with_zone_variant_ext_ref)
     v.push_back('a');
     v.push_back('b');
     v.push_back('c');
-    msgpack::type::ext_ref e(v.data(), v.size());
+    msgpack::type::ext_ref e(v.data(), static_cast<uint32_t>(v.size()));
     msgpack::type::variant val1(e);
     EXPECT_TRUE(val1.is_ext_ref());
     EXPECT_EQ(val1.as_ext_ref(), e);
@@ -616,7 +622,7 @@ TEST(MSGPACK_BOOST, pack_convert_variant_ref_bin)
     v.push_back('a');
     v.push_back('b');
     v.push_back('c');
-    msgpack::type::raw_ref rr(v.data(), v.size());
+    msgpack::type::raw_ref rr(v.data(), static_cast<uint32_t>(v.size()));
     msgpack::type::variant_ref val1 = rr;
     EXPECT_TRUE(val1.is_raw_ref());
     EXPECT_EQ(val1.as_raw_ref(), rr);
@@ -641,7 +647,7 @@ TEST(MSGPACK_BOOST, object_with_zone_variant_ref_bin)
     v.push_back('a');
     v.push_back('b');
     v.push_back('c');
-    msgpack::type::raw_ref rr(v.data(), v.size());
+    msgpack::type::raw_ref rr(v.data(), static_cast<uint32_t>(v.size()));
     msgpack::type::variant_ref val1 = rr;
     EXPECT_TRUE(val1.is_raw_ref());
     EXPECT_EQ(val1.as_raw_ref(), rr);
@@ -663,7 +669,7 @@ TEST(MSGPACK_BOOST, pack_convert_variant_ref_ext)
     v.push_back('a');
     v.push_back('b');
     v.push_back('c');
-    msgpack::type::ext_ref er(v.data(), v.size());
+    msgpack::type::ext_ref er(v.data(), static_cast<uint32_t>(v.size()));
     msgpack::type::variant_ref val1(er);
     EXPECT_TRUE(val1.is_ext_ref());
     EXPECT_EQ(val1.as_ext_ref(), er);
@@ -688,7 +694,7 @@ TEST(MSGPACK_BOOST, object_with_zone_variant_ref_ext)
     v.push_back('a');
     v.push_back('b');
     v.push_back('c');
-    msgpack::type::ext_ref er(v.data(), v.size());
+    msgpack::type::ext_ref er(v.data(), static_cast<uint32_t>(v.size()));
     msgpack::type::variant_ref val1(er);
     EXPECT_TRUE(val1.is_ext_ref());
     EXPECT_EQ(val1.as_ext_ref(), er);

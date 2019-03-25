@@ -1,5 +1,12 @@
 #include <msgpack.hpp>
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wconversion"
+
 #include <gtest/gtest.h>
+
+#pragma GCC diagnostic pop
+
 #include <sstream>
 
 TEST(carray, pack_unpack_int)

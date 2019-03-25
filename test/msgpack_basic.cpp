@@ -9,7 +9,12 @@
 #include <list>
 #include <limits>
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wconversion"
+
 #include <gtest/gtest.h>
+
+#pragma GCC diagnostic pop
 
 #if defined(_MSC_VER) || defined(__MINGW32__)
 #define msgpack_rand() ((double)rand() / RAND_MAX)
@@ -36,7 +41,7 @@ const double kEPS = 1e-10;
         v.push_back(numeric_limits<test_type>::min());      \
         v.push_back(numeric_limits<test_type>::max());      \
         for (unsigned int i = 0; i < kLoop; i++)            \
-            v.push_back(rand());                            \
+            v.push_back(static_cast<test_type>(rand()));    \
         for (unsigned int i = 0; i < v.size() ; i++) {      \
             msgpack::sbuffer sbuf;                          \
             test_type val1 = v[i];                          \
@@ -209,7 +214,7 @@ TYPED_TEST_P(IntegerToFloatingPointTest, simple_buffer)
     vector<integer_type> v;
     v.push_back(0);
     v.push_back(1);
-    if (numeric_limits<integer_type>::is_signed) v.push_back(-1);
+    if (numeric_limits<integer_type>::is_signed) v.push_back(static_cast<integer_type>(-1));
     else v.push_back(2);
     for (unsigned int i = 0; i < kLoop; i++) {
         v.push_back(rand() % 0x7FFFFF);
@@ -221,7 +226,7 @@ TYPED_TEST_P(IntegerToFloatingPointTest, simple_buffer)
         msgpack::object_handle oh =
             msgpack::unpack(sbuf.data(), sbuf.size());
         float_type val2 = oh.get().as<float_type>();
-        EXPECT_TRUE(fabs(val2 - val1) <= kEPS);
+        EXPECT_TRUE(fabs(val2 - static_cast<float_type>(val1)) <= kEPS);
     }
 }
 
@@ -664,7 +669,7 @@ TEST(MSGPACK_STL, simple_buffer_string)
     for (unsigned int k = 0; k < kLoop; k++) {
         string val1;
         for (unsigned int i = 0; i < kElements; i++)
-            val1 += 'a' + rand() % 26;
+            val1 += static_cast<char>('a' + rand() % 26);
         msgpack::sbuffer sbuf;
         msgpack::pack(sbuf, val1);
         msgpack::object_handle oh =
@@ -681,7 +686,7 @@ TEST(MSGPACK_STL, simple_buffer_cstring)
     for (unsigned int k = 0; k < kLoop; k++) {
         string val1;
         for (unsigned int i = 0; i < kElements; i++)
-            val1 += 'a' + rand() % 26;
+            val1 += static_cast<char>('a' + rand() % 26);
         msgpack::sbuffer sbuf;
         msgpack::pack(sbuf, val1.c_str());
         msgpack::object_handle oh =
@@ -698,7 +703,7 @@ TEST(MSGPACK_STL, simple_buffer_non_const_cstring)
     for (unsigned int k = 0; k < kLoop; k++) {
         string val1;
         for (unsigned int i = 0; i < kElements; i++)
-            val1 += 'a' + rand() % 26;
+            val1 += static_cast<char>('a' + rand() % 26);
         msgpack::sbuffer sbuf;
         char* s = new char[val1.size() + 1];
         std::memcpy(s, val1.c_str(), val1.size() + 1);

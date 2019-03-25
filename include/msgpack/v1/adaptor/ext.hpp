@@ -178,7 +178,7 @@ inline ext::ext(ext_ref const& x) {
     // size limit has already been checked at ext_ref's constructor
     m_data.reserve(x.size() + 1);
 
-    m_data.push_back(x.type());
+    m_data.push_back(static_cast<char>(x.type()));
     m_data.insert(m_data.end(), x.data(), x.data() + x.size());
 }
 

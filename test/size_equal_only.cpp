@@ -1,6 +1,12 @@
 #include <sstream>
 #include <msgpack.hpp>
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wconversion"
+
 #include <gtest/gtest.h>
+
+#pragma GCC diagnostic pop
 
 TEST(size_equal_only, array)
 {

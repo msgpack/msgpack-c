@@ -1,13 +1,19 @@
 #include <msgpack.hpp>
 #include <fstream>
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wconversion"
+
 #include <gtest/gtest.h>
+
+#pragma GCC diagnostic pop
 
 static void feed_file(msgpack::unpacker& pac, const char* path)
 {
     std::ifstream fin(path);
     while(true) {
         pac.reserve_buffer(32*1024);
-        fin.read(pac.buffer(), pac.buffer_capacity());
+        fin.read(pac.buffer(), static_cast<std::streamsize>(pac.buffer_capacity()));
         if(fin.bad()) {
             throw std::runtime_error("read failed");
         }

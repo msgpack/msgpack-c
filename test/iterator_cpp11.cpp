@@ -1,5 +1,11 @@
 #include <msgpack.hpp>
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wconversion"
+
 #include <gtest/gtest.h>
+
+#pragma GCC diagnostic pop
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"

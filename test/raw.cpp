@@ -3,7 +3,12 @@
 #include <string>
 #include <sstream>
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wconversion"
+
 #include <gtest/gtest.h>
+
+#pragma GCC diagnostic pop
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -13,7 +18,7 @@ TEST(MSGPACK_RAW_REF, pack_unpack)
 {
     std::string s = "ABC";
 
-    msgpack::type::raw_ref rr1(s.data(), s.size());
+    msgpack::type::raw_ref rr1(s.data(), static_cast<uint32_t>(s.size()));
     std::stringstream ss;
     msgpack::pack(ss, rr1);
     std::string packed_str = ss.str();
@@ -33,7 +38,7 @@ TEST(MSGPACK_RAW_REF, pack_unpack_8_l)
 {
     std::string s;
 
-    msgpack::type::raw_ref rr1(s.data(), s.size());
+    msgpack::type::raw_ref rr1(s.data(), static_cast<uint32_t>(s.size()));
     std::stringstream ss;
     msgpack::pack(ss, rr1);
     std::string packed_str = ss.str();
@@ -50,7 +55,7 @@ TEST(MSGPACK_RAW_REF, pack_unpack_8_h)
 {
     std::string s(0xff, 'A');
 
-    msgpack::type::raw_ref rr1(s.data(), s.size());
+    msgpack::type::raw_ref rr1(s.data(), static_cast<uint32_t>(s.size()));
     std::stringstream ss;
     msgpack::pack(ss, rr1);
     std::string packed_str = ss.str();
@@ -68,7 +73,7 @@ TEST(MSGPACK_RAW_REF, pack_unpack_16_l)
 {
     std::string s(0xff+1, 'A');
 
-    msgpack::type::raw_ref rr1(s.data(), s.size());
+    msgpack::type::raw_ref rr1(s.data(), static_cast<uint32_t>(s.size()));
     std::stringstream ss;
     msgpack::pack(ss, rr1);
     std::string packed_str = ss.str();
@@ -87,7 +92,7 @@ TEST(MSGPACK_RAW_REF, pack_unpack_16_h)
 {
     std::string s(0xffff, 'A');
 
-    msgpack::type::raw_ref rr1(s.data(), s.size());
+    msgpack::type::raw_ref rr1(s.data(), static_cast<uint32_t>(s.size()));
     std::stringstream ss;
     msgpack::pack(ss, rr1);
     std::string packed_str = ss.str();
@@ -106,7 +111,7 @@ TEST(MSGPACK_RAW_REF, pack_unpack_32_l)
 {
     std::string s(0xffff+1, 'A');
 
-    msgpack::type::raw_ref rr1(s.data(), s.size());
+    msgpack::type::raw_ref rr1(s.data(), static_cast<uint32_t>(s.size()));
     std::stringstream ss;
     msgpack::pack(ss, rr1);
     std::string packed_str = ss.str();
@@ -127,7 +132,7 @@ TEST(MSGPACK_V4RAW_REF, pack_unpack)
 {
     std::string s = "ABC";
 
-    msgpack::type::v4raw_ref rr1(s.data(), s.size());
+    msgpack::type::v4raw_ref rr1(s.data(), static_cast<uint32_t>(s.size()));
     std::stringstream ss;
     msgpack::pack(ss, rr1);
     std::string packed_str = ss.str();
@@ -146,7 +151,7 @@ TEST(MSGPACK_V4RAW_REF, pack_unpack_fix_l)
 {
     std::string s;
 
-    msgpack::type::v4raw_ref rr1(s.data(), s.size());
+    msgpack::type::v4raw_ref rr1(s.data(), static_cast<uint32_t>(s.size()));
     std::stringstream ss;
     msgpack::pack(ss, rr1);
     std::string packed_str = ss.str();
@@ -162,7 +167,7 @@ TEST(MSGPACK_V4RAW_REF, pack_unpack_fix_h)
 {
     std::string s(0x1f, 'A');
 
-    msgpack::type::v4raw_ref rr1(s.data(), s.size());
+    msgpack::type::v4raw_ref rr1(s.data(), static_cast<uint32_t>(s.size()));
     std::stringstream ss;
     msgpack::pack(ss, rr1);
     std::string packed_str = ss.str();
@@ -179,7 +184,7 @@ TEST(MSGPACK_V4RAW_REF, pack_unpack_16_l)
 {
     std::string s(0x1f+1, 'A');
 
-    msgpack::type::v4raw_ref rr1(s.data(), s.size());
+    msgpack::type::v4raw_ref rr1(s.data(), static_cast<uint32_t>(s.size()));
     std::stringstream ss;
     msgpack::pack(ss, rr1);
     std::string packed_str = ss.str();
@@ -198,7 +203,7 @@ TEST(MSGPACK_V4RAW_REF, pack_unpack_16_h)
 {
     std::string s(0xffff, 'A');
 
-    msgpack::type::v4raw_ref rr1(s.data(), s.size());
+    msgpack::type::v4raw_ref rr1(s.data(), static_cast<uint32_t>(s.size()));
     std::stringstream ss;
     msgpack::pack(ss, rr1);
     std::string packed_str = ss.str();
@@ -217,7 +222,7 @@ TEST(MSGPACK_V4RAW_REF, pack_unpack_32_l)
 {
     std::string s(0xffff+1, 'A');
 
-    msgpack::type::v4raw_ref rr1(s.data(), s.size());
+    msgpack::type::v4raw_ref rr1(s.data(), static_cast<uint32_t>(s.size()));
     std::stringstream ss;
     msgpack::pack(ss, rr1);
     std::string packed_str = ss.str();

@@ -1,5 +1,12 @@
 #include <msgpack.hpp>
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wconversion"
+
 #include <gtest/gtest.h>
+
+#pragma GCC diagnostic pop
+
 #include <sstream>
 
 TEST(pack, num)
@@ -517,7 +524,7 @@ TEST(unpack, int_off_larger_than_length)
 TEST(unpack, empty_array_fix)
 {
     std::string buf;
-    buf.push_back(static_cast<unsigned char>(0x90));
+    buf.push_back(static_cast<char>(0x90));
     std::size_t off = 0;
 
     msgpack::object_handle oh = msgpack::unpack(buf.data(), buf.size(), off);
@@ -529,9 +536,9 @@ TEST(unpack, empty_array_fix)
 TEST(unpack, empty_array_16)
 {
     std::string buf;
-    buf.push_back(static_cast<unsigned char>(0xdc));
-    buf.push_back(static_cast<unsigned char>(0x00));
-    buf.push_back(static_cast<unsigned char>(0x00));
+    buf.push_back(static_cast<char>(0xdc));
+    buf.push_back(static_cast<char>(0x00));
+    buf.push_back(static_cast<char>(0x00));
     std::size_t off = 0;
 
     msgpack::object_handle oh = msgpack::unpack(buf.data(), buf.size(), off);
@@ -543,11 +550,11 @@ TEST(unpack, empty_array_16)
 TEST(unpack, empty_array_32)
 {
     std::string buf;
-    buf.push_back(static_cast<unsigned char>(0xdd));
-    buf.push_back(static_cast<unsigned char>(0x00));
-    buf.push_back(static_cast<unsigned char>(0x00));
-    buf.push_back(static_cast<unsigned char>(0x00));
-    buf.push_back(static_cast<unsigned char>(0x00));
+    buf.push_back(static_cast<char>(0xdd));
+    buf.push_back(static_cast<char>(0x00));
+    buf.push_back(static_cast<char>(0x00));
+    buf.push_back(static_cast<char>(0x00));
+    buf.push_back(static_cast<char>(0x00));
     std::size_t off = 0;
 
     msgpack::object_handle oh = msgpack::unpack(buf.data(), buf.size(), off);
@@ -559,7 +566,7 @@ TEST(unpack, empty_array_32)
 TEST(unpack, empty_map_fix)
 {
     std::string buf;
-    buf.push_back(static_cast<unsigned char>(0x80));
+    buf.push_back(static_cast<char>(0x80));
     std::size_t off = 0;
 
     msgpack::object_handle oh = msgpack::unpack(buf.data(), buf.size(), off);
@@ -571,9 +578,9 @@ TEST(unpack, empty_map_fix)
 TEST(unpack, empty_map_16)
 {
     std::string buf;
-    buf.push_back(static_cast<unsigned char>(0xde));
-    buf.push_back(static_cast<unsigned char>(0x00));
-    buf.push_back(static_cast<unsigned char>(0x00));
+    buf.push_back(static_cast<char>(0xde));
+    buf.push_back(static_cast<char>(0x00));
+    buf.push_back(static_cast<char>(0x00));
     std::size_t off = 0;
 
     msgpack::object_handle oh = msgpack::unpack(buf.data(), buf.size(), off);
@@ -585,11 +592,11 @@ TEST(unpack, empty_map_16)
 TEST(unpack, empty_map_32)
 {
     std::string buf;
-    buf.push_back(static_cast<unsigned char>(0xdf));
-    buf.push_back(static_cast<unsigned char>(0x00));
-    buf.push_back(static_cast<unsigned char>(0x00));
-    buf.push_back(static_cast<unsigned char>(0x00));
-    buf.push_back(static_cast<unsigned char>(0x00));
+    buf.push_back(static_cast<char>(0xdf));
+    buf.push_back(static_cast<char>(0x00));
+    buf.push_back(static_cast<char>(0x00));
+    buf.push_back(static_cast<char>(0x00));
+    buf.push_back(static_cast<char>(0x00));
     std::size_t off = 0;
 
     msgpack::object_handle oh = msgpack::unpack(buf.data(), buf.size(), off);

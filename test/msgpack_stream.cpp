@@ -9,7 +9,12 @@
 #include <list>
 #include <limits>
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wconversion"
+
 #include <gtest/gtest.h>
+
+#pragma GCC diagnostic pop
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -26,8 +31,8 @@ const unsigned int kLoop = 1000;
         msgpack::packer<msgpack::sbuffer> pk(sbuf);                     \
         typedef std::vector<test_type> vec_type;                        \
         vec_type vec;                                                   \
-        for(unsigned int i = 0; i < rand() % kLoop; ++i) {              \
-            vec_type::value_type r = rand();                            \
+        for(unsigned int i = 0; i < static_cast<unsigned int>(rand()) % kLoop; ++i) { \
+            vec_type::value_type r = static_cast<test_type>(rand());    \
             vec.push_back(r);                                           \
             pk.pack(r);                                                 \
         }                                                               \
@@ -36,7 +41,7 @@ const unsigned int kLoop = 1000;
         const char *p = sbuf.data();                                    \
         const char * const pend = p + sbuf.size();                      \
         while (p < pend) {                                              \
-            const size_t sz = std::min<size_t>(pend - p, rand() % 128); \
+            const size_t sz = std::min<size_t>(static_cast<std::size_t>(pend - p), static_cast<std::size_t>(rand() % 128)); \
             pac.reserve_buffer(sz);                                     \
             memcpy(pac.buffer(), p, sz);                                \
             pac.buffer_consumed(sz);                                    \
