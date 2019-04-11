@@ -190,7 +190,7 @@ static inline int template_callback_false(unpack_user* u, msgpack_object* o)
 static inline int template_callback_array(unpack_user* u, unsigned int n, msgpack_object* o)
 {
     unsigned int size;
-	unsigned long long tmp;
+    unsigned long long tmp;
 
     o->type = MSGPACK_OBJECT_ARRAY;
     o->via.array.size = 0;
@@ -201,7 +201,7 @@ static inline int template_callback_array(unpack_user* u, unsigned int n, msgpac
         return MSGPACK_UNPACK_NOMEM_ERROR;
     }
 
-	size = (unsigned int)tmp;
+    size = (unsigned int)tmp;
 
     if (*u->z == NULL) {
         *u->z = msgpack_zone_new(MSGPACK_ZONE_CHUNK_SIZE);
@@ -210,7 +210,7 @@ static inline int template_callback_array(unpack_user* u, unsigned int n, msgpac
         }
     }
 
-	// Unsure whether size = 0 should be an error, and if so, what to return
+    // Unsure whether size = 0 should be an error, and if so, what to return
     o->via.array.ptr = (msgpack_object*)msgpack_zone_malloc(*u->z, size);
     if(o->via.array.ptr == NULL) { return MSGPACK_UNPACK_NOMEM_ERROR; }
     return 0;
@@ -231,7 +231,7 @@ static inline int template_callback_array_item(unpack_user* u, msgpack_object* c
 static inline int template_callback_map(unpack_user* u, unsigned int n, msgpack_object* o)
 {
     unsigned int size;
-	unsigned long long tmp;
+    unsigned long long tmp;
 
     o->type = MSGPACK_OBJECT_MAP;
     o->via.map.size = 0;
