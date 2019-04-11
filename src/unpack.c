@@ -242,7 +242,7 @@ static inline int template_callback_map(unpack_user* u, unsigned int n, msgpack_
         return MSGPACK_UNPACK_NOMEM_ERROR;
     }
 
-	size = (unsigned int)tmp;
+    size = (unsigned int)tmp;
 
     if (*u->z == NULL) {
         *u->z = msgpack_zone_new(MSGPACK_ZONE_CHUNK_SIZE);
@@ -251,7 +251,7 @@ static inline int template_callback_map(unpack_user* u, unsigned int n, msgpack_
         }
     }
 
-	// Should size = 0 be an error? If so, what error to return?
+    // Should size = 0 be an error? If so, what error to return?
     o->via.map.ptr = (msgpack_object_kv*)msgpack_zone_malloc(*u->z, size);
     if(o->via.map.ptr == NULL) { return MSGPACK_UNPACK_NOMEM_ERROR; }
     return 0;
