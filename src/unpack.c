@@ -190,19 +190,27 @@ static inline int template_callback_false(unpack_user* u, msgpack_object* o)
 static inline int template_callback_array(unpack_user* u, unsigned int n, msgpack_object* o)
 {
     unsigned int size;
+	unsigned long long tmp;
+
     o->type = MSGPACK_OBJECT_ARRAY;
     o->via.array.size = 0;
-    size = n*sizeof(msgpack_object);
-    if (size / sizeof(msgpack_object) != n) {
+    tmp = (unsigned long long)n * sizeof(msgpack_object);
+
+    if (tmp & 0xffffffff00000000) {
         // integer overflow
         return MSGPACK_UNPACK_NOMEM_ERROR;
     }
+
+	size = (unsigned int)tmp;
+
     if (*u->z == NULL) {
         *u->z = msgpack_zone_new(MSGPACK_ZONE_CHUNK_SIZE);
         if(*u->z == NULL) {
             return MSGPACK_UNPACK_NOMEM_ERROR;
         }
     }
+
+	// Unsure whether size = 0 should be an error, and if so, what to return
     o->via.array.ptr = (msgpack_object*)msgpack_zone_malloc(*u->z, size);
     if(o->via.array.ptr == NULL) { return MSGPACK_UNPACK_NOMEM_ERROR; }
     return 0;
@@ -223,19 +231,27 @@ static inline int template_callback_array_item(unpack_user* u, msgpack_object* c
 static inline int template_callback_map(unpack_user* u, unsigned int n, msgpack_object* o)
 {
     unsigned int size;
+	unsigned long long tmp;
+
     o->type = MSGPACK_OBJECT_MAP;
     o->via.map.size = 0;
-    size = n*sizeof(msgpack_object_kv);
-    if (size / sizeof(msgpack_object_kv) != n) {
+    size = (unsigned long long)n * sizeof(msgpack_object_kv);
+
+    if (tmp & 0xffffffff00000000) {
         // integer overflow
         return MSGPACK_UNPACK_NOMEM_ERROR;
     }
+
+	size = (unsigned int)tmp;
+
     if (*u->z == NULL) {
         *u->z = msgpack_zone_new(MSGPACK_ZONE_CHUNK_SIZE);
         if(*u->z == NULL) {
             return MSGPACK_UNPACK_NOMEM_ERROR;
         }
     }
+
+	// Should size = 0 be an error? If so, what error to return?
     o->via.map.ptr = (msgpack_object_kv*)msgpack_zone_malloc(*u->z, size);
     if(o->via.map.ptr == NULL) { return MSGPACK_UNPACK_NOMEM_ERROR; }
     return 0;
