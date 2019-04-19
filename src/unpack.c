@@ -235,7 +235,7 @@ static inline int template_callback_map(unpack_user* u, unsigned int n, msgpack_
 
     o->type = MSGPACK_OBJECT_MAP;
     o->via.map.size = 0;
-    size = (unsigned long long)n * sizeof(msgpack_object_kv);
+    tmp = (unsigned long long)n * sizeof(msgpack_object_kv);
 
     if (tmp & 0xffffffff00000000) {
         // integer overflow
