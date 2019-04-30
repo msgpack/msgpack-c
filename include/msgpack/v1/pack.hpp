@@ -620,31 +620,13 @@ private:
 
     void append_buffer(const char* buf, size_t len)
     {
-        append_buffer(m_stream, &Stream::write, buf, len);
+        append_buffer(&Stream::write, buf, len);
     }
 
-    template <typename S, typename Write>
-    typename enable_if<
-        is_same<
-            std::ostream& (std::ostream::*)(const char*, std::streamsize),
-            Write
-        >::value
-    >::type
-    append_buffer(S& s, Write, const char* buf, size_t len)
+    template <typename Ret, typename Cls, typename SizeType>
+    void append_buffer(Ret (Cls::*)(const char*, SizeType), const char* buf, size_t len)
     {
-        s.write(buf, static_cast<std::streamsize>(len));
-    }
-
-    template <typename S, typename Write>
-    typename enable_if<
-        !is_same<
-            std::ostream& (std::ostream::*)(const char*, std::streamsize),
-            Write
-        >::value
-    >::type
-    append_buffer(S& s, Write, const char* buf, size_t len)
-    {
-        s.write(buf, len);
+        m_stream.write(buf, static_cast<SizeType>(len));
     }
 
 private:
