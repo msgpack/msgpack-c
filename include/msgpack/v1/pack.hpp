@@ -631,7 +631,7 @@ private:
 
 #if !defined(MSGPACK_USE_CPP03)
     template <typename Ret, typename Cls,  typename SizeType>
-    void append_buffer(Ret (Cls::*)(const char*, SizeType) noexcept(true), const char* buf, size_t len)
+    void append_buffer(Ret (Cls::*)(const char*, SizeType) noexcept, const char* buf, size_t len) noexcept
     {
         m_stream.write(buf, static_cast<SizeType>(len));
     }
