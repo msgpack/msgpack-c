@@ -623,29 +623,11 @@ private:
         append_buffer(&Stream::write, buf, len);
     }
 
-#if defined(MSGPACK_USE_CPP03)
-
     template <typename Ret, typename Cls, typename SizeType>
     void append_buffer(Ret (Cls::*)(const char*, SizeType), const char* buf, size_t len)
     {
         m_stream.write(buf, static_cast<SizeType>(len));
     }
-
-#else  // defined(MSGPACK_USE_CPP03)
-
-    template <typename Ret, typename Cls,  typename SizeType>
-    void append_buffer(Ret (Cls::*)(const char*, SizeType) noexcept(false), const char* buf, size_t len) noexcept(false)
-    {
-        m_stream.write(buf, static_cast<SizeType>(len));
-    }
-
-    template <typename Ret, typename Cls,  typename SizeType>
-    void append_buffer(Ret (Cls::*)(const char*, SizeType) noexcept(true), const char* buf, size_t len) noexcept(true)
-    {
-        m_stream.write(buf, static_cast<SizeType>(len));
-    }
-
-#endif // defined(MSGPACK_USE_CPP03)
 
 private:
     Stream& m_stream;
