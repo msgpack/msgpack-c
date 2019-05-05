@@ -51,8 +51,13 @@
 #       endif /* WIN32_LEAN_AND_MEAN */
 #   endif
     typedef long _msgpack_atomic_counter_t;
-#   define _msgpack_sync_decr_and_fetch(ptr) InterlockedDecrement(ptr)
-#   define _msgpack_sync_incr_and_fetch(ptr) InterlockedIncrement(ptr)
+#if defined(_AMD64_) || defined(_M_X64) || defined(_M_ARM64)
+#    define _msgpack_sync_decr_and_fetch(ptr) _InterlockedDecrement(ptr)
+#    define _msgpack_sync_incr_and_fetch(ptr) _InterlockedIncrement(ptr)
+#else
+#    define _msgpack_sync_decr_and_fetch(ptr) InterlockedDecrement(ptr)
+#    define _msgpack_sync_incr_and_fetch(ptr) InterlockedIncrement(ptr)
+#endif
 #elif defined(__GNUC__) && ((__GNUC__*10 + __GNUC_MINOR__) < 41)
 
 #   if defined(__cplusplus)
