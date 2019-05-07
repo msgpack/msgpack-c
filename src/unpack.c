@@ -189,19 +189,17 @@ static inline int template_callback_false(unpack_user* u, msgpack_object* o)
 
 static inline int template_callback_array(unpack_user* u, unsigned int n, msgpack_object* o)
 {
-    unsigned int size;
-    unsigned long long tmp;
+    // Let's leverage the fact that sizeof(msgpack_object) is a compile time constant
+    // to check for int overflows.
+    // Note - while n is constrained to 32-bit, the product of n * sizeof(msgpack_object)
+    // might not be constrained to 4GB on 64-bit systems
+    if( n > SIZE_MAX/sizeof(msgpack_object))
+        return MSGPACK_UNPACK_NOMEM_ERROR;
 
     o->type = MSGPACK_OBJECT_ARRAY;
     o->via.array.size = 0;
-    tmp = (unsigned long long)n * sizeof(msgpack_object);
 
-    if (tmp & 0xffffffff00000000) {
-        // integer overflow
-        return MSGPACK_UNPACK_NOMEM_ERROR;
-    }
-
-    size = (unsigned int)tmp;
+    size_t size = n * sizeof(msgpack_object);
 
     if (*u->z == NULL) {
         *u->z = msgpack_zone_new(MSGPACK_ZONE_CHUNK_SIZE);
@@ -230,19 +228,18 @@ static inline int template_callback_array_item(unpack_user* u, msgpack_object* c
 
 static inline int template_callback_map(unpack_user* u, unsigned int n, msgpack_object* o)
 {
-    unsigned int size;
-    unsigned long long tmp;
+    // Let's leverage the fact that sizeof(msgpack_object_kv) is a compile time constant
+    // to check for int overflows
+    // Note - while n is constrained to 32-bit, the product of n * sizeof(msgpack_object)
+    // might not be constrained to 4GB on 64-bit systems
+
+    if(n > SIZE_MAX/sizeof(msgpack_object_kv))
+        return MSGPACK_UNPACK_NOMEM_ERROR;
 
     o->type = MSGPACK_OBJECT_MAP;
     o->via.map.size = 0;
-    tmp = (unsigned long long)n * sizeof(msgpack_object_kv);
 
-    if (tmp & 0xffffffff00000000) {
-        // integer overflow
-        return MSGPACK_UNPACK_NOMEM_ERROR;
-    }
-
-    size = (unsigned int)tmp;
+    size_t size = n * sizeof(msgpack_object_kv);
 
     if (*u->z == NULL) {
         *u->z = msgpack_zone_new(MSGPACK_ZONE_CHUNK_SIZE);
