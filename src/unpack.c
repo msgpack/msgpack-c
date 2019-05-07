@@ -189,6 +189,7 @@ static inline int template_callback_false(unpack_user* u, msgpack_object* o)
 
 static inline int template_callback_array(unpack_user* u, unsigned int n, msgpack_object* o)
 {
+	size_t size;
     // Let's leverage the fact that sizeof(msgpack_object) is a compile time constant
     // to check for int overflows.
     // Note - while n is constrained to 32-bit, the product of n * sizeof(msgpack_object)
@@ -199,7 +200,7 @@ static inline int template_callback_array(unpack_user* u, unsigned int n, msgpac
     o->type = MSGPACK_OBJECT_ARRAY;
     o->via.array.size = 0;
 
-    size_t size = n * sizeof(msgpack_object);
+    size = n * sizeof(msgpack_object);
 
     if (*u->z == NULL) {
         *u->z = msgpack_zone_new(MSGPACK_ZONE_CHUNK_SIZE);
@@ -228,6 +229,7 @@ static inline int template_callback_array_item(unpack_user* u, msgpack_object* c
 
 static inline int template_callback_map(unpack_user* u, unsigned int n, msgpack_object* o)
 {
+	size_t size;
     // Let's leverage the fact that sizeof(msgpack_object_kv) is a compile time constant
     // to check for int overflows
     // Note - while n is constrained to 32-bit, the product of n * sizeof(msgpack_object)
@@ -239,7 +241,7 @@ static inline int template_callback_map(unpack_user* u, unsigned int n, msgpack_
     o->type = MSGPACK_OBJECT_MAP;
     o->via.map.size = 0;
 
-    size_t size = n * sizeof(msgpack_object_kv);
+    size = n * sizeof(msgpack_object_kv);
 
     if (*u->z == NULL) {
         *u->z = msgpack_zone_new(MSGPACK_ZONE_CHUNK_SIZE);
