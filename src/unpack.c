@@ -189,12 +189,12 @@ static inline int template_callback_false(unpack_user* u, msgpack_object* o)
 
 static inline int template_callback_array(unpack_user* u, unsigned int n, msgpack_object* o)
 {
-	size_t size;
+    size_t size;
     // Let's leverage the fact that sizeof(msgpack_object) is a compile time constant
     // to check for int overflows.
     // Note - while n is constrained to 32-bit, the product of n * sizeof(msgpack_object)
     // might not be constrained to 4GB on 64-bit systems
-    if( n > SIZE_MAX/sizeof(msgpack_object))
+    if( (size_t)n > SIZE_MAX/sizeof(msgpack_object))
         return MSGPACK_UNPACK_NOMEM_ERROR;
 
     o->type = MSGPACK_OBJECT_ARRAY;
@@ -229,13 +229,14 @@ static inline int template_callback_array_item(unpack_user* u, msgpack_object* c
 
 static inline int template_callback_map(unpack_user* u, unsigned int n, msgpack_object* o)
 {
-	size_t size;
+    size_t size;
     // Let's leverage the fact that sizeof(msgpack_object_kv) is a compile time constant
     // to check for int overflows
     // Note - while n is constrained to 32-bit, the product of n * sizeof(msgpack_object)
     // might not be constrained to 4GB on 64-bit systems
 
-    if(n > SIZE_MAX/sizeof(msgpack_object_kv))
+    // Note - this will always be false on 64-bit systems
+    if((size_t)n > SIZE_MAX/sizeof(msgpack_object_kv))
         return MSGPACK_UNPACK_NOMEM_ERROR;
 
     o->type = MSGPACK_OBJECT_MAP;
