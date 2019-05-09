@@ -1049,4 +1049,158 @@ TEST(MSGPACK_CHRONO, system_clock_impl_now)
     EXPECT_EQ(val1, val3);
 }
 
+TEST(MSGPACK_TIMESPEC, timespec_pack_convert_zero)
+{
+    std::stringstream ss;
+    timespec val1{ 0, 0 };
+
+    msgpack::pack(ss, val1);
+    EXPECT_EQ(ss.str().data()[0], static_cast<char>(0xd6));
+
+    msgpack::object_handle oh;
+    msgpack::unpack(oh, ss.str().data(), ss.str().size());
+    timespec val2 = oh.get().as<timespec>();
+    EXPECT_EQ(val1.tv_sec, val2.tv_sec);
+    EXPECT_EQ(val1.tv_nsec, val2.tv_nsec);
+}
+
+TEST(MSGPACK_TIMESPEC, timespec_object_with_zone_zero)
+{
+    msgpack::zone z;
+    timespec val1{ 0, 0 };
+    msgpack::object obj(val1, z);
+    timespec val2 = obj.as<timespec>();
+    EXPECT_EQ(val1.tv_sec, val2.tv_sec);
+    EXPECT_EQ(val1.tv_nsec, val2.tv_nsec);
+}
+
+TEST(MSGPACK_TIMESPEC, timespec_pack_convert_32bit_sec)
+{
+    std::stringstream ss;
+    timespec val1{ 0xffffffffUL, 0 };
+
+    msgpack::pack(ss, val1);
+    EXPECT_EQ(ss.str().data()[0], static_cast<char>(0xd6));
+
+    msgpack::object_handle oh;
+    msgpack::unpack(oh, ss.str().data(), ss.str().size());
+    timespec val2 = oh.get().as<timespec>();
+    EXPECT_EQ(val1.tv_sec, val2.tv_sec);
+    EXPECT_EQ(val1.tv_nsec, val2.tv_nsec);
+}
+
+TEST(MSGPACK_TIMESPEC, timespec_object_with_zone_32bit_sec)
+{
+    msgpack::zone z;
+    timespec val1{ 0xffffffffUL, 0 };
+    msgpack::object obj(val1, z);
+    timespec val2 = obj.as<timespec>();
+    EXPECT_EQ(val1.tv_sec, val2.tv_sec);
+    EXPECT_EQ(val1.tv_nsec, val2.tv_nsec);
+}
+
+TEST(MSGPACK_TIMESPEC, timespec_pack_convert_max_nano)
+{
+    std::stringstream ss;
+    timespec val1{ 0, 999999999 };
+
+    msgpack::pack(ss, val1);
+    EXPECT_EQ(ss.str().data()[0], static_cast<char>(0xd7));
+    msgpack::object_handle oh;
+    msgpack::unpack(oh, ss.str().data(), ss.str().size());
+    timespec val2 = oh.get().as<timespec>();
+    EXPECT_EQ(val1.tv_sec, val2.tv_sec);
+    EXPECT_EQ(val1.tv_nsec, val2.tv_nsec);
+}
+
+TEST(MSGPACK_TIMESPEC, timespec_object_with_zone_max_nano)
+{
+    msgpack::zone z;
+    timespec val1{ 0, 999999999 };
+    msgpack::object obj(val1, z);
+    timespec val2 = obj.as<timespec>();
+    EXPECT_EQ(val1.tv_sec, val2.tv_sec);
+    EXPECT_EQ(val1.tv_nsec, val2.tv_nsec);
+}
+
+TEST(MSGPACK_TIMESPEC, timespec_pack_convert_34bit_sec_max_nano)
+{
+    if (sizeof(decltype(std::declval<timespec>().tv_sec)) <= 4) return;
+    std::stringstream ss;
+    timespec val1{ static_cast<decltype(std::declval<timespec>().tv_sec)>(0x3ffffffffULL), 999999999 };
+
+    msgpack::pack(ss, val1);
+    EXPECT_EQ(ss.str().data()[0], static_cast<char>(0xd7));
+
+    msgpack::object_handle oh;
+    msgpack::unpack(oh, ss.str().data(), ss.str().size());
+    timespec val2 = oh.get().as<timespec>();
+    EXPECT_EQ(val1.tv_sec, val2.tv_sec);
+    EXPECT_EQ(val1.tv_nsec, val2.tv_nsec);
+}
+
+TEST(MSGPACK_TIMESPEC, timespec_object_with_zone_34bit_sec_max_nano)
+{
+    if (sizeof(decltype(std::declval<timespec>().tv_sec)) <= 4) return;
+    msgpack::zone z;
+    timespec val1{ static_cast<decltype(std::declval<timespec>().tv_sec)>(0x3ffffffffULL), 999999999 };
+    msgpack::object obj(val1, z);
+    timespec val2 = obj.as<timespec>();
+    EXPECT_EQ(val1.tv_sec, val2.tv_sec);
+    EXPECT_EQ(val1.tv_nsec, val2.tv_nsec);
+}
+
+TEST(MSGPACK_TIMESPEC, timespec_pack_convert_35bit_sec_max_nano)
+{
+    if (sizeof(decltype(std::declval<timespec>().tv_sec)) <= 4) return;
+    std::stringstream ss;
+    timespec val1{ static_cast<decltype(std::declval<timespec>().tv_sec)>(0x7ffffffffULL), 999999999 };
+
+    msgpack::pack(ss, val1);
+    EXPECT_EQ(ss.str().data()[0], static_cast<char>(0xc7));
+
+    msgpack::object_handle oh;
+    msgpack::unpack(oh, ss.str().data(), ss.str().size());
+    timespec val2 = oh.get().as<timespec>();
+    EXPECT_EQ(val1.tv_sec, val2.tv_sec);
+    EXPECT_EQ(val1.tv_nsec, val2.tv_nsec);
+}
+
+TEST(MSGPACK_TIMESPEC, timespec_object_with_zone_35bit_sec_max_nano)
+{
+    if (sizeof(decltype(std::declval<timespec>().tv_sec)) <= 4) return;
+    msgpack::zone z;
+    timespec val1{ static_cast<decltype(std::declval<timespec>().tv_sec)>(0x7ffffffffULL), 999999999 };
+    msgpack::object obj(val1, z);
+    timespec val2 = obj.as<timespec>();
+    EXPECT_EQ(val1.tv_sec, val2.tv_sec);
+    EXPECT_EQ(val1.tv_nsec, val2.tv_nsec);
+}
+
+TEST(MSGPACK_TIMESPEC, timespec_pack_convert_64bit_sec_max_nano)
+{
+    std::stringstream ss;
+    timespec val1{ std::numeric_limits<decltype(std::declval<timespec>().tv_sec)>::max(), 999999999 };
+
+    msgpack::pack(ss, val1);
+    EXPECT_EQ(ss.str().data()[0], static_cast<char>(0xc7));
+
+    msgpack::object_handle oh;
+    msgpack::unpack(oh, ss.str().data(), ss.str().size());
+    timespec val2 = oh.get().as<timespec>();
+    EXPECT_EQ(val1.tv_sec, val2.tv_sec);
+    EXPECT_EQ(val1.tv_nsec, val2.tv_nsec);
+}
+
+TEST(MSGPACK_TIMESPEC, timespec_object_with_zone_64bit_sec_max_nano)
+{
+    msgpack::zone z;
+    timespec val1{ std::numeric_limits<decltype(std::declval<timespec>().tv_sec)>::max(), 999999999 };
+    msgpack::object obj(val1, z);
+    timespec val2 = obj.as<timespec>();
+    EXPECT_EQ(val1.tv_sec, val2.tv_sec);
+    EXPECT_EQ(val1.tv_nsec, val2.tv_nsec);
+}
+
+
 #endif // !defined(MSGPACK_USE_CPP03)

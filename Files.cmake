@@ -190,6 +190,7 @@ IF (MSGPACK_ENABLE_CXX)
         include/msgpack/adaptor/cpp11/forward_list.hpp
         include/msgpack/adaptor/cpp11/reference_wrapper.hpp
         include/msgpack/adaptor/cpp11/shared_ptr.hpp
+        include/msgpack/adaptor/cpp11/timespec.hpp
         include/msgpack/adaptor/cpp11/tuple.hpp
         include/msgpack/adaptor/cpp11/unique_ptr.hpp
         include/msgpack/adaptor/cpp11/unordered_map.hpp
@@ -552,6 +553,7 @@ IF (MSGPACK_ENABLE_CXX)
         include/msgpack/v1/adaptor/cpp11/forward_list.hpp
         include/msgpack/v1/adaptor/cpp11/reference_wrapper.hpp
         include/msgpack/v1/adaptor/cpp11/shared_ptr.hpp
+        include/msgpack/v1/adaptor/cpp11/timespec.hpp
         include/msgpack/v1/adaptor/cpp11/tuple.hpp
         include/msgpack/v1/adaptor/cpp11/unique_ptr.hpp
         include/msgpack/v1/adaptor/cpp11/unordered_map.hpp
