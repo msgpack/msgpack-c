@@ -194,8 +194,10 @@ static inline int template_callback_array(unpack_user* u, unsigned int n, msgpac
     // to check for int overflows.
     // Note - while n is constrained to 32-bit, the product of n * sizeof(msgpack_object)
     // might not be constrained to 4GB on 64-bit systems
-    if( (size_t)n > SIZE_MAX/sizeof(msgpack_object))
+#if SIZE_MAX == UINT_MAX
+    if (n > SIZE_MAX/sizeof(msgpack_object))
         return MSGPACK_UNPACK_NOMEM_ERROR;
+#endif
 
     o->type = MSGPACK_OBJECT_ARRAY;
     o->via.array.size = 0;
@@ -236,8 +238,10 @@ static inline int template_callback_map(unpack_user* u, unsigned int n, msgpack_
     // might not be constrained to 4GB on 64-bit systems
 
     // Note - this will always be false on 64-bit systems
-    if((size_t)n > SIZE_MAX/sizeof(msgpack_object_kv))
+#if SIZE_MAX == UINT_MAX
+    if (n > SIZE_MAX/sizeof(msgpack_object_kv))
         return MSGPACK_UNPACK_NOMEM_ERROR;
+#endif
 
     o->type = MSGPACK_OBJECT_MAP;
     o->via.map.size = 0;
