@@ -189,20 +189,29 @@ static inline int template_callback_false(unpack_user* u, msgpack_object* o)
 
 static inline int template_callback_array(unpack_user* u, unsigned int n, msgpack_object* o)
 {
-    unsigned int size;
+    size_t size;
+    // Let's leverage the fact that sizeof(msgpack_object) is a compile time constant
+    // to check for int overflows.
+    // Note - while n is constrained to 32-bit, the product of n * sizeof(msgpack_object)
+    // might not be constrained to 4GB on 64-bit systems
+#if SIZE_MAX == UINT_MAX
+    if (n > SIZE_MAX/sizeof(msgpack_object))
+        return MSGPACK_UNPACK_NOMEM_ERROR;
+#endif
+
     o->type = MSGPACK_OBJECT_ARRAY;
     o->via.array.size = 0;
-    size = n*sizeof(msgpack_object);
-    if (size / sizeof(msgpack_object) != n) {
-        // integer overflow
-        return MSGPACK_UNPACK_NOMEM_ERROR;
-    }
+
+    size = n * sizeof(msgpack_object);
+
     if (*u->z == NULL) {
         *u->z = msgpack_zone_new(MSGPACK_ZONE_CHUNK_SIZE);
         if(*u->z == NULL) {
             return MSGPACK_UNPACK_NOMEM_ERROR;
         }
     }
+
+    // Unsure whether size = 0 should be an error, and if so, what to return
     o->via.array.ptr = (msgpack_object*)msgpack_zone_malloc(*u->z, size);
     if(o->via.array.ptr == NULL) { return MSGPACK_UNPACK_NOMEM_ERROR; }
     return 0;
@@ -222,20 +231,31 @@ static inline int template_callback_array_item(unpack_user* u, msgpack_object* c
 
 static inline int template_callback_map(unpack_user* u, unsigned int n, msgpack_object* o)
 {
-    unsigned int size;
+    size_t size;
+    // Let's leverage the fact that sizeof(msgpack_object_kv) is a compile time constant
+    // to check for int overflows
+    // Note - while n is constrained to 32-bit, the product of n * sizeof(msgpack_object)
+    // might not be constrained to 4GB on 64-bit systems
+
+    // Note - this will always be false on 64-bit systems
+#if SIZE_MAX == UINT_MAX
+    if (n > SIZE_MAX/sizeof(msgpack_object_kv))
+        return MSGPACK_UNPACK_NOMEM_ERROR;
+#endif
+
     o->type = MSGPACK_OBJECT_MAP;
     o->via.map.size = 0;
-    size = n*sizeof(msgpack_object_kv);
-    if (size / sizeof(msgpack_object_kv) != n) {
-        // integer overflow
-        return MSGPACK_UNPACK_NOMEM_ERROR;
-    }
+
+    size = n * sizeof(msgpack_object_kv);
+
     if (*u->z == NULL) {
         *u->z = msgpack_zone_new(MSGPACK_ZONE_CHUNK_SIZE);
         if(*u->z == NULL) {
             return MSGPACK_UNPACK_NOMEM_ERROR;
         }
     }
+
+    // Should size = 0 be an error? If so, what error to return?
     o->via.map.ptr = (msgpack_object_kv*)msgpack_zone_malloc(*u->z, size);
     if(o->via.map.ptr == NULL) { return MSGPACK_UNPACK_NOMEM_ERROR; }
     return 0;
