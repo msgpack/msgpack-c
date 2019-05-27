@@ -27,7 +27,7 @@ TEST(iterator, vector)
     vec_type vec;
     vec.reserve(VECTOR_SIZE);
     for (unsigned int i = 0; i < VECTOR_SIZE; i++) {
-        vec.push_back(rand());
+        vec.push_back(static_cast<unsigned int>(rand()));
     }
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, vec);
@@ -53,7 +53,7 @@ TEST(iterator, map)
     using map_type = map<unsigned int, unsigned int>;
     map_type map;
     for (unsigned int i = 0; i < MAP_SIZE; i++) {
-        map[rand()] = rand();
+        map[static_cast<unsigned int>(rand())] = static_cast<unsigned int>(rand());
     }
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, map);
