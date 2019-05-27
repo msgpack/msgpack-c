@@ -192,7 +192,6 @@ TEST(size_equal_only, tuple)
 }
 
 struct foo1 {
-    foo1() = default;
     foo1(int i, bool b):t(i, b), seo(t) {}
     std::tuple<int, bool> t;
     msgpack::type::size_equal_only<std::tuple<int, bool> > seo;
@@ -200,7 +199,6 @@ struct foo1 {
 };
 
 struct foo2 {
-    foo2() = default;
     foo2(int i, bool b, std::string const& s):t(i, b, s), seo(t) {}
     std::tuple<int, bool, std::string> t;
     msgpack::type::size_equal_only<std::tuple<int, bool, std::string> > seo;
