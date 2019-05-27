@@ -1,3 +1,17 @@
+# 2019-05-27 version 3.2.0
+
+  * Fix invalid include (#783)
+  * Add timespec support (#781)
+  * Fix unchecked fnprintf on C (#780)
+  * Improve integer overflow checking on C (#776)
+  * Fix warnings on `-Wconversion` (#770, #777, #784)
+  * Fix invalid passed by value on aligned_zone_size_visitor (#764)
+  * Improve windows support (#757, #779)
+  * Fix msgpack::object size caluclation error (#754)
+  * Fix memory error on example code (#753)
+  * Fix redundant memory allocation on C (#747)
+  * Fix msgpack::type::tuple base class conversion (#743)
+
 # 2018-09-09 version 3.1.1
 
   * Add force endian set functionality (#736)
