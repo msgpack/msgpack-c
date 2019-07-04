@@ -5,6 +5,7 @@ LIST (APPEND exec_PROGRAMS
     custom.cpp
     enum.cpp
     map_based_versionup.cpp
+    no_malloc.cpp
     protocol_new.cpp
     reuse_zone.cpp
     simple.cpp

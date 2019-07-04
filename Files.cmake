@@ -7,6 +7,7 @@ LIST (APPEND msgpackc_SOURCES
 )
 LIST (APPEND msgpackc_HEADERS
     include/msgpack.h
+    include/msgpack/allocator.h
     include/msgpack/fbuffer.h
     include/msgpack/gcc_atomic.h
     include/msgpack/object.h

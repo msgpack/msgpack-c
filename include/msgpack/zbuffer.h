@@ -10,7 +10,7 @@
 #ifndef MSGPACK_ZBUFFER_H
 #define MSGPACK_ZBUFFER_H
 
-#include "msgpack/allocator.hpp"
+#include "msgpack/allocator.h"
 #include "sysdep.h"
 #include <stdlib.h>
 #include <string.h>
@@ -83,7 +83,7 @@ static inline void msgpack_zbuffer_destroy(msgpack_zbuffer* zbuf)
 
 static inline msgpack_zbuffer* msgpack_zbuffer_new(int level, size_t init_size)
 {
-    msgpack_zbuffer* zbuf = (msgpack_zbuffer*)MSGPACK_REALLOC(sizeof(msgpack_zbuffer));
+    msgpack_zbuffer* zbuf = (msgpack_zbuffer*)MSGPACK_MALLOC(sizeof(msgpack_zbuffer));
     if (zbuf == NULL) return NULL;
     if(!msgpack_zbuffer_init(zbuf, level, init_size)) {
         MSGPACK_FREE(zbuf);

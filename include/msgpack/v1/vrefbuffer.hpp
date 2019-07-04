@@ -10,7 +10,7 @@
 #ifndef MSGPACK_V1_VREFBUFFER_HPP
 #define MSGPACK_V1_VREFBUFFER_HPP
 
-#include "msgpack/allocator.hpp"
+#include "msgpack/allocator.h"
 #include "msgpack/v1/vrefbuffer_decl.hpp"
 
 #include <stdexcept>

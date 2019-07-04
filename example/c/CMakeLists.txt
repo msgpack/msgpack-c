@@ -9,6 +9,7 @@ ENDIF ()
 
 LIST (APPEND exec_PROGRAMS
     lib_buffer_unpack.c
+    no_malloc_c.c
     simple_c.c
     speed_test_uint32_array.c
     speed_test_uint64_array.c

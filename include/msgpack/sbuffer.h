@@ -10,7 +10,7 @@
 #ifndef MSGPACK_SBUFFER_H
 #define MSGPACK_SBUFFER_H
 
-#include "msgpack/allocator.hpp"
+#include "msgpack/allocator.h"
 #include <stdlib.h>
 #include <string.h>
 

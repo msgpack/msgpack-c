@@ -10,7 +10,7 @@
 #ifndef MSGPACK_PACK_H
 #define MSGPACK_PACK_H
 
-#include "msgpack/allocator.hpp"
+#include "msgpack/allocator.h"
 #include "pack_define.h"
 #include "object.h"
 #include "timestamp.h"

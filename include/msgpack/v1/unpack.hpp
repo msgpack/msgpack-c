@@ -10,7 +10,7 @@
 #ifndef MSGPACK_V1_UNPACK_HPP
 #define MSGPACK_V1_UNPACK_HPP
 
-#include "msgpack/allocator.hpp"
+#include "msgpack/allocator.h"
 #include "msgpack/versioning.hpp"
 #include "msgpack/unpack_decl.hpp"
 #include "msgpack/object.hpp"

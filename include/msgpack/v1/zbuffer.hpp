@@ -10,7 +10,7 @@
 #ifndef MSGPACK_V1_ZBUFFER_HPP
 #define MSGPACK_V1_ZBUFFER_HPP
 
-#include "msgpack/allocator.hpp"
+#include "msgpack/allocator.h"
 #include "msgpack/v1/zbuffer_decl.hpp"
 
 #include <stdexcept>

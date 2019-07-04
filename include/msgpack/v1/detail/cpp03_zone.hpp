@@ -10,8 +10,8 @@
 #ifndef MSGPACK_V1_CPP03_ZONE_HPP
 #define MSGPACK_V1_CPP03_ZONE_HPP
 
+#include "msgpack/allocator.h"
 #include "msgpack/zone_decl.hpp"
-
 
 namespace msgpack {
 
@@ -34,7 +34,7 @@ class zone {
         }
         ~finalizer_array() {
             call();
-            ::free(m_array);
+            MSGPACK_FREE(m_array);
         }
         void clear() {
             call();
@@ -64,7 +64,7 @@ class zone {
                 nnext = nused * 2;
             }
             finalizer* tmp =
-                static_cast<finalizer*>(::realloc(m_array, sizeof(finalizer) * nnext));
+                static_cast<finalizer*>(MSGPACK_REALLOC(m_array, sizeof(finalizer) * nnext));
             if(!tmp) {
                 throw std::bad_alloc();
             }
@@ -85,7 +85,7 @@ class zone {
     struct chunk_list {
         chunk_list(size_t chunk_size)
         {
-            chunk* c = static_cast<chunk*>(::malloc(sizeof(chunk) + chunk_size));
+            chunk* c = static_cast<chunk*>(MSGPACK_MALLOC(sizeof(chunk) + chunk_size));
             if(!c) {
                 throw std::bad_alloc();
             }
@@ -100,7 +100,7 @@ class zone {
             chunk* c = m_head;
             while(c) {
                 chunk* n = c->m_next;
-                ::free(c);
+                MSGPACK_FREE(c);
                 c = n;
             }
         }
@@ -110,7 +110,7 @@ class zone {
             while(true) {
                 chunk* n = c->m_next;
                 if(n) {
-                    ::free(c);
+                    MSGPACK_FREE(c);
                     c = n;
                 } else {
                     m_head = c;
@@ -146,13 +146,13 @@ public:
     void swap(zone& o);
     static void* operator new(std::size_t size)
     {
-        void* p = ::malloc(size);
+        void* p = MSGPACK_MALLOC(size);
         if (!p) throw std::bad_alloc();
         return p;
     }
     static void operator delete(void *p) /* throw() */
     {
-        ::free(p);
+        MSGPACK_FREE(p);
     }
     static void* operator new(std::size_t size, void* place) /* throw() */
     {
@@ -285,7 +285,7 @@ inline char* zone::allocate_expand(size_t size)
         sz = tmp_sz;
     }
 
-    chunk* c = static_cast<chunk*>(::malloc(sizeof(chunk) + sz));
+    chunk* c = static_cast<chunk*>(MSGPACK_MALLOC(sizeof(chunk) + sz));
     if (!c) throw std::bad_alloc();
 
     char* ptr = reinterpret_cast<char*>(c) + sizeof(chunk);

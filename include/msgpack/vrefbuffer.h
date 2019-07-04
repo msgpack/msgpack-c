@@ -10,7 +10,7 @@
 #ifndef MSGPACK_VREFBUFFER_H
 #define MSGPACK_VREFBUFFER_H
 
-#include "msgpack/allocator.hpp"
+#include "msgpack/allocator.h"
 #include "zone.h"
 #include <stdlib.h>
 

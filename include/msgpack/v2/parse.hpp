@@ -14,7 +14,7 @@
 
 #include <cstddef>
 
-#include "msgpack/allocator.hpp"
+#include "msgpack/allocator.h"
 #include "msgpack/unpack_define.h"
 #include "msgpack/parse_return.hpp"
 #include "msgpack/unpack_exception.hpp"
