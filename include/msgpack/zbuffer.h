@@ -10,6 +10,7 @@
 #ifndef MSGPACK_ZBUFFER_H
 #define MSGPACK_ZBUFFER_H
 
+#include "msgpack/allocator.hpp"
 #include "sysdep.h"
 #include <stdlib.h>
 #include <string.h>
@@ -68,7 +69,7 @@ static inline bool msgpack_zbuffer_init(msgpack_zbuffer* zbuf,
     memset(zbuf, 0, sizeof(msgpack_zbuffer));
     zbuf->init_size = init_size;
     if(deflateInit(&zbuf->stream, level) != Z_OK) {
-        free(zbuf->data);
+        MSGPACK_FREE(zbuf->data);
         return false;
     }
     return true;
@@ -77,15 +78,15 @@ static inline bool msgpack_zbuffer_init(msgpack_zbuffer* zbuf,
 static inline void msgpack_zbuffer_destroy(msgpack_zbuffer* zbuf)
 {
     deflateEnd(&zbuf->stream);
-    free(zbuf->data);
+    MSGPACK_FREE(zbuf->data);
 }
 
 static inline msgpack_zbuffer* msgpack_zbuffer_new(int level, size_t init_size)
 {
-    msgpack_zbuffer* zbuf = (msgpack_zbuffer*)malloc(sizeof(msgpack_zbuffer));
+    msgpack_zbuffer* zbuf = (msgpack_zbuffer*)MSGPACK_REALLOC(sizeof(msgpack_zbuffer));
     if (zbuf == NULL) return NULL;
     if(!msgpack_zbuffer_init(zbuf, level, init_size)) {
-        free(zbuf);
+        MSGPACK_FREE(zbuf);
         return NULL;
     }
     return zbuf;
@@ -95,7 +96,7 @@ static inline void msgpack_zbuffer_free(msgpack_zbuffer* zbuf)
 {
     if(zbuf == NULL) { return; }
     msgpack_zbuffer_destroy(zbuf);
-    free(zbuf);
+    MSGPACK_FREE(zbuf);
 }
 
 static inline bool msgpack_zbuffer_expand(msgpack_zbuffer* zbuf)
@@ -105,7 +106,7 @@ static inline bool msgpack_zbuffer_expand(msgpack_zbuffer* zbuf)
 
     size_t nsize = (csize == 0) ? zbuf->init_size : csize * 2;
 
-    char* tmp = (char*)realloc(zbuf->data, nsize);
+    char* tmp = (char*)MSGPACK_REALLOC(zbuf->data, nsize);
     if(tmp == NULL) {
         return false;
     }

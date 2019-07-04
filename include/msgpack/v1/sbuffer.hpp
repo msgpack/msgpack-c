@@ -10,6 +10,8 @@
 #ifndef MSGPACK_V1_SBUFFER_HPP
 #define MSGPACK_V1_SBUFFER_HPP
 
+#include "msgpack/allocator.hpp"
+
 #include "msgpack/v1/sbuffer_decl.hpp"
 
 #include <stdexcept>
@@ -28,7 +30,7 @@ public:
         if(initsz == 0) {
             m_data = MSGPACK_NULLPTR;
         } else {
-            m_data = (char*)::malloc(initsz);
+            m_data = (char*)MSGPACK_MALLOC(initsz);
             if(!m_data) {
                 throw std::bad_alloc();
             }
@@ -119,7 +121,7 @@ private:
             nsize = tmp_nsize;
         }
 
-        void* tmp = ::realloc(m_data, nsize);
+        void* tmp = MSGPACK_REALLOC(m_data, nsize);
         if(!tmp) {
             throw std::bad_alloc();
         }

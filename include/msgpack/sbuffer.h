@@ -10,6 +10,7 @@
 #ifndef MSGPACK_SBUFFER_H
 #define MSGPACK_SBUFFER_H
 
+#include "msgpack/allocator.hpp"
 #include <stdlib.h>
 #include <string.h>
 
@@ -37,7 +38,7 @@ static inline void msgpack_sbuffer_init(msgpack_sbuffer* sbuf)
 
 static inline void msgpack_sbuffer_destroy(msgpack_sbuffer* sbuf)
 {
-    free(sbuf->data);
+    MSGPACK_FREE(sbuf->data);
 }
 
 static inline msgpack_sbuffer* msgpack_sbuffer_new(void)
@@ -49,7 +50,7 @@ static inline void msgpack_sbuffer_free(msgpack_sbuffer* sbuf)
 {
     if(sbuf == NULL) { return; }
     msgpack_sbuffer_destroy(sbuf);
-    free(sbuf);
+    MSGPACK_FREE(sbuf);
 }
 
 #ifndef MSGPACK_SBUFFER_INIT_SIZE
@@ -74,7 +75,7 @@ static inline int msgpack_sbuffer_write(void* data, const char* buf, size_t len)
             nsize = tmp_nsize;
         }
 
-        tmp = realloc(sbuf->data, nsize);
+        tmp = MSGPACK_REALLOC(sbuf->data, nsize);
         if(!tmp) { return -1; }
 
         sbuf->data = (char*)tmp;

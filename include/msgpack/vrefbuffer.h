@@ -10,6 +10,7 @@
 #ifndef MSGPACK_VREFBUFFER_H
 #define MSGPACK_VREFBUFFER_H
 
+#include "msgpack/allocator.hpp"
 #include "zone.h"
 #include <stdlib.h>
 
@@ -95,10 +96,10 @@ void msgpack_vrefbuffer_clear(msgpack_vrefbuffer* vref);
 
 static inline msgpack_vrefbuffer* msgpack_vrefbuffer_new(size_t ref_size, size_t chunk_size)
 {
-    msgpack_vrefbuffer* vbuf = (msgpack_vrefbuffer*)malloc(sizeof(msgpack_vrefbuffer));
+    msgpack_vrefbuffer* vbuf = (msgpack_vrefbuffer*)MSGPACK_MALLOC(sizeof(msgpack_vrefbuffer));
     if (vbuf == NULL) return NULL;
     if(!msgpack_vrefbuffer_init(vbuf, ref_size, chunk_size)) {
-        free(vbuf);
+        MSGPACK_FREE(vbuf);
         return NULL;
     }
     return vbuf;
@@ -108,7 +109,7 @@ static inline void msgpack_vrefbuffer_free(msgpack_vrefbuffer* vbuf)
 {
     if(vbuf == NULL) { return; }
     msgpack_vrefbuffer_destroy(vbuf);
-    free(vbuf);
+    MSGPACK_FREE(vbuf);
 }
 
 static inline int msgpack_vrefbuffer_write(void* data, const char* buf, size_t len)

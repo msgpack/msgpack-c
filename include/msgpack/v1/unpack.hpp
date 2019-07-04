@@ -10,6 +10,7 @@
 #ifndef MSGPACK_V1_UNPACK_HPP
 #define MSGPACK_V1_UNPACK_HPP
 
+#include "msgpack/allocator.hpp"
 #include "msgpack/versioning.hpp"
 #include "msgpack/unpack_decl.hpp"
 #include "msgpack/object.hpp"
@@ -236,11 +237,11 @@ inline void decr_count(void* buffer)
 {
 #if defined(MSGPACK_USE_CPP03)
     if(_msgpack_sync_decr_and_fetch(reinterpret_cast<volatile _msgpack_atomic_counter_t*>(buffer)) == 0) {
-        free(buffer);
+        MSGPACK_FREE(buffer);
     }
 #else  // defined(MSGPACK_USE_CPP03)
     if (--*reinterpret_cast<std::atomic<unsigned int>*>(buffer) == 0) {
-        free(buffer);
+        MSGPACK_FREE(buffer);
     }
 #endif // defined(MSGPACK_USE_CPP03)
 }
@@ -1055,7 +1056,7 @@ inline unpacker::unpacker(unpack_reference_func f,
         initial_buffer_size = COUNTER_SIZE;
     }
 
-    char* buffer = static_cast<char*>(::malloc(initial_buffer_size));
+    char* buffer = static_cast<char*>(MSGPACK_MALLOC(initial_buffer_size));
     if(!buffer) {
         throw std::bad_alloc();
     }
@@ -1134,7 +1135,7 @@ inline void unpacker::expand_buffer(std::size_t size)
             next_size = tmp_next_size;
         }
 
-        char* tmp = static_cast<char*>(::realloc(m_buffer, next_size));
+        char* tmp = static_cast<char*>(MSGPACK_REALLOC(m_buffer, next_size));
         if(!tmp) {
             throw std::bad_alloc();
         }
@@ -1154,7 +1155,7 @@ inline void unpacker::expand_buffer(std::size_t size)
             next_size = tmp_next_size;
         }
 
-        char* tmp = static_cast<char*>(::malloc(next_size));
+        char* tmp = static_cast<char*>(MSGPACK_MALLOC(next_size));
         if(!tmp) {
             throw std::bad_alloc();
         }
@@ -1168,7 +1169,7 @@ inline void unpacker::expand_buffer(std::size_t size)
                 m_z->push_finalizer(&detail::decr_count, m_buffer);
             }
             catch (...) {
-                ::free(tmp);
+                MSGPACK_FREE(tmp);
                 throw;
             }
             m_ctx.user().set_referenced(false);

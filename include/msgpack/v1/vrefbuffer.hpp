@@ -10,6 +10,7 @@
 #ifndef MSGPACK_V1_VREFBUFFER_HPP
 #define MSGPACK_V1_VREFBUFFER_HPP
 
+#include "msgpack/allocator.hpp"
 #include "msgpack/v1/vrefbuffer_decl.hpp"
 
 #include <stdexcept>
@@ -65,7 +66,7 @@ public:
         size_t nfirst = (sizeof(iovec) < 72/2) ?
             72 / sizeof(iovec) : 8;
 
-        iovec* array = static_cast<iovec*>(::malloc(
+        iovec* array = static_cast<iovec*>(MSGPACK_MALLOC(
             sizeof(iovec) * nfirst));
         if(!array) {
             throw std::bad_alloc();
@@ -75,9 +76,9 @@ public:
         m_end   = array + nfirst;
         m_array = array;
 
-        chunk* c = static_cast<chunk*>(::malloc(sizeof(chunk) + chunk_size));
+        chunk* c = static_cast<chunk*>(MSGPACK_MALLOC(sizeof(chunk) + chunk_size));
         if(!c) {
-            ::free(array);
+            MSGPACK_FREE(array);
             throw std::bad_alloc();
         }
         inner_buffer* const ib = &m_inner_buffer;
@@ -94,14 +95,14 @@ public:
         chunk* c = m_inner_buffer.head;
         while(true) {
             chunk* n = c->next;
-            ::free(c);
+            MSGPACK_FREE(c);
             if(n != NULL) {
                 c = n;
             } else {
                 break;
             }
         }
-        ::free(m_array);
+        MSGPACK_FREE(m_array);
     }
 
 public:
@@ -120,7 +121,7 @@ public:
             const size_t nused = static_cast<size_t>(m_tail - m_array);
             const size_t nnext = nused * 2;
 
-            iovec* nvec = static_cast<iovec*>(::realloc(
+            iovec* nvec = static_cast<iovec*>(MSGPACK_REALLOC(
                 m_array, sizeof(iovec)*nnext));
             if(!nvec) {
                 throw std::bad_alloc();
@@ -150,7 +151,7 @@ public:
                 throw std::bad_alloc();
             }
 
-            chunk* c = static_cast<chunk*>(::malloc(sizeof(chunk) + sz));
+            chunk* c = static_cast<chunk*>(MSGPACK_MALLOC(sizeof(chunk) + sz));
             if(!c) {
                 throw std::bad_alloc();
             }
@@ -195,7 +196,7 @@ public:
             throw std::bad_alloc();
         }
 
-        chunk* empty = static_cast<chunk*>(::malloc(sizeof(chunk) + sz));
+        chunk* empty = static_cast<chunk*>(MSGPACK_MALLOC(sizeof(chunk) + sz));
         if(!empty) {
             throw std::bad_alloc();
         }
@@ -216,10 +217,10 @@ public:
                 nnext = tmp_nnext;
             }
 
-            iovec* nvec = static_cast<iovec*>(::realloc(
+            iovec* nvec = static_cast<iovec*>(MSGPACK_REALLOC(
                 to->m_array, sizeof(iovec)*nnext));
             if(!nvec) {
-                ::free(empty);
+                MSGPACK_FREE(empty);
                 throw std::bad_alloc();
             }
 
@@ -261,7 +262,7 @@ public:
         chunk* n;
         while(c) {
             n = c->next;
-            ::free(c);
+            MSGPACK_FREE(c);
             c = n;
         }
 

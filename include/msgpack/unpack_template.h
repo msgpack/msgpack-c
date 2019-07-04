@@ -8,6 +8,8 @@
  *    http://www.boost.org/LICENSE_1_0.txt)
  */
 
+#include "msgpack/allocator.hpp"
+
 #ifndef msgpack_unpack_func
 #error msgpack_unpack_func template is not defined
 #endif
@@ -80,7 +82,7 @@ msgpack_unpack_func(void, _init)(msgpack_unpack_struct(_context)* ctx)
 msgpack_unpack_func(void, _destroy)(msgpack_unpack_struct(_context)* ctx)
 {
     if(ctx->stack_size != MSGPACK_EMBED_STACK_SIZE) {
-        free(ctx->stack);
+        MSGPACK_FREE(ctx->stack);
     }
 }
 */

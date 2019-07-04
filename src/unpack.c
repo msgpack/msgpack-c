@@ -7,6 +7,7 @@
  *    (See accompanying file LICENSE_1_0.txt or copy at
  *    http://www.boost.org/LICENSE_1_0.txt)
  */
+#include "msgpack/allocator.hpp"
 #include "msgpack/unpack.h"
 #include "msgpack/unpack_define.h"
 #include "msgpack/util.h"
@@ -452,7 +453,7 @@ bool msgpack_unpacker_expand_buffer(msgpack_unpacker* mpac, size_t size)
             next_size = tmp_next_size;
         }
 
-        tmp = (char*)realloc(mpac->buffer, next_size);
+        tmp = (char*)MSGPACK_REALLOC(mpac->buffer, next_size);
         if(tmp == NULL) {
             return false;
         }

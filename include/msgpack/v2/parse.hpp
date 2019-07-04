@@ -14,6 +14,7 @@
 
 #include <cstddef>
 
+#include "msgpack/allocator.hpp"
 #include "msgpack/unpack_define.h"
 #include "msgpack/parse_return.hpp"
 #include "msgpack/unpack_exception.hpp"
@@ -792,7 +793,7 @@ inline parser<VisitorHolder, ReferencedBufferHook>::parser(
         initial_buffer_size = COUNTER_SIZE;
     }
 
-    char* buffer = static_cast<char*>(::malloc(initial_buffer_size));
+    char* buffer = static_cast<char*>(MSGPACK_MALLOC(initial_buffer_size));
     if(!buffer) {
         throw std::bad_alloc();
     }
@@ -876,7 +877,7 @@ inline void parser<VisitorHolder, ReferencedBufferHook>::expand_buffer(std::size
             next_size = tmp_next_size;
         }
 
-        char* tmp = static_cast<char*>(::realloc(m_buffer, next_size));
+        char* tmp = static_cast<char*>(MSGPACK_REALLOC(m_buffer, next_size));
         if(!tmp) {
             throw std::bad_alloc();
         }
@@ -896,7 +897,7 @@ inline void parser<VisitorHolder, ReferencedBufferHook>::expand_buffer(std::size
             next_size = tmp_next_size;
         }
 
-        char* tmp = static_cast<char*>(::malloc(next_size));
+        char* tmp = static_cast<char*>(MSGPACK_MALLOC(next_size));
         if(!tmp) {
             throw std::bad_alloc();
         }
@@ -910,7 +911,7 @@ inline void parser<VisitorHolder, ReferencedBufferHook>::expand_buffer(std::size
                 m_referenced_buffer_hook(m_buffer);
             }
             catch (...) {
-                ::free(tmp);
+                MSGPACK_FREE(tmp);
                 throw;
             }
             static_cast<VisitorHolder&>(*this).set_referenced(false);

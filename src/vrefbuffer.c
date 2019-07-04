@@ -7,6 +7,7 @@
  *    (See accompanying file LICENSE_1_0.txt or copy at
  *    http://www.boost.org/LICENSE_1_0.txt)
  */
+#include "msgpack/allocator.hpp"
 #include "msgpack/vrefbuffer.h"
 #include <stdlib.h>
 #include <string.h>
@@ -108,7 +109,7 @@ int msgpack_vrefbuffer_append_ref(msgpack_vrefbuffer* vbuf,
         const size_t nused = (size_t)(vbuf->tail - vbuf->array);
         const size_t nnext = nused * 2;
 
-        struct iovec* nvec = (struct iovec*)realloc(
+        struct iovec* nvec = (struct iovec*)MSGPACK_REALLOC(
                 vbuf->array, sizeof(struct iovec)*nnext);
         if(nvec == NULL) {
             return -1;
@@ -201,7 +202,7 @@ int msgpack_vrefbuffer_migrate(msgpack_vrefbuffer* vbuf, msgpack_vrefbuffer* to)
                 nnext = tmp_nnext;
             }
 
-            nvec = (struct iovec*)realloc(
+            nvec = (struct iovec*)MSGPACK_REALLOC(
                     to->array, sizeof(struct iovec)*nnext);
             if(nvec == NULL) {
                 free(empty);

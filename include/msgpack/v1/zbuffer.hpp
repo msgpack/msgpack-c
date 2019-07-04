@@ -10,6 +10,7 @@
 #ifndef MSGPACK_V1_ZBUFFER_HPP
 #define MSGPACK_V1_ZBUFFER_HPP
 
+#include "msgpack/allocator.hpp"
 #include "msgpack/v1/zbuffer_decl.hpp"
 
 #include <stdexcept>
@@ -124,7 +125,7 @@ private:
         size_t csize = used + m_stream.avail_out;
         size_t nsize = (csize == 0) ? m_init_size : csize * 2;
 
-        char* tmp = static_cast<char*>(::realloc(m_data, nsize));
+        char* tmp = static_cast<char*>(MSGPACK_REALLOC(m_data, nsize));
         if(tmp == MSGPACK_NULLPTR) {
             return false;
         }
