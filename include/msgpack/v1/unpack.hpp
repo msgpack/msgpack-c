@@ -113,10 +113,13 @@ struct unpack_array {
         if (n > u.limit().array()) throw msgpack::array_size_overflow("array size overflow");
         o.type = msgpack::type::ARRAY;
         o.via.array.size = 0;
-        size_t size = n*sizeof(msgpack::object);
-        if (size / sizeof(msgpack::object) != n) {
+
+#if SIZE_MAX == UINT_MAX
+        if (n > SIZE_MAX/sizeof(msgpack::object))
             throw msgpack::array_size_overflow("array size overflow");
-        }
+#endif // SIZE_MAX == UINT_MAX
+
+        size_t size = n*sizeof(msgpack::object);
         o.via.array.ptr = static_cast<msgpack::object*>(u.zone().allocate_align(size, MSGPACK_ZONE_ALIGNOF(msgpack::object)));
     }
 };
@@ -125,6 +128,7 @@ inline void unpack_array_item(msgpack::object& c, msgpack::object const& o)
 {
 #if defined(__GNUC__) && !defined(__clang__)
     std::memcpy(&c.via.array.ptr[c.via.array.size++], &o, sizeof(msgpack::object));
+
 #else  /* __GNUC__ && !__clang__ */
     c.via.array.ptr[c.via.array.size++] = o;
 #endif /* __GNUC__ && !__clang__ */
@@ -135,10 +139,13 @@ struct unpack_map {
         if (n > u.limit().map()) throw msgpack::map_size_overflow("map size overflow");
         o.type = msgpack::type::MAP;
         o.via.map.size = 0;
-        size_t size = n*sizeof(msgpack::object_kv);
-        if (size / sizeof(msgpack::object_kv) != n) {
+
+#if SIZE_MAX == UINT_MAX
+        if (n > SIZE_MAX/sizeof(msgpack::object_kv))
             throw msgpack::map_size_overflow("map size overflow");
-        }
+#endif // SIZE_MAX == UINT_MAX
+
+        size_t size = n*sizeof(msgpack::object_kv);
         o.via.map.ptr = static_cast<msgpack::object_kv*>(u.zone().allocate_align(size, MSGPACK_ZONE_ALIGNOF(msgpack::object_kv)));
     }
 };

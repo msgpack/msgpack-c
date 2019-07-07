@@ -163,10 +163,13 @@ public:
             obj->via.array.ptr = MSGPACK_NULLPTR;
         }
         else {
-            size_t size = num_elements*sizeof(msgpack::object);
-            if (size / sizeof(msgpack::object) != num_elements) {
+
+#if SIZE_MAX == UINT_MAX
+            if (num_elements > SIZE_MAX/sizeof(msgpack::object))
                 throw msgpack::array_size_overflow("array size overflow");
-            }
+#endif // SIZE_MAX == UINT_MAX
+
+            size_t size = num_elements*sizeof(msgpack::object);
             obj->via.array.ptr =
                 static_cast<msgpack::object*>(m_zone->allocate_align(size, MSGPACK_ZONE_ALIGNOF(msgpack::object)));
         }
@@ -194,10 +197,12 @@ public:
             obj->via.map.ptr = MSGPACK_NULLPTR;
         }
         else {
-            size_t size = num_kv_pairs*sizeof(msgpack::object_kv);
-            if (size / sizeof(msgpack::object_kv) != num_kv_pairs) {
+
+#if SIZE_MAX == UINT_MAX
+            if (num_kv_pairs > SIZE_MAX/sizeof(msgpack::object_kv))
                 throw msgpack::map_size_overflow("map size overflow");
-            }
+#endif // SIZE_MAX == UINT_MAX
+            size_t size = num_kv_pairs*sizeof(msgpack::object_kv);
             obj->via.map.ptr =
                 static_cast<msgpack::object_kv*>(m_zone->allocate_align(size, MSGPACK_ZONE_ALIGNOF(msgpack::object_kv)));
         }
