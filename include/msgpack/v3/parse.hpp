@@ -250,8 +250,6 @@ inline parse_return context<VisitorHolder>::execute(const char* data, std::size_
     const char* const pe = data + len;
     const char* n = MSGPACK_NULLPTR;
 
-    msgpack::object obj;
-
     if(m_current == pe) {
         off = static_cast<std::size_t>(m_current - m_start);
         return PARSE_CONTINUE;
