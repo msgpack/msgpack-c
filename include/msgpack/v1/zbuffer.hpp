@@ -69,6 +69,7 @@ public:
             case Z_STREAM_END:
                 return m_data;
             case Z_OK:
+            case Z_BUF_ERROR:
                 if(!expand()) {
                     throw std::bad_alloc();
                 }

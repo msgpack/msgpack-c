@@ -146,6 +146,7 @@ static inline char* msgpack_zbuffer_flush(msgpack_zbuffer* zbuf)
         case Z_STREAM_END:
             return zbuf->data;
         case Z_OK:
+        case Z_BUF_ERROR:
             if(!msgpack_zbuffer_expand(zbuf)) {
                 return NULL;
             }
