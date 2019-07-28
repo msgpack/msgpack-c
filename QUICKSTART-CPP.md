@@ -59,7 +59,7 @@ $ ./hello
 #include <iostream>
 #include <string>
 
-int main(void) {
+int main() {
         // serializes multiple objects using msgpack::packer.
         msgpack::sbuffer buffer;
 
@@ -98,7 +98,7 @@ int main(void) {
 #include <iostream>
 #include <string>
 
-int main(void) {
+int main() {
         // serializes multiple objects into one message containing an array using msgpack::packer.
         msgpack::sbuffer buffer;
 
@@ -139,7 +139,7 @@ public:
     MSGPACK_DEFINE(m_str, m_vec);
 };
 
-int main(void) {
+int main() {
         std::vector<myclass> vec;
         // add some elements into vec...
 
