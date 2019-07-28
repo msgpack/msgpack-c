@@ -68,7 +68,7 @@ In C++:
 #include <iostream>
 #include <sstream>
 
-int main(void)
+int main()
 {
     msgpack::type::tuple<int, bool, std::string> src(1, true, "example");
 
