@@ -29,7 +29,7 @@ TEST(MSGPACK_RAW_REF, pack_unpack)
     EXPECT_EQ(packed_str[4], 'C');
 
     msgpack::object_handle oh =
-        msgpack::unpack(ss.str().data(), ss.str().size());
+        msgpack::unpack(packed_str.data(), packed_str.size());
     msgpack::type::raw_ref rr2 = oh.get().as<msgpack::type::raw_ref>();
     EXPECT_TRUE(rr1 == rr2);
 }
@@ -46,7 +46,7 @@ TEST(MSGPACK_RAW_REF, pack_unpack_8_l)
     EXPECT_EQ(packed_str[1], static_cast<char>(0x00u));
 
     msgpack::object_handle oh =
-        msgpack::unpack(ss.str().data(), ss.str().size());
+        msgpack::unpack(packed_str.data(), packed_str.size());
     msgpack::type::raw_ref rr2 = oh.get().as<msgpack::type::raw_ref>();
     EXPECT_TRUE(rr1 == rr2);
 }
@@ -64,7 +64,7 @@ TEST(MSGPACK_RAW_REF, pack_unpack_8_h)
     EXPECT_EQ(packed_str[2], 'A');
 
     msgpack::object_handle oh =
-        msgpack::unpack(ss.str().data(), ss.str().size());
+        msgpack::unpack(packed_str.data(), packed_str.size());
     msgpack::type::raw_ref rr2 = oh.get().as<msgpack::type::raw_ref>();
     EXPECT_TRUE(rr1 == rr2);
 }
@@ -83,7 +83,7 @@ TEST(MSGPACK_RAW_REF, pack_unpack_16_l)
     EXPECT_EQ(packed_str[3], 'A');
 
     msgpack::object_handle oh =
-        msgpack::unpack(ss.str().data(), ss.str().size());
+        msgpack::unpack(packed_str.data(), packed_str.size());
     msgpack::type::raw_ref rr2 = oh.get().as<msgpack::type::raw_ref>();
     EXPECT_TRUE(rr1 == rr2);
 }
@@ -102,7 +102,7 @@ TEST(MSGPACK_RAW_REF, pack_unpack_16_h)
     EXPECT_EQ(packed_str[3], 'A');
 
     msgpack::object_handle oh =
-        msgpack::unpack(ss.str().data(), ss.str().size());
+        msgpack::unpack(packed_str.data(), packed_str.size());
     msgpack::type::raw_ref rr2 = oh.get().as<msgpack::type::raw_ref>();
     EXPECT_TRUE(rr1 == rr2);
 }
@@ -123,7 +123,7 @@ TEST(MSGPACK_RAW_REF, pack_unpack_32_l)
     EXPECT_EQ(packed_str[5], 'A');
 
     msgpack::object_handle oh =
-        msgpack::unpack(ss.str().data(), ss.str().size());
+        msgpack::unpack(packed_str.data(), packed_str.size());
     msgpack::type::raw_ref rr2 = oh.get().as<msgpack::type::raw_ref>();
     EXPECT_TRUE(rr1 == rr2);
 }
@@ -142,7 +142,7 @@ TEST(MSGPACK_V4RAW_REF, pack_unpack)
     EXPECT_EQ(packed_str[3], 'C');
 
     msgpack::object_handle oh =
-        msgpack::unpack(ss.str().data(), ss.str().size());
+        msgpack::unpack(packed_str.data(), packed_str.size());
     msgpack::type::v4raw_ref rr2 = oh.get().as<msgpack::type::v4raw_ref>();
     EXPECT_TRUE(rr1 == rr2);
 }
@@ -158,7 +158,7 @@ TEST(MSGPACK_V4RAW_REF, pack_unpack_fix_l)
     EXPECT_EQ(packed_str[0], static_cast<char>(0xa0u));
 
     msgpack::object_handle oh =
-        msgpack::unpack(ss.str().data(), ss.str().size());
+        msgpack::unpack(packed_str.data(), packed_str.size());
     msgpack::type::v4raw_ref rr2 = oh.get().as<msgpack::type::v4raw_ref>();
     EXPECT_TRUE(rr1 == rr2);
 }
@@ -175,7 +175,7 @@ TEST(MSGPACK_V4RAW_REF, pack_unpack_fix_h)
     EXPECT_EQ(packed_str[1], 'A');
 
     msgpack::object_handle oh =
-        msgpack::unpack(ss.str().data(), ss.str().size());
+        msgpack::unpack(packed_str.data(), packed_str.size());
     msgpack::type::v4raw_ref rr2 = oh.get().as<msgpack::type::v4raw_ref>();
     EXPECT_TRUE(rr1 == rr2);
 }
@@ -194,7 +194,7 @@ TEST(MSGPACK_V4RAW_REF, pack_unpack_16_l)
     EXPECT_EQ(packed_str[3], 'A');
 
     msgpack::object_handle oh =
-        msgpack::unpack(ss.str().data(), ss.str().size());
+        msgpack::unpack(packed_str.data(), packed_str.size());
     msgpack::type::v4raw_ref rr2 = oh.get().as<msgpack::type::v4raw_ref>();
     EXPECT_TRUE(rr1 == rr2);
 }
@@ -213,7 +213,7 @@ TEST(MSGPACK_V4RAW_REF, pack_unpack_16_h)
     EXPECT_EQ(packed_str[3], 'A');
 
     msgpack::object_handle oh =
-        msgpack::unpack(ss.str().data(), ss.str().size());
+        msgpack::unpack(packed_str.data(), packed_str.size());
     msgpack::type::v4raw_ref rr2 = oh.get().as<msgpack::type::v4raw_ref>();
     EXPECT_TRUE(rr1 == rr2);
 }
@@ -234,7 +234,7 @@ TEST(MSGPACK_V4RAW_REF, pack_unpack_32_l)
     EXPECT_EQ(packed_str[5], 'A');
 
     msgpack::object_handle oh =
-        msgpack::unpack(ss.str().data(), ss.str().size());
+        msgpack::unpack(packed_str.data(), packed_str.size());
     msgpack::type::v4raw_ref rr2 = oh.get().as<msgpack::type::v4raw_ref>();
     EXPECT_TRUE(rr1 == rr2);
 }

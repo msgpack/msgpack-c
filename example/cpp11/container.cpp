@@ -37,7 +37,8 @@ void tuple() {
     std::stringstream ss;
     msgpack::pack(ss, t);
 
-    auto oh = msgpack::unpack(ss.str().data(), ss.str().size());
+    auto const& str = ss.str();
+    auto oh = msgpack::unpack(str.data(), str.size());
     auto obj = oh.get();
 
     std::cout << obj << std::endl;
@@ -49,7 +50,8 @@ void unordered_map() {
     std::stringstream ss;
     msgpack::pack(ss, m);
 
-    auto oh = msgpack::unpack(ss.str().data(), ss.str().size());
+    auto const& str = ss.str();
+    auto oh = msgpack::unpack(str.data(), str.size());
     msgpack::object obj = oh.get();
 
     std::cout << obj << std::endl;
@@ -61,7 +63,8 @@ void unordered_set() {
     std::stringstream ss;
     msgpack::pack(ss, s);
 
-    auto oh = msgpack::unpack(ss.str().data(), ss.str().size());
+    auto const& str = ss.str();
+    auto oh = msgpack::unpack(str.data(), str.size());
     auto obj = oh.get();
 
     std::cout << obj << std::endl;
@@ -74,7 +77,8 @@ void forward_list() {
     std::stringstream ss;
     msgpack::pack(ss, f);
 
-    auto oh = msgpack::unpack(ss.str().data(), ss.str().size());
+    auto const& str = ss.str();
+    auto oh = msgpack::unpack(str.data(), str.size());
     auto obj = oh.get();
 
     std::cout << obj << std::endl;
@@ -98,7 +102,8 @@ void combi() {
     std::size_t offset = 0;
     std::cout << "offset: " << offset << std::endl;
     {
-        auto oh = msgpack::unpack(ss.str().data(), ss.str().size(), offset);
+        auto const& str = ss.str();
+        auto oh = msgpack::unpack(str.data(), str.size(), offset);
         auto obj = oh.get();
 
         std::cout << obj << std::endl;
@@ -106,7 +111,8 @@ void combi() {
     }
     std::cout << "offset: " << offset << std::endl;
     {
-        auto oh = msgpack::unpack(ss.str().data(), ss.str().size(), offset);
+        auto const& str = ss.str();
+        auto oh = msgpack::unpack(str.data(), str.size(), offset);
         auto obj = oh.get();
 
         std::cout << obj << std::endl;
@@ -114,7 +120,8 @@ void combi() {
     }
     std::cout << "offset: " << offset << std::endl;
     {
-        auto oh = msgpack::unpack(ss.str().data(), ss.str().size(), offset);
+        auto const& str = ss.str();
+        auto oh = msgpack::unpack(str.data(), str.size(), offset);
         auto obj = oh.get();
 
         std::cout << obj << std::endl;
@@ -122,7 +129,8 @@ void combi() {
     }
     std::cout << "offset: " << offset << std::endl;
     {
-        auto oh = msgpack::unpack(ss.str().data(), ss.str().size(), offset);
+        auto const& str = ss.str();
+        auto oh = msgpack::unpack(str.data(), str.size(), offset);
         auto obj = oh.get();
 
         std::cout << obj << std::endl;
@@ -130,7 +138,8 @@ void combi() {
     }
     std::cout << "offset: " << offset << std::endl;
     {
-        auto oh = msgpack::unpack(ss.str().data(), ss.str().size(), offset);
+        auto const& str = ss.str();
+        auto oh = msgpack::unpack(str.data(), str.size(), offset);
         auto obj = oh.get();
 
         std::cout << obj << std::endl;

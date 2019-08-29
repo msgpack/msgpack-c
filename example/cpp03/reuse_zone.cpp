@@ -31,12 +31,13 @@ int main() {
     std::size_t offset = 0;
 
     // msgpack array is constructed on z.
-    msgpack::object obj = msgpack::unpack(z, ss.str().data(), ss.str().size(), offset);
+    std::string const& ps = ss.str();
+    msgpack::object obj = msgpack::unpack(z, ps.data(), ps.size(), offset);
     std::cout << obj << std::endl;
     assert(obj.as<std::vector<int> >() == v);
 
     // msgpack str is constructed on z.
-    std::string const& str = msgpack::unpack(z, ss.str().data(), ss.str().size(), offset).as<std::string>();
+    std::string const& str = msgpack::unpack(z, ps.data(), ps.size(), offset).as<std::string>();
     std::cout << str << std::endl;
     assert(str == s);
 }

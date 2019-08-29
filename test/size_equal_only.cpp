@@ -15,7 +15,8 @@ TEST(size_equal_only, array)
     msgpack::type::size_equal_only<int[3]> seo(buf);
 
     msgpack::pack(ss, seo);
-    msgpack::object_handle oh = msgpack::unpack(ss.str().data(), ss.str().size());
+    std::string const& str = ss.str();
+    msgpack::object_handle oh = msgpack::unpack(str.data(), str.size());
 
     int ret_buf1[3];
     oh.get().convert(ret_buf1);
@@ -58,7 +59,8 @@ TEST(size_equal_only, vector)
     msgpack::type::size_equal_only<std::vector<int> > seo(buf);
 
     msgpack::pack(ss, seo);
-    msgpack::object_handle oh = msgpack::unpack(ss.str().data(), ss.str().size());
+    std::string const& str = ss.str();
+    msgpack::object_handle oh = msgpack::unpack(str.data(), str.size());
 
     std::vector<int> ret_buf1;
     oh.get().convert(ret_buf1);
@@ -91,7 +93,8 @@ TEST(size_equal_only, msgpack_tuple)
     msgpack::type::size_equal_only<msgpack::type::tuple<int, bool, std::string> > seo(buf);
 
     msgpack::pack(ss, seo);
-    msgpack::object_handle oh = msgpack::unpack(ss.str().data(), ss.str().size());
+    std::string const& str = ss.str();
+    msgpack::object_handle oh = msgpack::unpack(str.data(), str.size());
 
     msgpack::type::tuple<int, bool, std::string> ret_buf1;
     oh.get().convert(ret_buf1);
@@ -148,7 +151,8 @@ TEST(size_equal_only, tuple)
     auto seo = msgpack::type::make_size_equal_only(buf);
 
     msgpack::pack(ss, seo);
-    msgpack::object_handle oh = msgpack::unpack(ss.str().data(), ss.str().size());
+    std::string const& str = ss.str();
+    msgpack::object_handle oh = msgpack::unpack(str.data(), str.size());
 
     std::tuple<int, bool, std::string> ret_buf1;
     oh.get().convert(ret_buf1);
@@ -210,7 +214,8 @@ TEST(size_equal_only, custom_class)
     std::stringstream ss;
     foo1 f1(42, true);
     msgpack::pack(ss, f1);
-    msgpack::object_handle oh = msgpack::unpack(ss.str().data(), ss.str().size());
+    std::string const& str = ss.str();
+    msgpack::object_handle oh = msgpack::unpack(str.data(), str.size());
 
     foo2 f2(123, false, "ABC");
     try {

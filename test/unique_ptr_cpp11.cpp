@@ -20,8 +20,9 @@ TEST(UNIQUE_PTR, pack_convert_nil)
     std::stringstream ss;
     std::unique_ptr<int> val1;
     msgpack::pack(ss, val1);
+    std::string const& str = ss.str();
     msgpack::object_handle oh =
-        msgpack::unpack(ss.str().data(), ss.str().size());
+        msgpack::unpack(str.data(), str.size());
     std::unique_ptr<int> val2 = oh.get().as<std::unique_ptr<int>>();
     EXPECT_TRUE(val1 == val2);
 }
@@ -31,8 +32,9 @@ TEST(UNIQUE_PTR, pack_convert_int)
     std::stringstream ss;
     std::unique_ptr<int> val1(new int(1));
     msgpack::pack(ss, val1);
+    std::string const& str = ss.str();
     msgpack::object_handle oh =
-        msgpack::unpack(ss.str().data(), ss.str().size());
+        msgpack::unpack(str.data(), str.size());
     std::unique_ptr<int> val2 = oh.get().as<std::unique_ptr<int>>();
     EXPECT_TRUE(*val1 == *val2);
 }
@@ -119,8 +121,9 @@ TEST(UNIQUE_PTR, pack_convert_nil_no_def_con)
     std::stringstream ss;
     std::unique_ptr<no_def_con> val1(new no_def_con(1));
     msgpack::pack(ss, val1);
+    std::string const& str = ss.str();
     msgpack::object_handle oh =
-        msgpack::unpack(ss.str().data(), ss.str().size());
+        msgpack::unpack(str.data(), str.size());
     std::unique_ptr<no_def_con> val2 = oh.get().as<std::unique_ptr<no_def_con>>();
     EXPECT_TRUE(*val1 == *val2);
 }

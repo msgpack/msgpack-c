@@ -20,7 +20,8 @@ TEST(MSGPACK_REFERENCE_WRAPPER, pack_convert)
     std::reference_wrapper<int> val1(i1);
     std::stringstream ss;
     msgpack::pack(ss, val1);
-    msgpack::object_handle oh = msgpack::unpack(ss.str().data(), ss.str().size());
+    std::string const& str = ss.str();
+    msgpack::object_handle oh = msgpack::unpack(str.data(), str.size());
     int i2 = 0;
     std::reference_wrapper<int> val2(i2);
     oh.get().convert(val2);
@@ -33,7 +34,8 @@ TEST(MSGPACK_REFERENCE_WRAPPER, pack_convert_const)
     std::reference_wrapper<const int> val1(i1);
     std::stringstream ss;
     msgpack::pack(ss, val1);
-    msgpack::object_handle oh = msgpack::unpack(ss.str().data(), ss.str().size());
+    std::string const& str = ss.str();
+    msgpack::object_handle oh = msgpack::unpack(str.data(), str.size());
     int i2 = 0;
     std::reference_wrapper<int> val2(i2);
     oh.get().convert(val2);
@@ -46,7 +48,8 @@ TEST(MSGPACK_REFERENCE_WRAPPER, pack_vector)
     std::vector<std::reference_wrapper<int>> val1{i1};
     std::stringstream ss;
     msgpack::pack(ss, val1);
-    msgpack::object_handle oh = msgpack::unpack(ss.str().data(), ss.str().size());
+    std::string const& str = ss.str();
+    msgpack::object_handle oh = msgpack::unpack(str.data(), str.size());
     std::vector<int> val2 = oh.get().as<std::vector<int>>();
     EXPECT_EQ(val2.size(), static_cast<size_t>(1));
     EXPECT_EQ(val1[0], val2[0]);
