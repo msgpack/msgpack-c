@@ -82,10 +82,11 @@ int main() {
         std::stringstream ss;
         msgpack::pack(ss, my);
 
-        print(ss.str());
+        std::string const& str = ss.str();
+        print(str);
 
         msgpack::object_handle oh =
-            msgpack::unpack(ss.str().data(), ss.str().size());
+            msgpack::unpack(str.data(), str.size());
         msgpack::object obj = oh.get();
         std::cout << obj << std::endl;
         assert(obj.as<my_class>() == my);

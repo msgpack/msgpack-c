@@ -21,8 +21,9 @@ TEST(MSGPACK_BOOST, pack_convert_nil)
     std::stringstream ss;
     boost::optional<int> val1;
     msgpack::pack(ss, val1);
+    std::string const& str = ss.str();
     msgpack::object_handle oh =
-        msgpack::unpack(ss.str().data(), ss.str().size());
+        msgpack::unpack(str.data(), str.size());
     boost::optional<int> val2 = oh.get().as<boost::optional<int> >();
     EXPECT_TRUE(val1 == val2);
 }
@@ -32,8 +33,9 @@ TEST(MSGPACK_BOOST, pack_convert_int)
     std::stringstream ss;
     boost::optional<int> val1 = 1;
     msgpack::pack(ss, val1);
+    std::string const& str = ss.str();
     msgpack::object_handle oh =
-        msgpack::unpack(ss.str().data(), ss.str().size());
+        msgpack::unpack(str.data(), str.size());
     boost::optional<int> val2 = oh.get().as<boost::optional<int> >();
     EXPECT_TRUE(val1 == val2);
 }
@@ -49,8 +51,9 @@ TEST(MSGPACK_BOOST, pack_convert_vector)
     v.push_back(3);
     val1 = v;
     msgpack::pack(ss, val1);
+    std::string const& str = ss.str();
     msgpack::object_handle oh =
-        msgpack::unpack(ss.str().data(), ss.str().size());
+        msgpack::unpack(str.data(), str.size());
     ovi_t  val2 = oh.get().as<ovi_t>();
     EXPECT_TRUE(val1 == val2);
 }
@@ -64,8 +67,9 @@ TEST(MSGPACK_BOOST, pack_convert_vector_optional)
     val1[0] = 1;
     val1[2] = 3;
     msgpack::pack(ss, val1);
+    std::string const& str = ss.str();
     msgpack::object_handle oh =
-        msgpack::unpack(ss.str().data(), ss.str().size());
+        msgpack::unpack(str.data(), str.size());
     voi_t  val2 = oh.get().as<voi_t>();
     EXPECT_TRUE(val1 == val2);
 }
@@ -171,8 +175,9 @@ TEST(MSGPACK_BOOST, pack_convert_no_def_con)
     std::stringstream ss;
     boost::optional<no_def_con> val1 = no_def_con(1);
     msgpack::pack(ss, val1);
+    std::string const& str = ss.str();
     msgpack::object_handle oh =
-        msgpack::unpack(ss.str().data(), ss.str().size());
+        msgpack::unpack(str.data(), str.size());
     boost::optional<no_def_con> val2 = oh.get().as<boost::optional<no_def_con>>();
     EXPECT_TRUE(val1 == val2);
 }

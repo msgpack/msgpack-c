@@ -25,7 +25,8 @@ TEST(MSGPACK_BOOST, pack_convert_string_view)
     msgpack::pack(ss, val1);
 
     msgpack::object_handle oh;
-    msgpack::unpack(oh, ss.str().data(), ss.str().size());
+    std::string const& str = ss.str();
+    msgpack::unpack(oh, str.data(), str.size());
     boost::string_view val2 = oh.get().as<boost::string_view>();
     EXPECT_TRUE(val1 == val2);
 }

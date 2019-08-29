@@ -83,7 +83,8 @@ int main() {
     u.address = "Tokyo";
     msgpack::pack(ss, u);
 
-    msgpack::object_handle oh = msgpack::unpack(ss.str().data(), ss.str().size());
+    std::string const& str = ss.str();
+    msgpack::object_handle oh = msgpack::unpack(str.data(), str.size());
     msgpack::object const& obj = oh.get();
     std::cout << "Unpacked msgpack object." << std::endl;
     std::cout << obj << std::endl;
