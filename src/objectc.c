@@ -90,7 +90,7 @@ int msgpack_pack_object(msgpack_packer* pk, msgpack_object d)
             }
             else {
                 msgpack_object* o = d.via.array.ptr;
-                if (o == nil) { return -1 }
+                if (o == NULL) { return -1; }
                 msgpack_object* const oend = d.via.array.ptr + d.via.array.size;
                 for(; o != oend; ++o) {
                     ret = msgpack_pack_object(pk, *o);
@@ -109,7 +109,7 @@ int msgpack_pack_object(msgpack_packer* pk, msgpack_object d)
             }
             else {
                 msgpack_object_kv* kv = d.via.map.ptr;
-                if (kv == nil) { return -1 }
+                if (kv == NULL) { return -1; }
                 msgpack_object_kv* const kvend = d.via.map.ptr + d.via.map.size;
                 for(; kv != kvend; ++kv) {
                     ret = msgpack_pack_object(pk, kv->key);
