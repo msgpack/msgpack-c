@@ -97,3 +97,13 @@ TEST(zone, allocate_no_align)
     char* buf2 = (char*)z.allocate_no_align(4);
     EXPECT_EQ(buf1+4, buf2);
 }
+TEST(zone, allocate)
+{
+	msgpack::unpacked r;
+	while (pac_.next(&r)) {
+	   auto msg = result.get();
+	   io_->post([this, msg, z = std::shared_ptr<msgpack::zone>(r.zone().release())]() {
+		        // msg is valid here            
+		     }));
+	}
+}
