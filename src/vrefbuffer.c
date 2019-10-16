@@ -65,6 +65,7 @@ bool msgpack_vrefbuffer_init(msgpack_vrefbuffer* vbuf,
     }
 }
 
+//creating a void file
 void msgpack_vrefbuffer_destroy(msgpack_vrefbuffer* vbuf)
 {
     msgpack_vrefbuffer_chunk* c = vbuf->inner_buffer.head;
