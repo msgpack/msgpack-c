@@ -183,7 +183,7 @@ TEST(MSGPACK_CPP11, simple_buffer_array_char)
     for (unsigned int k = 0; k < kLoop; k++) {
         array<char, kElements> val1;
         for (unsigned int i = 0; i < kElements; i++)
-            val1[i] = rand();
+            val1[i] = static_cast<char>(rand());
         msgpack::sbuffer sbuf;
         msgpack::pack(sbuf, val1);
         msgpack::object_handle oh =
@@ -214,7 +214,7 @@ TEST(MSGPACK_CPP11, simple_buffer_array_unsigned_char)
     for (unsigned int k = 0; k < kLoop; k++) {
         array<unsigned char, kElements> val1;
         for (unsigned int i = 0; i < kElements; i++)
-            val1[i] = rand();
+            val1[i] = static_cast<unsigned char>(rand());
         msgpack::sbuffer sbuf;
         msgpack::pack(sbuf, val1);
         msgpack::object_handle oh =
