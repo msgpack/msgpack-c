@@ -256,7 +256,7 @@ void msgpack_object_print(FILE* out, msgpack_object o)
 
 #define MSGPACK_CHECKED_CALL(ret, func, aux_buffer, aux_buffer_size, ...) \
     ret = func(aux_buffer, aux_buffer_size, __VA_ARGS__);                 \
-    if (ret <= 0 || ret > (int)aux_buffer_size) return 0;                 \
+    if (ret <= 0 || ret >= (int)aux_buffer_size) return 0;                \
     aux_buffer = aux_buffer + ret;                                        \
     aux_buffer_size = aux_buffer_size - ret                               \
 
