@@ -22,7 +22,7 @@
 #endif
 #endif // defined(_MSC_VER)
 
-#if defined(unix) || defined(__unix) || defined(__APPLE__) || defined(__OpenBSD__)
+#if defined(unix) || defined(__unix) || defined(__APPLE__) || defined(__OpenBSD__) || defined(__OS2__)
 #include <sys/uio.h>
 #else
 struct iovec {
