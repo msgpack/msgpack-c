@@ -14,7 +14,7 @@
 #include <stddef.h>
 
 #if defined(_MSC_VER) && _MSC_VER <= 1800
-#   define snprintf(buf, len, format,...) _snprintf_s(buf, len, len, format, __VA_ARGS__)
+#   define snprintf(buf, len, format,...) _snprintf_s(buf, len, _TRUNCATE, format, __VA_ARGS__)
 #endif
 
 #if defined(_MSC_VER) && _MSC_VER < 1600

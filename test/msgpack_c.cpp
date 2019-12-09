@@ -1368,3 +1368,45 @@ TEST(MSGPACKC, vref_buffer_overflow)
     EXPECT_FALSE(msgpack_vrefbuffer_init(&vbuf, ref_size, chunk_size));
     EXPECT_EQ(-1, msgpack_vrefbuffer_migrate(&vbuf, &to));
 }
+
+TEST(MSGPACKC, object_print_buffer_overflow) {
+  msgpack_object obj;
+  obj.type = MSGPACK_OBJECT_NIL;
+  char buffer[4];
+
+  int ret;
+  ret = msgpack_object_print_buffer(buffer, 1, obj);
+  EXPECT_EQ(0, ret);
+  ret = msgpack_object_print_buffer(buffer, 2, obj);
+  EXPECT_EQ(0, ret);
+  ret = msgpack_object_print_buffer(buffer, 3, obj);
+  EXPECT_EQ(0, ret);
+  ret = msgpack_object_print_buffer(buffer, 4, obj);
+  EXPECT_EQ(3, ret);
+  EXPECT_STREQ("nil", buffer);
+}
+
+TEST(MSGPACKC, object_bin_print_buffer_overflow) {
+  msgpack_object obj;
+  obj.type = MSGPACK_OBJECT_BIN;
+  obj.via.bin.ptr = "test";
+  obj.via.bin.size = 4;
+  char buffer[7];
+
+  int ret;
+  ret = msgpack_object_print_buffer(buffer, 1, obj);
+  EXPECT_EQ(0, ret);
+  ret = msgpack_object_print_buffer(buffer, 2, obj);
+  EXPECT_EQ(0, ret);
+  ret = msgpack_object_print_buffer(buffer, 3, obj);
+  EXPECT_EQ(0, ret);
+  ret = msgpack_object_print_buffer(buffer, 4, obj);
+  EXPECT_EQ(0, ret);
+  ret = msgpack_object_print_buffer(buffer, 5, obj);
+  EXPECT_EQ(0, ret);
+  ret = msgpack_object_print_buffer(buffer, 6, obj);
+  EXPECT_EQ(0, ret);
+  ret = msgpack_object_print_buffer(buffer, 7, obj);
+  EXPECT_EQ(6, ret);
+  EXPECT_STREQ("\"test\"", buffer);
+}
