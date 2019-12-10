@@ -232,6 +232,25 @@ matrix:
             - clang-5.0
       script:
         - CMAKE_CXX_COMPILER="${CXX}" CMAKE_C_COMPILER="${CC}" CMAKE_LIBRARY_PATH="${BASE}" GTEST_ROOT="${BASE}/gtest" BOOST_ROOT="${BASE}/boost" CTEST_OUTPUT_ON_FAILURE=1 MSGPACK_SAN="${SAN}" ci/build_regression.sh
+    - os: linux
+      compiler: gcc
+      env: ACTION="ci/build_cmake_embedded.sh"     ARCH="64"
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-multilib
+            - gcc-multilib
+            - gcc-7-multilib
+            - g++-7-multilib
+            - lib32stdc++6-6-dbg
+            - lib32gcc1
+            - libc6-i386
+            - lib32z1-dev
+            - zlib1g-dev
+            - bzip2
+            - libc6-dbg
 
 
 script:

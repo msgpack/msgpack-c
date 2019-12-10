@@ -72,4 +72,39 @@ then
     fi
 fi
 
+if [ "${ARCH}" != "32" ]
+then
+    mkdir install-test
+
+    ret=$?
+    if [ $ret -ne 0 ]
+    then
+        exit $ret
+    fi
+
+    cd install-test
+
+    ret=$?
+    if [ $ret -ne 0 ]
+    then
+        exit $ret
+    fi
+
+    cmake -DCMAKE_PREFIX_PATH=`pwd`/../install/usr/local/lib/cmake ../../example/cmake
+
+    ret=$?
+    if [ $ret -ne 0 ]
+    then
+        exit $ret
+    fi
+
+    make
+
+    ret=$?
+    if [ $ret -ne 0 ]
+    then
+        exit $ret
+    fi
+fi
+
 exit 0
