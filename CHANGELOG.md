@@ -1,3 +1,15 @@
+# 2019-12-10 version 3.2.1
+  * Fix snprintf return value checking (#821)
+  * Remove some warnings (#819)
+  * Fix fbuffer result checking (#812)
+  * Fix temporary object handling (#807)
+  * Improve cmake support (#804)
+  * Fix invalid `int main` parameter (#800)
+  * Improve supporting platform (#797, #817)
+  * Fix ZLIB error handling (#795)
+  * Remove unused variable (#793)
+  * Improve integer overflow checking (#792)
+
 # 2019-05-27 version 3.2.0
 
   * Fix invalid include (#783)
