@@ -1,0 +1,320 @@
+name: CI
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+  push:
+    branches:
+    - master
+    tags:
+    - '*'
+
+jobs:
+  macos:
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        pattern: [0, 1, 2, 3]
+    steps:
+    - uses: actions/checkout@v1
+    - name: install boost
+      run: |
+        brew install boost
+    - name: build and test
+      env:
+        CC: clang
+        CXX: clang++
+      shell: bash
+      run: |
+        BASE=`pwd`;
+        mkdir ${BASE}/usr;
+
+        # matrix config
+        if [ ${{ matrix.pattern }} == 0 ]; then
+          ACTION="ci/build_cmake.sh"
+          export CXX17="ON"
+          export ARCH="64"
+          export BOOST="ON"
+          SHARED="ON"
+          export CHAR_SIGN="unsigned"
+          export API_VERSION="1"
+        fi
+        if [ ${{ matrix.pattern }} == 1 ]; then
+          ACTION="ci/build_cmake.sh"
+          export CXX17="ON"
+          export ARCH="64"
+          export BOOST="ON"
+          export SHARED="ON"
+          export CHAR_SIGN="signed"
+          export API_VERSION="3"
+        fi
+        if [ ${{ matrix.pattern }} == 2 ]; then
+          ACTION="ci/build_cmake.sh"
+          export CXX17="ON"
+          export ARCH="64"
+          export SHARED="ON"
+          export CHAR_SIGN="signed"
+          export API_VERSION="2"
+        fi
+        if [ ${{ matrix.pattern }} == 3 ]; then
+          ACTION="ci/build_cmake.sh"
+          export ARCH="64"
+          export SHARED="ON"
+          export CHAR_SIGN="unsigned"
+          export API_VERSION="2"
+        fi
+
+        # install gtest
+        wget https://github.com/google/googletest/archive/release-1.7.0.zip -O googletest-release-1.7.0.zip
+        unzip -q googletest-release-1.7.0.zip
+        cd googletest-release-1.7.0
+        $CXX -m${ARCH} src/gtest-all.cc -I. -Iinclude -c
+        $CXX -m${ARCH} src/gtest_main.cc -I. -Iinclude -c
+        ar -rv libgtest.a gtest-all.o
+        ar -rv libgtest_main.a gtest_main.o
+        mkdir -p ${BASE}/usr/include
+        cp -r include/gtest ${BASE}/usr/include
+        mkdir -p ${BASE}/usr/lib
+        mv *.a ${BASE}/usr/lib
+        cd ..
+
+        # build and test
+        CMAKE_CXX_COMPILER="${CXX}" CMAKE_C_COMPILER="${CC}" CMAKE_LIBRARY_PATH="${BASE}/usr/lib:${BASE}/build" GTEST_ROOT="${BASE}/usr" BOOST_ROOT="${BASE}/usr" CFLAGS="-Werror -g" CXXFLAGS="-Werror -g" ${ACTION}
+        cat Files.cmake| grep ".*\.[h|hpp]" | perl -pe 's/ //g' | sort > tmp1  && find include -name "*.h" -o -name "*.hpp" | sort > tmp2 && diff tmp1 tmp2
+
+  linux:
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        pattern: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+    steps:
+    - uses: actions/checkout@v1
+    - name: install g++-multilib
+      run: |
+        sudo apt-get update
+        sudo apt-get install g++-multilib
+    - name: install clang
+      run: |
+        sudo apt-get update
+        sudo apt-get install clang-8
+    - name: install valgrind
+      run: |
+        sudo apt-get update
+        sudo apt-get install valgrind
+    - name: build and test
+      shell: bash
+      run: |
+        BASE=`pwd`;
+        mkdir ${BASE}/usr;
+
+        # matrix config
+        if [ ${{ matrix.pattern }} == 0 ]; then
+          export CC=clang
+          export CXX=clang++
+          ACTION="ci/build_cmake.sh"
+          export ARCH="64"
+          export BOOST="ON"
+          export SHARED="ON"
+          export CHAR_SIGN="unsigned"
+          export API_VERSION="2"
+        fi
+        if [ ${{ matrix.pattern }} == 1 ]; then
+          export CC=clang
+          export CXX=clang++
+          ACTION="ci/build_cmake.sh"
+          export ARCH="32"
+          export SHARED="ON"
+          export CHAR_SIGN="signed"
+          export API_VERSION="2"
+        fi
+        if [ ${{ matrix.pattern }} == 2 ]; then
+          export CC=clang
+          export CXX=clang++
+          ACTION="ci/build_cmake.sh"
+          export CXX17="ON"
+          export ARCH="64"
+          export BOOST="ON"
+          export SHARED="ON"
+          export CHAR_SIGN="signed"
+          export API_VERSION="3"
+          export X3_PARSE="ON"
+        fi
+        if [ ${{ matrix.pattern }} == 3 ]; then
+          export CC=clang
+          export CXX=clang++
+          ACTION="ci/build_cmake.sh"
+          export CXX17="ON"
+          export ARCH="32"
+          export SHARED="OFF"
+          export CHAR_SIGN="unsigned"
+          export API_VERSION="2"
+        fi
+        if [ ${{ matrix.pattern }} == 4 ]; then
+          export CC=gcc
+          export CXX=g++
+          ACTION="ci/build_cmake.sh"
+          export CXX17="ON"
+          export ARCH="64"
+          export SHARED="ON"
+          export CHAR_SIGN="signed"
+          export API_VERSION="2"
+        fi
+        if [ ${{ matrix.pattern }} == 5 ]; then
+          export CC=gcc
+          export CXX=g++
+          ACTION="ci/build_cmake.sh"
+          export CXX17="ON"
+          export ARCH="32"
+          export BOOST="ON"
+          export SHARED="ON"
+          export CHAR_SIGN="unsigned"
+          export API_VERSION="3"
+          export X3_PARSE="ON"
+        fi
+        if [ ${{ matrix.pattern }} == 6 ]; then
+          export CC=gcc
+          export CXX=g++
+          ACTION="ci/build_cmake.sh"
+          export ARCH="64"
+          export SHARED="ON"
+          export CHAR_SIGN="unsigned"
+          export API_VERSION="2"
+        fi
+        if [ ${{ matrix.pattern }} == 7 ]; then
+          export CC=gcc
+          export CXX=g++
+          ACTION="ci/build_cmake.sh"
+          export ARCH="32"
+          export BOOST="ON"
+          export SHARED="OFF"
+          export CHAR_SIGN="signed"
+          export API_VERSION="1"
+        fi
+        if [ ${{ matrix.pattern }} == 8 ]; then
+          export CC=gcc
+          export CXX=g++
+          ACTION="ci/build_cmake.sh"
+          export ARCH="32"
+          export BOOST="ON"
+          export SHARED="OFF"
+          export CHAR_SIGN="signed"
+          export API_VERSION="2"
+        fi
+        if [ ${{ matrix.pattern }} == 9 ]; then
+          export CC=clang
+          export CXX=clang++
+          ACTION="ci/build_regression.sh"
+          export ARCH="64"
+          export SAN="UBSAN"
+          export MSGPACK_FUZZ_REGRESSION="ON"
+          export CTEST_OUTPUT_ON_FAILURE=1
+        fi
+        if [ ${{ matrix.pattern }} == 10 ]; then
+          export CC=clang
+          export CXX=clang++
+          ACTION="ci/build_regression.sh"
+          export ARCH="64"
+          export SAN="ASAN"
+          export MSGPACK_FUZZ_REGRESSION="ON"
+          export CTEST_OUTPUT_ON_FAILURE=1
+        fi
+        if [ ${{ matrix.pattern }} == 11 ]; then
+          export CC=gcc
+          export CXX=g++
+          ACTION="ci/build_cmake_embedded.sh"
+          export ARCH="64"
+        fi
+
+        # install boost
+        wget https://dl.bintray.com/boostorg/release/1.71.0/source/boost_1_71_0.tar.bz2
+        tar xf boost_1_71_0.tar.bz2
+        cd boost_1_71_0
+        ./bootstrap.sh
+        ./b2 -j4 --prefix=${BASE}/usr --with-chrono --with-context --with-filesystem --with-system --with-timer address-model=${ARCH} install
+        cd ..
+
+        # install gtest
+        wget https://github.com/google/googletest/archive/release-1.7.0.zip -O googletest-release-1.7.0.zip
+        unzip -q googletest-release-1.7.0.zip
+        cd googletest-release-1.7.0
+        $CXX -m${ARCH} src/gtest-all.cc -I. -Iinclude -c -fPIC
+        $CXX -m${ARCH} src/gtest_main.cc -I. -Iinclude -c -fPIC
+        ar -rv libgtest.a gtest-all.o
+        ar -rv libgtest_main.a gtest_main.o
+        mkdir -p ${BASE}/usr/include
+        cp -r include/gtest ${BASE}/usr/include
+        mkdir -p ${BASE}/usr/lib
+        mv *.a ${BASE}/usr/lib
+        cd ..
+
+        # install zlib
+        if [ ${ARCH} == 32 ]; then
+          sudo apt-get install lib32z1-dev
+        fi
+
+        # build and test
+        CMAKE_CXX_COMPILER="${CXX}" CMAKE_C_COMPILER="${CC}" CMAKE_LIBRARY_PATH="${BASE}/usr/lib:${BASE}/build" GTEST_ROOT="${BASE}/usr" BOOST_ROOT="${BASE}/usr" CFLAGS="-Werror -g" CXXFLAGS="-Werror -g" MSGPACK_SAN="${SAN}" ${ACTION}
+        cat Files.cmake| grep ".*\.[h|hpp]" | perl -pe 's/ //g' | sort > tmp1  && find include -name "*.h" -o -name "*.hpp" | sort > tmp2 && diff tmp1 tmp2
+  windows:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        pattern: [0, 1, 2, 3]
+    steps:
+    - uses: actions/checkout@v1
+    - name: download
+      shell: bash
+      run: |
+        curl -L -o googletest-release-1.7.0.zip https://github.com/google/googletest/archive/release-1.7.0.zip
+        curl -L -O http://zlib.net/zlib-1.2.11.tar.gz
+        pwd
+        ls -l
+    - name: build and test
+      shell: powershell
+      run: |
+        if (${{ matrix.pattern }} -eq 0) {
+          $CPP11="-DMSGPACK_CXX11=""OFF"""
+          $BOOST="-DMSGPACK_BOOST=""OFF"""
+        }
+        if (${{ matrix.pattern }} -eq 1) {
+          $CPP11="-DMSGPACK_CXX11=""OFF"""
+          $BOOST="-DMSGPACK_BOOST=""ON"""
+        }
+        if (${{ matrix.pattern }} -eq 2) {
+          $CPP11="-DMSGPACK_CXX11=""ON"""
+          $BOOST="-DMSGPACK_BOOST=""OFF"""
+        }
+        if (${{ matrix.pattern }} -eq 3) {
+          $CPP11="-DMSGPACK_CXX11=""ON"""
+          $BOOST="-DMSGPACK_BOOST=""ON"""
+        }
+
+        $CUR=(Get-Location).Path
+        7z x googletest-release-1.7.0.zip
+        cd googletest-release-1.7.0
+        md build
+        cd build
+        cmake -DBUILD_SHARED_LIBS=ON -DCMAKE_CXX_FLAGS="/D_VARIADIC_MAX=10 /D_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING" ..
+        cmake --build . --config Release
+        cd ..
+        cd ..
+
+        7z x zlib-1.2.11.tar.gz
+        7z x zlib-1.2.11.tar
+        cd zlib-1.2.11
+        md build
+        cd build
+        cmake ..
+        cmake --build . --config Release
+        copy zconf.h ..
+        cd ..
+        cd ..
+
+        md build
+        cd build
+        echo $env:BOOST_ROOT
+        $env:DBOOST_ROOT="$env:Boost_ROOT"
+        Start-Process cmake -ArgumentList "-DBOOST_ROOT=""$env:BOOST_ROOT"" $CPP11 $BOOST $X3_PARSE -DGTEST_LIBRARY=""$CUR\googletest-release-1.7.0\build\Release\gtest.lib"" -DGTEST_MAIN_LIBRARY=""$CUR\googletest-release-1.7.0\build\Release\gtest_main.lib"" -DGTEST_INCLUDE_DIR=""$CUR\googletest-release-1.7.0\include"" -DZLIB_LIBRARY=""$CUR\zlib-1.2.11\build\Release\zlib.lib"" -DZLIB_INCLUDE_DIR=""$CUR\zlib-1.2.11"" -DCMAKE_CXX_FLAGS=""/D_VARIADIC_MAX=10 /EHsc /D_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING"" .." -NoNewWindow -Wait
+        cmake --build . --config Release
+        $env:PATH="$env:PATH;$CUR\googletest-release-1.7.0\build\Release;$CUR\zlib-1.2.11\build\Release;$CUR\build\release"
+        ctest -V
