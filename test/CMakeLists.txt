@@ -94,6 +94,14 @@ FOREACH (source_file ${check_PROGRAMS})
     IF (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         SET_PROPERTY (TARGET ${source_file_we} APPEND_STRING PROPERTY COMPILE_FLAGS " -Wno-mismatched-tags")
     ENDIF ()
+
+    IF (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+        IF (CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
+            STRING(REGEX REPLACE "/W[0-4]" "/W3 /WX" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+        ELSE ()
+            SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W3 /WX")
+        ENDIF ()
+    ENDIF ()
 ENDFOREACH ()
 
 ADD_EXECUTABLE (
