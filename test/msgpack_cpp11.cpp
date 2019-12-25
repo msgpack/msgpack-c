@@ -887,7 +887,7 @@ TEST(MSGPACK_CHRONO, system_clock_32)
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, val1);
     char packed[] = {
-        static_cast<char>(0xd6),
+        static_cast<char>(0xd6u),
         static_cast<char>(-1),
         static_cast<char>(0x12),
         static_cast<char>(0x34),
@@ -912,12 +912,12 @@ TEST(MSGPACK_CHRONO, system_clock_32_max)
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, val1);
     char packed[] = {
-        static_cast<char>(0xd6),
+        static_cast<char>(0xd6u),
         static_cast<char>(-1),
-        static_cast<char>(0xff),
-        static_cast<char>(0xff),
-        static_cast<char>(0xff),
-        static_cast<char>(0xff)
+        static_cast<char>(0xffu),
+        static_cast<char>(0xffu),
+        static_cast<char>(0xffu),
+        static_cast<char>(0xffu)
     };
     EXPECT_EQ(memcmp(sbuf.data(), packed, sizeof(packed)), 0);
 
@@ -963,28 +963,28 @@ TEST(MSGPACK_CHRONO, system_clock_64_max)
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, val1);
     char packed_nano[] = {
-        static_cast<char>(0xd7),
+        static_cast<char>(0xd7u),
         static_cast<char>(-1),
-        static_cast<char>(0xee), // 999,999,999 << 2
+        static_cast<char>(0xeeu), // 999,999,999 << 2
         static_cast<char>(0x6b),
         static_cast<char>(0x27),
-        static_cast<char>(0xfc),
-        static_cast<char>(0xff), // 32 bit sec
-        static_cast<char>(0xff),
-        static_cast<char>(0xff),
-        static_cast<char>(0xff)
+        static_cast<char>(0xfcu),
+        static_cast<char>(0xffu), // 32 bit sec
+        static_cast<char>(0xffu),
+        static_cast<char>(0xffu),
+        static_cast<char>(0xffu)
     };
     char packed_micro[] = {
-        static_cast<char>(0xd7),
+        static_cast<char>(0xd7u),
         static_cast<char>(-1),
-        static_cast<char>(0xee), // 999,999,000 << 2
+        static_cast<char>(0xeeu), // 999,999,000 << 2
         static_cast<char>(0x6b),
         static_cast<char>(0x18),
         static_cast<char>(0x60),
-        static_cast<char>(0xff), // 32 bit sec
-        static_cast<char>(0xff),
-        static_cast<char>(0xff),
-        static_cast<char>(0xff)
+        static_cast<char>(0xffu), // 32 bit sec
+        static_cast<char>(0xffu),
+        static_cast<char>(0xffu),
+        static_cast<char>(0xffu)
     };
     if (std::chrono::system_clock::duration::period::ratio::den == 1000000000) {
         EXPECT_EQ(memcmp(sbuf.data(), packed_nano, sizeof(packed_nano)), 0);
@@ -1060,7 +1060,7 @@ TEST(MSGPACK_TIMESPEC, timespec_pack_convert_zero)
 
     msgpack::pack(ss, val1);
     std::string const& str = ss.str();
-    EXPECT_EQ(str.data()[0], static_cast<char>(0xd6));
+    EXPECT_EQ(str.data()[0], static_cast<char>(0xd6u));
 
     msgpack::object_handle oh;
     msgpack::unpack(oh, str.data(), str.size());
@@ -1086,7 +1086,7 @@ TEST(MSGPACK_TIMESPEC, timespec_pack_convert_32bit_sec)
 
     msgpack::pack(ss, val1);
     std::string const& str = ss.str();
-    EXPECT_EQ(str.data()[0], static_cast<char>(0xd6));
+    EXPECT_EQ(str.data()[0], static_cast<char>(0xd6u));
 
     msgpack::object_handle oh;
     msgpack::unpack(oh, str.data(), str.size());
@@ -1112,7 +1112,7 @@ TEST(MSGPACK_TIMESPEC, timespec_pack_convert_max_nano)
 
     msgpack::pack(ss, val1);
     std::string const& str = ss.str();
-    EXPECT_EQ(str.data()[0], static_cast<char>(0xd7));
+    EXPECT_EQ(str.data()[0], static_cast<char>(0xd7u));
     msgpack::object_handle oh;
     msgpack::unpack(oh, str.data(), str.size());
     timespec val2 = oh.get().as<timespec>();
@@ -1138,7 +1138,7 @@ TEST(MSGPACK_TIMESPEC, timespec_pack_convert_34bit_sec_max_nano)
 
     msgpack::pack(ss, val1);
     std::string const& str = ss.str();
-    EXPECT_EQ(str.data()[0], static_cast<char>(0xd7));
+    EXPECT_EQ(str.data()[0], static_cast<char>(0xd7u));
 
     msgpack::object_handle oh;
     msgpack::unpack(oh, str.data(), str.size());
@@ -1166,7 +1166,7 @@ TEST(MSGPACK_TIMESPEC, timespec_pack_convert_35bit_sec_max_nano)
 
     msgpack::pack(ss, val1);
     std::string const& str = ss.str();
-    EXPECT_EQ(str.data()[0], static_cast<char>(0xc7));
+    EXPECT_EQ(str.data()[0], static_cast<char>(0xc7u));
 
     msgpack::object_handle oh;
     msgpack::unpack(oh, str.data(), str.size());
@@ -1193,7 +1193,7 @@ TEST(MSGPACK_TIMESPEC, timespec_pack_convert_64bit_sec_max_nano)
 
     msgpack::pack(ss, val1);
     std::string const& str = ss.str();
-    EXPECT_EQ(str.data()[0], static_cast<char>(0xc7));
+    EXPECT_EQ(str.data()[0], static_cast<char>(0xc7u));
 
     msgpack::object_handle oh;
     msgpack::unpack(oh, str.data(), str.size());
