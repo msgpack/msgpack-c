@@ -256,7 +256,7 @@ jobs:
         CMAKE_CXX_COMPILER="${CXX}" CMAKE_C_COMPILER="${CC}" CMAKE_LIBRARY_PATH="${BASE}/usr/lib:${BASE}/build" GTEST_ROOT="${BASE}/usr" BOOST_ROOT="${BASE}/usr" CFLAGS="-Werror -g" CXXFLAGS="-Werror -g" MSGPACK_SAN="${SAN}" ${ACTION}
         cat Files.cmake| grep ".*\.[h|hpp]" | perl -pe 's/ //g' | sort > tmp1  && find include -name "*.h" -o -name "*.hpp" | sort > tmp2 && diff tmp1 tmp2
   windows:
-    runs-on: windows-latest
+    runs-on: windows-2016
     strategy:
       matrix:
         pattern: [0, 1, 2, 3]
