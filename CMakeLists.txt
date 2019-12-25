@@ -303,9 +303,13 @@ IF (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 ENDIF ()
 
 IF (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+    MESSAGE ( STATUS "**** compiler matches to MSVC")
+
     IF (CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
+        MESSAGE ( STATUS "**** replace 1")
         STRING(REGEX REPLACE "/W[0-4]" "/W3 /WX" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
     ELSE ()
+        MESSAGE ( STATUS "**** replace 2")
         SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W3 /WX")
     ENDIF ()
 ENDIF ()
