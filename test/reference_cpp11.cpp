@@ -1,11 +1,15 @@
 #include <msgpack.hpp>
 
+#if defined(__GNUC__)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wconversion"
+#endif //defined(__GNUC__)
 
 #include <gtest/gtest.h>
 
+#if defined(__GNUC__)
 #pragma GCC diagnostic pop
+#endif //defined(__GNUC__)
 
 #if !defined(MSGPACK_USE_CPP03)
 

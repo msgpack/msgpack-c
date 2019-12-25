@@ -1,12 +1,16 @@
 #include <msgpack.hpp>
 #include <fstream>
 
+#if defined(__GNUC__)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wconversion"
+#endif //defined(__GNUC__)
 
 #include <gtest/gtest.h>
 
+#if defined(__GNUC__)
 #pragma GCC diagnostic pop
+#endif //defined(__GNUC__)
 
 static void feed_file(msgpack::unpacker& pac, const char* path)
 {

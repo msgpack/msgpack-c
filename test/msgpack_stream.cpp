@@ -9,12 +9,16 @@
 #include <list>
 #include <limits>
 
+#if defined(__GNUC__)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wconversion"
+#endif //defined(__GNUC__)
 
 #include <gtest/gtest.h>
 
+#if defined(__GNUC__)
 #pragma GCC diagnostic pop
+#endif //defined(__GNUC__)
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"

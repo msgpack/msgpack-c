@@ -4,12 +4,16 @@
 #include <limits>
 #include <cmath>
 
+#if defined(__GNUC__)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wconversion"
+#endif //defined(__GNUC__)
 
 #include <gtest/gtest.h>
 
+#if defined(__GNUC__)
 #pragma GCC diagnostic pop
+#endif //defined(__GNUC__)
 
 // To avoid link error
 TEST(MSGPACK_X3_PARSE, dummy)

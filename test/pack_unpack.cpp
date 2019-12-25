@@ -1,11 +1,15 @@
 #include <msgpack.hpp>
 
+#if defined(__GNUC__)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wconversion"
+#endif //defined(__GNUC__)
 
 #include <gtest/gtest.h>
 
+#if defined(__GNUC__)
 #pragma GCC diagnostic pop
+#endif //defined(__GNUC__)
 
 #include <sstream>
 
@@ -524,7 +528,7 @@ TEST(unpack, int_off_larger_than_length)
 TEST(unpack, empty_array_fix)
 {
     std::string buf;
-    buf.push_back(static_cast<char>(0x90));
+    buf.push_back(static_cast<char>(0x90u));
     std::size_t off = 0;
 
     msgpack::object_handle oh = msgpack::unpack(buf.data(), buf.size(), off);
@@ -536,7 +540,7 @@ TEST(unpack, empty_array_fix)
 TEST(unpack, empty_array_16)
 {
     std::string buf;
-    buf.push_back(static_cast<char>(0xdc));
+    buf.push_back(static_cast<char>(0xdcu));
     buf.push_back(static_cast<char>(0x00));
     buf.push_back(static_cast<char>(0x00));
     std::size_t off = 0;
@@ -550,7 +554,7 @@ TEST(unpack, empty_array_16)
 TEST(unpack, empty_array_32)
 {
     std::string buf;
-    buf.push_back(static_cast<char>(0xdd));
+    buf.push_back(static_cast<char>(0xddu));
     buf.push_back(static_cast<char>(0x00));
     buf.push_back(static_cast<char>(0x00));
     buf.push_back(static_cast<char>(0x00));
@@ -566,7 +570,7 @@ TEST(unpack, empty_array_32)
 TEST(unpack, empty_map_fix)
 {
     std::string buf;
-    buf.push_back(static_cast<char>(0x80));
+    buf.push_back(static_cast<char>(0x80u));
     std::size_t off = 0;
 
     msgpack::object_handle oh = msgpack::unpack(buf.data(), buf.size(), off);
@@ -578,7 +582,7 @@ TEST(unpack, empty_map_fix)
 TEST(unpack, empty_map_16)
 {
     std::string buf;
-    buf.push_back(static_cast<char>(0xde));
+    buf.push_back(static_cast<char>(0xdeu));
     buf.push_back(static_cast<char>(0x00));
     buf.push_back(static_cast<char>(0x00));
     std::size_t off = 0;
@@ -592,7 +596,7 @@ TEST(unpack, empty_map_16)
 TEST(unpack, empty_map_32)
 {
     std::string buf;
-    buf.push_back(static_cast<char>(0xdf));
+    buf.push_back(static_cast<char>(0xdfu));
     buf.push_back(static_cast<char>(0x00));
     buf.push_back(static_cast<char>(0x00));
     buf.push_back(static_cast<char>(0x00));
