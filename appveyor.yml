@@ -1,5 +1,9 @@
 version: 3.2.1.{build}
 
+branches:
+  only:
+  - master
+
 image:
 - Visual Studio 2015
 environment:
