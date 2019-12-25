@@ -311,6 +311,7 @@ IF (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
     ELSE ()
         MESSAGE ( STATUS "**** replace 2")
         SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W3 /WX")
+        MESSAGE ( STATUS "**** ${CMAKE_CXX_FLAGS}")
     ENDIF ()
 ENDIF ()
 
