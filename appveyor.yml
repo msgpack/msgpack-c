@@ -55,7 +55,7 @@ build_script:
 - md build
 - cd build
 - cmake -G %msvc% %cpp11% %boost% %x3_parse% -DGTEST_LIBRARY=%APPVEYOR_BUILD_FOLDER%\googletest-release-1.7.0\build\Release\gtest.lib -DGTEST_MAIN_LIBRARY=%APPVEYOR_BUILD_FOLDER%\googletest-release-1.7.0\build\Release\gtest_main.lib -DGTEST_INCLUDE_DIR=%APPVEYOR_BUILD_FOLDER%\googletest-release-1.7.0\include -DZLIB_LIBRARY=%APPVEYOR_BUILD_FOLDER%\zlib-1.2.11\build\Release\zlib.lib -DZLIB_INCLUDE_DIR=%APPVEYOR_BUILD_FOLDER%\zlib-1.2.11 -DCMAKE_CXX_FLAGS='"/D_VARIADIC_MAX=10 /EHsc"' ..
-- cmake --build . --config Release
+- cmake --build . --config Release -v
 
 test_script:
 - set PATH=%PATH%;%APPVEYOR_BUILD_FOLDER%\googletest-release-1.7.0\build\Release;%APPVEYOR_BUILD_FOLDER%\zlib-1.2.11\build\Release;%APPVEYOR_BUILD_FOLDER%\build\release
