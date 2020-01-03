@@ -1188,6 +1188,7 @@ TEST(MSGPACK_TIMESPEC, timespec_object_with_zone_35bit_sec_max_nano)
 
 TEST(MSGPACK_TIMESPEC, timespec_pack_convert_64bit_sec_max_nano)
 {
+    if (sizeof(decltype(std::declval<timespec>().tv_sec)) <= 4) return;
     std::stringstream ss;
     timespec val1{ std::numeric_limits<decltype(std::declval<timespec>().tv_sec)>::max(), 999999999 };
 
