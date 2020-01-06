@@ -55,7 +55,7 @@ IF (MSGPACK_USE_X3_PARSE)
     )
 ENDIF ()
 
-IF (MSGPACK_CXX11)
+IF (MSGPACK_CXX11 OR MSGPACK_CXX17)
     LIST (APPEND check_PROGRAMS
         iterator_cpp11.cpp
         msgpack_cpp11.cpp
