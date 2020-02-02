@@ -16,13 +16,13 @@ jobs:
       matrix:
         pattern: [0, 1, 2, 3]
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2.0.0
     - name: Cache boost
       id: cache-boost
-      uses: actions/cache@v1
+      uses: actions/cache@v1.1.0
       with:
-        path: usr
-        key: ${{ runner.os }}-boost-20200107
+        path: ~/boost
+        key: ${{ runner.os }}-boost-20200130
     - name: Build boost
       if: steps.cache-boost.outputs.cache-hit != 'true'
       run: ./.github/depends/boost.sh -b 64 -t clang
@@ -32,8 +32,6 @@ jobs:
         CXX: clang++
       shell: bash
       run: |
-        BASE=`pwd`;
-
         # matrix config
         if [ ${{ matrix.pattern }} == 0 ]; then
           ACTION="ci/build_cmake.sh"
@@ -69,22 +67,11 @@ jobs:
           export API_VERSION="2"
         fi
 
-        # install gtest
-        wget https://github.com/google/googletest/archive/release-1.7.0.zip -O googletest-release-1.7.0.zip
-        unzip -q googletest-release-1.7.0.zip
-        cd googletest-release-1.7.0
-        $CXX -m${ARCH} src/gtest-all.cc -I. -Iinclude -c
-        $CXX -m${ARCH} src/gtest_main.cc -I. -Iinclude -c
-        ar -rv libgtest.a gtest-all.o
-        ar -rv libgtest_main.a gtest_main.o
-        mkdir -p ${BASE}/usr/include
-        cp -r include/gtest ${BASE}/usr/include
-        mkdir -p ${BASE}/usr/lib
-        mv *.a ${BASE}/usr/lib
-        cd ..
+        # install gtest to /usr/local
+        sudo ./.github/depends/gtest.sh -b ${ARCH}
 
         # build and test
-        CMAKE_CXX_COMPILER="${CXX}" CMAKE_C_COMPILER="${CC}" CMAKE_LIBRARY_PATH="${BASE}/usr/lib:${BASE}/build" GTEST_ROOT="${BASE}/usr" CMAKE_PREFIX_PATH="${BASE}/usr/clang/lib${ARCH}/cmake" CFLAGS="-Werror -g" CXXFLAGS="-Werror -g" ${ACTION}
+        CMAKE_CXX_COMPILER="${CXX}" CMAKE_C_COMPILER="${CC}" CMAKE_PREFIX_PATH="${HOME}/boost/clang/lib${ARCH}/cmake" CFLAGS="-Werror -g" CXXFLAGS="-Werror -g" ${ACTION}
         cat Files.cmake| grep ".*\.[h|hpp]" | perl -pe 's/ //g' | sort > tmp1  && find include -name "*.h" -o -name "*.hpp" | sort > tmp2 && diff tmp1 tmp2
 
   linux:
@@ -93,7 +80,7 @@ jobs:
       matrix:
         pattern: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2.0.0
     - name: install g++-multilib
       run: |
         sudo apt-get install g++-multilib
@@ -107,18 +94,16 @@ jobs:
         sudo apt-get install valgrind
     - name: Cache boost
       id: cache-boost
-      uses: actions/cache@v1
+      uses: actions/cache@v1.1.0
       with:
-        path: usr
-        key: ${{ runner.os }}-boost-20200107
+        path: ~/boost
+        key: ${{ runner.os }}-boost-20200130
     - name: Build boost
       if: steps.cache-boost.outputs.cache-hit != 'true'
       run: ./.github/depends/boost.sh -b both -t gcc
     - name: build and test
       shell: bash
       run: |
-        BASE=`pwd`;
-
         # matrix config
         if [ ${{ matrix.pattern }} == 0 ]; then
           export CC=clang
@@ -237,19 +222,8 @@ jobs:
           export ARCH="64"
         fi
 
-        # install gtest
-        wget https://github.com/google/googletest/archive/release-1.7.0.zip -O googletest-release-1.7.0.zip
-        unzip -q googletest-release-1.7.0.zip
-        cd googletest-release-1.7.0
-        $CXX -m${ARCH} src/gtest-all.cc -I. -Iinclude -c -fPIC
-        $CXX -m${ARCH} src/gtest_main.cc -I. -Iinclude -c -fPIC
-        ar -rv libgtest.a gtest-all.o
-        ar -rv libgtest_main.a gtest_main.o
-        mkdir -p ${BASE}/usr/include
-        cp -r include/gtest ${BASE}/usr/include
-        mkdir -p ${BASE}/usr/lib
-        mv *.a ${BASE}/usr/lib
-        cd ..
+        # install gtest to /usr/local
+        sudo ./.github/depends/gtest.sh -b ${ARCH}
 
         # install zlib
         if [ ${ARCH} == 32 ]; then
@@ -257,7 +231,7 @@ jobs:
         fi
 
         # build and test
-        CMAKE_CXX_COMPILER="${CXX}" CMAKE_C_COMPILER="${CC}" CMAKE_LIBRARY_PATH="${BASE}/usr/lib:${BASE}/build" GTEST_ROOT="${BASE}/usr" CMAKE_PREFIX_PATH="${BASE}/usr/gcc/lib${ARCH}/cmake" CFLAGS="-Werror -g" CXXFLAGS="-Werror -g" MSGPACK_SAN="${SAN}" ${ACTION}
+        CMAKE_CXX_COMPILER="${CXX}" CMAKE_C_COMPILER="${CC}" CMAKE_PREFIX_PATH="${HOME}/boost/gcc/lib${ARCH}/cmake" CFLAGS="-Werror -g" CXXFLAGS="-Werror -g" MSGPACK_SAN="${SAN}" ${ACTION}
         cat Files.cmake| grep ".*\.[h|hpp]" | perl -pe 's/ //g' | sort > tmp1  && find include -name "*.h" -o -name "*.hpp" | sort > tmp2 && diff tmp1 tmp2
   windows:
     runs-on: windows-2016

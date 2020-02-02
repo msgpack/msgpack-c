@@ -10,8 +10,8 @@ EOL
 
 build_boost()
 {
-  BASE=`pwd`/..
-  ./b2 -j4 --toolset=$1 --prefix=${BASE}/usr --libdir="${BASE}/usr/$1/lib$2" --with-chrono --with-context --with-filesystem --with-system --with-timer address-model=$2 install
+  prefix=$HOME/boost
+  ./b2 -j4 --toolset=$1 --prefix=$prefix --libdir="$prefix/$1/lib$2" --with-chrono --with-context --with-filesystem --with-system --with-timer address-model=$2 install
 }
 
 bit="64"
