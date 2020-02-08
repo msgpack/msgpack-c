@@ -27,7 +27,7 @@ FOREACH (source_file ${exec_PROGRAMS})
     )
     TARGET_INCLUDE_DIRECTORIES (${source_file_we}
         PRIVATE
-            $<TARGET_PROPERTY:msgpackc,INTERFACE_INCLUDE_DIRECTORIES>
+            $<TARGET_PROPERTY:msgpackc-cxx,INTERFACE_INCLUDE_DIRECTORIES>
     )
     TARGET_LINK_LIBRARIES (${source_file_we}
         ${Boost_SYSTEM_LIBRARY}
