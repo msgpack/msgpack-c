@@ -2,6 +2,7 @@ cmake_minimum_required (VERSION 3.0)
 project (example)
 
 if(EXAMPLE_MSGPACK_EMBEDDED)
+    set(MSGPACK_QUIET ON)
     add_subdirectory(msgpack-c)
     set(msgpack_DIR ${CMAKE_CURRENT_BINARY_DIR}/msgpack-c)
 endif()
