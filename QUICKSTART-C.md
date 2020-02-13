@@ -6,10 +6,11 @@ Currently, RPC implementation is not available.
 
 # Install
 
+## Install with package manager
 
-## Mac OS X with MacPorts
+### MacOS with MacPorts
 
-On Mac OS X, you can install MessagePack for C using MacPorts.
+On MacOS, you can install MessagePack for C using MacPorts.
 
 ```
 $ sudo port install msgpack
@@ -23,48 +24,44 @@ You can also install via Homebrew.
 $ brew install msgpack
 ```
 
-## FreeBSD with Ports Collection
+### FreeBSD with Ports Collection
 
-On FreeBSD, you can use Ports Collection. Install [net/msgpack|http://www.freebsd.org/cgi/cvsweb.cgi/ports/devel/msgpack/] package.
+On FreeBSD, you can use Ports Collection. Install [net/msgpack](http://www.freebsd.org/cgi/cvsweb.cgi/ports/devel/msgpack/) package.
 
-## Gentoo Linux with Portage
+### Gentoo Linux with Portage
 
-On Gentoo Linux, you can use emerge. Install [dev-libs/msgpack|http://gentoo-portage.com/dev-libs/msgpack] package.
+On Gentoo Linux, you can use emerge. Install [dev-libs/msgpack](http://gentoo-portage.com/dev-libs/msgpack) package.
 
-## Other UNIX-like platform with ./configure
+### Windows with vcpkg
 
-On the other UNIX-like platforms, download source package from [Releases|http://msgpack.org/releases/cpp/] and run `./configure && make && make install`.
+There are several package managers available, and vcpkg is typical.
 
 ```
-$ wget http://msgpack.org/releases/cpp/msgpack-1.3.0.tar.gz
+$ vcpkg install msgpack:x64-windows
+```
+## Install with source code
+
+### Build with cmake
+
+You need to install cmake (2.8.12 or higher) first.
+
+```
+$ git clone https://github.com/msgpack/msgpack-c.git
+$ cd msgpack-c
+$ mkdir build
+$ cd build
+$ cmake ..
+$ cmake --build .
+$ cmake --build . --target install
+```
+### Build with autotools
+
+In versions 1.4.2 and below, you can use `autotools` to build on UNIX-like platforms.
+```
+$ wget https://github.com/msgpack/msgpack-c/archive/cpp-1.3.0.tar.gz
 $ tar zxvf msgpack-1.3.0.tar.gz
 $ cd msgpack-1.3.0
-$ ./configure
-$ make
-$ sudo make install
-```
-
-## Windows
-
-On Windows, download source package from [here|https://sourceforge.net/projects/msgpack/files/] and extract it.
-Then open `msgpack_vc8.vcproj` file and build it using batch build. It builds libraries on `lib/` folder and header files on `include/` folder.
-
-You can build using command line as follows:
-
-```
-> vcbuild msgpack_vc2008.vcproj
-> dir lib       % DLL files are here
-> dir include   % header files are here
-```
-
-## Install from git repository
-
-You need to install gcc (4.1.0 or higher), autotools.
-
-```
-$ git clone git@github.com:msgpack/msgpack.git
-$ cd msgpack/cpp
-$ ./bootstrap
+$ ./bootstrap  # If the 'configure' script already exists, you can omit this step.
 $ ./configure
 $ make
 $ sudo make install
