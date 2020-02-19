@@ -22,7 +22,7 @@ IF (MSGPACK_CXX11 OR MSGPACK_CXX17)
         )
         TARGET_INCLUDE_DIRECTORIES (${source_file_we}
             PRIVATE
-                $<TARGET_PROPERTY:msgpackc,INTERFACE_INCLUDE_DIRECTORIES>
+                $<TARGET_PROPERTY:msgpackc-cxx,INTERFACE_INCLUDE_DIRECTORIES>
         )
         IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
             SET_PROPERTY (TARGET ${source_file_we} APPEND_STRING PROPERTY COMPILE_FLAGS " -Wall -Wextra")

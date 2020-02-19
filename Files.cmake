@@ -5,14 +5,11 @@ LIST (APPEND msgpackc_SOURCES
     src/vrefbuffer.c
     src/zone.c
 )
+
+# For both C and C++ libraries
 LIST (APPEND msgpackc_HEADERS
-    include/msgpack.h
     include/msgpack/fbuffer.h
-    include/msgpack/gcc_atomic.h
     include/msgpack/object.h
-    include/msgpack/pack.h
-    include/msgpack/pack_define.h
-    include/msgpack/pack_template.h
     include/msgpack/predef.h
     include/msgpack/predef/architecture.h
     include/msgpack/predef/architecture/alpha.h
@@ -152,20 +149,33 @@ LIST (APPEND msgpackc_HEADERS
     include/msgpack/predef/platform/windows_uwp.h
     include/msgpack/predef/version.h
     include/msgpack/predef/version_number.h
-    include/msgpack/sbuffer.h
     include/msgpack/sysdep.h
-    include/msgpack/timestamp.h
-    include/msgpack/unpack.h
     include/msgpack/unpack_define.h
-    include/msgpack/unpack_template.h
-    include/msgpack/util.h
-    include/msgpack/version.h
     include/msgpack/version_master.h
-    include/msgpack/vrefbuffer.h
     include/msgpack/zbuffer.h
     include/msgpack/zone.h
 )
+
+IF (NOT MSGPACK_CXX_ONLY)
+    # Only for C library
+    LIST (APPEND msgpackc_HEADERS
+        include/msgpack.h
+        include/msgpack/gcc_atomic.h
+        include/msgpack/pack.h
+        include/msgpack/pack_define.h
+        include/msgpack/pack_template.h
+        include/msgpack/sbuffer.h
+        include/msgpack/timestamp.h
+        include/msgpack/unpack.h
+        include/msgpack/unpack_template.h
+        include/msgpack/util.h
+        include/msgpack/version.h
+        include/msgpack/vrefbuffer.h
+    )
+ENDIF ()
+
 IF (MSGPACK_ENABLE_CXX)
+    # Only for C++ library
     LIST (APPEND msgpackc_HEADERS
         include/msgpack.hpp
         include/msgpack/adaptor/adaptor_base.hpp
