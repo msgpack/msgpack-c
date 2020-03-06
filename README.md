@@ -152,6 +152,20 @@ execute the following commands:
 
 When you use the C part of `msgpack-c`, you need to build and link the library. By default, both static/shared libraries are built. If you want to build only static library, set `BUILD_SHARED_LIBS=OFF` to cmake. If you want to build only shared library, set `BUILD_SHARED_LIBS=ON`.
 
+
+##### Using the VCPKG
+
+Alternatively, you can build and install msgpack using [vcpkg](https://github.com/microsoft/vcpkg/) dependency manager:
+
+    $ git clone https://github.com/Microsoft/vcpkg.git
+    $ cd vcpkg
+    $ ./bootstrap-vcpkg.sh
+    $ ./vcpkg integrate install
+    $ ./vcpkg install msgpack
+
+The msgpack port in vcpkg is kept up to date by microsoft team members and community contributors.
+If the version is out of date, please [create an issue or pull request](https://github.com/Microsoft/vcpkg) on the vcpkg repository.
+
 #### GUI on Windows
 
 Clone msgpack-c git repository.
