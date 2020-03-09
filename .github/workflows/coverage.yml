@@ -1,6 +1,13 @@
 name: coverage
 
-on: push
+on:
+  pull_request:
+    types: [opened, synchronize]
+  push:
+    branches:
+    - master
+    tags:
+    - '*'
 
 jobs:
 
@@ -39,16 +46,17 @@ jobs:
         mkdir -p ${BASE}/usr/lib
         mv *.a ${BASE}/usr/lib
         cd ..
-        
+
         mkdir build && cd build
         CMAKE_LIBRARY_PATH="${BASE}/build" GTEST_ROOT="${BASE}/usr" CMAKE_PREFIX_PATH="${BASE}/usr/gcc/lib64/cmake" cmake -DMSGPACK_CXX17=ON -DMSGPACK_32BIT=OFF -DMSGPACK_BOOST=ON -DBUILD_SHARED_LIBS=ON -DMSGPACK_CHAR_SIGN=signed -DMSGPACK_USE_X3_PARSE=ON -DMSGPACK_ENABLE_CXX=ON -DMSGPACK_BUILD_EXAMPLES=ON -DMSGPACK_BUILD_TESTS=ON -DCMAKE_BUILD_TYPE=Debug -DMSGPACK_GEN_COVERAGE=ON ..
         make -j4
         make test
     - name: Upload coverage to Codecov
       working-directory: build
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       run: |
-        wget https://codecov.io/bash -O codecov
-        chmod +x codecov
-        ./codecov -t $CODECOV_TOKEN -B $GITHUB_REF -s .
+        # Create lcov report
+        lcov --capture --directory . --output-file coverage.info
+        lcov --remove coverage.info '/usr/*' --output-file coverage.info # filter system-files
+        lcov --list coverage.info # debug info
+        # Uploading report to CodeCov
+        bash <(curl -s https://codecov.io/bash) -f coverage.info || echo "Codecov did not collect coverage reports"
