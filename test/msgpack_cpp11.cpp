@@ -1,4 +1,5 @@
 #include <msgpack.hpp>
+#include <cmath>
 
 #if defined(__GNUC__)
 #pragma GCC diagnostic push
@@ -45,6 +46,40 @@ const unsigned int kElements = 100;
 
 
 // C++11
+
+TEST(MSGPACK_CPP11, simple_complex_empty)
+{
+    msgpack::sbuffer sbuf;
+    std::complex<float> val1;
+    msgpack::pack(sbuf, val1);
+    msgpack::object_handle oh = msgpack::unpack(sbuf.data(), sbuf.size());
+    std::complex<float> val2 = oh.get().as<std::complex<float> >();
+    EXPECT_EQ(val1, val2);
+}
+
+TEST(MSGPACK_CPP11, simple_complex)
+{
+    msgpack::sbuffer sbuf;
+    std::complex<float> val1 = std::polar(1.0f, 3.141592f / 4.0f);
+    msgpack::pack(sbuf, val1);
+    msgpack::object_handle oh = msgpack::unpack(sbuf.data(), sbuf.size());
+    std::complex<float> val2 = oh.get().as<std::complex<float> >();
+    EXPECT_EQ(val1, val2);
+}
+
+TEST(MSGPACK_CPP11, simple_complex_vector)
+{
+    msgpack::sbuffer sbuf;
+    std::vector<std::complex<float> > tone1(1024);
+    for (size_t i = 0 ; i < tone1.size() ; i++)
+        tone1[i] = std::polar(1.0, 2.0 * double(i) * M_PI * 0.3);
+    msgpack::pack(sbuf, tone1);
+    msgpack::object_handle oh = msgpack::unpack(sbuf.data(), sbuf.size());
+    std::vector<std::complex<float> > tone2 = oh.get().as<std::vector<std::complex<float> > >();
+    EXPECT_EQ(tone1.size(), tone2.size());
+    for (size_t i = 0 ; i < tone1.size() ; i++)
+        EXPECT_EQ(tone1[i], tone2[i]);
+}
 
 TEST(MSGPACK_CPP11, simple_tuple)
 {
