@@ -193,6 +193,7 @@ IF (MSGPACK_ENABLE_CXX)
         include/msgpack/adaptor/char_ptr.hpp
         include/msgpack/adaptor/check_container_size.hpp
         include/msgpack/adaptor/check_container_size_decl.hpp
+        include/msgpack/adaptor/complex.hpp
         include/msgpack/adaptor/cpp11/array.hpp
         include/msgpack/adaptor/cpp11/array_char.hpp
         include/msgpack/adaptor/cpp11/array_unsigned_char.hpp
@@ -573,6 +574,7 @@ IF (MSGPACK_ENABLE_CXX)
         include/msgpack/v1/adaptor/cpp17/optional.hpp
         include/msgpack/v1/adaptor/cpp17/string_view.hpp
         include/msgpack/v1/adaptor/cpp17/vector_byte.hpp
+        include/msgpack/v1/adaptor/complex.hpp
         include/msgpack/v1/adaptor/define.hpp
         include/msgpack/v1/adaptor/define_decl.hpp
         include/msgpack/v1/adaptor/deque.hpp
