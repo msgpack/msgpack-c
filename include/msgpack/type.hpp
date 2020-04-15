@@ -12,6 +12,7 @@
 #include "adaptor/map.hpp"
 #include "adaptor/nil.hpp"
 #include "adaptor/pair.hpp"
+#include "adaptor/complex.hpp"
 #include "adaptor/raw.hpp"
 #include "adaptor/v4raw.hpp"
 #include "adaptor/set.hpp"
