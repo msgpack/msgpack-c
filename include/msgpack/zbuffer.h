@@ -100,7 +100,7 @@ static inline void msgpack_zbuffer_free(msgpack_zbuffer* zbuf)
 
 static inline bool msgpack_zbuffer_expand(msgpack_zbuffer* zbuf)
 {
-    size_t used = static_cast<size_t>(reinterpret_cast<char*>(zbuf->stream.next_out) - zbuf->data);
+    size_t used = (size_t)((char *)(zbuf->stream.next_out) - zbuf->data);
     size_t csize = used + zbuf->stream.avail_out;
 
     size_t nsize = (csize == 0) ? zbuf->init_size : csize * 2;
@@ -112,7 +112,7 @@ static inline bool msgpack_zbuffer_expand(msgpack_zbuffer* zbuf)
 
     zbuf->data = tmp;
     zbuf->stream.next_out  = (Bytef*)(tmp + used);
-    zbuf->stream.avail_out = static_cast<uInt>(nsize - used);
+    zbuf->stream.avail_out = (uInt)(nsize - used);
 
     return true;
 }
@@ -122,7 +122,7 @@ static inline int msgpack_zbuffer_write(void* data, const char* buf, size_t len)
     msgpack_zbuffer* zbuf = (msgpack_zbuffer*)data;
 
     zbuf->stream.next_in = (Bytef*)buf;
-    zbuf->stream.avail_in = static_cast<uInt>(len);
+    zbuf->stream.avail_in = (uInt)len;
 
     while(zbuf->stream.avail_in > 0) {
         if(zbuf->stream.avail_out < MSGPACK_ZBUFFER_RESERVE_SIZE) {
@@ -164,7 +164,7 @@ static inline const char* msgpack_zbuffer_data(const msgpack_zbuffer* zbuf)
 
 static inline size_t msgpack_zbuffer_size(const msgpack_zbuffer* zbuf)
 {
-    return static_cast<size_t>(reinterpret_cast<char*>(zbuf->stream.next_out) - zbuf->data);
+    return (size_t)((char *)(zbuf->stream.next_out) - zbuf->data);
 }
 
 static inline void msgpack_zbuffer_reset_buffer(msgpack_zbuffer* zbuf)
