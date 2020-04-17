@@ -44,7 +44,9 @@ using namespace std;
 const unsigned int kLoop = 10000;
 const unsigned int kElements = 100;
 
-
+#ifndef MY_PI
+#define MY_PI 3.14159265358979323846	/* pi */
+#endif
 // C++11
 
 TEST(MSGPACK_CPP11, simple_complex_empty)
@@ -60,7 +62,7 @@ TEST(MSGPACK_CPP11, simple_complex_empty)
 TEST(MSGPACK_CPP11, simple_complex)
 {
     msgpack::sbuffer sbuf;
-    std::complex<float> val1 = std::polar(1.0f, 3.141592f / 4.0f);
+    std::complex<float> val1 = std::polar(1.0f, float(MY_PI / 4));
     msgpack::pack(sbuf, val1);
     msgpack::object_handle oh = msgpack::unpack(sbuf.data(), sbuf.size());
     std::complex<float> val2 = oh.get().as<std::complex<float> >();
@@ -72,7 +74,7 @@ TEST(MSGPACK_CPP11, simple_complex_vector)
     msgpack::sbuffer sbuf;
     std::vector<std::complex<float> > tone1(1024);
     for (size_t i = 0 ; i < tone1.size() ; i++)
-        tone1[i] = std::polar(1.0, 2.0 * double(i) * M_PI * 0.3);
+        tone1[i] = std::polar(1.0f, float(2*i*MY_PI*0.3));
     msgpack::pack(sbuf, tone1);
     msgpack::object_handle oh = msgpack::unpack(sbuf.data(), sbuf.size());
     std::vector<std::complex<float> > tone2 = oh.get().as<std::vector<std::complex<float> > >();
