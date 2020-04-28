@@ -25,6 +25,12 @@ bool msgpack_vrefbuffer_init(msgpack_vrefbuffer* vbuf,
     struct iovec* array;
     msgpack_vrefbuffer_chunk* chunk;
 
+    if (ref_size == 0) {
+        ref_size = MSGPACK_VREFBUFFER_REF_SIZE;
+    }
+    if(chunk_size == 0) {
+        chunk_size = MSGPACK_VREFBUFFER_CHUNK_SIZE;
+    }
     vbuf->chunk_size = chunk_size;
     vbuf->ref_size =
         ref_size > MSGPACK_PACKER_MAX_BUFFER_SIZE + 1 ?

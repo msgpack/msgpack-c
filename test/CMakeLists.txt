@@ -8,6 +8,7 @@ INCLUDE_DIRECTORIES (
 )
 
 SET (tests_C
+    buffer_c.cpp
     fixint_c.cpp
     msgpack_c.cpp
     pack_unpack_c.cpp
