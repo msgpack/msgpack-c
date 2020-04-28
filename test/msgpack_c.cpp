@@ -1414,3 +1414,132 @@ TEST(MSGPACKC, object_bin_print_buffer_overflow) {
   EXPECT_EQ(6, ret);
   EXPECT_STREQ("\"test\"", buffer);
 }
+
+/* test for vrefbuffer */
+#define GEN_TEST_VREFBUFFER(...)                               \
+    msgpack_vrefbuffer vbuf;                                   \
+    msgpack_packer pk;                                         \
+    msgpack_object obj;                                        \
+    msgpack_unpack_return ret;                                 \
+    const iovec *iov;                                          \
+    size_t iovcnt;                                             \
+    char buf[1024];                                            \
+    size_t len = 0, i;                                         \
+                                                               \
+    msgpack_vrefbuffer_init(&vbuf, 0, 0);                      \
+    msgpack_packer_init(&pk, &vbuf, msgpack_vrefbuffer_write); \
+    __VA_ARGS__;                                               \
+    iov = msgpack_vrefbuffer_vec(&vbuf);                       \
+    iovcnt = msgpack_vrefbuffer_veclen(&vbuf);                 \
+    for (i = 0; i < iovcnt; i++) {                             \
+        memcpy(buf + len, iov[i].iov_base, iov[i].iov_len);    \
+        len += iov[i].iov_len;                                 \
+    }                                                          \
+    msgpack_vrefbuffer_destroy(&vbuf);                         \
+    ret = msgpack_unpack(buf, len, NULL, NULL, &obj);          \
+    EXPECT_EQ(MSGPACK_UNPACK_SUCCESS, ret)
+
+TEST(buffer, vrefbuffer_uint8)
+{
+    GEN_TEST_VREFBUFFER(msgpack_pack_uint8(&pk, 32));
+    EXPECT_EQ(MSGPACK_OBJECT_POSITIVE_INTEGER, obj.type);
+    EXPECT_EQ(32, obj.via.u64);
+}
+
+TEST(buffer, vrefbuffer_int8)
+{
+    GEN_TEST_VREFBUFFER(msgpack_pack_int8(&pk, -32));
+    EXPECT_EQ(MSGPACK_OBJECT_NEGATIVE_INTEGER, obj.type);
+    EXPECT_EQ(-32, obj.via.i64);
+}
+
+TEST(buffer, vrefbuffer_float32)
+{
+    GEN_TEST_VREFBUFFER(msgpack_pack_float(&pk, 1.0));
+    EXPECT_EQ(MSGPACK_OBJECT_FLOAT32, obj.type);
+    EXPECT_EQ(1.0, obj.via.f64);
+}
+
+TEST(buffer, vrefbuffer_float64)
+{
+    GEN_TEST_VREFBUFFER(msgpack_pack_double(&pk, 1.0));
+    EXPECT_EQ(MSGPACK_OBJECT_FLOAT64, obj.type);
+    EXPECT_EQ(1.0, obj.via.f64);
+}
+
+TEST(buffer, vrefbuffer_nil)
+{
+    GEN_TEST_VREFBUFFER(msgpack_pack_nil(&pk));
+    EXPECT_EQ(MSGPACK_OBJECT_NIL, obj.type);
+}
+
+TEST(buffer, vrefbuffer_false)
+{
+    GEN_TEST_VREFBUFFER(msgpack_pack_false(&pk));
+    EXPECT_EQ(MSGPACK_OBJECT_BOOLEAN, obj.type);
+    EXPECT_EQ(false, obj.via.boolean);
+}
+
+TEST(buffer, vrefbuffer_true)
+{
+    GEN_TEST_VREFBUFFER(msgpack_pack_true(&pk));
+    EXPECT_EQ(MSGPACK_OBJECT_BOOLEAN, obj.type);
+    EXPECT_EQ(true, obj.via.boolean);
+}
+
+#define TEST_VBUF_RAW_LEN 30
+
+TEST(buffer, vrefbuffer_str)
+{
+    char raw[TEST_VBUF_RAW_LEN];
+    GEN_TEST_VREFBUFFER(msgpack_pack_str(&pk, TEST_VBUF_RAW_LEN);
+                        msgpack_pack_str_body(&pk, raw, TEST_VBUF_RAW_LEN););
+    EXPECT_EQ(MSGPACK_OBJECT_STR, obj.type);
+    EXPECT_EQ(TEST_VBUF_RAW_LEN, obj.via.str.size);
+    EXPECT_EQ(0, memcmp(raw, obj.via.str.ptr, 30));
+}
+
+TEST(buffer, vrefbuffer_bin)
+{
+    char raw[TEST_VBUF_RAW_LEN];
+    GEN_TEST_VREFBUFFER(msgpack_pack_bin(&pk, TEST_VBUF_RAW_LEN);
+                        msgpack_pack_bin_body(&pk, raw, TEST_VBUF_RAW_LEN););
+    EXPECT_EQ(TEST_VBUF_RAW_LEN, obj.via.bin.size);
+    EXPECT_EQ(0, memcmp(raw, obj.via.bin.ptr, TEST_VBUF_RAW_LEN));
+}
+
+TEST(buffer, vrefbuffer_ext)
+{
+    char raw[TEST_VBUF_RAW_LEN];
+    GEN_TEST_VREFBUFFER(msgpack_pack_ext(&pk, TEST_VBUF_RAW_LEN, 127);
+                        msgpack_pack_ext_body(&pk, raw, TEST_VBUF_RAW_LEN));
+    EXPECT_EQ(MSGPACK_OBJECT_EXT, obj.type);
+    EXPECT_EQ(TEST_VBUF_RAW_LEN, obj.via.ext.size);
+    EXPECT_EQ(0, memcmp(raw, obj.via.ext.ptr, TEST_VBUF_RAW_LEN));
+}
+
+TEST(buffer, vrefbuffer_array)
+{
+    GEN_TEST_VREFBUFFER(msgpack_pack_array(&pk, 2);
+                        msgpack_pack_int(&pk, 3);
+                        msgpack_pack_int(&pk, 4));
+    EXPECT_EQ(MSGPACK_OBJECT_ARRAY, obj.type);
+    EXPECT_EQ(2, obj.via.array.size);
+    EXPECT_EQ(MSGPACK_OBJECT_POSITIVE_INTEGER, obj.via.array.ptr[0].type);
+    EXPECT_EQ(3, obj.via.array.ptr[0].via.u64);
+    EXPECT_EQ(MSGPACK_OBJECT_POSITIVE_INTEGER, obj.via.array.ptr[1].type);
+    EXPECT_EQ(4, obj.via.array.ptr[1].via.u64);
+}
+
+TEST(buffer, vrefbuffer_map)
+{
+    GEN_TEST_VREFBUFFER(msgpack_pack_map(&pk, 1);
+                        msgpack_pack_int(&pk, 2);
+                        msgpack_pack_int(&pk, 3));
+    EXPECT_EQ(MSGPACK_OBJECT_MAP, obj.type);
+    EXPECT_EQ(1, obj.via.map.size);
+    EXPECT_EQ(MSGPACK_OBJECT_POSITIVE_INTEGER, obj.via.map.ptr[0].key.type);
+    EXPECT_EQ(2, obj.via.map.ptr[0].key.via.u64);
+    EXPECT_EQ(MSGPACK_OBJECT_POSITIVE_INTEGER, obj.via.map.ptr[0].val.type);
+    EXPECT_EQ(3, obj.via.map.ptr[0].val.via.u64);
+}

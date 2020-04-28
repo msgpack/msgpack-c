@@ -93,11 +93,11 @@ FOREACH (source_file ${check_PROGRAMS})
         ${source_file}
     )
 
-    LIST (FIND tests_C ${source_file} idx)
-    IF (idx GREATER -1)
-        SET (link_target msgpackc)
-    ELSE ()
-        SET (link_target msgpackc-cxx)
+    IF (TARGET msgpackc)
+        list(APPEND link_target msgpackc)
+    ENDIF ()
+    IF (TARGET msgpackc-cxx)
+        list(APPEND link_target msgpackc-cxx)
     ENDIF ()
 
     TARGET_LINK_LIBRARIES (${source_file_we}
