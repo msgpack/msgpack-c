@@ -89,15 +89,18 @@ static int msgpack_pack_map(msgpack_packer* pk, size_t n);
 
 static int msgpack_pack_str(msgpack_packer* pk, size_t l);
 static int msgpack_pack_str_body(msgpack_packer* pk, const void* b, size_t l);
+static int msgpack_pack_str_with_body(msgpack_packer* pk, const void* b, size_t l);
 
 static int msgpack_pack_v4raw(msgpack_packer* pk, size_t l);
 static int msgpack_pack_v4raw_body(msgpack_packer* pk, const void* b, size_t l);
 
 static int msgpack_pack_bin(msgpack_packer* pk, size_t l);
 static int msgpack_pack_bin_body(msgpack_packer* pk, const void* b, size_t l);
+static int msgpack_pack_bin_with_body(msgpack_packer* pk, const void* b, size_t l);
 
 static int msgpack_pack_ext(msgpack_packer* pk, size_t l, int8_t type);
 static int msgpack_pack_ext_body(msgpack_packer* pk, const void* b, size_t l);
+static int msgpack_pack_ext_with_body(msgpack_packer* pk, const void* b, size_t l, int8_t type);
 
 static int msgpack_pack_timestamp(msgpack_packer* pk, const msgpack_timestamp* d);
 
@@ -143,7 +146,27 @@ inline void msgpack_packer_free(msgpack_packer* pk)
     free(pk);
 }
 
+inline int msgpack_pack_str_with_body(msgpack_packer* pk, const void* b, size_t l)
+ {
+     int ret = msgpack_pack_str(pk, l);
+     if (ret != 0) { return ret; }
+     return msgpack_pack_str_body(pk, b, l);
+ }
 
+ inline int msgpack_pack_bin_with_body(msgpack_packer* pk, const void* b, size_t l)
+ {
+     int ret = msgpack_pack_bin(pk, l);
+     if (ret != 0) { return ret; }
+     return msgpack_pack_bin_body(pk, b, l);
+ }
+
+ inline int msgpack_pack_ext_with_body(msgpack_packer* pk, const void* b, size_t l, int8_t type)
+ {
+     int ret = msgpack_pack_ext(pk, l, type);
+     if (ret != 0) { return ret; }
+     return msgpack_pack_ext_body(pk, b, l);
+ }
+ 
 #ifdef __cplusplus
 }
 #endif
