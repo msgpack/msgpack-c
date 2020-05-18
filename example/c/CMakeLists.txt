@@ -1,4 +1,5 @@
 LIST (APPEND exec_PROGRAMS
+    boundary.c
     lib_buffer_unpack.c
     simple_c.c
     speed_test_uint32_array.c
