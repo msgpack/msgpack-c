@@ -1,7 +1,7 @@
 #include <msgpack.h>
 #include <stdio.h>
 
-void print(char const* buf, unsigned int len)
+void print(char const* buf,size_t len)
 {
     size_t i = 0;
     for(; i < len ; ++i)
