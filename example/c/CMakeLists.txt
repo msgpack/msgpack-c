@@ -1,3 +1,5 @@
+FIND_PACKAGE (cJSON)
+
 LIST (APPEND exec_PROGRAMS
     boundary.c
     lib_buffer_unpack.c
@@ -6,6 +8,9 @@ LIST (APPEND exec_PROGRAMS
     speed_test_uint64_array.c
     user_buffer_unpack.c
 )
+IF (cJSON_FOUND)
+    LIST (APPEND exec_PROGRAMS jsonconv.c)
+ENDIF ()
 
 FOREACH (source_file ${exec_PROGRAMS})
     GET_FILENAME_COMPONENT (source_file_we ${source_file} NAME_WE)
@@ -32,3 +37,8 @@ FOREACH (source_file ${exec_PROGRAMS})
         ENDIF ()
     ENDIF ()
 ENDFOREACH ()
+
+IF (cJSON_FOUND)
+    TARGET_LINK_LIBRARIES (jsonconv ${CJSON_LIBRARIES})
+    TARGET_INCLUDE_DIRECTORIES(jsonconv PRIVATE ${CJSON_INCLUDE_DIRS})
+ENDIF ()
