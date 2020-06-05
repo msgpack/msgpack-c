@@ -1,3 +1,14 @@
+# 2020-06-05 version 3.3.0
+  * Add json example for C (#870)
+  * Add both header and body packing functions for C (#870)
+  * Set default ref_size and chunk_size to vrefbuffer (#865)
+  * Add examples (#861)
+  * Improve build system (#839, #842)
+  * Improve tests (#829)
+  * Improve documents (#828)
+  * Remove some warnings (#827, #851, #871)
+  * Improve CI environment (#824, #831, #833, #834, #846, #860, 874)
+
 # 2019-12-10 version 3.2.1
   * Fix snprintf return value checking (#821)
   * Remove some warnings (#819)
