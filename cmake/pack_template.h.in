@@ -8,6 +8,13 @@
  *    http://www.boost.org/LICENSE_1_0.txt)
  */
 
+#ifndef MSGPACK_ENDIAN_BIG_BYTE
+#define MSGPACK_ENDIAN_BIG_BYTE @MSGPACK_ENDIAN_BIG_BYTE@
+#endif
+#ifndef MSGPACK_ENDIAN_LITTLE_BYTE
+#define MSGPACK_ENDIAN_LITTLE_BYTE @MSGPACK_ENDIAN_LITTLE_BYTE@
+#endif
+
 #if MSGPACK_ENDIAN_LITTLE_BYTE
 #define TAKE8_8(d)  ((uint8_t*)&d)[0]
 #define TAKE8_16(d) ((uint8_t*)&d)[0]

@@ -13,6 +13,13 @@
 #include <stdlib.h>
 #include <stddef.h>
 
+#ifndef MSGPACK_ENDIAN_BIG_BYTE
+#define MSGPACK_ENDIAN_BIG_BYTE @MSGPACK_ENDIAN_BIG_BYTE@
+#endif
+#ifndef MSGPACK_ENDIAN_LITTLE_BYTE
+#define MSGPACK_ENDIAN_LITTLE_BYTE @MSGPACK_ENDIAN_LITTLE_BYTE@
+#endif
+
 #if defined(_MSC_VER) && _MSC_VER <= 1800
 #   define snprintf(buf, len, format,...) _snprintf_s(buf, len, _TRUNCATE, format, __VA_ARGS__)
 #endif

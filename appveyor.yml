@@ -2,35 +2,16 @@ version: 3.3.0.{build}
 
 branches:
   only:
-  - master
+  - c_master
 
 image:
 - Visual Studio 2015
 environment:
-  global:
-    BOOST_ROOT: C:\Libraries\boost_1_67_0
   matrix:
-    - cpp11: -DMSGPACK_CXX11=OFF
-      boost: -DMSGPACK_BOOST=OFF
-      msvc: '"Visual Studio 10 2010"'
-    - cpp11: -DMSGPACK_CXX11=OFF
-      boost: -DMSGPACK_BOOST=OFF
-      msvc: '"Visual Studio 11 2012"'
-    - cpp11: -DMSGPACK_CXX11=OFF
-      boost: -DMSGPACK_BOOST=OFF
-      msvc: '"Visual Studio 12 2013"'
-    - cpp11: -DMSGPACK_CXX11=ON
-      boost: -DMSGPACK_BOOST=ON
-      msvc: '"Visual Studio 14 2015"'
-    - cpp11: -DMSGPACK_CXX11=OFF
-      boost: -DMSGPACK_BOOST=ON
-      msvc: '"Visual Studio 14 2015"'
-    - cpp11: -DMSGPACK_CXX11=ON
-      boost: -DMSGPACK_BOOST=OFF
-      msvc: '"Visual Studio 14 2015"'
-    - cpp11: -DMSGPACK_CXX11=OFF
-      boost: -DMSGPACK_BOOST=OFF
-      msvc: '"Visual Studio 14 2015"'
+    - msvc: '"Visual Studio 10 2010"'
+    - msvc: '"Visual Studio 11 2012"'
+    - msvc: '"Visual Studio 12 2013"'
+    - msvc: '"Visual Studio 14 2015"'
 build_script:
 - appveyor DownloadFile https://github.com/google/googletest/archive/release-1.7.0.zip -FileName googletest-release-1.7.0.zip
 - 7z x googletest-release-1.7.0.zip > NUL
@@ -54,7 +35,7 @@ build_script:
 - cd ..
 - md build
 - cd build
-- cmake -G %msvc% %cpp11% %boost% %x3_parse% -DGTEST_LIBRARY=%APPVEYOR_BUILD_FOLDER%\googletest-release-1.7.0\build\Release\gtest.lib -DGTEST_MAIN_LIBRARY=%APPVEYOR_BUILD_FOLDER%\googletest-release-1.7.0\build\Release\gtest_main.lib -DGTEST_INCLUDE_DIR=%APPVEYOR_BUILD_FOLDER%\googletest-release-1.7.0\include -DZLIB_LIBRARY=%APPVEYOR_BUILD_FOLDER%\zlib-1.2.11\build\Release\zlib.lib -DZLIB_INCLUDE_DIR=%APPVEYOR_BUILD_FOLDER%\zlib-1.2.11 -DCMAKE_CXX_FLAGS='"/D_VARIADIC_MAX=10 /EHsc"' ..
+- cmake -G %msvc% -DGTEST_LIBRARY=%APPVEYOR_BUILD_FOLDER%\googletest-release-1.7.0\build\Release\gtest.lib -DGTEST_MAIN_LIBRARY=%APPVEYOR_BUILD_FOLDER%\googletest-release-1.7.0\build\Release\gtest_main.lib -DGTEST_INCLUDE_DIR=%APPVEYOR_BUILD_FOLDER%\googletest-release-1.7.0\include -DZLIB_LIBRARY=%APPVEYOR_BUILD_FOLDER%\zlib-1.2.11\build\Release\zlib.lib -DZLIB_INCLUDE_DIR=%APPVEYOR_BUILD_FOLDER%\zlib-1.2.11 -DCMAKE_CXX_FLAGS='"/D_VARIADIC_MAX=10 /EHsc"' ..
 - cmake --build . --config Release -v
 
 test_script:

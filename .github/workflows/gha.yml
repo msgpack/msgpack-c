@@ -5,7 +5,7 @@ on:
     types: [opened, synchronize]
   push:
     branches:
-    - master
+    - c_master
     tags:
     - '*'
 
@@ -13,19 +13,11 @@ jobs:
   macos:
     runs-on: macos-latest
     strategy:
+      fail-fast: false
       matrix:
         pattern: [0, 1, 2, 3]
     steps:
     - uses: actions/checkout@v1
-    - name: Cache boost
-      id: cache-boost
-      uses: actions/cache@v1
-      with:
-        path: usr
-        key: ${{ runner.os }}-boost-20200107
-    - name: Build boost
-      if: steps.cache-boost.outputs.cache-hit != 'true'
-      run: ./.github/depends/boost.sh -b 64 -t clang
     - name: build and test
       env:
         CC: clang
@@ -35,38 +27,23 @@ jobs:
         BASE=`pwd`;
 
         # matrix config
+        ACTION="ci/build_cmake.sh"
+        export ARCH="64"
         if [ ${{ matrix.pattern }} == 0 ]; then
-          ACTION="ci/build_cmake.sh"
-          export CXX17="ON"
-          export ARCH="64"
-          export BOOST="ON"
-          SHARED="ON"
+          export SHARED="ON"
           export CHAR_SIGN="unsigned"
-          export API_VERSION="1"
         fi
         if [ ${{ matrix.pattern }} == 1 ]; then
-          ACTION="ci/build_cmake.sh"
-          export CXX17="ON"
-          export ARCH="64"
-          export BOOST="ON"
           export SHARED="ON"
           export CHAR_SIGN="signed"
-          export API_VERSION="3"
         fi
         if [ ${{ matrix.pattern }} == 2 ]; then
-          ACTION="ci/build_cmake.sh"
-          export CXX17="ON"
-          export ARCH="64"
-          export SHARED="ON"
+          export SHARED="OFF"
           export CHAR_SIGN="signed"
-          export API_VERSION="2"
         fi
         if [ ${{ matrix.pattern }} == 3 ]; then
-          ACTION="ci/build_cmake.sh"
-          export ARCH="64"
-          export SHARED="ON"
+          export SHARED="OFF"
           export CHAR_SIGN="unsigned"
-          export API_VERSION="2"
         fi
 
         # install gtest
@@ -84,29 +61,20 @@ jobs:
         cd ..
 
         # build and test
-        CMAKE_CXX_COMPILER="${CXX}" CMAKE_C_COMPILER="${CC}" CMAKE_LIBRARY_PATH="${BASE}/usr/lib:${BASE}/build" GTEST_ROOT="${BASE}/usr" CMAKE_PREFIX_PATH="${BASE}/usr/clang/lib${ARCH}/cmake" CFLAGS="-Werror -g" CXXFLAGS="-Werror -g" ${ACTION}
-        cat Files.cmake| grep ".*\.[h|hpp]" | perl -pe 's/ //g' | sort > tmp1  && find include -name "*.h" -o -name "*.hpp" | sort > tmp2 && diff tmp1 tmp2
+        CMAKE_CXX_COMPILER="${CXX}" CMAKE_C_COMPILER="${CC}" GTEST_ROOT="${BASE}/usr" CFLAGS="-Werror -g" CXXFLAGS="-Werror -g" ${ACTION}
 
   linux:
     runs-on: ubuntu-18.04
     strategy:
+      fail-fast: false
       matrix:
-        pattern: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+        pattern: [0, 1, 2, 3, 4, 5, 6, 7, 8]
     steps:
     - uses: actions/checkout@v1
-    - name: install depends
+    - name: install build depends
       run: |
         sudo apt-get update
         sudo apt-get install g++-multilib clang-8 valgrind
-    - name: Cache boost
-      id: cache-boost
-      uses: actions/cache@v1
-      with:
-        path: usr
-        key: ${{ runner.os }}-boost-20200107
-    - name: Build boost
-      if: steps.cache-boost.outputs.cache-hit != 'true'
-      run: ./.github/depends/boost.sh -b both -t gcc
     - name: build and test
       shell: bash
       run: |
@@ -118,10 +86,8 @@ jobs:
           export CXX=clang++
           ACTION="ci/build_cmake.sh"
           export ARCH="64"
-          export BOOST="ON"
           export SHARED="ON"
           export CHAR_SIGN="unsigned"
-          export API_VERSION="2"
         fi
         if [ ${{ matrix.pattern }} == 1 ]; then
           export CC=clang
@@ -130,51 +96,38 @@ jobs:
           export ARCH="32"
           export SHARED="ON"
           export CHAR_SIGN="signed"
-          export API_VERSION="2"
         fi
         if [ ${{ matrix.pattern }} == 2 ]; then
           export CC=clang
           export CXX=clang++
           ACTION="ci/build_cmake.sh"
-          export CXX17="ON"
           export ARCH="64"
-          export BOOST="ON"
           export SHARED="ON"
           export CHAR_SIGN="signed"
-          export API_VERSION="3"
-          export X3_PARSE="ON"
         fi
         if [ ${{ matrix.pattern }} == 3 ]; then
           export CC=clang
           export CXX=clang++
           ACTION="ci/build_cmake.sh"
-          export CXX17="ON"
           export ARCH="32"
           export SHARED="OFF"
           export CHAR_SIGN="unsigned"
-          export API_VERSION="2"
         fi
         if [ ${{ matrix.pattern }} == 4 ]; then
           export CC=gcc
           export CXX=g++
           ACTION="ci/build_cmake.sh"
-          export CXX17="ON"
           export ARCH="64"
           export SHARED="ON"
           export CHAR_SIGN="signed"
-          export API_VERSION="2"
         fi
         if [ ${{ matrix.pattern }} == 5 ]; then
           export CC=gcc
           export CXX=g++
           ACTION="ci/build_cmake.sh"
-          export CXX17="ON"
           export ARCH="32"
-          export BOOST="ON"
           export SHARED="ON"
           export CHAR_SIGN="unsigned"
-          export API_VERSION="3"
-          export X3_PARSE="ON"
         fi
         if [ ${{ matrix.pattern }} == 6 ]; then
           export CC=gcc
@@ -183,47 +136,16 @@ jobs:
           export ARCH="64"
           export SHARED="ON"
           export CHAR_SIGN="unsigned"
-          export API_VERSION="2"
         fi
         if [ ${{ matrix.pattern }} == 7 ]; then
           export CC=gcc
           export CXX=g++
           ACTION="ci/build_cmake.sh"
           export ARCH="32"
-          export BOOST="ON"
           export SHARED="OFF"
           export CHAR_SIGN="signed"
-          export API_VERSION="1"
         fi
         if [ ${{ matrix.pattern }} == 8 ]; then
-          export CC=gcc
-          export CXX=g++
-          ACTION="ci/build_cmake.sh"
-          export ARCH="32"
-          export BOOST="ON"
-          export SHARED="OFF"
-          export CHAR_SIGN="signed"
-          export API_VERSION="2"
-        fi
-        if [ ${{ matrix.pattern }} == 9 ]; then
-          export CC=clang
-          export CXX=clang++
-          ACTION="ci/build_regression.sh"
-          export ARCH="64"
-          export SAN="UBSAN"
-          export MSGPACK_FUZZ_REGRESSION="ON"
-          export CTEST_OUTPUT_ON_FAILURE=1
-        fi
-        if [ ${{ matrix.pattern }} == 10 ]; then
-          export CC=clang
-          export CXX=clang++
-          ACTION="ci/build_regression.sh"
-          export ARCH="64"
-          export SAN="ASAN"
-          export MSGPACK_FUZZ_REGRESSION="ON"
-          export CTEST_OUTPUT_ON_FAILURE=1
-        fi
-        if [ ${{ matrix.pattern }} == 11 ]; then
           export CC=gcc
           export CXX=g++
           ACTION="ci/build_cmake_embedded.sh"
@@ -250,55 +172,54 @@ jobs:
         fi
 
         # build and test
-        CMAKE_CXX_COMPILER="${CXX}" CMAKE_C_COMPILER="${CC}" CMAKE_LIBRARY_PATH="${BASE}/usr/lib:${BASE}/build" GTEST_ROOT="${BASE}/usr" CMAKE_PREFIX_PATH="${BASE}/usr/gcc/lib${ARCH}/cmake" CFLAGS="-Werror -g" CXXFLAGS="-Werror -g" MSGPACK_SAN="${SAN}" ${ACTION}
-        cat Files.cmake| grep ".*\.[h|hpp]" | perl -pe 's/ //g' | sort > tmp1  && find include -name "*.h" -o -name "*.hpp" | sort > tmp2 && diff tmp1 tmp2
+        CMAKE_CXX_COMPILER="${CXX}" CMAKE_C_COMPILER="${CC}" GTEST_ROOT="${BASE}/usr" CFLAGS="-Werror -g" CXXFLAGS="-Werror -g" MSGPACK_SAN="${SAN}" ${ACTION}
+
   windows:
-    runs-on: windows-2016
+    runs-on: windows-2019
     strategy:
+      fail-fast: false
       matrix:
         pattern: [0, 1, 2, 3]
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2.0.0
     - name: Cache vcpkg
       id: cache-vcpkg
-      uses: actions/cache@v1.0.3
+      uses: actions/cache@v1.1.2
       with:
-        path: C:/vcpkg/installed/x64-windows
-        key: ${{ runner.os }}-vcpkg
+        path: C:/vcpkg/installed
+        key: windows-2019-vcpkg-v2
     - name: Build dependencies
       if: steps.cache-vcpkg.outputs.cache-hit != 'true'
       shell: powershell
       run: |
-        vcpkg install gtest:x64-windows
-        vcpkg install zlib:x64-windows
+        vcpkg install gtest:x64-windows gtest:x86-windows
+        vcpkg install zlib:x64-windows zlib:x86-windows
     - name: Build and test
       shell: powershell
       run: |
         if (${{ matrix.pattern }} -eq 0) {
-          $CPP11="-DMSGPACK_CXX11=OFF"
-          $BOOST="-DMSGPACK_BOOST=OFF"
+          $ARCH="x64"
+          $SHARED="ON"
         }
-        if (${{ matrix.pattern }} -eq 1) {
-          $CPP11="-DMSGPACK_CXX11=OFF"
-          $BOOST="-DMSGPACK_BOOST=ON"
+        elseif (${{ matrix.pattern }} -eq 1) {
+          $ARCH="x64"
+          $SHARED="OFF"
         }
-        if (${{ matrix.pattern }} -eq 2) {
-          $CPP11="-DMSGPACK_CXX11=ON"
-          $BOOST="-DMSGPACK_BOOST=OFF"
+        elseif (${{ matrix.pattern }} -eq 2) {
+          $ARCH="Win32"
+          $SHARED="ON"
         }
-        if (${{ matrix.pattern }} -eq 3) {
-          $CPP11="-DMSGPACK_CXX11=ON"
-          $BOOST="-DMSGPACK_BOOST=ON"
+        else {
+          $ARCH="Win32"
+          $SHARED="OFF"
         }
 
         $CUR=(Get-Location).Path
         md build
         cd build
-        cmake -A x64 -DBOOST_ROOT="$env:BOOST_ROOT_1_72_0" -DCMAKE_TOOLCHAIN_FILE="C:/vcpkg/scripts/buildsystems/vcpkg.cmake" $CPP11 $BOOST "-DCMAKE_CXX_FLAGS=/D_VARIADIC_MAX=10 /EHsc /D_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING" ..
-        if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode) }
+        cmake -A $ARCH -DBUILD_SHARED_LIBS=$SHARED -DCMAKE_TOOLCHAIN_FILE="C:/vcpkg/scripts/buildsystems/vcpkg.cmake" "-DCMAKE_CXX_FLAGS=/D_VARIADIC_MAX=10 /EHsc /D_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING" ..
         cmake --build . --config Release
         $pathbak="$env:PATH"
         $env:PATH="C:\vcpkg\installed\x64-windows\bin;$CUR\build\Release;$pathbak"
         ctest -V
-        if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode) }
         $env:PATH=$pathbak
