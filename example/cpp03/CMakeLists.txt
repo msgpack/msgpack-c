@@ -22,12 +22,10 @@ IF (NOT MSVC)
     )
 ENDIF ()
 
-IF (MSGPACK_BOOST)
-    LIST (APPEND with_boost_lib_PROGRAMS
-        speed_test.cpp
-        speed_test_nested_array.cpp
-    )
-ENDIF ()
+LIST (APPEND with_boost_lib_PROGRAMS
+    speed_test.cpp
+    speed_test_nested_array.cpp
+)
 
 FOREACH (source_file ${exec_PROGRAMS})
     GET_FILENAME_COMPONENT (source_file_we ${source_file} NAME_WE)
@@ -37,9 +35,9 @@ FOREACH (source_file ${exec_PROGRAMS})
     )
     TARGET_INCLUDE_DIRECTORIES (${source_file_we}
         PRIVATE
-            $<TARGET_PROPERTY:msgpackc-cxx,INTERFACE_INCLUDE_DIRECTORIES>
+            $<TARGET_PROPERTY:msgpackcxx,INTERFACE_INCLUDE_DIRECTORIES>
     )
-    IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+    IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
         SET_PROPERTY (TARGET ${source_file_we} APPEND_STRING PROPERTY COMPILE_FLAGS " -Wall -Wextra")
     ENDIF ()
     IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
@@ -59,12 +57,12 @@ FOREACH (source_file ${with_pthread_PROGRAMS})
     )
     TARGET_INCLUDE_DIRECTORIES (${source_file_we}
         PRIVATE
-            $<TARGET_PROPERTY:msgpackc-cxx,INTERFACE_INCLUDE_DIRECTORIES>
+            $<TARGET_PROPERTY:msgpackcxx,INTERFACE_INCLUDE_DIRECTORIES>
     )
     TARGET_LINK_LIBRARIES (${source_file_we}
         ${CMAKE_THREAD_LIBS_INIT}
     )
-    IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+    IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
         SET_PROPERTY (TARGET ${source_file_we} APPEND_STRING PROPERTY COMPILE_FLAGS " -Wall -Wextra")
     ENDIF ()
     IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
@@ -88,7 +86,7 @@ FOREACH (source_file ${with_boost_lib_PROGRAMS})
     )
     TARGET_INCLUDE_DIRECTORIES (${source_file_we}
         PRIVATE
-            $<TARGET_PROPERTY:msgpackc-cxx,INTERFACE_INCLUDE_DIRECTORIES>
+            $<TARGET_PROPERTY:msgpackcxx,INTERFACE_INCLUDE_DIRECTORIES>
     )
     LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
     TARGET_LINK_LIBRARIES (${source_file_we}
@@ -102,11 +100,11 @@ FOREACH (source_file ${with_boost_lib_PROGRAMS})
         )
     ENDIF ()
 
-    IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+    IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
         SET_PROPERTY (TARGET ${source_file_we} APPEND_STRING PROPERTY COMPILE_FLAGS "-Wall -Wextra -Werror -O3")
     ENDIF ()
 
-    IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+    IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
         SET_PROPERTY (TARGET ${source_file_we} APPEND_STRING PROPERTY COMPILE_FLAGS " -Wno-mismatched-tags")
     ENDIF ()
 

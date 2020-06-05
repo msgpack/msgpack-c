@@ -17,7 +17,6 @@
 #include "config.h"
 #endif
 
-#if defined(MSGPACK_USE_BOOST)
 #if (BOOST_VERSION / 100000) >= 1 && ((BOOST_VERSION / 100) % 1000) >= 53
 
 TEST(MSGPACK_BOOST, pack_convert_string_ref)
@@ -55,4 +54,3 @@ TEST(MSGPACK_BOOST, object_with_zone_string_ref)
 }
 
 #endif // (BOOST_VERSION / 100000) >= 1 && ((BOOST_VERSION / 100) % 1000) >= 53
-#endif // defined(MSGPACK_USE_BOOST)

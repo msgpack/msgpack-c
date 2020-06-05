@@ -25,7 +25,7 @@ else
     export ARCH_FLAG="-m64"
 fi
 
-cmake -DMSGPACK_CXX11=${CXX11} -DMSGPACK_CXX17=${CXX17} -DMSGPACK_32BIT=${BIT32} -DMSGPACK_BOOST=${BOOST} -DBUILD_SHARED_LIBS=${SHARED} -DMSGPACK_CHAR_SIGN=${CHAR_SIGN} -DMSGPACK_DEFAULT_API_VERSION=${API_VERSION} -DMSGPACK_USE_X3_PARSE=${X3_PARSE} -DCMAKE_CXX_FLAGS=${ARCH_FLAG} ..
+cmake -DMSGPACK_CXX11=${CXX11} -DMSGPACK_CXX17=${CXX17} -DMSGPACK_32BIT=${BIT32} -DMSGPACK_CHAR_SIGN=${CHAR_SIGN} -DMSGPACK_DEFAULT_API_VERSION=${API_VERSION} -DMSGPACK_USE_X3_PARSE=${X3_PARSE} -DCMAKE_CXX_FLAGS=${ARCH_FLAG} ..
 
 ret=$?
 if [ $ret -ne 0 ]
@@ -92,7 +92,7 @@ then
         exit $ret
     fi
 
-    cmake -DCMAKE_PREFIX_PATH=`pwd`/../install/usr/local/lib/cmake ../../example/cmake
+    ${CXX} ../../example/cpp03/simple.cpp -o simple -I `pwd`/../install/usr/local/include -I ${GTEST_ROOT}/include -L ${GTEST_ROOT}/lib -lgtest_main -lgtest
 
     ret=$?
     if [ $ret -ne 0 ]
@@ -100,7 +100,7 @@ then
         exit $ret
     fi
 
-    make
+    ./simple
 
     ret=$?
     if [ $ret -ne 0 ]

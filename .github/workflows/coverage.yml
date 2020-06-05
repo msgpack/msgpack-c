@@ -5,7 +5,7 @@ on:
     types: [opened, synchronize]
   push:
     branches:
-    - master
+    - cpp_master
     tags:
     - '*'
 
@@ -26,7 +26,7 @@ jobs:
       uses: actions/cache@v1
       with:
         path: usr
-        key: ${{ runner.os }}-boost-20200107
+        key: ${{ runner.os }}-boost-20200401
     - name: Build boost
       if: steps.cache-boost.outputs.cache-hit != 'true'
       run: ./.github/depends/boost.sh -b both -t gcc
@@ -48,7 +48,7 @@ jobs:
         cd ..
 
         mkdir build && cd build
-        CMAKE_LIBRARY_PATH="${BASE}/build" GTEST_ROOT="${BASE}/usr" CMAKE_PREFIX_PATH="${BASE}/usr/gcc/lib64/cmake" cmake -DMSGPACK_CXX17=ON -DMSGPACK_32BIT=OFF -DMSGPACK_BOOST=ON -DBUILD_SHARED_LIBS=ON -DMSGPACK_CHAR_SIGN=signed -DMSGPACK_USE_X3_PARSE=ON -DMSGPACK_ENABLE_CXX=ON -DMSGPACK_BUILD_EXAMPLES=ON -DMSGPACK_BUILD_TESTS=ON -DCMAKE_BUILD_TYPE=Debug -DMSGPACK_GEN_COVERAGE=ON ..
+        CMAKE_LIBRARY_PATH="${BASE}/build" GTEST_ROOT="${BASE}/usr" CMAKE_PREFIX_PATH="${BASE}/usr/gcc/lib64/cmake" cmake -DMSGPACK_CXX17=ON -DMSGPACK_32BIT=OFF -DMSGPACK_CHAR_SIGN=signed -DMSGPACK_USE_X3_PARSE=ON -DMSGPACK_BUILD_EXAMPLES=ON -DMSGPACK_BUILD_TESTS=ON -DCMAKE_BUILD_TYPE=Debug -DMSGPACK_GEN_COVERAGE=ON ..
         make -j4
         make test
     - name: Upload coverage to Codecov

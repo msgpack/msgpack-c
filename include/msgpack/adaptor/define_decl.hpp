@@ -14,11 +14,11 @@
 // http://www.boost.org/libs/preprocessor/doc/ref/variadics.html
 // However, supporting compiler detection is not complete. msgpack-c requires
 // variadic macro arguments support. So BOOST_PP_VARIADICS is defined here explicitly.
-#if !defined(MSGPACK_PP_VARIADICS)
-#define MSGPACK_PP_VARIADICS
+#if !defined(BOOST_PP_VARIADICS)
+#define BOOST_PP_VARIADICS
 #endif
 
-#include <msgpack/preprocessor.hpp>
+#include <boost/preprocessor.hpp>
 
 #include "msgpack/versioning.hpp"
 
@@ -45,18 +45,18 @@
 #define MSGPACK_NVP(name, value) (name) (value)
 
 #define MSGPACK_DEFINE_MAP_EACH_PROC(r, data, elem) \
-    MSGPACK_PP_IF( \
-        MSGPACK_PP_IS_BEGIN_PARENS(elem), \
+    BOOST_PP_IF( \
+        BOOST_PP_IS_BEGIN_PARENS(elem), \
         elem, \
-        (MSGPACK_PP_STRINGIZE(elem))(elem) \
+        (BOOST_PP_STRINGIZE(elem))(elem) \
     )
 
 #define MSGPACK_DEFINE_MAP_IMPL(...) \
-    MSGPACK_PP_SEQ_TO_TUPLE( \
-        MSGPACK_PP_SEQ_FOR_EACH( \
+    BOOST_PP_SEQ_TO_TUPLE( \
+        BOOST_PP_SEQ_FOR_EACH( \
             MSGPACK_DEFINE_MAP_EACH_PROC, \
             0, \
-            MSGPACK_PP_VARIADIC_TO_SEQ(__VA_ARGS__) \
+            BOOST_PP_VARIADIC_TO_SEQ(__VA_ARGS__) \
         ) \
     )
 
@@ -83,7 +83,7 @@
     }
 
 #define MSGPACK_BASE_MAP(base) \
-    (MSGPACK_PP_STRINGIZE(base))(*const_cast<base *>(static_cast<base const*>(this)))
+    (BOOST_PP_STRINGIZE(base))(*const_cast<base *>(static_cast<base const*>(this)))
 
 // MSGPACK_ADD_ENUM must be used in the global namespace.
 #define MSGPACK_ADD_ENUM(enum_name) \
