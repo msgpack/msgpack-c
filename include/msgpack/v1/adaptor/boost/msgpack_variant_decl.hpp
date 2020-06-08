@@ -10,8 +10,6 @@
 #ifndef MSGPACK_V1_TYPE_BOOST_MSGPACK_VARIANT_DECL_HPP
 #define MSGPACK_V1_TYPE_BOOST_MSGPACK_VARIANT_DECL_HPP
 
-#if defined(MSGPACK_USE_BOOST)
-
 #include "msgpack/versioning.hpp"
 #include "msgpack/adaptor/adaptor_base.hpp"
 #include "msgpack/adaptor/check_container_size.hpp"
@@ -58,5 +56,4 @@ typedef basic_variant<
 
 } // namespace msgpack
 
-#endif // MSGPACK_USE_BOOST
 #endif // MSGPACK_V1_TYPE_BOOST_MSGPACK_VARIANT_DECL_HPP

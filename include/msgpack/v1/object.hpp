@@ -1168,27 +1168,6 @@ inline object::object(const T& v, msgpack::zone* z)
 }
 
 
-inline object::object(const msgpack_object& o)
-{
-    // FIXME beter way?
-    std::memcpy(this, &o, sizeof(o));
-}
-
-inline void operator<< (msgpack::object& o, const msgpack_object& v)
-{
-    // FIXME beter way?
-    std::memcpy(static_cast<void*>(&o), &v, sizeof(v));
-}
-
-inline object::operator msgpack_object() const
-{
-    // FIXME beter way?
-    msgpack_object obj;
-    std::memcpy(&obj, this, sizeof(obj));
-    return obj;
-}
-
-
 // obsolete
 template <typename T>
 inline void convert(T& v, msgpack::object const& o)

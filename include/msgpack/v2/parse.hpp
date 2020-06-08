@@ -14,7 +14,7 @@
 
 #include <cstddef>
 
-#include "msgpack/unpack_define.h"
+#include "msgpack/unpack_define.hpp"
 #include "msgpack/parse_return.hpp"
 #include "msgpack/unpack_exception.hpp"
 #include "msgpack/unpack_decl.hpp"

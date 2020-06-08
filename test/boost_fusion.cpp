@@ -18,8 +18,6 @@
 #include "config.h"
 #endif
 
-#if defined(MSGPACK_USE_BOOST)
-
 #include <boost/fusion/adapted/struct/define_struct.hpp>
 #include <boost/fusion/adapted/struct/adapt_struct.hpp>
 
@@ -256,5 +254,3 @@ TEST(MSGPACK_BOOST, fusion_pack_unpack_convert_tuple)
 }
 
 #endif // !defined(MSGPACK_USE_CPP03)
-
-#endif // defined(MSGPACK_USE_BOOST)

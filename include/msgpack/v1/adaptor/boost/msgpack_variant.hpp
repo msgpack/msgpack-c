@@ -10,8 +10,6 @@
 #ifndef MSGPACK_V1_TYPE_BOOST_MSGPACK_VARIANT_HPP
 #define MSGPACK_V1_TYPE_BOOST_MSGPACK_VARIANT_HPP
 
-#if defined(MSGPACK_USE_BOOST)
-
 #include "msgpack/v1/adaptor/boost/msgpack_variant_decl.hpp"
 
 #include "msgpack/adaptor/check_container_size.hpp"
@@ -439,5 +437,4 @@ struct object_with_zone<type::basic_variant<STR, BIN, EXT> > {
 
 } // namespace msgpack
 
-#endif // MSGPACK_USE_BOOST
 #endif // MSGPACK_V1_TYPE_BOOST_MSGPACK_VARIANT_HPP

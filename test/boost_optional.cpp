@@ -18,8 +18,6 @@
 #include "config.h"
 #endif
 
-#if defined(MSGPACK_USE_BOOST)
-
 TEST(MSGPACK_BOOST, pack_convert_nil)
 {
     std::stringstream ss;
@@ -187,5 +185,3 @@ TEST(MSGPACK_BOOST, pack_convert_no_def_con)
 }
 
 #endif // !defined(MSGPACK_USE_CPP03
-
-#endif // defined(MSGPACK_USE_BOOST)

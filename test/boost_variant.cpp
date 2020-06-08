@@ -18,8 +18,6 @@
 #include "config.h"
 #endif
 
-#if defined(MSGPACK_USE_BOOST)
-
 const double kEPS = 1e-10;
 
 // nil
@@ -831,6 +829,3 @@ TEST(MSGPACK_BOOST, object_with_zone_variant_ref_map)
     EXPECT_NO_THROW(boost::get<multimap_t>(val2));
     EXPECT_TRUE(val1 == val2);
 }
-
-
-#endif // defined(MSGPACK_USE_BOOST)
