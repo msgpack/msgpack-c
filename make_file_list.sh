@@ -2,7 +2,7 @@
 
 find include -name "*.hpp" | sed -e 's/\s\+/\n/g' | LC_ALL=C sort > cpp_headers.tmp
 
-echo 'SET (msgpackc_HEADERS' >> Files.cmake
+echo 'SET (msgpackc_HEADERS' > Files.cmake
 cat cpp_headers.tmp | sed -e 's/^/    /g' >> Files.cmake
 echo ')' >> Files.cmake
 
