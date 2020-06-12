@@ -1,7 +1,7 @@
 `msgpack` for C
 ===================
 
-Version 3.3.0 [![Build Status](https://travis-ci.org/msgpack/msgpack-c.svg?branch=c_master)](https://travis-ci.org/msgpack/msgpack-c) [![Build status](https://ci.appveyor.com/api/projects/status/8kstcgt79qj123mw/branch/c_master?svg=true)](https://ci.appveyor.com/project/redboltz/msgpack-c/branch/c_master)
+Version 3.3.0 [![Build Status](https://github.com/msgpack/msgpack-c/workflows/CI/badge.svg?branch=c_master)](https://github.com/msgpack/msgpack-c/actions) [![Build status](https://ci.appveyor.com/api/projects/status/8kstcgt79qj123mw/branch/c_master?svg=true)](https://ci.appveyor.com/project/redboltz/msgpack-c/branch/c_master)
 [![codecov](https://codecov.io/gh/msgpack/msgpack-c/branch/c_master/graph/badge.svg)](https://codecov.io/gh/msgpack/msgpack-c/branch/c_master)
 
 It's like JSON but smaller and faster.
@@ -99,7 +99,7 @@ e.g.) tortoise git https://code.google.com/p/tortoisegit/
 2. Launch [cmake GUI client](http://www.cmake.org/cmake/resources/software.html).
 
 3. Set 'Where is the source code:' text box and 'Where to build
-the binaries:' text box.  
+the binaries:' text box.
 
 4. Click 'Configure' button.
 
