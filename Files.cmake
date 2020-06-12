@@ -15,6 +15,7 @@ SET (msgpackc_HEADERS
     include/msgpack/adaptor/char_ptr.hpp
     include/msgpack/adaptor/check_container_size.hpp
     include/msgpack/adaptor/check_container_size_decl.hpp
+    include/msgpack/adaptor/complex.hpp
     include/msgpack/adaptor/cpp11/array.hpp
     include/msgpack/adaptor/cpp11/array_char.hpp
     include/msgpack/adaptor/cpp11/array_unsigned_char.hpp
@@ -110,6 +111,7 @@ SET (msgpackc_HEADERS
     include/msgpack/v1/adaptor/char_ptr.hpp
     include/msgpack/v1/adaptor/check_container_size.hpp
     include/msgpack/v1/adaptor/check_container_size_decl.hpp
+    include/msgpack/v1/adaptor/complex.hpp
     include/msgpack/v1/adaptor/cpp11/array.hpp
     include/msgpack/v1/adaptor/cpp11/array_char.hpp
     include/msgpack/v1/adaptor/cpp11/array_unsigned_char.hpp

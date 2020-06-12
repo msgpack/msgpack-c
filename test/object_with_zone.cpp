@@ -365,6 +365,33 @@ TEST(object_with_zone, char_ptr)
     EXPECT_EQ(obj.as<string>()[0], 'a');
 }
 
+// complex
+TEST(object_with_zone, complex_float)
+{
+    typedef std::complex<float> test_t;
+    test_t v(1.23F, 4.56F);
+    msgpack::zone z;
+    msgpack::object obj(v, z);
+    float r = v.real();
+    EXPECT_TRUE(fabs(obj.as<test_t>().real() - v.real()) <= kEPS);
+    EXPECT_TRUE(fabs(obj.as<test_t>().imag() - v.imag()) <= kEPS);
+    v.real(7.89F);
+    EXPECT_TRUE(fabs(obj.as<test_t>().real() - r) <= kEPS);
+}
+
+TEST(object_with_zone, complex_double)
+{
+    typedef std::complex<double> test_t;
+    test_t v(1.23, 4.56);
+    msgpack::zone z;
+    msgpack::object obj(v, z);
+    double r = v.real();
+    EXPECT_TRUE(fabs(obj.as<test_t>().real() - v.real()) <= kEPS);
+    EXPECT_TRUE(fabs(obj.as<test_t>().imag() - v.imag()) <= kEPS);
+    v.real(7.89);
+    EXPECT_TRUE(fabs(obj.as<test_t>().real() - r) <= kEPS);
+}
+
 #if MSGPACK_DEFAULT_API_VERSION == 1
 
 TEST(object_without_zone, char_ptr)

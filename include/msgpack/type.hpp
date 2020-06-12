@@ -8,6 +8,7 @@
 #include "adaptor/fixint.hpp"
 #include "adaptor/float.hpp"
 #include "adaptor/int.hpp"
+#include "adaptor/complex.hpp"
 #include "adaptor/list.hpp"
 #include "adaptor/map.hpp"
 #include "adaptor/nil.hpp"

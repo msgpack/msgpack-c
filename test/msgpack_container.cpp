@@ -372,6 +372,36 @@ TEST(MSGPACK_STL, simple_buffer_pair)
     }
 }
 
+TEST(MSGPACK_STL, simple_buffer_complex_float)
+{
+    complex<float> val1 = complex<float>(1.23F, 4.56F);
+    msgpack::sbuffer sbuf;
+    msgpack::pack(sbuf, val1);
+    msgpack::object_handle oh =
+        msgpack::unpack(sbuf.data(), sbuf.size());
+    complex<float> val2 = oh.get().as<complex<float> >();
+    EXPECT_EQ(val1, val2);
+    complex<float> val3;
+    oh.get().convert(val3);
+    EXPECT_EQ(val1, val3);
+
+}
+
+TEST(MSGPACK_STL, simple_buffer_complex_double)
+{
+    complex<double> val1 = complex<double>(1.23, 4.56);
+    msgpack::sbuffer sbuf;
+    msgpack::pack(sbuf, val1);
+    msgpack::object_handle oh =
+        msgpack::unpack(sbuf.data(), sbuf.size());
+    complex<double> val2 = oh.get().as<complex<double> >();
+    EXPECT_EQ(val1, val2);
+    complex<double> val3;
+    oh.get().convert(val3);
+    EXPECT_EQ(val1, val3);
+
+}
+
 TEST(MSGPACK_STL, simple_buffer_multimap)
 {
     typedef multimap<int, int, test::less<int>, test::allocator<std::pair<const int, int> > > type;
