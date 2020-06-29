@@ -10,6 +10,8 @@
 #ifndef MSGPACK_V2_CREATE_OBJECT_VISITOR_HPP
 #define MSGPACK_V2_CREATE_OBJECT_VISITOR_HPP
 
+#include <cassert>
+
 #include "msgpack/unpack_decl.hpp"
 #include "msgpack/unpack_exception.hpp"
 #include "msgpack/v2/create_object_visitor_decl.hpp"
@@ -106,6 +108,7 @@ public:
         return true;
     }
     bool visit_str(const char* v, uint32_t size) {
+        assert(v || size == 0);
         if (size > m_limit.str()) throw msgpack::str_size_overflow("str size overflow");
         msgpack::object* obj = m_stack.back();
         obj->type = msgpack::type::STR;
@@ -115,8 +118,10 @@ public:
         }
         else {
             char* tmp = static_cast<char*>(zone().allocate_align(size, MSGPACK_ZONE_ALIGNOF(char)));
-            std::memcpy(tmp, v, size);
-            obj->via.str.ptr = tmp;
+            if (v) {
+                std::memcpy(tmp, v, size);
+                obj->via.str.ptr = tmp;
+            }
         }
         obj->via.str.size = size;
         return true;
