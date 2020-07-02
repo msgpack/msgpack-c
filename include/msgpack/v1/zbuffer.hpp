@@ -15,6 +15,8 @@
 #include <stdexcept>
 #include <zlib.h>
 
+#include <boost/assert.hpp>
+
 namespace msgpack {
 
 /// @cond
@@ -46,6 +48,9 @@ public:
 public:
     void write(const char* buf, size_t len)
     {
+        BOOST_ASSERT(buf || len == 0);
+        if (!buf) return;
+
         m_stream.next_in = reinterpret_cast<Bytef*>(const_cast<char*>(buf));
         m_stream.avail_in = static_cast<uInt>(len);
 

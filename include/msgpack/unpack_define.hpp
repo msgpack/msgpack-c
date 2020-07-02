@@ -11,10 +11,6 @@
 #define MSGPACK_UNPACK_DEFINE_HPP
 
 #include "msgpack/sysdep.hpp"
-#include <stdlib.h>
-#include <string.h>
-#include <assert.h>
-#include <stdio.h>
 
 #ifndef MSGPACK_EMBED_STACK_SIZE
 #define MSGPACK_EMBED_STACK_SIZE 32
@@ -77,4 +73,3 @@ typedef enum {
 
 
 #endif /* msgpack/unpack_define.hpp */
-

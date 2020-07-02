@@ -14,7 +14,8 @@
 
 #include <stdexcept>
 #include <cstring>
-#include <cassert>
+
+#include <boost/assert.hpp>
 
 namespace msgpack {
 
@@ -69,14 +70,15 @@ public:
 
     void write(const char* buf, size_t len)
     {
-        assert(buf || len == 0);
+        BOOST_ASSERT(buf || len == 0);
+
+        if (!buf) return;
+
         if(m_alloc - m_size < len) {
             expand_buffer(len);
         }
-        if(buf) {
-            std::memcpy(m_data + m_size, buf, len);
-            m_size += len;
-        }
+        std::memcpy(m_data + m_size, buf, len);
+        m_size += len;
     }
 
     char* data()
