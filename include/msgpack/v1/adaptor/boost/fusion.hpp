@@ -21,11 +21,23 @@
 #include "msgpack/adaptor/cpp11/tuple.hpp"
 #endif // #if !defined (MSGPACK_USE_CPP03)
 
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wconversion"
+#endif // defined(__GNUC__)
+
 #include <boost/fusion/support/is_sequence.hpp>
 #include <boost/fusion/sequence/intrinsic/size.hpp>
 #include <boost/fusion/algorithm/iteration/for_each.hpp>
 #include <boost/fusion/sequence/intrinsic/at.hpp>
 #include <boost/fusion/include/mpl.hpp>
+
+
+#if defined(__GNUC__)
+#pragma GCC diagnostic pop
+#endif // defined(__GNUC__)
+
+
 #include <boost/mpl/size.hpp>
 
 namespace msgpack {
