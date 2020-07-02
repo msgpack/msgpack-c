@@ -111,7 +111,7 @@ struct as<
     template<std::size_t... Is, typename U>
     static std::tuple<
         typename std::remove_reference<
-            typename boost::fusion::result_of::at_c<T, Is>::type
+            typename boost::fusion::result_of::at_c<T, static_cast<int>(Is)>::type
         >::type...>
     to_tuple(U const& u, seq<Is...>) {
         return std::make_tuple(boost::fusion::at_c<Is>(u)...);
