@@ -14,6 +14,7 @@
 
 #include <stdexcept>
 #include <cstring>
+#include <cassert>
 
 namespace msgpack {
 
@@ -68,11 +69,14 @@ public:
 
     void write(const char* buf, size_t len)
     {
+        assert(buf || len == 0);
         if(m_alloc - m_size < len) {
             expand_buffer(len);
         }
-        std::memcpy(m_data + m_size, buf, len);
-        m_size += len;
+        if(buf) {
+            std::memcpy(m_data + m_size, buf, len);
+            m_size += len;
+        }
     }
 
     char* data()
