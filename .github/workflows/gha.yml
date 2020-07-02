@@ -41,6 +41,7 @@ jobs:
           export ARCH="64"
           export CHAR_SIGN="unsigned"
           export API_VERSION="1"
+          export SANITIZE="-fsanitize=undefined"
         fi
         if [ ${{ matrix.pattern }} == 1 ]; then
           ACTION="ci/build_cmake.sh"
@@ -48,6 +49,7 @@ jobs:
           export ARCH="64"
           export CHAR_SIGN="signed"
           export API_VERSION="3"
+          export SANITIZE="-fsanitize=undefined"
         fi
         if [ ${{ matrix.pattern }} == 2 ]; then
           ACTION="ci/build_cmake.sh"
@@ -55,12 +57,14 @@ jobs:
           export ARCH="64"
           export CHAR_SIGN="signed"
           export API_VERSION="2"
+          export SANITIZE="-fsanitize=undefined"
         fi
         if [ ${{ matrix.pattern }} == 3 ]; then
           ACTION="ci/build_cmake.sh"
           export ARCH="64"
           export CHAR_SIGN="unsigned"
           export API_VERSION="2"
+          export SANITIZE="-fsanitize=undefined"
         fi
 
         # install gtest
@@ -78,7 +82,7 @@ jobs:
         cd ..
 
         # build and test
-        CMAKE_CXX_COMPILER="${CXX}" CMAKE_LIBRARY_PATH="${BASE}/usr/lib:${BASE}/build" GTEST_ROOT="${BASE}/usr" CMAKE_PREFIX_PATH="${BASE}/usr/clang/lib${ARCH}/cmake" CXXFLAGS="-Werror -g" ${ACTION}
+        CMAKE_CXX_COMPILER="${CXX}" CMAKE_LIBRARY_PATH="${BASE}/usr/lib:${BASE}/build" GTEST_ROOT="${BASE}/usr" CMAKE_PREFIX_PATH="${BASE}/usr/clang/lib${ARCH}/cmake" CXXFLAGS="-Werror -g ${SANITIZE}" ${ACTION}
         cat Files.cmake| grep ".*\.[h|hpp]" | perl -pe 's/ //g' | sort > tmp1  && find include -name "*.h" -o -name "*.hpp" | sort > tmp2 && diff tmp1 tmp2
 
   linux:
@@ -114,6 +118,7 @@ jobs:
           export ARCH="64"
           export CHAR_SIGN="unsigned"
           export API_VERSION="2"
+          export SANITIZE="-fsanitize=undefined"
         fi
         if [ ${{ matrix.pattern }} == 1 ]; then
           export CXX=clang++
@@ -121,6 +126,7 @@ jobs:
           export ARCH="32"
           export CHAR_SIGN="signed"
           export API_VERSION="2"
+          export SANITIZE="-fsanitize=undefined"
         fi
         if [ ${{ matrix.pattern }} == 2 ]; then
           export CXX=clang++
@@ -130,6 +136,7 @@ jobs:
           export CHAR_SIGN="signed"
           export API_VERSION="3"
           export X3_PARSE="ON"
+          export SANITIZE="-fsanitize=undefined"
         fi
         if [ ${{ matrix.pattern }} == 3 ]; then
           export CXX=clang++
@@ -146,6 +153,7 @@ jobs:
           export ARCH="64"
           export CHAR_SIGN="signed"
           export API_VERSION="2"
+          export SANITIZE="-fsanitize=undefined"
         fi
         if [ ${{ matrix.pattern }} == 5 ]; then
           export CXX=g++
@@ -155,6 +163,7 @@ jobs:
           export CHAR_SIGN="unsigned"
           export API_VERSION="3"
           export X3_PARSE="ON"
+          export SANITIZE="-fsanitize=undefined"
         fi
         if [ ${{ matrix.pattern }} == 6 ]; then
           export CXX=g++
@@ -162,6 +171,7 @@ jobs:
           export ARCH="64"
           export CHAR_SIGN="unsigned"
           export API_VERSION="2"
+          export SANITIZE="-fsanitize=undefined"
         fi
         if [ ${{ matrix.pattern }} == 7 ]; then
           export CXX=g++
@@ -169,6 +179,7 @@ jobs:
           export ARCH="32"
           export CHAR_SIGN="signed"
           export API_VERSION="1"
+          export SANITIZE="-fsanitize=undefined"
         fi
         if [ ${{ matrix.pattern }} == 8 ]; then
           export CXX=g++
@@ -176,6 +187,7 @@ jobs:
           export ARCH="32"
           export CHAR_SIGN="signed"
           export API_VERSION="2"
+          export SANITIZE="-fsanitize=undefined"
         fi
         if [ ${{ matrix.pattern }} == 9 ]; then
           export CXX=clang++
@@ -184,6 +196,7 @@ jobs:
           export SAN="UBSAN"
           export MSGPACK_FUZZ_REGRESSION="ON"
           export CTEST_OUTPUT_ON_FAILURE=1
+          export SANITIZE="-fsanitize=undefined"
         fi
         if [ ${{ matrix.pattern }} == 10 ]; then
           export CXX=clang++
@@ -192,6 +205,7 @@ jobs:
           export SAN="ASAN"
           export MSGPACK_FUZZ_REGRESSION="ON"
           export CTEST_OUTPUT_ON_FAILURE=1
+          export SANITIZE="-fsanitize=undefined"
         fi
 
         # install gtest
@@ -214,7 +228,7 @@ jobs:
         fi
 
         # build and test
-        CMAKE_CXX_COMPILER="${CXX}" CMAKE_LIBRARY_PATH="${BASE}/usr/lib:${BASE}/build" GTEST_ROOT="${BASE}/usr" CMAKE_PREFIX_PATH="${BASE}/usr/gcc/lib${ARCH}/cmake" CXXFLAGS="-Werror -g" MSGPACK_SAN="${SAN}" ${ACTION}
+        CMAKE_CXX_COMPILER="${CXX}" CMAKE_LIBRARY_PATH="${BASE}/usr/lib:${BASE}/build" GTEST_ROOT="${BASE}/usr" CMAKE_PREFIX_PATH="${BASE}/usr/gcc/lib${ARCH}/cmake" CXXFLAGS="-Werror -g ${SANITIZE}" MSGPACK_SAN="${SAN}" ${ACTION}
         cat Files.cmake| grep ".*\.[h|hpp]" | perl -pe 's/ //g' | sort > tmp1  && find include -name "*.h" -o -name "*.hpp" | sort > tmp2 && diff tmp1 tmp2
   windows:
     runs-on: windows-2016

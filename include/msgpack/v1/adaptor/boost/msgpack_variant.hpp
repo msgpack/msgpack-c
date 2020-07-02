@@ -26,7 +26,18 @@
 #include "msgpack/adaptor/vector.hpp"
 #include "msgpack/adaptor/map.hpp"
 
+
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wconversion"
+#endif // defined(__GNUC__)
+
 #include <boost/variant.hpp>
+
+#if defined(__GNUC__)
+#pragma GCC diagnostic pop
+#endif // defined(__GNUC__)
+
 #include <boost/operators.hpp>
 
 namespace msgpack {
