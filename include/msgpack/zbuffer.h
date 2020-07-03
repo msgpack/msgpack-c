@@ -13,6 +13,7 @@
 #include "sysdep.h"
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 #include <zlib.h>
 
 #ifdef __cplusplus
@@ -120,6 +121,9 @@ static inline bool msgpack_zbuffer_expand(msgpack_zbuffer* zbuf)
 static inline int msgpack_zbuffer_write(void* data, const char* buf, size_t len)
 {
     msgpack_zbuffer* zbuf = (msgpack_zbuffer*)data;
+
+    assert(buf || len == 0);
+    if(!buf) return 0;
 
     zbuf->stream.next_in = (Bytef*)buf;
     zbuf->stream.avail_in = (uInt)len;

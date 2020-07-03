@@ -60,7 +60,9 @@ static inline void msgpack_sbuffer_free(msgpack_sbuffer* sbuf)
 static inline int msgpack_sbuffer_write(void* data, const char* buf, size_t len)
 {
     msgpack_sbuffer* sbuf = (msgpack_sbuffer*)data;
+
     assert(buf || len == 0);
+    if(!buf) return 0;
 
     if(sbuf->alloc - sbuf->size < len) {
         void* tmp;
@@ -83,10 +85,9 @@ static inline int msgpack_sbuffer_write(void* data, const char* buf, size_t len)
         sbuf->alloc = nsize;
     }
 
-    if(buf) {
-        memcpy(sbuf->data + sbuf->size, buf, len);
-        sbuf->size += len;
-    }
+    memcpy(sbuf->data + sbuf->size, buf, len);
+    sbuf->size += len;
+
     return 0;
 }
 

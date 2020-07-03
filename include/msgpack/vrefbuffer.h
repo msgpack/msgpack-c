@@ -12,6 +12,7 @@
 
 #include "zone.h"
 #include <stdlib.h>
+#include <assert.h>
 
 #if defined(unix) || defined(__unix) || defined(__linux__) || defined(__APPLE__) || defined(__OpenBSD__) || defined(__NetBSD__) || defined(__QNX__) || defined(__QNXTO__) || defined(__HAIKU__)
 #include <sys/uio.h>
@@ -114,6 +115,9 @@ static inline void msgpack_vrefbuffer_free(msgpack_vrefbuffer* vbuf)
 static inline int msgpack_vrefbuffer_write(void* data, const char* buf, size_t len)
 {
     msgpack_vrefbuffer* vbuf = (msgpack_vrefbuffer*)data;
+    assert(buf || len == 0);
+
+    if(!buf) return 0;
 
     if(len < vbuf->ref_size) {
         return msgpack_vrefbuffer_append_copy(vbuf, buf, len);
