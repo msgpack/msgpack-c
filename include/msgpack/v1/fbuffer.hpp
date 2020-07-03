@@ -15,6 +15,8 @@
 #include <cstdio>
 #include <stdexcept>
 
+#include <boost/assert.hpp>
+
 namespace msgpack {
 
 /// @cond
@@ -28,6 +30,8 @@ public:
 public:
     void write(const char* buf, unsigned int len)
     {
+        BOOST_ASSERT(buf || len == 0);
+        if (!buf) return;
         if (1 != fwrite(buf, len, 1, m_file)) {
             throw std::runtime_error("fwrite() failed");
         }

@@ -14,7 +14,6 @@
 #include "msgpack/adaptor/check_container_size.hpp"
 #include <cstring>
 #include <string>
-#include <cassert>
 
 namespace msgpack {
 

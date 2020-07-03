@@ -15,6 +15,8 @@
 #include <stdexcept>
 #include <algorithm>
 
+#include <boost/assert.hpp>
+
 #if defined(_MSC_VER)
 // avoiding confliction std::max, std::min, and macro in windows.h
 #ifndef NOMINMAX
@@ -107,6 +109,10 @@ public:
 public:
     void write(const char* buf, size_t len)
     {
+        BOOST_ASSERT(buf || len == 0);
+
+        if (!buf) return;
+
         if(len < m_ref_size) {
             append_copy(buf, len);
         } else {

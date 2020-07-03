@@ -10,7 +10,7 @@
 #ifndef MSGPACK_V2_CREATE_OBJECT_VISITOR_HPP
 #define MSGPACK_V2_CREATE_OBJECT_VISITOR_HPP
 
-#include <cassert>
+#include <boost/assert.hpp>
 
 #include "msgpack/unpack_decl.hpp"
 #include "msgpack/unpack_exception.hpp"
@@ -108,7 +108,7 @@ public:
         return true;
     }
     bool visit_str(const char* v, uint32_t size) {
-        assert(v || size == 0);
+        BOOST_ASSERT(v || size == 0);
         if (size > m_limit.str()) throw msgpack::str_size_overflow("str size overflow");
         msgpack::object* obj = m_stack.back();
         obj->type = msgpack::type::STR;
@@ -132,6 +132,7 @@ public:
         return true;
     }
     bool visit_bin(const char* v, uint32_t size) {
+        BOOST_ASSERT(v || size == 0);
         if (size > m_limit.bin()) throw msgpack::bin_size_overflow("bin size overflow");
         msgpack::object* obj = m_stack.back();
         obj->type = msgpack::type::BIN;
@@ -155,6 +156,7 @@ public:
         return true;
     }
     bool visit_ext(const char* v, uint32_t size) {
+        BOOST_ASSERT(v || size == 0);
         if (size > m_limit.ext()) throw msgpack::ext_size_overflow("ext size overflow");
         msgpack::object* obj = m_stack.back();
         obj->type = msgpack::type::EXT;
