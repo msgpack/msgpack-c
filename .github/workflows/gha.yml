@@ -61,7 +61,7 @@ jobs:
         cd ..
 
         # build and test
-        CMAKE_CXX_COMPILER="${CXX}" CMAKE_C_COMPILER="${CC}" GTEST_ROOT="${BASE}/usr" CFLAGS="-Werror -g" CXXFLAGS="-Werror -g" ${ACTION}
+        CMAKE_CXX_COMPILER="${CXX}" CMAKE_C_COMPILER="${CC}" GTEST_ROOT="${BASE}/usr" CFLAGS="-Werror -g -fsanitize=undefined" CXXFLAGS="-Werror -g -fsanitize=undefined" ${ACTION}
 
   linux:
     runs-on: ubuntu-18.04
@@ -172,7 +172,7 @@ jobs:
         fi
 
         # build and test
-        CMAKE_CXX_COMPILER="${CXX}" CMAKE_C_COMPILER="${CC}" GTEST_ROOT="${BASE}/usr" CFLAGS="-Werror -g" CXXFLAGS="-Werror -g" MSGPACK_SAN="${SAN}" ${ACTION}
+        CMAKE_CXX_COMPILER="${CXX}" CMAKE_C_COMPILER="${CC}" GTEST_ROOT="${BASE}/usr" CFLAGS="-Werror -g -fsanitize=undefined" CXXFLAGS="-Werror -g -fsanitize=undefined" MSGPACK_SAN="${SAN}" ${ACTION}
 
   windows:
     runs-on: windows-2019
