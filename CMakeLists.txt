@@ -115,8 +115,11 @@ IF (GTEST_FOUND AND ZLIB_FOUND AND THREADS_FOUND AND NOT "${MSGPACK_FUZZ_REGRESS
     OPTION (MSGPACK_GEN_COVERAGE "Enable running gcov to get a test coverage report." OFF)
 ENDIF ()
 
-INCLUDE (CheckCXXSourceCompiles)
-CHECK_CXX_SOURCE_COMPILES ("
+
+IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+    IF (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.1)
+        INCLUDE (CheckCXXSourceCompiles)
+        CHECK_CXX_SOURCE_COMPILES ("
 #include <bits/atomicity.h>
 int atomic_sub(int i) { return __gnu_cxx::__exchange_and_add(&i, -1) - 1; }
 int atomic_add(int i) { return __gnu_cxx::__exchange_and_add(&i, 1) + 1; }
@@ -125,7 +128,11 @@ int main(int argc, char * argv[])
     atomic_sub(1);
     atomic_add(1);
 }
-" MSGPACK_ENABLE_GCC_CXX_ATOMIC)
+"
+        MSGPACK_ENABLE_GCC_CXX_ATOMIC)
+    ENDIF ()
+ENDIF ()
+
 
 INCLUDE (Files.cmake)
 
