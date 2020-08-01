@@ -248,6 +248,7 @@ jobs:
       if: steps.cache-vcpkg.outputs.cache-hit != 'true'
       shell: powershell
       run: |
+        vcpkg update
         vcpkg install gtest:x64-windows
         vcpkg install zlib:x64-windows
     - name: Build and test
