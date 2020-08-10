@@ -63,6 +63,11 @@ int main()
 
 See [`QUICKSTART-CPP.md`](./QUICKSTART-CPP.md) for more details.
 
+Dependency
+-----
+msgpack-c requires [boost library](https://www.boost.org/).
+msgpack-c depends on only boost headers. You don't need to link boost libraries.
+
 Usage
 -----
 
@@ -71,7 +76,8 @@ Usage
 When you use msgpack on C++, you can just add
 msgpack-c/include to your include path:
 
-    g++ -I msgpack-c/include your_source_file.cpp
+    g++ -I msgpack-c/include -I path_to_boost your_source_file.cpp
+
 
 ### Building and Installing
 
