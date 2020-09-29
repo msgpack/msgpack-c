@@ -99,16 +99,20 @@ C++03:
     $ make
     $ sudo make install
 
-If you want to setup C++11 or C++17 version of msgpack instead,
+If you want to setup C++17 version of msgpack instead,
 execute the following commands:
 
     $ git clone https://github.com/msgpack/msgpack-c.git
     $ cd msgpack-c
     $ git checkout cpp_master
-    $ cmake -DMSGPACK_CXX[11|17]=ON .
+    $ cmake -DMSGPACK_CXX17=ON .
+    $ make
     $ sudo make install
 
-`MSGPACK_CXX[11|17]` flag does not affect installation. It just switches test cases. All files are installed in every settings.
+For C++11, replace `-DMSGPACK_CXX17=ON` with `-DMSGPACK_CXX11=ON`.
+
+`MSGPACK_CXX11` and `MSGPACK_CXX17` flags do not affect installation. They just switch test cases. All files are installed in every settings.
+
 
 #### GUI on Windows
 
