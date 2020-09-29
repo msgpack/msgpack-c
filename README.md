@@ -108,7 +108,7 @@ execute the following commands:
     $ cmake -DMSGPACK_CXX[11|17]=ON .
     $ sudo make install
 
-`MSGPACK_CXX[11|17]` flags are not affected to installing files. Just switching test cases. All files are installed in every settings.
+`MSGPACK_CXX[11|17]` flag does not affect installation. It just switches test cases. All files are installed in every settings.
 
 #### GUI on Windows
 
