@@ -12,6 +12,11 @@ except that it's faster and smaller. Small integers are encoded into a
 single byte and short strings require only one extra byte in
 addition to the strings themselves.
 
+For better understanding refer to this image
+
+
+![performance-optimization-techniques-of-messagepackruby-rubykaigi-2019-5-638](https://user-images.githubusercontent.com/72141924/94731549-97a90380-0382-11eb-9744-e0c6d688bfd2.jpg)
+
 ### C Library
 
 See [c_master](https://github.com/msgpack/msgpack-c/tree/c_master)
