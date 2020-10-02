@@ -6,10 +6,10 @@ It's like JSON but smaller and faster.
 Overview
 --------
 
-[MessagePack](http://msgpack.org/) is an efficient binary serialization
-format, which lets you exchange data among multiple languages like JSON,
-except that it's faster and smaller. Small integers are encoded into a
-single byte and short strings require only one extra byte in
+[MessagePack](http://msgpack.Org/) is a good binary serialization
+layout, which helps you to alternate records amongst a couple of languages like JSON,
+except that it's quicker and smaller. Small integers are encoded right into a
+unmarried-byte and quick strings require handiest one more byte in
 addition to the strings themselves.
 
 ### C Library
