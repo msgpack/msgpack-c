@@ -48,7 +48,7 @@ build_script:
       cd ..
       cd ..
       if ($env:msvc -ne '"Visual Studio 14 2015"') {
-        ((Get-Content CMakeLists.txt) -replace "COMPONENTS chrono system timer", "") | Set-Content -Path CMakeLists.txt
+        ((Get-Content CMakeLists.txt) -replace "COMPONENTS chrono system OPTIONAL_COMPONENTS timer", "") | Set-Content -Path CMakeLists.txt
       }
       md build
       cd build
