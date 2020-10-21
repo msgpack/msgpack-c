@@ -1,7 +1,7 @@
 `msgpack` for C/C++
 ===================
 
-It's like JSON but smaller and faster.
+It's like JSON but smaller and faster so you will easily grap in the concepts.
 
 Overview
 --------
