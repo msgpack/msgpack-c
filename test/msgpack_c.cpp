@@ -21,6 +21,12 @@
 #define msgpack_rand() drand48()
 #endif // _MSC_VER || __MINGW32__
 
+#if defined(_MSC_VER)
+#define msgpack_snprintf sprintf_s
+#else  // _MSC_VER
+#define msgpack_snprintf snprintf
+#endif // _MSC_VER
+
 using namespace std;
 
 const unsigned int kLoop = 10000;
@@ -1261,7 +1267,8 @@ TEST(MSGPACKC, simple_object_print_buffer_array_str)
     EXPECT_EQ(str_size, o.via.str.size);
     EXPECT_EQ(0, memcmp(str, o.via.str.ptr, str_size));
 
-    sprintf(expected, "[\"%s\"]", str);
+    msgpack_snprintf(expected, sizeof(expected), "[\"%s\"]", str);
+    expected[sizeof(expected) - 1] = '\0'; // not needed w/ sprintf_s
     msgpack_object_print_buffer(buffer, sizeof(buffer) - 1, obj);
     EXPECT_STREQ(expected, buffer);
 
@@ -1341,7 +1348,8 @@ TEST(MSGPACKC, simple_object_print_buffer_map_str)
     EXPECT_EQ(mval_size, val.via.str.size);
     EXPECT_EQ(0, memcmp(mval, val.via.str.ptr, mval_size));
 
-    sprintf(expected, "{\"%s\"=>\"%s\"}", mkey, mval);
+    msgpack_snprintf(expected, sizeof(expected), "{\"%s\"=>\"%s\"}", mkey, mval);
+    expected[sizeof(expected) - 1] = '\0'; // not needed w/ sprintf_s
     msgpack_object_print_buffer(buffer, sizeof(buffer) - 1, obj);
     EXPECT_STREQ(expected, buffer);
 
@@ -1384,7 +1392,8 @@ TEST(MSGPACKC, simple_object_print_buffer_map_str_empty)
     EXPECT_EQ(MSGPACK_OBJECT_STR, val.type);
     EXPECT_EQ(0UL, val.via.str.size);
 
-    sprintf(expected, "{\"%s\"=>\"\"}", mkey);
+    msgpack_snprintf(expected, sizeof(expected), "{\"%s\"=>\"\"}", mkey);
+    expected[sizeof(expected) - 1] = '\0'; // not needed w/ sprintf_s
     msgpack_object_print_buffer(buffer, sizeof(buffer) - 1, obj);
     EXPECT_STREQ(expected, buffer);
 
