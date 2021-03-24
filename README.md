@@ -84,6 +84,9 @@ How to build:
 
 How to run tests:
 
+In order to run tests you must have the [GoogleTest](https://github.com/google/googletest) framework installed. If you do not currently have it, install it and re-run `cmake`.
+Then:
+
     $ make test
 
 When you use the C part of `msgpack-c`, you need to build and link the library. By default, both static/shared libraries are built. If you want to build only static library, set `BUILD_SHARED_LIBS=OFF` to cmake. If you want to build only shared library, set `BUILD_SHARED_LIBS=ON`.
