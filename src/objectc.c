@@ -331,7 +331,9 @@ int msgpack_object_print_buffer(char *buffer, size_t buffer_size, msgpack_object
 
     case MSGPACK_OBJECT_STR:
         MSGPACK_CHECKED_CALL(ret, snprintf, aux_buffer, aux_buffer_size, "\"");
-        MSGPACK_CHECKED_CALL(ret, snprintf, aux_buffer, aux_buffer_size, "%.*s", (int)o.via.str.size, o.via.str.ptr);
+        if (o.via.str.size > 0) {
+            MSGPACK_CHECKED_CALL(ret, snprintf, aux_buffer, aux_buffer_size, "%.*s", (int)o.via.str.size, o.via.str.ptr);
+        }
         MSGPACK_CHECKED_CALL(ret, snprintf, aux_buffer, aux_buffer_size, "\"");
         break;
 

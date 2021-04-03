@@ -21,6 +21,12 @@
 #define msgpack_rand() drand48()
 #endif // _MSC_VER || __MINGW32__
 
+#if defined(_MSC_VER)
+#define msgpack_snprintf sprintf_s
+#else  // _MSC_VER
+#define msgpack_snprintf snprintf
+#endif // _MSC_VER
+
 using namespace std;
 
 const unsigned int kLoop = 10000;
@@ -1203,6 +1209,197 @@ TEST(MSGPACKC, simple_buffer_v4raw_32_l)
     msgpack_sbuffer_destroy(&sbuf);
 }
 
+TEST(MSGPACKC, simple_object_print_buffer_str_empty)
+{
+    unsigned int str_size = 0;
+    char buffer[64];
+
+    msgpack_sbuffer sbuf;
+    msgpack_sbuffer_init(&sbuf);
+    msgpack_packer pk;
+    msgpack_packer_init(&pk, &sbuf, msgpack_sbuffer_write);
+    msgpack_pack_str(&pk, str_size);
+    msgpack_pack_str_body(&pk, "", str_size);
+
+    msgpack_zone z;
+    msgpack_zone_init(&z, 2048);
+    msgpack_object obj;
+    msgpack_unpack_return ret;
+    ret = msgpack_unpack(sbuf.data, sbuf.size, NULL, &z, &obj);
+    EXPECT_EQ(MSGPACK_UNPACK_SUCCESS, ret);
+    EXPECT_EQ(MSGPACK_OBJECT_STR, obj.type);
+    EXPECT_EQ(str_size, obj.via.str.size);
+
+    msgpack_object_print_buffer(buffer, sizeof(buffer) - 1, obj);
+    EXPECT_STREQ("\"\"", buffer);
+
+    msgpack_zone_destroy(&z);
+    msgpack_sbuffer_destroy(&sbuf);
+}
+
+TEST(MSGPACKC, simple_object_print_buffer_array_str)
+{
+    const char * str = "hello";
+    const size_t str_size = strlen(str);
+    const unsigned int array_size = 1;
+    char expected[64];
+    char buffer[64];
+
+    msgpack_sbuffer sbuf;
+    msgpack_sbuffer_init(&sbuf);
+    msgpack_packer pk;
+    msgpack_packer_init(&pk, &sbuf, msgpack_sbuffer_write);
+    msgpack_pack_array(&pk, array_size);
+    msgpack_pack_str(&pk, str_size);
+    msgpack_pack_str_body(&pk, str, str_size);
+
+    msgpack_zone z;
+    msgpack_zone_init(&z, 2048);
+    msgpack_object obj;
+    msgpack_unpack_return ret;
+    ret = msgpack_unpack(sbuf.data, sbuf.size, NULL, &z, &obj);
+    EXPECT_EQ(MSGPACK_UNPACK_SUCCESS, ret);
+    EXPECT_EQ(MSGPACK_OBJECT_ARRAY, obj.type);
+    EXPECT_EQ(array_size, obj.via.array.size);
+
+    msgpack_object o = *obj.via.array.ptr;
+    EXPECT_EQ(MSGPACK_OBJECT_STR, o.type);
+    EXPECT_EQ(str_size, o.via.str.size);
+    EXPECT_EQ(0, memcmp(str, o.via.str.ptr, str_size));
+
+    msgpack_snprintf(expected, sizeof(expected), "[\"%s\"]", str);
+    expected[sizeof(expected) - 1] = '\0'; // not needed w/ sprintf_s
+    msgpack_object_print_buffer(buffer, sizeof(buffer) - 1, obj);
+    EXPECT_STREQ(expected, buffer);
+
+    msgpack_zone_destroy(&z);
+    msgpack_sbuffer_destroy(&sbuf);
+}
+
+TEST(MSGPACKC, simple_object_print_buffer_array_str_empty)
+{
+    const unsigned int array_size = 1;
+    const unsigned int str_size = 0;
+    char buffer[64];
+
+    msgpack_sbuffer sbuf;
+    msgpack_sbuffer_init(&sbuf);
+    msgpack_packer pk;
+    msgpack_packer_init(&pk, &sbuf, msgpack_sbuffer_write);
+    msgpack_pack_array(&pk, array_size);
+    msgpack_pack_str(&pk, str_size);
+    msgpack_pack_str_body(&pk, "", 0);
+
+    msgpack_zone z;
+    msgpack_zone_init(&z, 2048);
+    msgpack_object obj;
+    msgpack_unpack_return ret;
+    ret = msgpack_unpack(sbuf.data, sbuf.size, NULL, &z, &obj);
+    EXPECT_EQ(MSGPACK_UNPACK_SUCCESS, ret);
+    EXPECT_EQ(MSGPACK_OBJECT_ARRAY, obj.type);
+    EXPECT_EQ(array_size, obj.via.array.size);
+
+    msgpack_object o = *obj.via.array.ptr;
+    EXPECT_EQ(MSGPACK_OBJECT_STR, o.type);
+    EXPECT_EQ(str_size, o.via.str.size);
+
+    msgpack_object_print_buffer(buffer, sizeof(buffer) - 1, obj);
+    EXPECT_STREQ("[\"\"]", buffer);
+
+    msgpack_zone_destroy(&z);
+    msgpack_sbuffer_destroy(&sbuf);
+}
+
+TEST(MSGPACKC, simple_object_print_buffer_map_str)
+{
+    const char * mkey = "key";
+    const char * mval = "value";
+    char expected[64];
+    char buffer[64];
+    const size_t mkey_size = strlen(mkey);;
+    const size_t mval_size = strlen(mval);
+    const unsigned int map_size = 1;
+
+    msgpack_sbuffer sbuf;
+    msgpack_sbuffer_init(&sbuf);
+    msgpack_packer pk;
+    msgpack_packer_init(&pk, &sbuf, msgpack_sbuffer_write);
+    msgpack_pack_map(&pk, map_size);
+    msgpack_pack_str(&pk, mkey_size);
+    msgpack_pack_str_body(&pk, mkey, mkey_size);
+    msgpack_pack_str(&pk, mval_size);
+    msgpack_pack_str_body(&pk, mval, mval_size);
+
+    msgpack_zone z;
+    msgpack_zone_init(&z, 2048);
+    msgpack_object obj;
+    msgpack_unpack_return ret;
+    ret = msgpack_unpack(sbuf.data, sbuf.size, NULL, &z, &obj);
+    EXPECT_EQ(MSGPACK_UNPACK_SUCCESS, ret);
+    EXPECT_EQ(MSGPACK_OBJECT_MAP, obj.type);
+    EXPECT_EQ(map_size, obj.via.map.size);
+
+    msgpack_object key = obj.via.map.ptr->key;
+    msgpack_object val = obj.via.map.ptr->val;
+    EXPECT_EQ(MSGPACK_OBJECT_STR, key.type);
+    EXPECT_EQ(mkey_size, key.via.str.size);
+    EXPECT_EQ(0, memcmp(mkey, key.via.str.ptr, mkey_size));
+    EXPECT_EQ(MSGPACK_OBJECT_STR, val.type);
+    EXPECT_EQ(mval_size, val.via.str.size);
+    EXPECT_EQ(0, memcmp(mval, val.via.str.ptr, mval_size));
+
+    msgpack_snprintf(expected, sizeof(expected), "{\"%s\"=>\"%s\"}", mkey, mval);
+    expected[sizeof(expected) - 1] = '\0'; // not needed w/ sprintf_s
+    msgpack_object_print_buffer(buffer, sizeof(buffer) - 1, obj);
+    EXPECT_STREQ(expected, buffer);
+
+    msgpack_zone_destroy(&z);
+    msgpack_sbuffer_destroy(&sbuf);
+}
+
+TEST(MSGPACKC, simple_object_print_buffer_map_str_empty)
+{
+    const char * mkey = "key";
+    char expected[64];
+    char buffer[64];
+    const size_t mkey_size = strlen(mkey);;
+    const unsigned int map_size = 1;
+
+    msgpack_sbuffer sbuf;
+    msgpack_sbuffer_init(&sbuf);
+    msgpack_packer pk;
+    msgpack_packer_init(&pk, &sbuf, msgpack_sbuffer_write);
+    msgpack_pack_map(&pk, map_size);
+    msgpack_pack_str(&pk, mkey_size);
+    msgpack_pack_str_body(&pk, mkey, mkey_size);
+    msgpack_pack_str(&pk, 0);
+    msgpack_pack_str_body(&pk, "", 0);
+
+    msgpack_zone z;
+    msgpack_zone_init(&z, 2048);
+    msgpack_object obj;
+    msgpack_unpack_return ret;
+    ret = msgpack_unpack(sbuf.data, sbuf.size, NULL, &z, &obj);
+    EXPECT_EQ(MSGPACK_UNPACK_SUCCESS, ret);
+    EXPECT_EQ(MSGPACK_OBJECT_MAP, obj.type);
+    EXPECT_EQ(map_size, obj.via.map.size);
+
+    msgpack_object key = obj.via.map.ptr->key;
+    msgpack_object val = obj.via.map.ptr->val;
+    EXPECT_EQ(MSGPACK_OBJECT_STR, key.type);
+    EXPECT_EQ(mkey_size, key.via.str.size);
+    EXPECT_EQ(0, memcmp(mkey, key.via.str.ptr, mkey_size));
+    EXPECT_EQ(MSGPACK_OBJECT_STR, val.type);
+    EXPECT_EQ(0UL, val.via.str.size);
+
+    msgpack_snprintf(expected, sizeof(expected), "{\"%s\"=>\"\"}", mkey);
+    expected[sizeof(expected) - 1] = '\0'; // not needed w/ sprintf_s
+    msgpack_object_print_buffer(buffer, sizeof(buffer) - 1, obj);
+    EXPECT_STREQ(expected, buffer);
+
+    msgpack_zone_destroy(&z);
+    msgpack_sbuffer_destroy(&sbuf);
+}
 
 TEST(MSGPACKC, unpack_fixstr)
 {
