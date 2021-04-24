@@ -100,6 +100,7 @@ int main(void) {
         msgpack_object_print(stdout, obj);  /*=> ["Hello", "MessagePack"] */
 
         /* cleaning */
+        msgpack_unpacked_destroy(&msg);
         msgpack_sbuffer_free(buffer);
         msgpack_packer_free(pk);
 }
@@ -139,6 +140,7 @@ int main(void) {
            /* prints the deserialized object. */
            msgpack_object obj = msg.data;
            msgpack_object_print(stdout, obj);  /*=> ["Hello", "MessagePack"] */
+           msgpack_unpacked_destroy(&msg);
            puts("");
         }
 
