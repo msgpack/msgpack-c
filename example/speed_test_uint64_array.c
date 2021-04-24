@@ -25,7 +25,7 @@ void test()
 
     while (msgpack_unpack_next(&msg, buf.data, buf.size, &upk_pos) == MSGPACK_UNPACK_SUCCESS) {
     }
-
+    msgpack_unpacked_destroy(&msg);
     msgpack_sbuffer_destroy(&buf);
 }
 
