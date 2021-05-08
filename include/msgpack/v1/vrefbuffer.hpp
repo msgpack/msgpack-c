@@ -26,11 +26,16 @@
 
 #if defined(unix) || defined(__unix) || defined(__APPLE__) || defined(__OpenBSD__)
 #include <sys/uio.h>
+namespace msgpack {
+typedef ::iovec iovec;
+} // namespace msgpack
 #else
+namespace msgpack {
 struct iovec {
     void  *iov_base;
     size_t iov_len;
 };
+} // namespace msgpack
 #endif
 
 namespace msgpack {
@@ -183,7 +188,7 @@ public:
         }
     }
 
-    const struct iovec* vector() const
+    const iovec* vector() const
     {
         return m_array;
     }
