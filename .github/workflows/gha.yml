@@ -23,7 +23,7 @@ jobs:
       uses: actions/cache@v1
       with:
         path: usr
-        key: ${{ runner.os }}-boost-20200107
+        key: ${{ runner.os }}-boost-20210508-1-72-0
     - name: Build boost
       if: steps.cache-boost.outputs.cache-hit != 'true'
       run: ./.github/depends/boost.sh -b 64 -t clang
@@ -102,7 +102,7 @@ jobs:
       uses: actions/cache@v1
       with:
         path: usr
-        key: ${{ runner.os }}-boost-20200107
+        key: ${{ runner.os }}-boost-20210508-1-72-0
     - name: Build boost
       if: steps.cache-boost.outputs.cache-hit != 'true'
       run: ./.github/depends/boost.sh -b both -t gcc
