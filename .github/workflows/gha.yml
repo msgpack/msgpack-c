@@ -251,6 +251,7 @@ jobs:
         vcpkg update
         vcpkg install gtest:x64-windows
         vcpkg install zlib:x64-windows
+        vcpkg install boost:x64-windows
     - name: Build and test
       shell: powershell
       run: |
