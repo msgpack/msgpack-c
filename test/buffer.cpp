@@ -42,7 +42,7 @@ TEST(buffer, vrefbuffer)
     vbuf.write("a", 1);
     vbuf.write("a", 1);
 
-    const struct iovec* vec = vbuf.vector();
+    const msgpack::iovec* vec = vbuf.vector();
     size_t veclen = vbuf.vector_size();
 
     msgpack::sbuffer sbuf;
