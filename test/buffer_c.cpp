@@ -102,7 +102,7 @@ TEST(buffer, vrefbuffer_c)
                     MSGPACK_VREFBUFFER_REF_SIZE + 1,
                     ref_size, chunk_size + 1};
     size_t iovcnt;
-    const iovec *iov;
+    const msgpack_iovec *iov;
     size_t len = 0, i;
     char *buf;
 

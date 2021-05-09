@@ -1616,7 +1616,7 @@ TEST(MSGPACKC, object_bin_print_buffer_overflow) {
 #define GEN_TEST_VREFBUFFER_PREPARE(...)                       \
     msgpack_vrefbuffer vbuf;                                   \
     msgpack_packer pk;                                         \
-    const iovec *iov;                                          \
+    const msgpack_iovec *iov;                                  \
     size_t iovcnt, len = 0, i;                                 \
     char buf[1024];                                            \
     msgpack_vrefbuffer_init(&vbuf, 0, 0);                      \
