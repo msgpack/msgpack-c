@@ -33,9 +33,9 @@ while getopts "b:t:" c; do
   esac
 done
 
-wget https://dl.bintray.com/boostorg/release/1.71.0/source/boost_1_71_0.tar.bz2
-tar xf boost_1_71_0.tar.bz2
-cd boost_1_71_0
+wget https://boostorg.jfrog.io/artifactory/main/release/1.72.0/source/boost_1_72_0.tar.bz2
+tar xf boost_1_72_0.tar.bz2
+cd boost_1_72_0
 ./bootstrap.sh
 
 build()
