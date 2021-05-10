@@ -271,15 +271,15 @@ TEST(MSGPACK_CPP17, vector_byte_pack_convert)
     };
 
     msgpack::pack(ss, val1);
+    std::string const& str = ss.str();
 
     char packed[] = { char(0xc4), char(0x05), char(0x01), char(0x02), char(0x7f), char(0x80), char(0xff) };
+    EXPECT_EQ(str.size(), sizeof(packed));
     for (size_t i = 0; i != sizeof(packed); ++i) {
-        std::string const& str = ss.str();
         EXPECT_EQ(str[i], packed[i]);
     }
 
     msgpack::object_handle oh;
-    std::string const& str = ss.str();
     msgpack::unpack(oh, str.data(), str.size());
     std::vector<std::byte> val2 = oh.get().as<std::vector<std::byte>>();
     EXPECT_EQ(val1, val2);
@@ -310,6 +310,125 @@ TEST(MSGPACK_CPP17, vector_byte_object_with_zone)
     EXPECT_EQ(val1, val2);
 }
 
+TEST(MSGPACK_CPP17, array_byte_pack_convert)
+{
+    std::stringstream ss;
+    std::array<std::byte, 5> val1{
+        std::byte{0x01}, std::byte{0x02}, std::byte{0x7f}, std::byte{0x80}, std::byte{0xff}
+    };
+
+    msgpack::pack(ss, val1);
+    std::string const& str = ss.str();
+
+    char packed[] = { char(0xc4), char(0x05), char(0x01), char(0x02), char(0x7f), char(0x80), char(0xff) };
+    EXPECT_EQ(str.size(), sizeof(packed));
+    for (size_t i = 0; i != sizeof(packed); ++i) {
+        EXPECT_EQ(str[i], packed[i]);
+    }
+
+    {
+        msgpack::object_handle oh;
+        msgpack::unpack(oh, str.data(), str.size());
+        auto val2 = oh.get().as<std::array<std::byte, 5>>();
+        EXPECT_EQ(val1, val2);
+    }
+    {
+        msgpack::object_handle oh;
+        msgpack::unpack(oh, str.data(), str.size());
+        EXPECT_THROW((oh.get().as<std::array<std::byte, 0>>()),    msgpack::type_error);
+        EXPECT_THROW((oh.get().as<std::array<std::byte, 1>>()),    msgpack::type_error);
+        EXPECT_THROW((oh.get().as<std::array<std::byte, 8192>>()), msgpack::type_error);
+    }
+}
+
+TEST(MSGPACK_CPP17, array_byte_object)
+{
+    std::array<std::byte, 5> val1{
+        std::byte{0x01}, std::byte{0x02}, std::byte{0x7f}, std::byte{0x80}, std::byte{0xff}
+    };
+
+    // Caller need to manage val1's lifetime. The Data is not copied.
+    msgpack::object obj(val1);
+
+    auto val2 = obj.as<std::array<std::byte, 5>>();
+    EXPECT_EQ(val1, val2);
+
+    EXPECT_THROW((obj.as<std::array<std::byte, 0>>()),    msgpack::type_error);
+    EXPECT_THROW((obj.as<std::array<std::byte, 1>>()),    msgpack::type_error);
+    EXPECT_THROW((obj.as<std::array<std::byte, 8192>>()), msgpack::type_error);
+}
+
+TEST(MSGPACK_CPP17, array_byte_object_with_zone)
+{
+    msgpack::zone z;
+    std::array<std::byte, 5> val1{
+        std::byte{0x01}, std::byte{0x02}, std::byte{0x7f}, std::byte{0x80}, std::byte{0xff}
+    };
+    msgpack::object obj(val1, z);
+
+    auto val2 = obj.as<std::array<std::byte, 5>>();
+    EXPECT_EQ(val1, val2);
+
+    EXPECT_THROW((obj.as<std::array<std::byte, 0>>()),    msgpack::type_error);
+    EXPECT_THROW((obj.as<std::array<std::byte, 1>>()),    msgpack::type_error);
+    EXPECT_THROW((obj.as<std::array<std::byte, 8192>>()), msgpack::type_error);
+}
+
+TEST(MSGPACK_CPP17, array_byte_empty_pack_convert)
+{
+    std::stringstream ss;
+    std::array<std::byte, 0> val1{};
+
+    msgpack::pack(ss, val1);
+    std::string const& str = ss.str();
+
+    char packed[] = { char(0xc4), char(0x00) };
+    EXPECT_EQ(str.size(), sizeof(packed));
+    for (size_t i = 0; i != sizeof(packed); ++i) {
+        EXPECT_EQ(str[i], packed[i]);
+    }
+
+    {
+        msgpack::object_handle oh;
+        msgpack::unpack(oh, str.data(), str.size());
+        auto val2 = oh.get().as<std::array<std::byte, 0>>();
+        EXPECT_EQ(val1, val2);
+    }
+    {
+        msgpack::object_handle oh;
+        msgpack::unpack(oh, str.data(), str.size());
+        EXPECT_THROW((oh.get().as<std::array<std::byte, 1>>()),    msgpack::type_error);
+        EXPECT_THROW((oh.get().as<std::array<std::byte, 8192>>()), msgpack::type_error);
+    }
+}
+
+TEST(MSGPACK_CPP17, array_byte_empty_object)
+{
+    std::array<std::byte, 0> val1{};
+
+    // Caller need to manage val1's lifetime. The Data is not copied.
+    msgpack::object obj(val1);
+
+    auto val2 = obj.as<std::array<std::byte, 0>>();
+    EXPECT_EQ(val1, val2);
+
+    EXPECT_THROW((obj.as<std::array<std::byte, 1>>()),    msgpack::type_error);
+    EXPECT_THROW((obj.as<std::array<std::byte, 8192>>()), msgpack::type_error);
+}
+
+TEST(MSGPACK_CPP17, array_byte_empty_object_with_zone)
+{
+    msgpack::zone z;
+    std::array<std::byte, 0> val1{};
+    msgpack::object obj(val1, z);
+
+    auto val2 = obj.as<std::array<std::byte, 0>>();
+    EXPECT_EQ(val1, val2);
+
+    EXPECT_THROW((obj.as<std::array<std::byte, 1>>()),    msgpack::type_error);
+    EXPECT_THROW((obj.as<std::array<std::byte, 8192>>()), msgpack::type_error);
+}
+
 TEST(MSGPACK_CPP17, carray_byte_pack_convert)
 {
     std::stringstream ss;
@@ -318,15 +437,15 @@ TEST(MSGPACK_CPP17, carray_byte_pack_convert)
     };
 
     msgpack::pack(ss, val1);
+    std::string const& str = ss.str();
 
     char packed[] = { char(0xc4), char(0x05), char(0x01), char(0x02), char(0x7f), char(0x80), char(0xff) };
+    EXPECT_EQ(str.size(), sizeof(packed));
     for (size_t i = 0; i != sizeof(packed); ++i) {
-        std::string const& str = ss.str();
         EXPECT_EQ(str[i], packed[i]);
     }
 
     msgpack::object_handle oh;
-    std::string const& str = ss.str();
     msgpack::unpack(oh, str.data(), str.size());
     std::byte val2[sizeof(val1)];
     oh.get().convert(val2);
