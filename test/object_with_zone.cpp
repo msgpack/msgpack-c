@@ -1102,7 +1102,7 @@ TEST(object_with_zone, ext_ref_empty)
     msgpack::type::ext_ref v;
     msgpack::zone z;
     msgpack::object obj(v, z);
-    EXPECT_TRUE(obj.as<msgpack::type::ext>() == v);
+    EXPECT_TRUE(obj.as<msgpack::type::ext>() == msgpack::type::ext(v));
     EXPECT_TRUE(obj.as<msgpack::type::ext_ref>() == v);
 }
 
@@ -1112,6 +1112,6 @@ TEST(object_with_zone, ext_ref_from_buf)
     msgpack::type::ext_ref v(buf, sizeof(buf));
     msgpack::zone z;
     msgpack::object obj(v, z);
-    EXPECT_TRUE(obj.as<msgpack::type::ext>() == v);
+    EXPECT_TRUE(obj.as<msgpack::type::ext>() == msgpack::type::ext(v));
     EXPECT_TRUE(obj.as<msgpack::type::ext_ref>() == v);
 }
