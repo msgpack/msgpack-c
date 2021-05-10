@@ -33,7 +33,7 @@ struct v4raw_ref {
 
     bool operator== (const v4raw_ref& x) const
     {
-        return size == x.size && std::memcmp(ptr, x.ptr, size) == 0;
+        return size == x.size && (size == 0 || std::memcmp(ptr, x.ptr, size) == 0);
     }
 
     bool operator!= (const v4raw_ref& x) const
