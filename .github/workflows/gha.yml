@@ -41,7 +41,7 @@ jobs:
           export ARCH="64"
           export CHAR_SIGN="unsigned"
           export API_VERSION="1"
-          export SANITIZE="-fsanitize=undefined"
+          export SANITIZE="-fsanitize=undefined -fno-sanitize-recover=all"
         fi
         if [ ${{ matrix.pattern }} == 1 ]; then
           ACTION="ci/build_cmake.sh"
@@ -49,7 +49,7 @@ jobs:
           export ARCH="64"
           export CHAR_SIGN="signed"
           export API_VERSION="3"
-          export SANITIZE="-fsanitize=undefined"
+          export SANITIZE="-fsanitize=undefined -fno-sanitize-recover=all"
         fi
         if [ ${{ matrix.pattern }} == 2 ]; then
           ACTION="ci/build_cmake.sh"
@@ -57,14 +57,14 @@ jobs:
           export ARCH="64"
           export CHAR_SIGN="signed"
           export API_VERSION="2"
-          export SANITIZE="-fsanitize=undefined"
+          export SANITIZE="-fsanitize=undefined -fno-sanitize-recover=all"
         fi
         if [ ${{ matrix.pattern }} == 3 ]; then
           ACTION="ci/build_cmake.sh"
           export ARCH="64"
           export CHAR_SIGN="unsigned"
           export API_VERSION="2"
-          export SANITIZE="-fsanitize=undefined"
+          export SANITIZE="-fsanitize=undefined -fno-sanitize-recover=all"
         fi
 
         # install gtest
@@ -118,7 +118,7 @@ jobs:
           export ARCH="64"
           export CHAR_SIGN="unsigned"
           export API_VERSION="2"
-          export SANITIZE="-fsanitize=undefined"
+          export SANITIZE="-fsanitize=undefined -fno-sanitize-recover=all"
         fi
         if [ ${{ matrix.pattern }} == 1 ]; then
           export CXX=clang++
@@ -126,7 +126,7 @@ jobs:
           export ARCH="32"
           export CHAR_SIGN="signed"
           export API_VERSION="2"
-          export SANITIZE="-fsanitize=undefined"
+          export SANITIZE="-fsanitize=undefined -fno-sanitize-recover=all"
         fi
         if [ ${{ matrix.pattern }} == 2 ]; then
           export CXX=clang++
@@ -136,7 +136,7 @@ jobs:
           export CHAR_SIGN="signed"
           export API_VERSION="3"
           export X3_PARSE="ON"
-          export SANITIZE="-fsanitize=undefined"
+          export SANITIZE="-fsanitize=undefined -fno-sanitize-recover=all"
         fi
         if [ ${{ matrix.pattern }} == 3 ]; then
           export CXX=clang++
@@ -153,7 +153,7 @@ jobs:
           export ARCH="64"
           export CHAR_SIGN="signed"
           export API_VERSION="2"
-          export SANITIZE="-fsanitize=undefined"
+          export SANITIZE="-fsanitize=undefined -fno-sanitize-recover=all"
         fi
         if [ ${{ matrix.pattern }} == 5 ]; then
           export CXX=g++
@@ -163,7 +163,7 @@ jobs:
           export CHAR_SIGN="unsigned"
           export API_VERSION="3"
           export X3_PARSE="ON"
-          export SANITIZE="-fsanitize=undefined"
+          export SANITIZE="-fsanitize=undefined -fno-sanitize-recover=all"
         fi
         if [ ${{ matrix.pattern }} == 6 ]; then
           export CXX=g++
@@ -171,7 +171,7 @@ jobs:
           export ARCH="64"
           export CHAR_SIGN="unsigned"
           export API_VERSION="2"
-          export SANITIZE="-fsanitize=undefined"
+          export SANITIZE="-fsanitize=undefined -fno-sanitize-recover=all"
         fi
         if [ ${{ matrix.pattern }} == 7 ]; then
           export CXX=g++
@@ -179,7 +179,7 @@ jobs:
           export ARCH="32"
           export CHAR_SIGN="signed"
           export API_VERSION="1"
-          export SANITIZE="-fsanitize=undefined"
+          export SANITIZE="-fsanitize=undefined -fno-sanitize-recover=all"
         fi
         if [ ${{ matrix.pattern }} == 8 ]; then
           export CXX=g++
@@ -187,7 +187,7 @@ jobs:
           export ARCH="32"
           export CHAR_SIGN="signed"
           export API_VERSION="2"
-          export SANITIZE="-fsanitize=undefined"
+          export SANITIZE="-fsanitize=undefined -fno-sanitize-recover=all"
         fi
         if [ ${{ matrix.pattern }} == 9 ]; then
           export CXX=clang++
@@ -196,7 +196,7 @@ jobs:
           export SAN="UBSAN"
           export MSGPACK_FUZZ_REGRESSION="ON"
           export CTEST_OUTPUT_ON_FAILURE=1
-          export SANITIZE="-fsanitize=undefined"
+          export SANITIZE="-fsanitize=undefined -fno-sanitize-recover=all"
         fi
         if [ ${{ matrix.pattern }} == 10 ]; then
           export CXX=clang++
@@ -205,7 +205,7 @@ jobs:
           export SAN="ASAN"
           export MSGPACK_FUZZ_REGRESSION="ON"
           export CTEST_OUTPUT_ON_FAILURE=1
-          export SANITIZE="-fsanitize=undefined"
+          export SANITIZE="-fsanitize=undefined -fno-sanitize-recover=all"
         fi
 
         # install gtest
