@@ -488,7 +488,7 @@ TEST(MSGPACK_BOOST, object_with_zone_variant_ext_ref)
     msgpack::type::variant val2 = obj.as<msgpack::type::variant>();
     // Converted as msgpack::type::ext.
     EXPECT_TRUE(val2.is_ext());
-    EXPECT_EQ(val2.as_ext(), e);
+    EXPECT_EQ(val2.as_ext(), msgpack::type::ext(e));
     EXPECT_NO_THROW(boost::get<msgpack::type::ext>(val2));
      // msgpack::type::ext_ref and msgpack::type::ext are different.
     EXPECT_FALSE(val1 == val2);
