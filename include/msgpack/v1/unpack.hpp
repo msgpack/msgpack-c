@@ -171,7 +171,7 @@ inline void unpack_str(unpack_user& u, const char* p, uint32_t l, msgpack::objec
         o.via.str.ptr = p;
         u.set_referenced(true);
     }
-    else {
+    else if (l > 0) {
         if (l > u.limit().str()) throw msgpack::str_size_overflow("str size overflow");
         char* tmp = static_cast<char*>(u.zone().allocate_align(l, MSGPACK_ZONE_ALIGNOF(char)));
         std::memcpy(tmp, p, l);
@@ -187,7 +187,7 @@ inline void unpack_bin(unpack_user& u, const char* p, uint32_t l, msgpack::objec
         o.via.bin.ptr = p;
         u.set_referenced(true);
     }
-    else {
+    else if (l > 0) {
         if (l > u.limit().bin()) throw msgpack::bin_size_overflow("bin size overflow");
         char* tmp = static_cast<char*>(u.zone().allocate_align(l, MSGPACK_ZONE_ALIGNOF(char)));
         std::memcpy(tmp, p, l);
