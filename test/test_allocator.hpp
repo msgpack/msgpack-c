@@ -18,13 +18,20 @@ namespace test {
 template <typename T>
 struct allocator {
     typedef typename std::allocator<T>::value_type value_type;
+    typedef typename std::allocator<T>::size_type size_type;
+    typedef typename std::allocator<T>::difference_type difference_type;
+    template <class U> struct rebind { typedef allocator<U> other; };
+#if __cplusplus <= 201703
     typedef typename std::allocator<T>::pointer pointer;
     typedef typename std::allocator<T>::reference reference;
     typedef typename std::allocator<T>::const_pointer const_pointer;
     typedef typename std::allocator<T>::const_reference const_reference;
-    typedef typename std::allocator<T>::size_type size_type;
-    typedef typename std::allocator<T>::difference_type difference_type;
-    template <class U> struct rebind { typedef allocator<U> other; };
+#else // __cplusplus <= 201703
+    typedef value_type* pointer;
+    typedef value_type& reference;
+    typedef const value_type* const_pointer;
+    typedef const value_type& const_reference;
+#endif // __cplusplus <= 201703
 #if defined(MSGPACK_USE_CPP03)
     allocator() throw() {}
     allocator (const allocator& alloc) throw()
@@ -45,11 +52,21 @@ struct allocator {
     template <class U>
     allocator (const allocator<U>& alloc) noexcept
         :alloc_(alloc.alloc_) {}
+#if __cplusplus <= 201703
     template <class U, class... Args>
     void construct (U* p, Args&&... args) {
         return alloc_.construct(p, std::forward<Args>(args)...);
     }
     size_type max_size() const noexcept { return alloc_.max_size(); }
+#else // __cplusplus <= 201703
+    template <class U, class... Args>
+    void construct (U* p, Args&&... args) {
+        return std::allocator_traits<decltype(alloc_)>::construct(alloc_, p, std::forward<Args>(args)...);
+    }
+    size_type max_size() const noexcept {
+        return std::allocator_traits<decltype(alloc_)>::max_size(alloc_);
+    }
+#endif // __cplusplus <= 201703
 #endif // defined(MSGPACK_USE_CPP03)
     pointer allocate (size_type n) {
         return alloc_.allocate(n);
@@ -57,9 +74,16 @@ struct allocator {
     void deallocate (pointer p, size_type n) {
         return alloc_.deallocate(p, n);
     }
+
+#if __cplusplus <= 201703
     void destroy (pointer p) {
         alloc_.destroy(p);
     }
+#else // __cplusplus <= 201703
+    void destroy (pointer p) {
+        std::allocator_traits<decltype(alloc_)>::destroy(alloc_, p);
+    }
+#endif // __cplusplus <= 201703
 
     std::allocator<T> alloc_;
 };

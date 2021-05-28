@@ -37,7 +37,7 @@ public:
         m_data.resize(static_cast<std::size_t>(s) + 1);
         m_data[0] = static_cast<char>(t);
     }
-    ext(ext_ref const&);
+    explicit ext(ext_ref const&);
     int8_t type() const {
         return static_cast<int8_t>(m_data[0]);
     }
@@ -167,6 +167,7 @@ public:
         if (m_size < x.m_size) return false;
         return std::memcmp(m_ptr, x.m_ptr, m_size) > 0;
     }
+
 private:
     const char* m_ptr;
     uint32_t m_size;

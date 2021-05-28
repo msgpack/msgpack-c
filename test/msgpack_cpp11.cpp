@@ -262,10 +262,18 @@ struct set_allocator : std::allocator<Key> {
     using std::allocator<Key>::allocator;
 };
 
-template <class Key, class T>
-struct map_allocator : std::allocator<std::pair<const Key, T>> {
-    using std::allocator<std::pair<const Key, T>>::allocator;
+// C++ named requirement Allocator implies that the first template type
+// parameter matches the value type of the allocator. There might be additional
+// parameters, but the first one must match the type.
+// That's why this helper with exactly one template parameter representing
+// a whole key-value pair is required
+template <typename KeyValuePair>
+struct map_allocator_impl : std::allocator<KeyValuePair> {
+    using std::allocator<KeyValuePair>::allocator;
 };
+
+template <class Key, class T>
+using map_allocator = map_allocator_impl<std::pair<const Key, T>>;
 
 template <class T>
 struct allocator : std::allocator<T> {
