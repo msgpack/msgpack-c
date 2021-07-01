@@ -11,8 +11,10 @@
 #ifndef MSGPACK_V1_TYPE_CPP20_SPAN_HPP
 #define MSGPACK_V1_TYPE_CPP20_SPAN_HPP
 
-// Some compilers still do not set __cplusplus to 202002
-#if __cplusplus > 201703
+#include "msgpack/cpp_version.hpp"
+
+// Some compilers still do not set the corresponding macro to 202002
+#if MSGPACK_CPP_VERSION > 201703
 
 #include "msgpack/versioning.hpp"
 #include "msgpack/adaptor/adaptor_base.hpp"
@@ -116,6 +118,6 @@ MSGPACK_ADAPTOR_SPAN_BINARY(std::byte)
 
 } // namespace msgpack
 
-#endif // __cplusplus > 201703
+#endif // MSGPACK_CPP_VERSION > 201703
 
 #endif // MSGPACK_V1_TYPE_CPP11_ARRAY_HPP

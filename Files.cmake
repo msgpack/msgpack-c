@@ -70,6 +70,7 @@ SET (msgpackc_HEADERS
     include/msgpack/adaptor/wstring.hpp
     include/msgpack/cpp_config.hpp
     include/msgpack/cpp_config_decl.hpp
+    include/msgpack/cpp_version.hpp
     include/msgpack/create_object_visitor.hpp
     include/msgpack/create_object_visitor_decl.hpp
     include/msgpack/fbuffer.hpp

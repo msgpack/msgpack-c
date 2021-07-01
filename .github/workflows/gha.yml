@@ -11,268 +11,200 @@ on:
 
 jobs:
   macos:
+    name: ${{ format('macOS arch={0} cxx{1} san={2} api={3} char={4} x3={5}', matrix.arch, matrix.cxx, matrix.sanitize, matrix.api, matrix.char_sign, matrix.x3_parse) }}
     runs-on: macos-latest
     strategy:
       fail-fast: false
       matrix:
-        pattern: [0, 1, 2, 3]
+        arch: [64]
+        cxx: [98, 11, 14, 17, 20]
+        sanitize: ["no", "undefined"]
+        api: [1, 2, 3]
+        char_sign: ["unsigned", "signed"]
+        x3_parse: ["OFF", "ON"]
     steps:
     - uses: actions/checkout@v1
+
     - name: Cache boost
       id: cache-boost
       uses: actions/cache@v1
       with:
-        path: usr
-        key: ${{ runner.os }}-boost-20210508-1-72-0
+        path: ~/boost-prefix/
+        key: ${{ runner.os }}-boost-1-76-0-20210612
+
     - name: Build boost
       if: steps.cache-boost.outputs.cache-hit != 'true'
-      run: ./.github/depends/boost.sh -b 64 -t clang
-    - name: build and test
-      env:
-        CXX: clang++
+      run: ./.github/depends/boost.sh -b ${{ matrix.arch }} -t clang -p $HOME/boost-prefix/
+
+    - name: Cache zlib
+      id: cache-zlib
+      uses: actions/cache@v1
+      with:
+        path: ~/zlib-prefix/
+        key: ${{ runner.os }}-zlib-${{ matrix.arch }}-1-2-11-20210623
+
+    - name: Build zlib
+      if: steps.cache-zlib.outputs.cache-hit != 'true'
+      run: ./.github/depends/zlib.sh -b ${{ matrix.arch }} -p $HOME/zlib-prefix/
+
+    - name: Build and test
       shell: bash
       run: |
-        BASE=`pwd`;
-
-        # matrix config
-        if [ ${{ matrix.pattern }} == 0 ]; then
-          ACTION="ci/build_cmake.sh"
-          export CXX17="ON"
-          export ARCH="64"
-          export CHAR_SIGN="unsigned"
-          export API_VERSION="1"
-          export SANITIZE="-fsanitize=undefined -fno-sanitize-recover=all"
-        fi
-        if [ ${{ matrix.pattern }} == 1 ]; then
-          ACTION="ci/build_cmake.sh"
-          export CXX17="ON"
-          export ARCH="64"
-          export CHAR_SIGN="signed"
-          export API_VERSION="3"
-          export SANITIZE="-fsanitize=undefined -fno-sanitize-recover=all"
-        fi
-        if [ ${{ matrix.pattern }} == 2 ]; then
-          ACTION="ci/build_cmake.sh"
-          export CXX17="ON"
-          export ARCH="64"
-          export CHAR_SIGN="signed"
-          export API_VERSION="2"
-          export SANITIZE="-fsanitize=undefined -fno-sanitize-recover=all"
-        fi
-        if [ ${{ matrix.pattern }} == 3 ]; then
-          ACTION="ci/build_cmake.sh"
-          export ARCH="64"
-          export CHAR_SIGN="unsigned"
-          export API_VERSION="2"
-          export SANITIZE="-fsanitize=undefined -fno-sanitize-recover=all"
+        if [[ (${{ matrix.cxx }} -eq 98 || ${{ matrix.cxx }} -lt 14) && "${{ matrix.x3_parse }}" == "ON" ]]; then
+          echo "X3 parse is only supported with C++14 or newer - skip this configuration"
+          exit 0
         fi
 
-        # install gtest
-        wget https://github.com/google/googletest/archive/release-1.7.0.zip -O googletest-release-1.7.0.zip
-        unzip -q googletest-release-1.7.0.zip
-        cd googletest-release-1.7.0
-        $CXX -m${ARCH} src/gtest-all.cc -I. -Iinclude -c
-        $CXX -m${ARCH} src/gtest_main.cc -I. -Iinclude -c
-        ar -rv libgtest.a gtest-all.o
-        ar -rv libgtest_main.a gtest_main.o
-        mkdir -p ${BASE}/usr/include
-        cp -r include/gtest ${BASE}/usr/include
-        mkdir -p ${BASE}/usr/lib
-        mv *.a ${BASE}/usr/lib
-        cd ..
+        export ARCH="${{ matrix.arch }}"
+        export API_VERSION="${{ matrix.api }}"
+        export CHAR_SIGN="${{ matrix.char_sign }}"
+        export X3_PARSE="${{ matrix.x3_parse }}"
+
+        if [ "${{ matrix.cxx }}" == "98" ]; then
+          export MSGPACK_CXX_VERSION="MSGPACK_CXX11=OFF"
+        else
+          export MSGPACK_CXX_VERSION="MSGPACK_CXX${{ matrix.cxx }}=ON"
+        fi
+
+        if [ "${{ matrix.sanitize }}" != "no" ]; then
+          export SANITIZE="-fsanitize=${{ matrix.sanitize }} -fno-sanitize-recover=all"
+        fi
 
         # build and test
-        CMAKE_CXX_COMPILER="${CXX}" CMAKE_LIBRARY_PATH="${BASE}/usr/lib:${BASE}/build" GTEST_ROOT="${BASE}/usr" CMAKE_PREFIX_PATH="${BASE}/usr/clang/lib${ARCH}/cmake" CXXFLAGS="-Werror -g ${SANITIZE}" ${ACTION}
+        export CXX="clang++"
+        CMAKE_CXX_COMPILER="$CXX" CXXFLAGS="-Werror -g ${SANITIZE}" ci/build_cmake.sh
+
         cat Files.cmake| grep ".*\.[h|hpp]" | perl -pe 's/ //g' | sort > tmp1  && find include -name "*.h" -o -name "*.hpp" | sort > tmp2 && diff tmp1 tmp2
 
   linux:
-    runs-on: ubuntu-18.04
+    name: ${{ format('Linux {0} arch={1} cxx{2} san={3} api={4} char={5} x3={6}', matrix.compiler, matrix.arch, matrix.cxx, matrix.sanitize, matrix.api, matrix.char_sign, matrix.x3_parse) }}
+    runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
       matrix:
-        pattern: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        arch: [32, 64]
+        cxx: [98, 11, 14, 17, 20]
+        sanitize: ["no", "undefined"]
+        api: [1, 2, 3]
+        char_sign: ["unsigned", "signed"]
+        x3_parse: ["OFF", "ON"]
     steps:
-    - uses: actions/checkout@v1
-    - name: install build depends
+    - uses: actions/checkout@v2
+
+    - name: Install build dependencies
+      shell: bash
       run: |
         sudo apt-get update
-        sudo apt-get install g++-multilib clang-8 valgrind
+        sudo apt-get install g++-10 cmake valgrind -y
+        if [ ${{ matrix.arch }} == 32 ]; then
+          sudo apt-get install g++-10-multilib -y
+        fi
+        ./ci/set_gcc_10.sh
+
     - name: Cache boost
       id: cache-boost
       uses: actions/cache@v1
       with:
-        path: usr
-        key: ${{ runner.os }}-boost-20210508-1-72-0
+        path: ~/boost-prefix/
+        key: ${{ runner.os }}-boost-${{ matrix.arch }}-1-76-0-20210613
+
     - name: Build boost
       if: steps.cache-boost.outputs.cache-hit != 'true'
-      run: ./.github/depends/boost.sh -b both -t gcc
-    - name: build and test
+      run: ./.github/depends/boost.sh -b ${{ matrix.arch }} -t gcc -p $HOME/boost-prefix/
+
+    - name: Cache zlib
+      id: cache-zlib
+      uses: actions/cache@v1
+      with:
+        path: ~/zlib-prefix/
+        key: ${{ runner.os }}-zlib-${{ matrix.arch }}-1-2-11-20210613
+
+    - name: Build zlib
+      if: steps.cache-zlib.outputs.cache-hit != 'true'
+      run: ./.github/depends/zlib.sh -b ${{ matrix.arch }} -p $HOME/zlib-prefix/
+
+    - name: Build and test
       shell: bash
       run: |
-        BASE=`pwd`;
-
-        # matrix config
-        if [ ${{ matrix.pattern }} == 0 ]; then
-          export CXX=clang++
-          ACTION="ci/build_cmake.sh"
-          export ARCH="64"
-          export CHAR_SIGN="unsigned"
-          export API_VERSION="2"
-          export SANITIZE="-fsanitize=undefined -fno-sanitize-recover=all"
-        fi
-        if [ ${{ matrix.pattern }} == 1 ]; then
-          export CXX=clang++
-          ACTION="ci/build_cmake.sh"
-          export ARCH="32"
-          export CHAR_SIGN="signed"
-          export API_VERSION="2"
-          export SANITIZE="-fsanitize=undefined -fno-sanitize-recover=all"
-        fi
-        if [ ${{ matrix.pattern }} == 2 ]; then
-          export CXX=clang++
-          ACTION="ci/build_cmake.sh"
-          export CXX17="ON"
-          export ARCH="64"
-          export CHAR_SIGN="signed"
-          export API_VERSION="3"
-          export X3_PARSE="ON"
-          export SANITIZE="-fsanitize=undefined -fno-sanitize-recover=all"
-        fi
-        if [ ${{ matrix.pattern }} == 3 ]; then
-          export CXX=clang++
-          ACTION="ci/build_cmake.sh"
-          export CXX17="ON"
-          export ARCH="32"
-          export CHAR_SIGN="unsigned"
-          export API_VERSION="2"
-        fi
-        if [ ${{ matrix.pattern }} == 4 ]; then
-          export CXX=g++
-          ACTION="ci/build_cmake.sh"
-          export CXX17="ON"
-          export ARCH="64"
-          export CHAR_SIGN="signed"
-          export API_VERSION="2"
-          export SANITIZE="-fsanitize=undefined -fno-sanitize-recover=all"
-        fi
-        if [ ${{ matrix.pattern }} == 5 ]; then
-          export CXX=g++
-          ACTION="ci/build_cmake.sh"
-          export CXX17="ON"
-          export ARCH="32"
-          export CHAR_SIGN="unsigned"
-          export API_VERSION="3"
-          export X3_PARSE="ON"
-          export SANITIZE="-fsanitize=undefined -fno-sanitize-recover=all"
-        fi
-        if [ ${{ matrix.pattern }} == 6 ]; then
-          export CXX=g++
-          ACTION="ci/build_cmake.sh"
-          export ARCH="64"
-          export CHAR_SIGN="unsigned"
-          export API_VERSION="2"
-          export SANITIZE="-fsanitize=undefined -fno-sanitize-recover=all"
-        fi
-        if [ ${{ matrix.pattern }} == 7 ]; then
-          export CXX=g++
-          ACTION="ci/build_cmake.sh"
-          export ARCH="32"
-          export CHAR_SIGN="signed"
-          export API_VERSION="1"
-          export SANITIZE="-fsanitize=undefined -fno-sanitize-recover=all"
-        fi
-        if [ ${{ matrix.pattern }} == 8 ]; then
-          export CXX=g++
-          ACTION="ci/build_cmake.sh"
-          export ARCH="32"
-          export CHAR_SIGN="signed"
-          export API_VERSION="2"
-          export SANITIZE="-fsanitize=undefined -fno-sanitize-recover=all"
-        fi
-        if [ ${{ matrix.pattern }} == 9 ]; then
-          export CXX=clang++
-          ACTION="ci/build_regression.sh"
-          export ARCH="64"
-          export SAN="UBSAN"
-          export MSGPACK_FUZZ_REGRESSION="ON"
-          export CTEST_OUTPUT_ON_FAILURE=1
-          export SANITIZE="-fsanitize=undefined -fno-sanitize-recover=all"
-        fi
-        if [ ${{ matrix.pattern }} == 10 ]; then
-          export CXX=clang++
-          ACTION="ci/build_regression.sh"
-          export ARCH="64"
-          export SAN="ASAN"
-          export MSGPACK_FUZZ_REGRESSION="ON"
-          export CTEST_OUTPUT_ON_FAILURE=1
-          export SANITIZE="-fsanitize=undefined -fno-sanitize-recover=all"
+        if [[ (${{ matrix.cxx }} -eq 98 || ${{ matrix.cxx }} -lt 14) && "${{ matrix.x3_parse }}" == "ON" ]]; then
+          echo "X3 parse is only supported with C++14 or newer - skip this configuration"
+          exit 0
         fi
 
-        # install gtest
-        wget https://github.com/google/googletest/archive/release-1.7.0.zip -O googletest-release-1.7.0.zip
-        unzip -q googletest-release-1.7.0.zip
-        cd googletest-release-1.7.0
-        $CXX -m${ARCH} src/gtest-all.cc -I. -Iinclude -c -fPIC
-        $CXX -m${ARCH} src/gtest_main.cc -I. -Iinclude -c -fPIC
-        ar -rv libgtest.a gtest-all.o
-        ar -rv libgtest_main.a gtest_main.o
-        mkdir -p ${BASE}/usr/include
-        cp -r include/gtest ${BASE}/usr/include
-        mkdir -p ${BASE}/usr/lib
-        mv *.a ${BASE}/usr/lib
-        cd ..
+        export ARCH="${{ matrix.arch }}"
+        export API_VERSION="${{ matrix.api }}"
+        export CHAR_SIGN="${{ matrix.char_sign }}"
+        export X3_PARSE="${{ matrix.x3_parse }}"
 
-        # install zlib
-        if [ ${ARCH} == 32 ]; then
-          sudo apt-get install lib32z1-dev
+        if [ "${{ matrix.cxx }}" == "98" ]; then
+          export MSGPACK_CXX_VERSION="MSGPACK_CXX11=OFF"
+        else
+          export MSGPACK_CXX_VERSION="MSGPACK_CXX${{ matrix.cxx }}=ON"
+        fi
+
+        if [ "${{ matrix.sanitize }}" != "no" ]; then
+          export SANITIZE="-fsanitize=${{ matrix.sanitize }} -fno-sanitize-recover=all"
         fi
 
         # build and test
-        CMAKE_CXX_COMPILER="${CXX}" CMAKE_LIBRARY_PATH="${BASE}/usr/lib:${BASE}/build" GTEST_ROOT="${BASE}/usr" CMAKE_PREFIX_PATH="${BASE}/usr/gcc/lib${ARCH}/cmake" CXXFLAGS="-Werror -g ${SANITIZE}" MSGPACK_SAN="${SAN}" ${ACTION}
+
+        # g++
+        export CXX="g++-10"
+        CMAKE_CXX_COMPILER="$CXX" CXXFLAGS="-Werror -g ${SANITIZE}" ci/build_cmake.sh
+
+        # clang++
+        # with ubsan clang inserts undefined reference to `__mulodi4' on 32-bit build - skip this configuration
+        if ! [[ "${{ matrix.sanitize }}" == "undefined" && $ARCH -eq 32 ]]; then
+          export CXX="clang++-10"
+          CMAKE_CXX_COMPILER="$CXX" CXXFLAGS="-Werror -g ${SANITIZE}" ci/build_cmake.sh
+        fi
         cat Files.cmake| grep ".*\.[h|hpp]" | perl -pe 's/ //g' | sort > tmp1  && find include -name "*.h" -o -name "*.hpp" | sort > tmp2 && diff tmp1 tmp2
+
   windows:
-    runs-on: windows-2016
+    name: ${{ format('Windows cxx{0}', matrix.cxx) }}
+    runs-on: windows-2019
     strategy:
       fail-fast: false
       matrix:
-        pattern: [0, 1, 2]
+        # MSVC2019 only supports /std:c++14, /std:c++17 and /std:c++latest
+        cxx: [14, 17, 20]
     steps:
     - uses: actions/checkout@v1
+
     - name: Cache vcpkg
       id: cache-vcpkg
       uses: actions/cache@v1.0.3
       with:
         path: C:/vcpkg/installed/x64-windows
-        key: ${{ runner.os }}-vcpkg
+        key: ${{ runner.os }}-vcpkg-01072021
+
     - name: Build dependencies
       if: steps.cache-vcpkg.outputs.cache-hit != 'true'
       shell: powershell
       run: |
         vcpkg update
-        vcpkg install gtest:x64-windows
         vcpkg install zlib:x64-windows
         vcpkg install boost:x64-windows
+
     - name: Build and test
       shell: powershell
       run: |
-        if (${{ matrix.pattern }} -eq 0) {
-          $CPPVER="-DMSGPACK_CXX17=ON"
-        }
-        if (${{ matrix.pattern }} -eq 1) {
-          $CPPVER="-DMSGPACK_CXX11=ON"
-        }
-        if (${{ matrix.pattern }} -eq 2) {
-          $CPPVER="-DMSGPACK_CXX11=OFF"
-        }
+        $CPPVER="MSGPACK_CXX${{ matrix.cxx }}=ON"
 
-        $CUR=(Get-Location).Path
         md build
-        cd build
-        cmake -A x64 -DBOOST_ROOT="$env:BOOST_ROOT_1_72_0" -DCMAKE_TOOLCHAIN_FILE="C:/vcpkg/scripts/buildsystems/vcpkg.cmake" $CPPVER "-DCMAKE_CXX_FLAGS=/D_VARIADIC_MAX=10 /EHsc /D_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING" ..
-        if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode) }
-        cmake --build . --config Release
-        $pathbak="$env:PATH"
-        $env:PATH="C:\vcpkg\installed\x64-windows\bin;$CUR\build\Release;$pathbak"
-        ctest -V
-        if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode) }
-        $env:PATH=$pathbak
+        cmake `
+            -A x64 `
+            -G "Visual Studio 16 2019" `
+            -D CMAKE_TOOLCHAIN_FILE="C:/vcpkg/scripts/buildsystems/vcpkg.cmake" `
+            -D MSGPACK_BUILD_TESTS=ON `
+            -D $CPPVER `
+            -D CMAKE_CXX_FLAGS="/D_VARIADIC_MAX=10 /EHsc /D_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING /D_SILENCE_CXX17_ALLOCATOR_VOID_DEPRECATION_WARNING /D_SILENCE_CXX17_OLD_ALLOCATOR_MEMBERS_DEPRECATION_WARNING /W3 /WX" `
+            -B build `
+            -S .
+        if ($LastExitCode -ne 0) { exit $LastExitCode }
+
+        cmake --build build --config Release
+        if ($LastExitCode -ne 0) { exit $LastExitCode }
+
+        ctest -VV --test-dir build -C Release
+        if ($LastExitCode -ne 0) { exit $LastExitCode }

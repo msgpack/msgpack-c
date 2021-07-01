@@ -1,25 +1,17 @@
 #include <msgpack.hpp>
 
-#if defined(__GNUC__)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wconversion"
-#endif //defined(__GNUC__)
-
-#include <gtest/gtest.h>
-
-#if defined(__GNUC__)
-#pragma GCC diagnostic pop
-#endif //defined(__GNUC__)
+#define BOOST_TEST_MODULE fixint
+#include <boost/test/unit_test.hpp>
 
 template <typename T>
 void check_size(size_t size) {
     T v(0);
     msgpack::sbuffer sbuf;
     msgpack::pack(sbuf, v);
-    EXPECT_EQ(size, sbuf.size());
+    BOOST_CHECK_EQUAL(size, sbuf.size());
 }
 
-TEST(fixint, size)
+BOOST_AUTO_TEST_CASE(size)
 {
     check_size<msgpack::type::fix_int8>(2);
     check_size<msgpack::type::fix_int16>(3);
@@ -45,12 +37,12 @@ void check_convert() {
     T v2;
     oh.get().convert(v2);
 
-    EXPECT_EQ(v1.get(), v2.get());
+    BOOST_CHECK_EQUAL(v1.get(), v2.get());
 
-    EXPECT_EQ(oh.get(), msgpack::object(T(v1.get())));
+    BOOST_CHECK_EQUAL(oh.get(), msgpack::object(T(v1.get())));
 }
 
-TEST(fixint, convert)
+BOOST_AUTO_TEST_CASE(convert)
 {
     check_convert<msgpack::type::fix_int8>();
     check_convert<msgpack::type::fix_int16>();

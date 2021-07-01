@@ -3,16 +3,8 @@
 #include <iterator>
 #include <cmath>
 
-#if defined(__GNUC__)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wconversion"
-#endif //defined(__GNUC__)
-
-#include <gtest/gtest.h>
-
-#if defined(__GNUC__)
-#pragma GCC diagnostic pop
-#endif //defined(__GNUC__)
+#define BOOST_TEST_MODULE MSGPACK_BOOST
+#include <boost/test/unit_test.hpp>
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -30,7 +22,7 @@ BOOST_FUSION_DEFINE_STRUCT(
     (double, f2)
 )
 
-TEST(MSGPACK_BOOST, fusion_pack_unpack_convert)
+BOOST_AUTO_TEST_CASE(fusion_pack_unpack_convert)
 {
     std::stringstream ss;
     mystruct val1;
@@ -41,11 +33,11 @@ TEST(MSGPACK_BOOST, fusion_pack_unpack_convert)
     msgpack::object_handle oh =
         msgpack::unpack(str.data(), str.size());
     mystruct val2 = oh.get().as<mystruct>();
-    EXPECT_TRUE(val1.f1 == val2.f1);
-    EXPECT_TRUE(fabs(val2.f2 - val1.f2) <= kEPS);
+    BOOST_CHECK(val1.f1 == val2.f1);
+    BOOST_CHECK(fabs(val2.f2 - val1.f2) <= kEPS);
 }
 
-TEST(MSGPACK_BOOST, object_with_zone_convert)
+BOOST_AUTO_TEST_CASE(object_with_zone_convert)
 {
     mystruct val1;
     val1.f1 = 42;
@@ -53,8 +45,8 @@ TEST(MSGPACK_BOOST, object_with_zone_convert)
     msgpack::zone z;
     msgpack::object obj(val1, z);
     mystruct val2 = obj.as<mystruct>();
-    EXPECT_TRUE(val1.f1 == val2.f1);
-    EXPECT_TRUE(fabs(val2.f2 - val1.f2) <= kEPS);
+    BOOST_CHECK(val1.f1 == val2.f1);
+    BOOST_CHECK(fabs(val2.f2 - val1.f2) <= kEPS);
 }
 
 #if !defined(MSGPACK_USE_CPP03)
@@ -154,7 +146,7 @@ BOOST_FUSION_ADAPT_STRUCT(
 // After MSVC would support Expression SFINAE, remove this guard.
 #if !defined(_MSC_VER)
 
-TEST(MSGPACK_BOOST, pack_convert_no_def_con)
+BOOST_AUTO_TEST_CASE(pack_convert_no_def_con)
 {
     std::stringstream ss;
     mystruct_no_def_con val1(no_def_con1(1), no_def_con2(2), no_def_con1(3));
@@ -163,7 +155,7 @@ TEST(MSGPACK_BOOST, pack_convert_no_def_con)
     msgpack::object_handle oh =
         msgpack::unpack(str.data(), str.size());
     mystruct_no_def_con val2 = oh.get().as<mystruct_no_def_con>();
-    EXPECT_TRUE(val1 == val2);
+    BOOST_CHECK(val1 == val2);
 }
 
 #endif // !defined(_MSC_VER)
@@ -206,7 +198,7 @@ BOOST_FUSION_ADAPT_STRUCT(
 // After MSVC would support Expression SFINAE, remove this guard.
 #if !defined(_MSC_VER)
 
-TEST(MSGPACK_BOOST, pack_convert_no_def_con_def_con)
+BOOST_AUTO_TEST_CASE(pack_convert_no_def_con_def_con)
 {
     std::stringstream ss;
     mystruct_no_def_con_def_con val1(no_def_con1(1), no_def_con2(2), 3);
@@ -215,7 +207,7 @@ TEST(MSGPACK_BOOST, pack_convert_no_def_con_def_con)
     msgpack::object_handle oh =
         msgpack::unpack(str.data(), str.size());
     mystruct_no_def_con_def_con val2 = oh.get().as<mystruct_no_def_con_def_con>();
-    EXPECT_TRUE(val1 == val2);
+    BOOST_CHECK(val1 == val2);
 }
 
 #endif // !defined(_MSC_VER)
@@ -224,7 +216,7 @@ TEST(MSGPACK_BOOST, pack_convert_no_def_con_def_con)
 
 #include <boost/fusion/include/std_pair.hpp>
 
-TEST(MSGPACK_BOOST, fusion_pack_unpack_convert_pair)
+BOOST_AUTO_TEST_CASE(fusion_pack_unpack_convert_pair)
 {
     std::stringstream ss;
     std::pair<bool, int> val1(false, 42);
@@ -233,15 +225,15 @@ TEST(MSGPACK_BOOST, fusion_pack_unpack_convert_pair)
     msgpack::object_handle oh =
         msgpack::unpack(str.data(), str.size());
     std::pair<bool, int>  val2 = oh.get().as<std::pair<bool, int> >();
-    EXPECT_TRUE(val1.first == val2.first);
-    EXPECT_TRUE(val1.second == val2.second);
+    BOOST_CHECK(val1.first == val2.first);
+    BOOST_CHECK(val1.second == val2.second);
 }
 
 #if !defined(MSGPACK_USE_CPP03)
 
 #include <boost/fusion/include/std_tuple.hpp>
 
-TEST(MSGPACK_BOOST, fusion_pack_unpack_convert_tuple)
+BOOST_AUTO_TEST_CASE(fusion_pack_unpack_convert_tuple)
 {
     std::stringstream ss;
     std::tuple<bool, int> val1(false, 42);
@@ -250,7 +242,7 @@ TEST(MSGPACK_BOOST, fusion_pack_unpack_convert_tuple)
     msgpack::object_handle oh =
         msgpack::unpack(str.data(), str.size());
     std::tuple<bool, int> val2 = oh.get().as<std::tuple<bool, int> >();
-    EXPECT_TRUE(val1 == val2);
+    BOOST_CHECK(val1 == val2);
 }
 
 #endif // !defined(MSGPACK_USE_CPP03)
