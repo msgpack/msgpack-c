@@ -9,6 +9,11 @@
 #include "config.h"
 #endif
 
+// Avoid empty test tree on boost 1.60 and lower
+BOOST_AUTO_TEST_CASE(dummy)
+{
+}
+
 #if (BOOST_VERSION / 100000) >= 1 && ((BOOST_VERSION / 100) % 1000) >= 61
 
 BOOST_AUTO_TEST_CASE(pack_convert_string_view)

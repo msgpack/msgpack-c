@@ -178,13 +178,15 @@ INSTALL (TARGETS msgpackc-cxx
 
 # Install headers from source tree.
 INSTALL (DIRECTORY include/
-         TYPE INCLUDE
+         DESTINATION include
          COMPONENT msgpackc-cxx
 )
 
 INCLUDE (CMakePackageConfigHelpers)
 
-SET (extra_version_file_args ARCH_INDEPENDENT)
+IF (CMAKE_VERSION VERSION_GREATER_EQUAL 3.14)
+    SET (extra_version_file_args ARCH_INDEPENDENT)
+ENDIF ()
 SET (cmake_config_path "lib/cmake/msgpackc-cxx")
 
 # Configure the main package file from source tree.
