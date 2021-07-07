@@ -10,7 +10,9 @@
 #ifndef MSGPACK_V1_TYPE_BYTE_HPP
 #define MSGPACK_V1_TYPE_BYTE_HPP
 
-#if __cplusplus >= 201703
+#include "msgpack/cpp_version.hpp"
+
+#if MSGPACK_CPP_VERSION >= 201703
 
 #include "msgpack/versioning.hpp"
 #include "msgpack/adaptor/adaptor_base.hpp"
@@ -69,6 +71,6 @@ struct object_with_zone<std::byte> {
 
 } // namespace msgpack
 
-#endif // __cplusplus >= 201703
+#endif // MSGPACK_CPP_VERSION >= 201703
 
 #endif // MSGPACK_V1_TYPE_BYTE_HPP

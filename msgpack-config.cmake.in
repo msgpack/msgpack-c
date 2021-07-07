@@ -1,0 +1,9 @@
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+
+find_dependency(Boost REQUIRED)
+
+include("${CMAKE_CURRENT_LIST_DIR}/msgpackc-cxx-targets.cmake")
+
+check_required_components(msgpackc-cxx)

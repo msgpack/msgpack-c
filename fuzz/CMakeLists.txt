@@ -1,19 +1,8 @@
-FIND_PACKAGE (GTest REQUIRED)
-FIND_PACKAGE (ZLIB REQUIRED)
-FIND_PACKAGE (Boost REQUIRED COMPONENTS system filesystem)
-
-INCLUDE_DIRECTORIES (
-  ${GTEST_INCLUDE_DIRS}
-  ${ZLIB_INCLUDE_DIRS}
-  ${Boost_INCLUDE_DIRS}
-)
+FIND_PACKAGE (Threads REQUIRED)
+FIND_PACKAGE (Boost REQUIRED COMPONENTS system filesystem unit_test_framework)
 
 LIST (APPEND check_PROGRAMS
     regression_runner.cpp
-)
-
-LINK_DIRECTORIES (
-  ${Boost_LIBRARY_DIRS}
 )
 
 FOREACH (source_file ${check_PROGRAMS})
@@ -23,11 +12,11 @@ FOREACH (source_file ${check_PROGRAMS})
         ${source_file}
     )
     TARGET_LINK_LIBRARIES (${source_file_we}
-        msgpackcxx
-        ${GTEST_BOTH_LIBRARIES}
-        ${ZLIB_LIBRARIES}
-        ${CMAKE_THREAD_LIBS_INIT}
-        ${Boost_LIBRARIES}
+        msgpackc-cxx
+        Threads::Threads
+        Boost::filesystem
+        Boost::system
+        Boost::unit_test_framework
     )
     ADD_TEST (${source_file_we} ${source_file_we})
     IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")

@@ -28,11 +28,13 @@ SET (msgpackc_HEADERS
     include/msgpack/adaptor/cpp11/unique_ptr.hpp
     include/msgpack/adaptor/cpp11/unordered_map.hpp
     include/msgpack/adaptor/cpp11/unordered_set.hpp
+    include/msgpack/adaptor/cpp17/array_byte.hpp
     include/msgpack/adaptor/cpp17/byte.hpp
     include/msgpack/adaptor/cpp17/carray_byte.hpp
     include/msgpack/adaptor/cpp17/optional.hpp
     include/msgpack/adaptor/cpp17/string_view.hpp
     include/msgpack/adaptor/cpp17/vector_byte.hpp
+    include/msgpack/adaptor/cpp20/span.hpp
     include/msgpack/adaptor/define.hpp
     include/msgpack/adaptor/define_decl.hpp
     include/msgpack/adaptor/deque.hpp
@@ -68,6 +70,7 @@ SET (msgpackc_HEADERS
     include/msgpack/adaptor/wstring.hpp
     include/msgpack/cpp_config.hpp
     include/msgpack/cpp_config_decl.hpp
+    include/msgpack/cpp_version.hpp
     include/msgpack/create_object_visitor.hpp
     include/msgpack/create_object_visitor_decl.hpp
     include/msgpack/fbuffer.hpp
@@ -124,11 +127,13 @@ SET (msgpackc_HEADERS
     include/msgpack/v1/adaptor/cpp11/unique_ptr.hpp
     include/msgpack/v1/adaptor/cpp11/unordered_map.hpp
     include/msgpack/v1/adaptor/cpp11/unordered_set.hpp
+    include/msgpack/v1/adaptor/cpp17/array_byte.hpp
     include/msgpack/v1/adaptor/cpp17/byte.hpp
     include/msgpack/v1/adaptor/cpp17/carray_byte.hpp
     include/msgpack/v1/adaptor/cpp17/optional.hpp
     include/msgpack/v1/adaptor/cpp17/string_view.hpp
     include/msgpack/v1/adaptor/cpp17/vector_byte.hpp
+    include/msgpack/v1/adaptor/cpp20/span.hpp
     include/msgpack/v1/adaptor/define.hpp
     include/msgpack/v1/adaptor/define_decl.hpp
     include/msgpack/v1/adaptor/deque.hpp

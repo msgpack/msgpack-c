@@ -1,15 +1,7 @@
 #include <msgpack.hpp>
 
-#if defined(__GNUC__)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wconversion"
-#endif //defined(__GNUC__)
-
-#include <gtest/gtest.h>
-
-#if defined(__GNUC__)
-#pragma GCC diagnostic pop
-#endif //defined(__GNUC__)
+#define BOOST_TEST_MODULE object_with_zone
+#include <boost/test/unit_test.hpp>
 
 #include <cmath>
 
@@ -50,475 +42,432 @@ MSGPACK_ADD_ENUM(outer_enum_class::enum_class_test);
 #endif // !defined(MSGPACK_USE_CPP03)
 
 
-
-using namespace std;
-
 const unsigned int kLoop = 1000;
 const unsigned int kElements = 100;
 const double kEPS = 1e-10;
 
 // bool
-TEST(object_with_zone, bool)
+BOOST_AUTO_TEST_CASE(bool_)
 {
     bool v = true;
     msgpack::zone z;
     msgpack::object obj(v, z);
-    EXPECT_EQ(obj.as<bool>(), v);
+    BOOST_CHECK_EQUAL(obj.as<bool>(), v);
     v = false;
-    EXPECT_TRUE(obj.as<bool>());
+    BOOST_CHECK(obj.as<bool>());
 }
 
 // char
-TEST(object_with_zone, char)
+BOOST_AUTO_TEST_CASE(char_)
 {
     char v = 1;
     msgpack::zone z;
     msgpack::object obj(v, z);
-    EXPECT_EQ(obj.as<char>(), v);
+    BOOST_CHECK_EQUAL(obj.as<char>(), v);
     v = 2;
-    EXPECT_EQ(obj.as<char>(), 1);
+    BOOST_CHECK_EQUAL(obj.as<char>(), 1);
 }
 
 // signed integer family
-TEST(object_with_zone, signed_char)
+BOOST_AUTO_TEST_CASE(signed_char)
 {
     signed char v = -1;
     msgpack::zone z;
     msgpack::object obj(v, z);
-    EXPECT_EQ(obj.as<signed char>(), v);
+    BOOST_CHECK_EQUAL(obj.as<signed char>(), v);
     v = -2;
-    EXPECT_EQ(obj.as<signed char>(), -1);
+    BOOST_CHECK_EQUAL(obj.as<signed char>(), -1);
 }
 
-TEST(object_with_zone, signed_short)
+BOOST_AUTO_TEST_CASE(signed_short)
 {
     signed short v = -1;
     msgpack::zone z;
     msgpack::object obj(v, z);
-    EXPECT_EQ(obj.as<signed short>(), v);
+    BOOST_CHECK_EQUAL(obj.as<signed short>(), v);
     v = -2;
-    EXPECT_EQ(obj.as<signed short>(), -1);
+    BOOST_CHECK_EQUAL(obj.as<signed short>(), -1);
 }
 
-TEST(object_with_zone, signed_int)
+BOOST_AUTO_TEST_CASE(signed_int)
 {
     signed int v = -1;
     msgpack::zone z;
     msgpack::object obj(v, z);
-    EXPECT_EQ(obj.as<signed int>(), v);
+    BOOST_CHECK_EQUAL(obj.as<signed int>(), v);
     v = -2;
-    EXPECT_EQ(obj.as<signed int>(), -1);
+    BOOST_CHECK_EQUAL(obj.as<signed int>(), -1);
 }
 
-TEST(object_with_zone, signed_long)
+BOOST_AUTO_TEST_CASE(signed_long)
 {
     signed long v = -1;
     msgpack::zone z;
     msgpack::object obj(v, z);
-    EXPECT_EQ(obj.as<signed long>(), v);
+    BOOST_CHECK_EQUAL(obj.as<signed long>(), v);
     v = -2;
-    EXPECT_EQ(obj.as<signed long>(), -1);
+    BOOST_CHECK_EQUAL(obj.as<signed long>(), -1);
 }
 
-TEST(object_with_zone, signed_long_long)
+BOOST_AUTO_TEST_CASE(signed_long_long)
 {
     signed long long v = -1;
     msgpack::zone z;
     msgpack::object obj(v, z);
-    EXPECT_EQ(obj.as<signed long long>(), v);
+    BOOST_CHECK_EQUAL(obj.as<signed long long>(), v);
     v = -2;
-    EXPECT_EQ(obj.as<signed long long>(), -1);
+    BOOST_CHECK_EQUAL(obj.as<signed long long>(), -1);
 }
 
 // unsigned integer family
-TEST(object_with_zone, unsigned_char)
+BOOST_AUTO_TEST_CASE(unsigned_char)
 {
     unsigned char v = 1;
     msgpack::zone z;
     msgpack::object obj(v, z);
-    EXPECT_EQ(obj.as<unsigned char>(), v);
+    BOOST_CHECK_EQUAL(obj.as<unsigned char>(), v);
     v = 2;
-    EXPECT_EQ(obj.as<unsigned char>(), 1);
+    BOOST_CHECK_EQUAL(obj.as<unsigned char>(), 1);
 }
 
-TEST(object_with_zone, unsigned_short)
+BOOST_AUTO_TEST_CASE(unsigned_short)
 {
     unsigned short v = 1;
     msgpack::zone z;
     msgpack::object obj(v, z);
-    EXPECT_EQ(obj.as<unsigned short>(), v);
+    BOOST_CHECK_EQUAL(obj.as<unsigned short>(), v);
     v = 2;
-    EXPECT_EQ(obj.as<unsigned short>(), 1);
+    BOOST_CHECK_EQUAL(obj.as<unsigned short>(), 1);
 }
 
-TEST(object_with_zone, unsigned_int)
+BOOST_AUTO_TEST_CASE(unsigned_int)
 {
     unsigned int v = 1;
     msgpack::zone z;
     msgpack::object obj(v, z);
-    EXPECT_EQ(obj.as<unsigned int>(), v);
+    BOOST_CHECK_EQUAL(obj.as<unsigned int>(), v);
     v = 2;
-    EXPECT_EQ(obj.as<unsigned int>(), 1u);
+    BOOST_CHECK_EQUAL(obj.as<unsigned int>(), 1u);
 }
 
-TEST(object_with_zone, unsigned_long)
+BOOST_AUTO_TEST_CASE(unsigned_long)
 {
     unsigned long v = 1;
     msgpack::zone z;
     msgpack::object obj(v, z);
-    EXPECT_EQ(obj.as<unsigned long>(), v);
+    BOOST_CHECK_EQUAL(obj.as<unsigned long>(), v);
     v = 2;
-    EXPECT_EQ(obj.as<unsigned long>(), 1u);
+    BOOST_CHECK_EQUAL(obj.as<unsigned long>(), 1u);
 }
 
-TEST(object_with_zone, unsigned_long_long)
+BOOST_AUTO_TEST_CASE(unsigned_long_long)
 {
     unsigned long long v = 1;
     msgpack::zone z;
     msgpack::object obj(v, z);
-    EXPECT_EQ(obj.as<unsigned long long>(), v);
+    BOOST_CHECK_EQUAL(obj.as<unsigned long long>(), v);
     v = 2;
-    EXPECT_EQ(obj.as<unsigned long long>(), 1u);
+    BOOST_CHECK_EQUAL(obj.as<unsigned long long>(), 1u);
 }
 
 // float
-TEST(object_with_zone, float)
+BOOST_AUTO_TEST_CASE(float_)
 {
     float v = 1.23f;
     msgpack::zone z;
     msgpack::object obj(v, z);
-    EXPECT_EQ(obj.type, msgpack::type::FLOAT32);
-    EXPECT_TRUE(fabs(obj.as<float>() - v) <= kEPS);
+    BOOST_CHECK_EQUAL(obj.type, msgpack::type::FLOAT32);
+    BOOST_CHECK(fabs(obj.as<float>() - v) <= kEPS);
     v = 4.56f;
-    EXPECT_TRUE(fabs(obj.as<float>() - static_cast<float>(1.23)) <= kEPS);
+    BOOST_CHECK(fabs(obj.as<float>() - static_cast<float>(1.23)) <= kEPS);
 }
 
 // double
-TEST(object_with_zone, double)
+BOOST_AUTO_TEST_CASE(double_)
 {
     double v = 1.23;
     msgpack::zone z;
     msgpack::object obj(v, z);
-    EXPECT_EQ(obj.type, msgpack::type::FLOAT64);
-    EXPECT_TRUE(fabs(obj.as<double>() - v) <= kEPS);
+    BOOST_CHECK_EQUAL(obj.type, msgpack::type::FLOAT64);
+    BOOST_CHECK(fabs(obj.as<double>() - v) <= kEPS);
     v = 4.56;
-    EXPECT_TRUE(fabs(obj.as<double>() - 1.23) <= kEPS);
+    BOOST_CHECK(fabs(obj.as<double>() - 1.23) <= kEPS);
 }
 
 // vector
 
-TEST(object_with_zone, vector)
+BOOST_AUTO_TEST_CASE(vector)
 {
     for (unsigned int k = 0; k < kLoop; k++) {
-        vector<int> v1;
+        std::vector<int> v1;
         v1.push_back(1);
         for (unsigned int i = 1; i < kElements; i++)
             v1.push_back(static_cast<int>(i));
         msgpack::zone z;
         msgpack::object obj(v1, z);
-        EXPECT_TRUE(obj.as<vector<int> >() == v1);
+        BOOST_CHECK(obj.as<std::vector<int> >() == v1);
         v1.front() = 42;
-        EXPECT_EQ(obj.as<vector<int> >().front(), 1);
+        BOOST_CHECK_EQUAL(obj.as<std::vector<int> >().front(), 1);
     }
 }
 
 // vector_char
-TEST(object_with_zone, vector_char)
+BOOST_AUTO_TEST_CASE(vector_char)
 {
     for (unsigned int k = 0; k < kLoop; k++) {
-        vector<char> v1;
+        std::vector<char> v1;
         v1.push_back(1);
         for (unsigned int i = 1; i < kElements; i++)
             v1.push_back(static_cast<char>(i));
         msgpack::zone z;
         msgpack::object obj(v1, z);
-        EXPECT_TRUE(obj.as<vector<char> >() == v1);
+        BOOST_CHECK(obj.as<std::vector<char> >() == v1);
         v1.front() = 42;
-        EXPECT_EQ(obj.as<vector<char> >().front(), 1);
+        BOOST_CHECK_EQUAL(obj.as<std::vector<char> >().front(), 1);
     }
 }
 
-TEST(object_without_zone, vector_char)
-{
-    for (unsigned int k = 0; k < kLoop; k++) {
-        vector<char> v1;
-        v1.push_back(1);
-        for (unsigned int i = 1; i < kElements; i++)
-            v1.push_back(static_cast<char>(i));
-        msgpack::object obj(v1);
-        EXPECT_TRUE(obj.as<vector<char> >() == v1);
-        v1.front() = 42;
-        // obj refer to v1
-        EXPECT_EQ(obj.as<vector<char> >().front(), 42);
-    }
-}
+
 
 // vector_unsgined_char
-TEST(object_with_zone, vector_unsigned_char)
+BOOST_AUTO_TEST_CASE(vector_unsigned_char)
 {
     if (!msgpack::is_same<uint8_t, unsigned char>::value) return;
     for (unsigned int k = 0; k < kLoop; k++) {
-        vector<unsigned char> v1;
+        std::vector<unsigned char> v1;
         v1.push_back(1);
         for (unsigned int i = 1; i < kElements; i++)
             v1.push_back(static_cast<unsigned char>(i));
         msgpack::zone z;
         msgpack::object obj(v1, z);
-        EXPECT_TRUE(obj.as<vector<unsigned char> >() == v1);
+        BOOST_CHECK(obj.as<std::vector<unsigned char> >() == v1);
         v1.front() = 42;
-        EXPECT_EQ(obj.as<vector<unsigned char> >().front(), 1);
-    }
-}
-
-TEST(object_without_zone, vector_unsigned_char)
-{
-    if (!msgpack::is_same<uint8_t, unsigned char>::value) return;
-    for (unsigned int k = 0; k < kLoop; k++) {
-        vector<unsigned char> v1;
-        v1.push_back(1);
-        for (unsigned int i = 1; i < kElements; i++)
-            v1.push_back(static_cast<unsigned char>(i));
-        msgpack::object obj(v1);
-        EXPECT_TRUE(obj.as<vector<unsigned char> >() == v1);
-        v1.front() = 42;
-        // obj refer to v1
-        EXPECT_EQ(obj.as<vector<unsigned char> >().front(), 42);
+        BOOST_CHECK_EQUAL(obj.as<std::vector<unsigned char> >().front(), 1);
     }
 }
 
 // list
-TEST(object_with_zone, list)
+BOOST_AUTO_TEST_CASE(list)
 {
     for (unsigned int k = 0; k < kLoop; k++) {
-        list<int> v1;
+        std::list<int> v1;
         v1.push_back(1);
         for (unsigned int i = 1; i < kElements; i++)
             v1.push_back(static_cast<int>(i));
         msgpack::zone z;
         msgpack::object obj(v1, z);
-        EXPECT_TRUE(obj.as<list<int> >() == v1);
+        BOOST_CHECK(obj.as<std::list<int> >() == v1);
         v1.front() = 42;
-        EXPECT_EQ(obj.as<list<int> >().front(), 1);
+        BOOST_CHECK_EQUAL(obj.as<std::list<int> >().front(), 1);
     }
 }
 
 // deque
-TEST(object_with_zone, deque)
+BOOST_AUTO_TEST_CASE(deque)
 {
     for (unsigned int k = 0; k < kLoop; k++) {
-        deque<int> v1;
+        std::deque<int> v1;
         v1.push_back(1);
         for (unsigned int i = 1; i < kElements; i++)
             v1.push_back(static_cast<int>(i));
         msgpack::zone z;
         msgpack::object obj(v1, z);
-        EXPECT_TRUE(obj.as<deque<int> >() == v1);
+        BOOST_CHECK(obj.as<std::deque<int> >() == v1);
         v1.front() = 42;
-        EXPECT_EQ(obj.as<deque<int> >().front(), 1);
+        BOOST_CHECK_EQUAL(obj.as<std::deque<int> >().front(), 1);
     }
 }
 
 // string
-TEST(object_with_zone, string)
+BOOST_AUTO_TEST_CASE(string)
 {
-    string v = "abc";
+    std::string v = "abc";
     msgpack::zone z;
     msgpack::object obj(v, z);
-    EXPECT_EQ(obj.as<string>(), v);
+    BOOST_CHECK_EQUAL(obj.as<std::string>(), v);
     v[0] = 'd';
-    EXPECT_EQ(obj.as<string>()[0], 'a');
+    BOOST_CHECK_EQUAL(obj.as<std::string>()[0], 'a');
 }
 
 #if MSGPACK_DEFAULT_API_VERSION == 1
 
-TEST(object_without_zone, string)
+BOOST_AUTO_TEST_CASE(without_zone_string)
 {
-    string v = "abc";
+    std::string v = "abc";
     msgpack::zone z;
     msgpack::object obj(v);
-    EXPECT_EQ(obj.as<string>(), v);
+    BOOST_CHECK_EQUAL(obj.as<std::string>(), v);
     v[0] = 'd';
-    EXPECT_EQ(obj.as<string>()[0], 'd');
+    BOOST_CHECK_EQUAL(obj.as<std::string>()[0], 'd');
 }
 
 #endif // MSGPACK_DEFAULT_API_VERSION == 1
 
 // wstring
-TEST(object_with_zone, wstring)
+BOOST_AUTO_TEST_CASE(wstring)
 {
-    wstring v = L"abc";
+    std::wstring v = L"abc";
     msgpack::zone z;
     msgpack::object obj(v, z);
-    EXPECT_EQ(obj.as<wstring>(), v);
+    BOOST_CHECK(obj.as<std::wstring>() == v);
     v[0] = 'd';
-    EXPECT_EQ(obj.as<wstring>()[0], L'a');
+    BOOST_CHECK(obj.as<std::wstring>()[0] == L'a');
 }
 
 // char*
-TEST(object_with_zone, char_ptr)
+BOOST_AUTO_TEST_CASE(char_ptr)
 {
     char v[] = "abc";
     msgpack::zone z;
     msgpack::object obj(v, z);
-    EXPECT_EQ(obj.as<string>(), std::string(v));
+    BOOST_CHECK_EQUAL(obj.as<std::string>(), std::string(v));
     v[0] = 'd';
-    EXPECT_EQ(obj.as<string>()[0], 'a');
+    BOOST_CHECK_EQUAL(obj.as<std::string>()[0], 'a');
 }
 
 // complex
-TEST(object_with_zone, complex_float)
+BOOST_AUTO_TEST_CASE(complex_float)
 {
     typedef std::complex<float> test_t;
     test_t v(1.23F, 4.56F);
     msgpack::zone z;
     msgpack::object obj(v, z);
     float r = v.real();
-    EXPECT_TRUE(fabs(obj.as<test_t>().real() - v.real()) <= kEPS);
-    EXPECT_TRUE(fabs(obj.as<test_t>().imag() - v.imag()) <= kEPS);
+    BOOST_CHECK(fabs(obj.as<test_t>().real() - v.real()) <= kEPS);
+    BOOST_CHECK(fabs(obj.as<test_t>().imag() - v.imag()) <= kEPS);
     v.real(7.89F);
-    EXPECT_TRUE(fabs(obj.as<test_t>().real() - r) <= kEPS);
+    BOOST_CHECK(fabs(obj.as<test_t>().real() - r) <= kEPS);
 }
 
-TEST(object_with_zone, complex_double)
+BOOST_AUTO_TEST_CASE(complex_double)
 {
     typedef std::complex<double> test_t;
     test_t v(1.23, 4.56);
     msgpack::zone z;
     msgpack::object obj(v, z);
     double r = v.real();
-    EXPECT_TRUE(fabs(obj.as<test_t>().real() - v.real()) <= kEPS);
-    EXPECT_TRUE(fabs(obj.as<test_t>().imag() - v.imag()) <= kEPS);
+    BOOST_CHECK(fabs(obj.as<test_t>().real() - v.real()) <= kEPS);
+    BOOST_CHECK(fabs(obj.as<test_t>().imag() - v.imag()) <= kEPS);
     v.real(7.89);
-    EXPECT_TRUE(fabs(obj.as<test_t>().real() - r) <= kEPS);
+    BOOST_CHECK(fabs(obj.as<test_t>().real() - r) <= kEPS);
 }
 
 #if MSGPACK_DEFAULT_API_VERSION == 1
 
-TEST(object_without_zone, char_ptr)
+BOOST_AUTO_TEST_CASE(without_zone_char_ptr)
 {
     char v[] = "abc";
     msgpack::zone z;
     msgpack::object obj(v);
-    EXPECT_EQ(obj.as<string>(), std::string(v));
+    BOOST_CHECK_EQUAL(obj.as<std::string>(), std::string(v));
     v[0] = 'd';
-    EXPECT_EQ(obj.as<string>()[0], 'd');
+    BOOST_CHECK_EQUAL(obj.as<std::string>()[0], 'd');
 }
 
 #endif // MSGPACK_DEFAULT_API_VERSION == 1
 
 // raw_ref
-TEST(object_with_zone, raw_ref)
+BOOST_AUTO_TEST_CASE(raw_ref)
 {
-    string s = "abc";
+    std::string s = "abc";
     msgpack::type::raw_ref v(s.data(), static_cast<uint32_t>(s.size()));
     msgpack::zone z;
     msgpack::object obj(v, z);
-    EXPECT_TRUE(obj.as<msgpack::type::raw_ref>() == v);
+    BOOST_CHECK(obj.as<msgpack::type::raw_ref>() == v);
     s[0] = 'd';
     // even if with_zone, not copied due to raw_ref
     // Basically, the combination raw_ref and object::wit_zone
     // is meaningless.
-    EXPECT_TRUE(obj.as<msgpack::type::raw_ref>() == v);
-}
-
-TEST(object_without_zone, raw_ref)
-{
-    string s = "abc";
-    msgpack::type::raw_ref v(s.data(), static_cast<uint32_t>(s.size()));
-    msgpack::zone z;
-    msgpack::object obj(v);
-    EXPECT_TRUE(obj.as<msgpack::type::raw_ref>() == v);
-    s[0] = 'd';
-    EXPECT_TRUE(obj.as<msgpack::type::raw_ref>() == v);
+    BOOST_CHECK(obj.as<msgpack::type::raw_ref>() == v);
 }
 
 // pair
-TEST(object_with_zone, pair)
+BOOST_AUTO_TEST_CASE(pair)
 {
-    typedef pair<int, string> test_t;
+    typedef std::pair<int, std::string> test_t;
     test_t v(1, "abc");
     msgpack::zone z;
     msgpack::object obj(v, z);
-    EXPECT_TRUE(obj.as<test_t>() == v);
+    BOOST_CHECK(obj.as<test_t>() == v);
     v.first = 42;
-    EXPECT_EQ(obj.as<test_t>().first, 1);
+    BOOST_CHECK_EQUAL(obj.as<test_t>().first, 1);
 }
 
 // set
-TEST(object_with_zone, set)
+BOOST_AUTO_TEST_CASE(set)
 {
     for (unsigned int k = 0; k < kLoop; k++) {
-        set<int> v1;
+        std::set<int> v1;
         for (unsigned int i = 0; i < kElements; i++)
             v1.insert(static_cast<int>(i));
         msgpack::zone z;
         msgpack::object obj(v1, z);
-        EXPECT_TRUE(obj.as<set<int> >() == v1);
+        BOOST_CHECK(obj.as<std::set<int> >() == v1);
     }
 }
 
 // multiset
-TEST(object_with_zone, multiset)
+BOOST_AUTO_TEST_CASE(multiset)
 {
     for (unsigned int k = 0; k < kLoop; k++) {
-        multiset<int> v1;
+        std::multiset<int> v1;
         for (unsigned int i = 0; i < kElements; i++)
             v1.insert(i % (kElements / 2));
         msgpack::zone z;
         msgpack::object obj(v1, z);
-        EXPECT_TRUE(obj.as<multiset<int> >() == v1);
+        BOOST_CHECK(obj.as<std::multiset<int> >() == v1);
     }
 }
 
 // map
-TEST(object_with_zone, map)
+BOOST_AUTO_TEST_CASE(map)
 {
-    typedef map<int, int> test_t;
+    typedef std::map<int, int> test_t;
     for (unsigned int k = 0; k < kLoop; k++) {
         test_t v1;
         for (unsigned int i = 0; i < kElements; i++)
             v1.insert(std::make_pair(i, i*2));
         msgpack::zone z;
         msgpack::object obj(v1, z);
-        EXPECT_TRUE(obj.as<test_t >() == v1);
+        BOOST_CHECK(obj.as<test_t >() == v1);
     }
 }
 
 // multimap
-TEST(object_with_zone, multimap)
+BOOST_AUTO_TEST_CASE(multimap)
 {
-    typedef multimap<int, int> test_t;
+    typedef std::multimap<int, int> test_t;
     for (unsigned int k = 0; k < kLoop; k++) {
         test_t v1;
         for (unsigned int i = 0; i < kElements; i++)
             v1.insert(std::make_pair(i % (kElements / 2), i*2));
         msgpack::zone z;
         msgpack::object obj(v1, z);
-        EXPECT_TRUE(obj.as<test_t >() == v1);
+        BOOST_CHECK(obj.as<test_t >() == v1);
     }
 }
 
 // msgpack_tuple
-TEST(object_with_zone, msgpack_tuple)
+BOOST_AUTO_TEST_CASE(msgpack_tuple)
 {
-    typedef msgpack::type::tuple<int, string, bool> test_t;
+    typedef msgpack::type::tuple<int, std::string, bool> test_t;
     test_t v(1, "abc", true);
     msgpack::zone z;
     msgpack::object obj(v, z);
-    EXPECT_EQ(msgpack::type::get<0>(obj.as<test_t>()), 1);
-    EXPECT_EQ(msgpack::type::get<1>(obj.as<test_t>()), "abc");
-    EXPECT_EQ(msgpack::type::get<2>(obj.as<test_t>()), true);
+    BOOST_CHECK_EQUAL(msgpack::type::get<0>(obj.as<test_t>()), 1);
+    BOOST_CHECK_EQUAL(msgpack::type::get<1>(obj.as<test_t>()), "abc");
+    BOOST_CHECK_EQUAL(msgpack::type::get<2>(obj.as<test_t>()), true);
     msgpack::type::get<0>(v) = 42;
-    EXPECT_EQ(msgpack::type::get<0>(obj.as<test_t>()), 1);
+    BOOST_CHECK_EQUAL(msgpack::type::get<0>(obj.as<test_t>()), 1);
 }
 
-TEST(object_with_zone, msgpack_tuple_empty)
+BOOST_AUTO_TEST_CASE(msgpack_tuple_empty)
 {
     typedef msgpack::type::tuple<> test_t;
     test_t v;
     msgpack::zone z;
     msgpack::object obj(v, z);
-    EXPECT_EQ(obj.via.array.size, 0u);
+    BOOST_CHECK_EQUAL(obj.via.array.size, 0u);
 }
 
 // TR1
@@ -526,9 +475,9 @@ TEST(object_with_zone, msgpack_tuple_empty)
 #ifdef MSGPACK_HAS_STD_TR1_UNORDERED_MAP
 #include <tr1/unordered_map>
 #include "msgpack/adaptor/tr1/unordered_map.hpp"
-TEST(object_with_zone, tr1_unordered_map)
+BOOST_AUTO_TEST_CASE(tr1_unordered_map)
 {
-    typedef tr1::unordered_map<int, int> test_t;
+    typedef std::tr1::unordered_map<int, int> test_t;
     for (unsigned int k = 0; k < kLoop; k++) {
         test_t v1;
         for (unsigned int i = 0; i < kElements; i++)
@@ -536,40 +485,40 @@ TEST(object_with_zone, tr1_unordered_map)
         msgpack::zone z;
         msgpack::object obj(v1, z);
         test_t v2 = obj.as<test_t>();
-        EXPECT_EQ(v1.size(), v2.size());
+        BOOST_CHECK_EQUAL(v1.size(), v2.size());
         test_t::const_iterator it;
         for (it = v1.begin(); it != v1.end(); ++it) {
-            EXPECT_TRUE(v2.find(it->first) != v2.end());
-            EXPECT_EQ(it->second, v2.find(it->first)->second);
+            BOOST_CHECK(v2.find(it->first) != v2.end());
+            BOOST_CHECK_EQUAL(it->second, v2.find(it->first)->second);
         }
     }
 }
 
 
-TEST(object_with_zone, tr1_unordered_multimap)
+BOOST_AUTO_TEST_CASE(tr1_unordered_multimap)
 {
-    typedef tr1::unordered_multimap<int, int> test_t;
+    typedef std::tr1::unordered_multimap<int, int> test_t;
     for (unsigned int k = 0; k < kLoop; k++) {
         test_t v1;
         for (unsigned int i = 0; i < kElements; i++) {
             int i1 = rand();
-            v1.insert(make_pair(i1, rand()));
-            v1.insert(make_pair(i1, rand()));
+            v1.insert(std::make_pair(i1, rand()));
+            v1.insert(std::make_pair(i1, rand()));
         }
         msgpack::zone z;
         msgpack::object obj(v1, z);
         test_t v2 = obj.as<test_t>();
-        vector<pair<int, int> > vec1, vec2;
-        tr1::unordered_multimap<int, int>::const_iterator it;
+        std::vector<std::pair<int, int> > vec1, vec2;
+        std::tr1::unordered_multimap<int, int>::const_iterator it;
         for (it = v1.begin(); it != v1.end(); ++it)
-            vec1.push_back(make_pair(it->first, it->second));
+            vec1.push_back(std::make_pair(it->first, it->second));
         for (it = v2.begin(); it != v2.end(); ++it)
-            vec2.push_back(make_pair(it->first, it->second));
-        EXPECT_EQ(v1.size(), v2.size());
-        EXPECT_EQ(vec1.size(), vec2.size());
-        sort(vec1.begin(), vec1.end());
-        sort(vec2.begin(), vec2.end());
-        EXPECT_TRUE(vec1 == vec2);
+            vec2.push_back(std::make_pair(it->first, it->second));
+        BOOST_CHECK_EQUAL(v1.size(), v2.size());
+        BOOST_CHECK_EQUAL(vec1.size(), vec2.size());
+        std::sort(vec1.begin(), vec1.end());
+        std::sort(vec2.begin(), vec2.end());
+        BOOST_CHECK(vec1 == vec2);
     }
 }
 #endif
@@ -577,9 +526,9 @@ TEST(object_with_zone, tr1_unordered_multimap)
 #ifdef MSGPACK_HAS_STD_TR1_UNORDERED_SET
 #include <tr1/unordered_set>
 #include "msgpack/adaptor/tr1/unordered_set.hpp"
-TEST(object_with_zone, tr1_unordered_set)
+BOOST_AUTO_TEST_CASE(tr1_unordered_set)
 {
-    typedef tr1::unordered_set<int> test_t;
+    typedef std::tr1::unordered_set<int> test_t;
     for (unsigned int k = 0; k < kLoop; k++) {
         test_t v1;
         for (unsigned int i = 0; i < kElements; i++)
@@ -587,16 +536,16 @@ TEST(object_with_zone, tr1_unordered_set)
         msgpack::zone z;
         msgpack::object obj(v1, z);
         test_t v2 = obj.as<test_t>();
-        EXPECT_EQ(v1.size(), v2.size());
-        tr1::unordered_set<int>::const_iterator it;
+        BOOST_CHECK_EQUAL(v1.size(), v2.size());
+        std::tr1::unordered_set<int>::const_iterator it;
         for (it = v1.begin(); it != v1.end(); ++it)
-            EXPECT_TRUE(v2.find(*it) != v2.end());
+            BOOST_CHECK(v2.find(*it) != v2.end());
     }
 }
 
-TEST(object_with_zone, tr1_unordered_multiset)
+BOOST_AUTO_TEST_CASE(tr1_unordered_multiset)
 {
-    typedef tr1::unordered_set<int> test_t;
+    typedef std::tr1::unordered_set<int> test_t;
     for (unsigned int k = 0; k < kLoop; k++) {
         test_t v1;
         for (unsigned int i = 0; i < kElements; i++) {
@@ -607,17 +556,17 @@ TEST(object_with_zone, tr1_unordered_multiset)
         msgpack::zone z;
         msgpack::object obj(v1, z);
         test_t v2 = obj.as<test_t>();
-        vector<int> vec1, vec2;
-        tr1::unordered_multiset<int>::const_iterator it;
+        std::vector<int> vec1, vec2;
+        std::tr1::unordered_multiset<int>::const_iterator it;
         for (it = v1.begin(); it != v1.end(); ++it)
             vec1.push_back(*it);
         for (it = v2.begin(); it != v2.end(); ++it)
             vec2.push_back(*it);
-        EXPECT_EQ(v1.size(), v2.size());
-        EXPECT_EQ(vec1.size(), vec2.size());
-        sort(vec1.begin(), vec1.end());
-        sort(vec2.begin(), vec2.end());
-        EXPECT_TRUE(vec1 == vec2);
+        BOOST_CHECK_EQUAL(v1.size(), v2.size());
+        BOOST_CHECK_EQUAL(vec1.size(), vec2.size());
+        std::sort(vec1.begin(), vec1.end());
+        std::sort(vec2.begin(), vec2.end());
+        BOOST_CHECK(vec1 == vec2);
     }
 }
 #endif
@@ -625,9 +574,9 @@ TEST(object_with_zone, tr1_unordered_multiset)
 #ifdef MSGPACK_HAS_STD_UNORDERED_MAP
 #include <unordered_map>
 #include "msgpack/adaptor/tr1/unordered_map.hpp"
-TEST(object_with_zone, unordered_map)
+BOOST_AUTO_TEST_CASE(unordered_map)
 {
-    typedef unordered_map<int, int> test_t;
+    typedef std::unordered_map<int, int> test_t;
     for (unsigned int k = 0; k < kLoop; k++) {
         test_t v1;
         for (unsigned int i = 0; i < kElements; i++)
@@ -635,39 +584,39 @@ TEST(object_with_zone, unordered_map)
         msgpack::zone z;
         msgpack::object obj(v1, z);
         test_t v2 = obj.as<test_t>();
-        EXPECT_EQ(v1.size(), v2.size());
+        BOOST_CHECK_EQUAL(v1.size(), v2.size());
         test_t::const_iterator it;
         for (it = v1.begin(); it != v1.end(); ++it) {
-            EXPECT_TRUE(v2.find(it->first) != v2.end());
-            EXPECT_EQ(it->second, v2.find(it->first)->second);
+            BOOST_CHECK(v2.find(it->first) != v2.end());
+            BOOST_CHECK_EQUAL(it->second, v2.find(it->first)->second);
         }
     }
 }
 
-TEST(object_with_zone, unordered_multimap)
+BOOST_AUTO_TEST_CASE(unordered_multimap)
 {
-   typedef unordered_multimap<int, int> test_t;
+   typedef std::unordered_multimap<int, int> test_t;
     for (unsigned int k = 0; k < kLoop; k++) {
         test_t v1;
         for (unsigned int i = 0; i < kElements; i++) {
             int i1 = rand();
-            v1.insert(make_pair(i1, rand()));
-            v1.insert(make_pair(i1, rand()));
+            v1.insert(std::make_pair(i1, rand()));
+            v1.insert(std::make_pair(i1, rand()));
         }
         msgpack::zone z;
         msgpack::object obj(v1, z);
         test_t v2 = obj.as<test_t>();
-        vector<pair<int, int> > vec1, vec2;
-        unordered_multimap<int, int>::const_iterator it;
+        std::vector<std::pair<int, int> > vec1, vec2;
+        std::unordered_multimap<int, int>::const_iterator it;
         for (it = v1.begin(); it != v1.end(); ++it)
-            vec1.push_back(make_pair(it->first, it->second));
+            vec1.push_back(std::make_pair(it->first, it->second));
         for (it = v2.begin(); it != v2.end(); ++it)
-            vec2.push_back(make_pair(it->first, it->second));
-        EXPECT_EQ(v1.size(), v2.size());
-        EXPECT_EQ(vec1.size(), vec2.size());
+            vec2.push_back(std::make_pair(it->first, it->second));
+        BOOST_CHECK_EQUAL(v1.size(), v2.size());
+        BOOST_CHECK_EQUAL(vec1.size(), vec2.size());
         sort(vec1.begin(), vec1.end());
         sort(vec2.begin(), vec2.end());
-        EXPECT_TRUE(vec1 == vec2);
+        BOOST_CHECK(vec1 == vec2);
     }
 }
 #endif
@@ -675,9 +624,9 @@ TEST(object_with_zone, unordered_multimap)
 #ifdef MSGPACK_HAS_STD_UNORDERED_SET
 #include <unordered_set>
 #include "msgpack/adaptor/tr1/unordered_set.hpp"
-TEST(object_with_zone, unordered_set)
+BOOST_AUTO_TEST_CASE(unordered_set)
 {
-    typedef unordered_set<int> test_t;
+    typedef std::unordered_set<int> test_t;
     for (unsigned int k = 0; k < kLoop; k++) {
         test_t v1;
         for (unsigned int i = 0; i < kElements; i++)
@@ -685,16 +634,16 @@ TEST(object_with_zone, unordered_set)
         msgpack::zone z;
         msgpack::object obj(v1, z);
         test_t v2 = obj.as<test_t>();
-        EXPECT_EQ(v1.size(), v2.size());
-        unordered_set<int>::const_iterator it;
+        BOOST_CHECK_EQUAL(v1.size(), v2.size());
+        std::unordered_set<int>::const_iterator it;
         for (it = v1.begin(); it != v1.end(); ++it)
-            EXPECT_TRUE(v2.find(*it) != v2.end());
+            BOOST_CHECK(v2.find(*it) != v2.end());
     }
 }
 
-TEST(object_with_zone, unordered_multiset)
+BOOST_AUTO_TEST_CASE(unordered_multiset)
 {
-    typedef unordered_set<int> test_t;
+    typedef std::unordered_set<int> test_t;
     for (unsigned int k = 0; k < kLoop; k++) {
         test_t v1;
         for (unsigned int i = 0; i < kElements; i++) {
@@ -705,17 +654,17 @@ TEST(object_with_zone, unordered_multiset)
         msgpack::zone z;
         msgpack::object obj(v1, z);
         test_t v2 = obj.as<test_t>();
-        vector<int> vec1, vec2;
-        unordered_multiset<int>::const_iterator it;
+        std::vector<int> vec1, vec2;
+        std::unordered_multiset<int>::const_iterator it;
         for (it = v1.begin(); it != v1.end(); ++it)
             vec1.push_back(*it);
         for (it = v2.begin(); it != v2.end(); ++it)
             vec2.push_back(*it);
-        EXPECT_EQ(v1.size(), v2.size());
-        EXPECT_EQ(vec1.size(), vec2.size());
-        sort(vec1.begin(), vec1.end());
-        sort(vec2.begin(), vec2.end());
-        EXPECT_TRUE(vec1 == vec2);
+        BOOST_CHECK_EQUAL(v1.size(), v2.size());
+        BOOST_CHECK_EQUAL(vec1.size(), vec2.size());
+        std::sort(vec1.begin(), vec1.end());
+        std::sort(vec2.begin(), vec2.end());
+        BOOST_CHECK(vec1 == vec2);
     }
 }
 #endif
@@ -726,46 +675,46 @@ class TestClass
 public:
     TestClass() : i(0), s("kzk") {}
     int i;
-    string s;
+    std::string s;
     MSGPACK_DEFINE(i, s);
 };
 
-TEST(object_with_zone, user_defined)
+BOOST_AUTO_TEST_CASE(user_defined)
 {
     TestClass v1;
     msgpack::zone z;
     msgpack::object obj(v1, z);
     TestClass v2 = obj.as<TestClass>();
-    EXPECT_EQ(v1.i, v2.i);
-    EXPECT_EQ(v1.s, v2.s);
+    BOOST_CHECK_EQUAL(v1.i, v2.i);
+    BOOST_CHECK_EQUAL(v1.s, v2.s);
 }
 
-TEST(object_with_zone, construct_enum)
+BOOST_AUTO_TEST_CASE(construct_enum)
 {
     msgpack::zone z;
     msgpack::object obj(elem, z);
-    EXPECT_EQ(msgpack::type::POSITIVE_INTEGER, obj.type);
-    EXPECT_EQ(static_cast<uint64_t>(elem), obj.via.u64);
+    BOOST_CHECK_EQUAL(msgpack::type::POSITIVE_INTEGER, obj.type);
+    BOOST_CHECK_EQUAL(static_cast<uint64_t>(elem), obj.via.u64);
 }
 
 #if !defined(MSGPACK_USE_CPP03)
 
-TEST(object_with_zone, construct_enum_newstyle)
+BOOST_AUTO_TEST_CASE(construct_enum_newstyle)
 {
     msgpack::zone z;
     msgpack::object obj(enum_test::elem, z);
-    EXPECT_EQ(msgpack::type::POSITIVE_INTEGER, obj.type);
-    EXPECT_EQ(elem, obj.via.u64);
+    BOOST_CHECK_EQUAL(msgpack::type::POSITIVE_INTEGER, obj.type);
+    BOOST_CHECK_EQUAL(elem, obj.via.u64);
 }
 
 #endif // !defined(MSGPACK_USE_CPP03)
 
-TEST(object_with_zone, construct_enum_outer)
+BOOST_AUTO_TEST_CASE(construct_enum_outer)
 {
     msgpack::zone z;
     msgpack::object obj(outer_enum::elem, z);
-    EXPECT_EQ(msgpack::type::POSITIVE_INTEGER, obj.type);
-    EXPECT_EQ(static_cast<uint64_t>(elem), obj.via.u64);
+    BOOST_CHECK_EQUAL(msgpack::type::POSITIVE_INTEGER, obj.type);
+    BOOST_CHECK_EQUAL(static_cast<uint64_t>(elem), obj.via.u64);
 }
 
 // User defined inheriting classes
@@ -789,7 +738,7 @@ struct bottom : mid1, mid2 {
     MSGPACK_DEFINE(MSGPACK_BASE(mid1), MSGPACK_BASE(mid2), b);
 };
 
-TEST(object_with_zone, user_defined_non_virtual)
+BOOST_AUTO_TEST_CASE(user_defined_non_virtual)
 {
     bottom b;
     b.b = 1;
@@ -808,11 +757,11 @@ TEST(object_with_zone, user_defined_non_virtual)
 #if defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 7)) && !defined(__clang__)
 #pragma GCC diagnostic pop
 #endif // defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 7)) && !defined(__clang__)
-    EXPECT_EQ(b.b, br.b);
-    EXPECT_EQ(b.m1, br.m1);
-    EXPECT_EQ(b.m2, br.m2);
-    EXPECT_EQ(b.mid1::t, br.mid1::t);
-    EXPECT_EQ(b.mid2::t, br.mid2::t);
+    BOOST_CHECK_EQUAL(b.b, br.b);
+    BOOST_CHECK_EQUAL(b.m1, br.m1);
+    BOOST_CHECK_EQUAL(b.m2, br.m2);
+    BOOST_CHECK_EQUAL(b.mid1::t, br.mid1::t);
+    BOOST_CHECK_EQUAL(b.mid2::t, br.mid2::t);
 }
 
 struct v_top {
@@ -835,7 +784,7 @@ struct v_bottom : v_mid1, v_mid2 {
     MSGPACK_DEFINE(MSGPACK_BASE(v_mid1), MSGPACK_BASE(v_mid2), MSGPACK_BASE(v_top), b);
 };
 
-TEST(object_with_zone, user_defined_virtual)
+BOOST_AUTO_TEST_CASE(user_defined_virtual)
 {
     v_bottom b;
     b.b = 1;
@@ -853,43 +802,43 @@ TEST(object_with_zone, user_defined_virtual)
 #if defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 7)) && !defined(__clang__)
 #pragma GCC diagnostic pop
 #endif // defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 7)) && !defined(__clang__)
-    EXPECT_EQ(b.b, br.b);
-    EXPECT_EQ(b.m1, br.m1);
-    EXPECT_EQ(b.m2, br.m2);
-    EXPECT_EQ(b.t, br.t);
+    BOOST_CHECK_EQUAL(b.b, br.b);
+    BOOST_CHECK_EQUAL(b.m1, br.m1);
+    BOOST_CHECK_EQUAL(b.m2, br.m2);
+    BOOST_CHECK_EQUAL(b.t, br.t);
 }
 
 #if !defined(MSGPACK_USE_CPP03)
 
-TEST(object_with_zone, construct_enum_outer_newstyle)
+BOOST_AUTO_TEST_CASE(construct_enum_outer_newstyle)
 {
     msgpack::zone z;
     msgpack::object obj(outer_enum::enum_test::elem, z);
-    EXPECT_EQ(msgpack::type::POSITIVE_INTEGER, obj.type);
-    EXPECT_EQ(elem, obj.via.u64);
+    BOOST_CHECK_EQUAL(msgpack::type::POSITIVE_INTEGER, obj.type);
+    BOOST_CHECK_EQUAL(elem, obj.via.u64);
 }
 
-TEST(object_with_zone, construct_class_enum)
+BOOST_AUTO_TEST_CASE(construct_class_enum)
 {
     msgpack::zone z;
     msgpack::object obj(enum_class_test::elem, z);
-    EXPECT_EQ(msgpack::type::POSITIVE_INTEGER, obj.type);
-    EXPECT_EQ(elem, obj.via.u64);
+    BOOST_CHECK_EQUAL(msgpack::type::POSITIVE_INTEGER, obj.type);
+    BOOST_CHECK_EQUAL(elem, obj.via.u64);
 }
 
 
-TEST(object_with_zone, construct_class_enum_outer)
+BOOST_AUTO_TEST_CASE(construct_class_enum_outer)
 {
     msgpack::zone z;
     msgpack::object obj(outer_enum_class::enum_class_test::elem, z);
-    EXPECT_EQ(msgpack::type::POSITIVE_INTEGER, obj.type);
-    EXPECT_EQ(elem, obj.via.u64);
+    BOOST_CHECK_EQUAL(msgpack::type::POSITIVE_INTEGER, obj.type);
+    BOOST_CHECK_EQUAL(elem, obj.via.u64);
 }
 
 
-TEST(object_with_zone, array)
+BOOST_AUTO_TEST_CASE(array)
 {
-    typedef array<int, kElements> test_t;
+    typedef std::array<int, kElements> test_t;
     for (unsigned int k = 0; k < kLoop; k++) {
         test_t v1;
         v1[0] = 1;
@@ -897,15 +846,15 @@ TEST(object_with_zone, array)
             v1[i] = rand();
         msgpack::zone z;
         msgpack::object obj(v1, z);
-        EXPECT_TRUE(obj.as<test_t>() == v1);
+        BOOST_CHECK(obj.as<test_t>() == v1);
         v1.front() = 42;
-        EXPECT_EQ(obj.as<test_t>().front(), 1);
+        BOOST_CHECK_EQUAL(obj.as<test_t>().front(), 1);
     }
 }
 
-TEST(object_with_zone, array_char)
+BOOST_AUTO_TEST_CASE(array_char)
 {
-    typedef array<char, kElements> test_t;
+    typedef std::array<char, kElements> test_t;
     for (unsigned int k = 0; k < kLoop; k++) {
         test_t v1;
         v1[0] = 1;
@@ -913,32 +862,16 @@ TEST(object_with_zone, array_char)
             v1[i] = static_cast<char>(rand());
         msgpack::zone z;
         msgpack::object obj(v1, z);
-        EXPECT_TRUE(obj.as<test_t>() == v1);
+        BOOST_CHECK(obj.as<test_t>() == v1);
         v1.front() = 42;
-        EXPECT_EQ(obj.as<test_t>().front(), 1);
+        BOOST_CHECK_EQUAL(obj.as<test_t>().front(), 1);
     }
 }
 
-TEST(object_without_zone, array_char)
-{
-    typedef array<char, kElements> test_t;
-    for (unsigned int k = 0; k < kLoop; k++) {
-        test_t v1;
-        v1[0] = 1;
-        for (unsigned int i = 1; i < kElements; i++)
-            v1[i] = static_cast<char>(rand());
-        msgpack::object obj(v1);
-        EXPECT_TRUE(obj.as<test_t>() == v1);
-        v1.front() = 42;
-        // obj refer to v1
-        EXPECT_EQ(obj.as<test_t>().front(), 42);
-    }
-}
-
-TEST(object_with_zone, array_unsigned_char)
+BOOST_AUTO_TEST_CASE(array_unsigned_char)
 {
     if (!msgpack::is_same<uint8_t, unsigned char>::value) return;
-    typedef array<unsigned char, kElements> test_t;
+    typedef std::array<unsigned char, kElements> test_t;
     for (unsigned int k = 0; k < kLoop; k++) {
         test_t v1;
         v1[0] = 1;
@@ -946,87 +879,69 @@ TEST(object_with_zone, array_unsigned_char)
             v1[i] = static_cast<unsigned char>(rand());
         msgpack::zone z;
         msgpack::object obj(v1, z);
-        EXPECT_TRUE(obj.as<test_t>() == v1);
+        BOOST_CHECK(obj.as<test_t>() == v1);
         v1.front() = 42;
-        EXPECT_EQ(obj.as<test_t>().front(), 1);
+        BOOST_CHECK_EQUAL(obj.as<test_t>().front(), 1);
     }
 }
 
-TEST(object_without_zone, array_unsigned_char)
-{
-    if (!msgpack::is_same<uint8_t, unsigned char>::value) return;
-    typedef array<unsigned char, kElements> test_t;
-    for (unsigned int k = 0; k < kLoop; k++) {
-        test_t v1;
-        v1[0] = 1;
-        for (unsigned int i = 1; i < kElements; i++)
-            v1[i] = static_cast<unsigned char>(rand());
-        msgpack::object obj(v1);
-        EXPECT_TRUE(obj.as<test_t>() == v1);
-        v1.front() = 42;
-        // obj refer to v1
-        EXPECT_EQ(obj.as<test_t>().front(), 42);
-    }
-}
-
-
-TEST(object_with_zone, forward_list)
+BOOST_AUTO_TEST_CASE(forward_list)
 {
     for (unsigned int k = 0; k < kLoop; k++) {
-        forward_list<int> v1;
+        std::forward_list<int> v1;
         for (unsigned int i = 0; i < kElements; i++)
             v1.push_front(static_cast<int>(i));
         msgpack::zone z;
         msgpack::object obj(v1, z);
-        EXPECT_TRUE(obj.as<forward_list<int> >() == v1);
+        BOOST_CHECK(obj.as<std::forward_list<int> >() == v1);
         v1.front() = 42;
-        EXPECT_EQ(obj.as<forward_list<int> >().front(), static_cast<int>(kElements - 1));
+        BOOST_CHECK_EQUAL(obj.as<std::forward_list<int> >().front(), static_cast<int>(kElements - 1));
     }
 }
 
-TEST(object_with_zone, tuple)
+BOOST_AUTO_TEST_CASE(tuple)
 {
-    typedef tuple<int, string, bool> test_t;
+    typedef std::tuple<int, std::string, bool> test_t;
     test_t v(1, "abc", true);
     msgpack::zone z;
     msgpack::object obj(v, z);
-    EXPECT_TRUE(obj.as<test_t>() == v);
+    BOOST_CHECK(obj.as<test_t>() == v);
 }
 
-TEST(object_with_zone, tuple_empty)
+BOOST_AUTO_TEST_CASE(tuple_empty)
 {
-    typedef tuple<> test_t;
+    typedef std::tuple<> test_t;
     test_t v;
     msgpack::zone z;
     msgpack::object obj(v, z);
-    EXPECT_TRUE(obj.as<test_t>() == v);
+    BOOST_CHECK(obj.as<test_t>() == v);
 }
 
-TEST(object_with_zone, system_clock)
+BOOST_AUTO_TEST_CASE(system_clock)
 {
     std::chrono::system_clock::time_point v;
     msgpack::zone z;
     msgpack::object obj(v, z);
-    EXPECT_TRUE(obj.as<std::chrono::system_clock::time_point>() == v);
+    BOOST_CHECK(obj.as<std::chrono::system_clock::time_point>() == v);
 }
 
-TEST(object_with_zone, system_clock_32)
+BOOST_AUTO_TEST_CASE(system_clock_32)
 {
     std::chrono::system_clock::time_point v(std::chrono::seconds(0x12345678L));
     msgpack::zone z;
     msgpack::object obj(v, z);
-    EXPECT_TRUE(obj.as<std::chrono::system_clock::time_point>() == v);
+    BOOST_CHECK(obj.as<std::chrono::system_clock::time_point>() == v);
 }
 
-TEST(object_with_zone, system_clock_32_max)
+BOOST_AUTO_TEST_CASE(system_clock_32_max)
 {
     std::chrono::system_clock::time_point v(std::chrono::seconds(0xffffffffL));
     msgpack::zone z;
     msgpack::object obj(v, z);
-    EXPECT_TRUE(obj.as<std::chrono::system_clock::time_point>() == v);
+    BOOST_CHECK(obj.as<std::chrono::system_clock::time_point>() == v);
 }
 
-TEST(object_with_zone, system_clock_64)
+BOOST_AUTO_TEST_CASE(system_clock_64)
 {
     std::chrono::system_clock::time_point v(std::chrono::seconds(0x31234567L));
     v +=
@@ -1035,10 +950,10 @@ TEST(object_with_zone, system_clock_64)
         );
     msgpack::zone z;
     msgpack::object obj(v, z);
-    EXPECT_TRUE(obj.as<std::chrono::system_clock::time_point>() == v);
+    BOOST_CHECK(obj.as<std::chrono::system_clock::time_point>() == v);
 }
 
-TEST(object_with_zone, system_clock_64_max)
+BOOST_AUTO_TEST_CASE(system_clock_64_max)
 {
     std::chrono::system_clock::time_point v(std::chrono::seconds(0xffffffffL));
     v +=
@@ -1047,71 +962,71 @@ TEST(object_with_zone, system_clock_64_max)
         );
     msgpack::zone z;
     msgpack::object obj(v, z);
-    EXPECT_TRUE(obj.as<std::chrono::system_clock::time_point>() == v);
+    BOOST_CHECK(obj.as<std::chrono::system_clock::time_point>() == v);
 }
 
-TEST(object_with_zone, system_clock_impl_min)
+BOOST_AUTO_TEST_CASE(system_clock_impl_min)
 {
     std::chrono::system_clock::time_point v(std::chrono::system_clock::time_point::min());
     msgpack::zone z;
     msgpack::object obj(v, z);
-    EXPECT_TRUE(obj.as<std::chrono::system_clock::time_point>() == v);
+    BOOST_CHECK(obj.as<std::chrono::system_clock::time_point>() == v);
 }
 
-TEST(object_with_zone, system_clock_impl_max)
+BOOST_AUTO_TEST_CASE(system_clock_impl_max)
 {
     std::chrono::system_clock::time_point v(std::chrono::system_clock::time_point::max());
     msgpack::zone z;
     msgpack::object obj(v, z);
-    EXPECT_TRUE(obj.as<std::chrono::system_clock::time_point>() == v);
+    BOOST_CHECK(obj.as<std::chrono::system_clock::time_point>() == v);
 }
 
 #endif // !defined(MSGPACK_USE_CPP03)
 
-TEST(object_with_zone, ext_empty)
+BOOST_AUTO_TEST_CASE(ext_empty)
 {
     msgpack::type::ext v;
     msgpack::zone z;
     msgpack::object obj(v, z);
-    EXPECT_TRUE(obj.as<msgpack::type::ext>() == v);
-    EXPECT_TRUE(obj.as<msgpack::type::ext_ref>() == v);
+    BOOST_CHECK(obj.as<msgpack::type::ext>() == v);
+    BOOST_CHECK(obj.as<msgpack::type::ext_ref>() == v);
 }
 
-TEST(object_with_zone, ext)
+BOOST_AUTO_TEST_CASE(ext)
 {
     msgpack::type::ext v(42, 10);
     for (int i = 0; i < 10; ++i) v.data()[i] = static_cast<char>(i);
     msgpack::zone z;
     msgpack::object obj(v, z);
-    EXPECT_TRUE(obj.as<msgpack::type::ext>() == v);
-    EXPECT_TRUE(obj.as<msgpack::type::ext_ref>() == v);
+    BOOST_CHECK(obj.as<msgpack::type::ext>() == v);
+    BOOST_CHECK(obj.as<msgpack::type::ext_ref>() == v);
 }
 
-TEST(object_with_zone, ext_from_buf)
+BOOST_AUTO_TEST_CASE(ext_from_buf)
 {
     char const buf[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
     msgpack::type::ext v(42, buf, sizeof(buf));
     msgpack::zone z;
     msgpack::object obj(v, z);
-    EXPECT_TRUE(obj.as<msgpack::type::ext>() == v);
-    EXPECT_TRUE(obj.as<msgpack::type::ext_ref>() == v);
+    BOOST_CHECK(obj.as<msgpack::type::ext>() == v);
+    BOOST_CHECK(obj.as<msgpack::type::ext_ref>() == v);
 }
 
-TEST(object_with_zone, ext_ref_empty)
+BOOST_AUTO_TEST_CASE(ext_ref_empty)
 {
     msgpack::type::ext_ref v;
     msgpack::zone z;
     msgpack::object obj(v, z);
-    EXPECT_TRUE(obj.as<msgpack::type::ext>() == v);
-    EXPECT_TRUE(obj.as<msgpack::type::ext_ref>() == v);
+    BOOST_CHECK(obj.as<msgpack::type::ext>() == msgpack::type::ext(v));
+    BOOST_CHECK(obj.as<msgpack::type::ext_ref>() == v);
 }
 
-TEST(object_with_zone, ext_ref_from_buf)
+BOOST_AUTO_TEST_CASE(ext_ref_from_buf)
 {
     char const buf[] = { 77, 1, 2, 3, 4, 5, 6, 7, 8, 9};
     msgpack::type::ext_ref v(buf, sizeof(buf));
     msgpack::zone z;
     msgpack::object obj(v, z);
-    EXPECT_TRUE(obj.as<msgpack::type::ext>() == v);
-    EXPECT_TRUE(obj.as<msgpack::type::ext_ref>() == v);
+    BOOST_CHECK(obj.as<msgpack::type::ext>() == msgpack::type::ext(v));
+    BOOST_CHECK(obj.as<msgpack::type::ext_ref>() == v);
 }

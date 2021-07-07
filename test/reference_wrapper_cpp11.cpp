@@ -1,16 +1,8 @@
 #include <msgpack.hpp>
 #include <sstream>
 
-#if defined(__GNUC__)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wconversion"
-#endif //defined(__GNUC__)
-
-#include <gtest/gtest.h>
-
-#if defined(__GNUC__)
-#pragma GCC diagnostic pop
-#endif //defined(__GNUC__)
+#define BOOST_TEST_MODULE MSGPACK_REFERENCE_WRAPPER
+#include <boost/test/unit_test.hpp>
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -18,7 +10,7 @@
 
 #if !defined(MSGPACK_USE_CPP03)
 
-TEST(MSGPACK_REFERENCE_WRAPPER, pack_convert)
+BOOST_AUTO_TEST_CASE(pack_convert)
 {
     int i1 = 42;
     std::reference_wrapper<int> val1(i1);
@@ -29,10 +21,10 @@ TEST(MSGPACK_REFERENCE_WRAPPER, pack_convert)
     int i2 = 0;
     std::reference_wrapper<int> val2(i2);
     oh.get().convert(val2);
-    EXPECT_EQ(i1, i2);
+    BOOST_CHECK_EQUAL(i1, i2);
 }
 
-TEST(MSGPACK_REFERENCE_WRAPPER, pack_convert_const)
+BOOST_AUTO_TEST_CASE(pack_convert_const)
 {
     const int i1 = 42;
     std::reference_wrapper<const int> val1(i1);
@@ -43,10 +35,10 @@ TEST(MSGPACK_REFERENCE_WRAPPER, pack_convert_const)
     int i2 = 0;
     std::reference_wrapper<int> val2(i2);
     oh.get().convert(val2);
-    EXPECT_EQ(i1, i2);
+    BOOST_CHECK_EQUAL(i1, i2);
 }
 
-TEST(MSGPACK_REFERENCE_WRAPPER, pack_vector)
+BOOST_AUTO_TEST_CASE(pack_vector)
 {
     int i1 = 42;
     std::vector<std::reference_wrapper<int>> val1{i1};
@@ -55,11 +47,11 @@ TEST(MSGPACK_REFERENCE_WRAPPER, pack_vector)
     std::string const& str = ss.str();
     msgpack::object_handle oh = msgpack::unpack(str.data(), str.size());
     std::vector<int> val2 = oh.get().as<std::vector<int>>();
-    EXPECT_EQ(val2.size(), static_cast<size_t>(1));
-    EXPECT_EQ(val1[0], val2[0]);
+    BOOST_CHECK_EQUAL(val2.size(), static_cast<size_t>(1));
+    BOOST_CHECK_EQUAL(val1[0], val2[0]);
 }
 
-TEST(MSGPACK_REFERENCE_WRAPPER, object)
+BOOST_AUTO_TEST_CASE(object)
 {
     int i1 = 42;
     std::reference_wrapper<int> val1(i1);
@@ -67,10 +59,10 @@ TEST(MSGPACK_REFERENCE_WRAPPER, object)
     int i2 = 0;
     std::reference_wrapper<int> val2(i2);
     o.convert(val2);
-    EXPECT_EQ(i1, i2);
+    BOOST_CHECK_EQUAL(i1, i2);
 }
 
-TEST(MSGPACK_REFERENCE_WRAPPER, object_const)
+BOOST_AUTO_TEST_CASE(object_const)
 {
     const int i1 = 42;
     std::reference_wrapper<const int> val1(i1);
@@ -78,10 +70,10 @@ TEST(MSGPACK_REFERENCE_WRAPPER, object_const)
     int i2 = 0;
     std::reference_wrapper<int> val2(i2);
     o.convert(val2);
-    EXPECT_EQ(i1, i2);
+    BOOST_CHECK_EQUAL(i1, i2);
 }
 
-TEST(MSGPACK_REFERENCE_WRAPPER, object_with_zone)
+BOOST_AUTO_TEST_CASE(object_with_zone)
 {
     std::string s1 = "ABC";
     std::reference_wrapper<std::string> val1(s1);
@@ -90,10 +82,10 @@ TEST(MSGPACK_REFERENCE_WRAPPER, object_with_zone)
     std::string s2 = "DE";
     std::reference_wrapper<std::string> val2(s2);
     o.convert(val2);
-    EXPECT_EQ(s1, s2);
+    BOOST_CHECK_EQUAL(s1, s2);
 }
 
-TEST(MSGPACK_REFERENCE_WRAPPER, object_with_zone_const)
+BOOST_AUTO_TEST_CASE(object_with_zone_const)
 {
     const std::string s1 = "ABC";
     std::reference_wrapper<const std::string> val1(s1);
@@ -102,7 +94,7 @@ TEST(MSGPACK_REFERENCE_WRAPPER, object_with_zone_const)
     std::string s2 = "DE";
     std::reference_wrapper<std::string> val2(s2);
     o.convert(val2);
-    EXPECT_EQ(s1, s2);
+    BOOST_CHECK_EQUAL(s1, s2);
 }
 
 #endif // !defined(MSGPACK_USE_CPP03)

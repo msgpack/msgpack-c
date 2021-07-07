@@ -9,16 +9,9 @@
 #include <list>
 #include <limits>
 
-#if defined(__GNUC__)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wconversion"
-#endif //defined(__GNUC__)
-
-#include <gtest/gtest.h>
-
-#if defined(__GNUC__)
-#pragma GCC diagnostic pop
-#endif //defined(__GNUC__)
+#define BOOST_TEST_MODULE MSGPACK
+#include <boost/test/unit_test.hpp>
+#include <boost/mpl/list.hpp>
 
 #if defined(_MSC_VER) || defined(__MINGW32__)
 #define msgpack_rand() ((double)rand() / RAND_MAX)
@@ -52,109 +45,109 @@ const double kEPS = 1e-10;
             msgpack::pack(sbuf, val1);                      \
             msgpack::object_handle oh =                     \
                 msgpack::unpack(sbuf.data(), sbuf.size());  \
-            EXPECT_EQ(val1, oh.get().as<test_type>());      \
+            BOOST_CHECK_EQUAL(val1, oh.get().as<test_type>());      \
         }                                                   \
     } while(0)
 
-TEST(MSGPACK, simple_buffer_char)
+BOOST_AUTO_TEST_CASE(simple_buffer_char)
 {
     GEN_TEST(char);
 }
 
-TEST(MSGPACK, simple_buffer_signed_char)
+BOOST_AUTO_TEST_CASE(simple_buffer_signed_char)
 {
     GEN_TEST(signed char);
 }
 
-TEST(MSGPACK, simple_buffer_unsigned_char)
+BOOST_AUTO_TEST_CASE(simple_buffer_unsigned_char)
 {
     GEN_TEST(unsigned char);
 }
 
 
-TEST(MSGPACK, simple_buffer_short)
+BOOST_AUTO_TEST_CASE(simple_buffer_short)
 {
     GEN_TEST(short);
 }
 
-TEST(MSGPACK, simple_buffer_int)
+BOOST_AUTO_TEST_CASE(simple_buffer_int)
 {
     GEN_TEST(int);
 }
 
-TEST(MSGPACK, simple_buffer_long)
+BOOST_AUTO_TEST_CASE(simple_buffer_long)
 {
     GEN_TEST(long);
 }
 
-TEST(MSGPACK, simple_buffer_long_long)
+BOOST_AUTO_TEST_CASE(simple_buffer_long_long)
 {
     GEN_TEST(long long);
 }
 
-TEST(MSGPACK, simple_buffer_unsigned_short)
+BOOST_AUTO_TEST_CASE(simple_buffer_unsigned_short)
 {
     GEN_TEST(unsigned short);
 }
 
-TEST(MSGPACK, simple_buffer_unsigned_int)
+BOOST_AUTO_TEST_CASE(simple_buffer_unsigned_int)
 {
     GEN_TEST(unsigned int);
 }
 
-TEST(MSGPACK, simple_buffer_unsigned_long)
+BOOST_AUTO_TEST_CASE(simple_buffer_unsigned_long)
 {
     GEN_TEST(unsigned long);
 }
 
-TEST(MSGPACK, simple_buffer_unsigned_long_long)
+BOOST_AUTO_TEST_CASE(simple_buffer_unsigned_long_long)
 {
     GEN_TEST(unsigned long long);
 }
 
-TEST(MSGPACK, simple_buffer_uint8)
+BOOST_AUTO_TEST_CASE(simple_buffer_uint8)
 {
     GEN_TEST(uint8_t);
 }
 
-TEST(MSGPACK, simple_buffer_uint16)
+BOOST_AUTO_TEST_CASE(simple_buffer_uint16)
 {
     GEN_TEST(uint16_t);
 }
 
-TEST(MSGPACK, simple_buffer_uint32)
+BOOST_AUTO_TEST_CASE(simple_buffer_uint32)
 {
     GEN_TEST(uint32_t);
 }
 
-TEST(MSGPACK, simple_buffer_uint64)
+BOOST_AUTO_TEST_CASE(simple_buffer_uint64)
 {
     GEN_TEST(uint64_t);
 }
 
-TEST(MSGPACK, simple_buffer_int8)
+BOOST_AUTO_TEST_CASE(simple_buffer_int8)
 {
     GEN_TEST(int8_t);
 }
 
-TEST(MSGPACK, simple_buffer_int16)
+BOOST_AUTO_TEST_CASE(simple_buffer_int16)
 {
     GEN_TEST(int16_t);
 }
 
-TEST(MSGPACK, simple_buffer_int32)
+BOOST_AUTO_TEST_CASE(simple_buffer_int32)
 {
     GEN_TEST(int32_t);
 }
 
-TEST(MSGPACK, simple_buffer_int64)
+BOOST_AUTO_TEST_CASE(simple_buffer_int64)
 {
     GEN_TEST(int64_t);
 }
 
 #if !defined(_MSC_VER) || _MSC_VER >=1800
 
-TEST(MSGPACK, simple_buffer_float)
+BOOST_AUTO_TEST_CASE(simple_buffer_float)
 {
     vector<float> v;
     v.push_back(0.0);
@@ -188,11 +181,11 @@ TEST(MSGPACK, simple_buffer_float)
         float val2 = oh.get().as<float>();
 
         if (std::isnan(val1))
-            EXPECT_TRUE(std::isnan(val2));
+            BOOST_CHECK(std::isnan(val2));
         else if (std::isinf(val1))
-            EXPECT_TRUE(std::isinf(val2));
+            BOOST_CHECK(std::isinf(val2));
         else
-            EXPECT_TRUE(fabs(val2 - val1) <= kEPS);
+            BOOST_CHECK(fabs(val2 - val1) <= kEPS);
     }
 }
 
@@ -206,12 +199,12 @@ struct TypePair {
 };
 } // namespace
 
-template <typename T>
-class IntegerToFloatingPointTest : public testing::Test {
-};
-TYPED_TEST_CASE_P(IntegerToFloatingPointTest);
+typedef boost::mpl::list<TypePair<float, signed long long>,
+                         TypePair<float, unsigned long long>,
+                         TypePair<double, signed long long>,
+                         TypePair<double, unsigned long long> > IntegerToFloatingPointTestTypes;
 
-TYPED_TEST_P(IntegerToFloatingPointTest, simple_buffer)
+BOOST_AUTO_TEST_CASE_TEMPLATE(simple_buffer, TypeParam, IntegerToFloatingPointTestTypes)
 {
     typedef typename TypeParam::float_type float_type;
     typedef typename TypeParam::integer_type integer_type;
@@ -230,24 +223,13 @@ TYPED_TEST_P(IntegerToFloatingPointTest, simple_buffer)
         msgpack::object_handle oh =
             msgpack::unpack(sbuf.data(), sbuf.size());
         float_type val2 = oh.get().as<float_type>();
-        EXPECT_TRUE(fabs(val2 - static_cast<float_type>(val1)) <= kEPS);
+        BOOST_CHECK(fabs(val2 - static_cast<float_type>(val1)) <= kEPS);
     }
 }
 
-REGISTER_TYPED_TEST_CASE_P(IntegerToFloatingPointTest,
-                           simple_buffer);
-
-typedef testing::Types<TypePair<float, signed long long>,
-                       TypePair<float, unsigned long long>,
-                       TypePair<double, signed long long>,
-                       TypePair<double, unsigned long long> > IntegerToFloatingPointTestTypes;
-INSTANTIATE_TYPED_TEST_CASE_P(IntegerToFloatingPointTestInstance,
-                              IntegerToFloatingPointTest,
-                              IntegerToFloatingPointTestTypes);
-
 #if !defined(_MSC_VER) || _MSC_VER >=1800
 
-TEST(MSGPACK, simple_buffer_double)
+BOOST_AUTO_TEST_CASE(simple_buffer_double)
 {
     vector<double> v;
     v.push_back(0.0);
@@ -285,27 +267,27 @@ TEST(MSGPACK, simple_buffer_double)
         double val2 = oh.get().as<double>();
 
         if (std::isnan(val1))
-            EXPECT_TRUE(std::isnan(val2));
+            BOOST_CHECK(std::isnan(val2));
         else if (std::isinf(val1))
-            EXPECT_TRUE(std::isinf(val2));
+            BOOST_CHECK(std::isinf(val2));
         else
-            EXPECT_TRUE(fabs(val2 - val1) <= kEPS);
+            BOOST_CHECK(fabs(val2 - val1) <= kEPS);
     }
 }
 
 #endif // !defined(_MSC_VER) || _MSC_VER >=1800
 
-TEST(MSGPACK, simple_buffer_nil)
+BOOST_AUTO_TEST_CASE(simple_buffer_nil)
 {
     msgpack::sbuffer sbuf;
     msgpack::packer<msgpack::sbuffer> packer(sbuf);
     packer.pack_nil();
     msgpack::object_handle oh =
         msgpack::unpack(sbuf.data(), sbuf.size());
-    EXPECT_EQ(oh.get().type, msgpack::type::NIL);
+    BOOST_CHECK_EQUAL(oh.get().type, msgpack::type::NIL);
 }
 
-TEST(MSGPACK, simple_buffer_true)
+BOOST_AUTO_TEST_CASE(simple_buffer_true)
 {
     msgpack::sbuffer sbuf;
     bool val1 = true;
@@ -313,10 +295,10 @@ TEST(MSGPACK, simple_buffer_true)
     msgpack::object_handle oh =
         msgpack::unpack(sbuf.data(), sbuf.size());
     bool val2 = oh.get().as<bool>();
-    EXPECT_EQ(val1, val2);
+    BOOST_CHECK_EQUAL(val1, val2);
 }
 
-TEST(MSGPACK, simple_buffer_false)
+BOOST_AUTO_TEST_CASE(simple_buffer_false)
 {
     msgpack::sbuffer sbuf;
     bool val1 = false;
@@ -324,10 +306,10 @@ TEST(MSGPACK, simple_buffer_false)
     msgpack::object_handle oh =
         msgpack::unpack(sbuf.data(), sbuf.size());
     bool val2 = oh.get().as<bool>();
-    EXPECT_EQ(val1, val2);
+    BOOST_CHECK_EQUAL(val1, val2);
 }
 
-TEST(MSGPACK, simple_buffer_fixext1)
+BOOST_AUTO_TEST_CASE(simple_buffer_fixext1)
 {
     msgpack::sbuffer sbuf;
     msgpack::packer<msgpack::sbuffer> packer(sbuf);
@@ -337,22 +319,22 @@ TEST(MSGPACK, simple_buffer_fixext1)
     packer.pack_ext_body(buf, sizeof(buf));
     msgpack::object_handle oh =
         msgpack::unpack(sbuf.data(), sbuf.size());
-    EXPECT_EQ(1ul, oh.get().via.ext.size);
-    EXPECT_EQ(1, oh.get().via.ext.type());
-    EXPECT_EQ(2, oh.get().via.ext.data()[0]);
+    BOOST_CHECK_EQUAL(1ul, oh.get().via.ext.size);
+    BOOST_CHECK_EQUAL(1, oh.get().via.ext.type());
+    BOOST_CHECK_EQUAL(2, oh.get().via.ext.data()[0]);
 
     msgpack::sbuffer sbuf2;
     msgpack::pack(sbuf2, oh.get());
     msgpack::object_handle oh2 =
         msgpack::unpack(sbuf2.data(), sbuf2.size());
-    EXPECT_EQ(1ul, oh2.get().via.ext.size);
-    EXPECT_EQ(1, oh2.get().via.ext.type());
-    EXPECT_EQ(2, oh2.get().via.ext.data()[0]);
+    BOOST_CHECK_EQUAL(1ul, oh2.get().via.ext.size);
+    BOOST_CHECK_EQUAL(1, oh2.get().via.ext.type());
+    BOOST_CHECK_EQUAL(2, oh2.get().via.ext.data()[0]);
 
-    EXPECT_EQ(oh.get(), oh2.get());
+    BOOST_CHECK_EQUAL(oh.get(), oh2.get());
 }
 
-TEST(MSGPACK, simple_buffer_fixext2)
+BOOST_AUTO_TEST_CASE(simple_buffer_fixext2)
 {
     msgpack::sbuffer sbuf;
     msgpack::packer<msgpack::sbuffer> packer(sbuf);
@@ -362,24 +344,24 @@ TEST(MSGPACK, simple_buffer_fixext2)
     packer.pack_ext_body(buf, sizeof(buf));
     msgpack::object_handle oh =
         msgpack::unpack(sbuf.data(), sbuf.size());
-    EXPECT_EQ(2ul, oh.get().via.ext.size);
-    EXPECT_EQ(0, oh.get().via.ext.type());
-    EXPECT_TRUE(
+    BOOST_CHECK_EQUAL(2ul, oh.get().via.ext.size);
+    BOOST_CHECK_EQUAL(0, oh.get().via.ext.type());
+    BOOST_CHECK(
         std::equal(buf, buf + sizeof(buf), oh.get().via.ext.data()));
 
     msgpack::sbuffer sbuf2;
     msgpack::pack(sbuf2, oh.get());
     msgpack::object_handle oh2 =
         msgpack::unpack(sbuf2.data(), sbuf2.size());
-    EXPECT_EQ(2ul, oh2.get().via.ext.size);
-    EXPECT_EQ(0, oh2.get().via.ext.type());
-    EXPECT_TRUE(
+    BOOST_CHECK_EQUAL(2ul, oh2.get().via.ext.size);
+    BOOST_CHECK_EQUAL(0, oh2.get().via.ext.type());
+    BOOST_CHECK(
         std::equal(buf, buf + sizeof(buf), oh2.get().via.ext.data()));
 
-    EXPECT_EQ(oh.get(), oh2.get());
+    BOOST_CHECK_EQUAL(oh.get(), oh2.get());
 }
 
-TEST(MSGPACK, simple_buffer_fixext4)
+BOOST_AUTO_TEST_CASE(simple_buffer_fixext4)
 {
     msgpack::sbuffer sbuf;
     msgpack::packer<msgpack::sbuffer> packer(sbuf);
@@ -389,24 +371,24 @@ TEST(MSGPACK, simple_buffer_fixext4)
     packer.pack_ext_body(buf, sizeof(buf));
     msgpack::object_handle oh =
         msgpack::unpack(sbuf.data(), sbuf.size());
-    EXPECT_EQ(4ul, oh.get().via.ext.size);
-    EXPECT_EQ(1, oh.get().via.ext.type());
-    EXPECT_TRUE(
+    BOOST_CHECK_EQUAL(4ul, oh.get().via.ext.size);
+    BOOST_CHECK_EQUAL(1, oh.get().via.ext.type());
+    BOOST_CHECK(
         std::equal(buf, buf + sizeof(buf), oh.get().via.ext.data()));
 
     msgpack::sbuffer sbuf2;
     msgpack::pack(sbuf2, oh.get());
     msgpack::object_handle oh2 =
         msgpack::unpack(sbuf2.data(), sbuf2.size());
-    EXPECT_EQ(4ul, oh2.get().via.ext.size);
-    EXPECT_EQ(1, oh2.get().via.ext.type());
-    EXPECT_TRUE(
+    BOOST_CHECK_EQUAL(4ul, oh2.get().via.ext.size);
+    BOOST_CHECK_EQUAL(1, oh2.get().via.ext.type());
+    BOOST_CHECK(
         std::equal(buf, buf + sizeof(buf), oh2.get().via.ext.data()));
 
-    EXPECT_EQ(oh.get(), oh2.get());
+    BOOST_CHECK_EQUAL(oh.get(), oh2.get());
 }
 
-TEST(MSGPACK, simple_buffer_fixext8)
+BOOST_AUTO_TEST_CASE(simple_buffer_fixext8)
 {
     msgpack::sbuffer sbuf;
     msgpack::packer<msgpack::sbuffer> packer(sbuf);
@@ -416,24 +398,24 @@ TEST(MSGPACK, simple_buffer_fixext8)
     packer.pack_ext_body(buf, sizeof(buf));
     msgpack::object_handle oh =
         msgpack::unpack(sbuf.data(), sbuf.size());
-    EXPECT_EQ(8ul, oh.get().via.ext.size);
-    EXPECT_EQ(1, oh.get().via.ext.type());
-    EXPECT_TRUE(
+    BOOST_CHECK_EQUAL(8ul, oh.get().via.ext.size);
+    BOOST_CHECK_EQUAL(1, oh.get().via.ext.type());
+    BOOST_CHECK(
         std::equal(buf, buf + sizeof(buf), oh.get().via.ext.data()));
 
     msgpack::sbuffer sbuf2;
     msgpack::pack(sbuf2, oh.get());
     msgpack::object_handle oh2 =
         msgpack::unpack(sbuf2.data(), sbuf2.size());
-    EXPECT_EQ(8ul, oh2.get().via.ext.size);
-    EXPECT_EQ(1, oh2.get().via.ext.type());
-    EXPECT_TRUE(
+    BOOST_CHECK_EQUAL(8ul, oh2.get().via.ext.size);
+    BOOST_CHECK_EQUAL(1, oh2.get().via.ext.type());
+    BOOST_CHECK(
         std::equal(buf, buf + sizeof(buf), oh2.get().via.ext.data()));
 
-    EXPECT_EQ(oh.get(), oh2.get());
+    BOOST_CHECK_EQUAL(oh.get(), oh2.get());
 }
 
-TEST(MSGPACK, simple_buffer_fixext16)
+BOOST_AUTO_TEST_CASE(simple_buffer_fixext16)
 {
     msgpack::sbuffer sbuf;
     msgpack::packer<msgpack::sbuffer> packer(sbuf);
@@ -443,24 +425,24 @@ TEST(MSGPACK, simple_buffer_fixext16)
     packer.pack_ext_body(buf, sizeof(buf));
     msgpack::object_handle oh =
         msgpack::unpack(sbuf.data(), sbuf.size());
-    EXPECT_EQ(16ul, oh.get().via.ext.size);
-    EXPECT_EQ(1, oh.get().via.ext.type());
-    EXPECT_TRUE(
+    BOOST_CHECK_EQUAL(16ul, oh.get().via.ext.size);
+    BOOST_CHECK_EQUAL(1, oh.get().via.ext.type());
+    BOOST_CHECK(
         std::equal(buf, buf + sizeof(buf), oh.get().via.ext.data()));
 
     msgpack::sbuffer sbuf2;
     msgpack::pack(sbuf2, oh.get());
     msgpack::object_handle oh2 =
         msgpack::unpack(sbuf2.data(), sbuf2.size());
-    EXPECT_EQ(16ul, oh2.get().via.ext.size);
-    EXPECT_EQ(1, oh2.get().via.ext.type());
-    EXPECT_TRUE(
+    BOOST_CHECK_EQUAL(16ul, oh2.get().via.ext.size);
+    BOOST_CHECK_EQUAL(1, oh2.get().via.ext.type());
+    BOOST_CHECK(
         std::equal(buf, buf + sizeof(buf), oh2.get().via.ext.data()));
 
-    EXPECT_EQ(oh.get(), oh2.get());
+    BOOST_CHECK_EQUAL(oh.get(), oh2.get());
 }
 
-TEST(MSGPACK, simple_buffer_fixext_1byte_0)
+BOOST_AUTO_TEST_CASE(simple_buffer_fixext_1byte_0)
 {
     std::size_t const size = 0;
     msgpack::sbuffer sbuf;
@@ -469,11 +451,11 @@ TEST(MSGPACK, simple_buffer_fixext_1byte_0)
     packer.pack_ext(size, 77);
     msgpack::object_handle oh =
         msgpack::unpack(sbuf.data(), sbuf.size());
-    EXPECT_EQ(size, oh.get().via.ext.size);
-    EXPECT_EQ(77, oh.get().via.ext.type());
+    BOOST_CHECK_EQUAL(size, oh.get().via.ext.size);
+    BOOST_CHECK_EQUAL(77, oh.get().via.ext.type());
 }
 
-TEST(MSGPACK, simple_buffer_fixext_1byte_255)
+BOOST_AUTO_TEST_CASE(simple_buffer_fixext_1byte_255)
 {
     std::size_t const size = 255;
     msgpack::sbuffer sbuf;
@@ -485,24 +467,24 @@ TEST(MSGPACK, simple_buffer_fixext_1byte_255)
 
     msgpack::object_handle oh =
         msgpack::unpack(sbuf.data(), sbuf.size());
-    EXPECT_EQ(size, oh.get().via.ext.size);
-    EXPECT_EQ(77, oh.get().via.ext.type());
-    EXPECT_TRUE(
+    BOOST_CHECK_EQUAL(size, oh.get().via.ext.size);
+    BOOST_CHECK_EQUAL(77, oh.get().via.ext.type());
+    BOOST_CHECK(
         std::equal(buf, buf + sizeof(buf), oh.get().via.ext.data()));
 
     msgpack::sbuffer sbuf2;
     msgpack::pack(sbuf2, oh.get());
     msgpack::object_handle oh2 =
         msgpack::unpack(sbuf2.data(), sbuf2.size());
-    EXPECT_EQ(size, oh2.get().via.ext.size);
-    EXPECT_EQ(77, oh2.get().via.ext.type());
-    EXPECT_TRUE(
+    BOOST_CHECK_EQUAL(size, oh2.get().via.ext.size);
+    BOOST_CHECK_EQUAL(77, oh2.get().via.ext.type());
+    BOOST_CHECK(
         std::equal(buf, buf + sizeof(buf), oh2.get().via.ext.data()));
 
-    EXPECT_EQ(oh.get(), oh2.get());
+    BOOST_CHECK_EQUAL(oh.get(), oh2.get());
 }
 
-TEST(MSGPACK, simple_buffer_fixext_2byte_256)
+BOOST_AUTO_TEST_CASE(simple_buffer_fixext_2byte_256)
 {
     std::size_t const size = 256;
     msgpack::sbuffer sbuf;
@@ -514,24 +496,24 @@ TEST(MSGPACK, simple_buffer_fixext_2byte_256)
 
     msgpack::object_handle oh =
         msgpack::unpack(sbuf.data(), sbuf.size());
-    EXPECT_EQ(size, oh.get().via.ext.size);
-    EXPECT_EQ(77, oh.get().via.ext.type());
-    EXPECT_TRUE(
+    BOOST_CHECK_EQUAL(size, oh.get().via.ext.size);
+    BOOST_CHECK_EQUAL(77, oh.get().via.ext.type());
+    BOOST_CHECK(
         std::equal(buf, buf + sizeof(buf), oh.get().via.ext.data()));
 
     msgpack::sbuffer sbuf2;
     msgpack::pack(sbuf2, oh.get());
     msgpack::object_handle oh2 =
         msgpack::unpack(sbuf2.data(), sbuf2.size());
-    EXPECT_EQ(size, oh2.get().via.ext.size);
-    EXPECT_EQ(77, oh2.get().via.ext.type());
-    EXPECT_TRUE(
+    BOOST_CHECK_EQUAL(size, oh2.get().via.ext.size);
+    BOOST_CHECK_EQUAL(77, oh2.get().via.ext.type());
+    BOOST_CHECK(
         std::equal(buf, buf + sizeof(buf), oh2.get().via.ext.data()));
 
-    EXPECT_EQ(oh.get(), oh2.get());
+    BOOST_CHECK_EQUAL(oh.get(), oh2.get());
 }
 
-TEST(MSGPACK, simple_buffer_fixext_2byte_65535)
+BOOST_AUTO_TEST_CASE(simple_buffer_fixext_2byte_65535)
 {
     std::size_t const size = 65535;
     msgpack::sbuffer sbuf;
@@ -543,24 +525,24 @@ TEST(MSGPACK, simple_buffer_fixext_2byte_65535)
 
     msgpack::object_handle oh =
         msgpack::unpack(sbuf.data(), sbuf.size());
-    EXPECT_EQ(size, oh.get().via.ext.size);
-    EXPECT_EQ(77, oh.get().via.ext.type());
-    EXPECT_TRUE(
+    BOOST_CHECK_EQUAL(size, oh.get().via.ext.size);
+    BOOST_CHECK_EQUAL(77, oh.get().via.ext.type());
+    BOOST_CHECK(
         std::equal(buf, buf + sizeof(buf), oh.get().via.ext.data()));
 
     msgpack::sbuffer sbuf2;
     msgpack::pack(sbuf2, oh.get());
     msgpack::object_handle oh2 =
         msgpack::unpack(sbuf2.data(), sbuf2.size());
-    EXPECT_EQ(size, oh2.get().via.ext.size);
-    EXPECT_EQ(77, oh2.get().via.ext.type());
-    EXPECT_TRUE(
+    BOOST_CHECK_EQUAL(size, oh2.get().via.ext.size);
+    BOOST_CHECK_EQUAL(77, oh2.get().via.ext.type());
+    BOOST_CHECK(
         std::equal(buf, buf + sizeof(buf), oh2.get().via.ext.data()));
 
-    EXPECT_EQ(oh.get(), oh2.get());
+    BOOST_CHECK_EQUAL(oh.get(), oh2.get());
 }
 
-TEST(MSGPACK, simple_buffer_fixext_4byte_65536)
+BOOST_AUTO_TEST_CASE(simple_buffer_fixext_4byte_65536)
 {
     std::size_t const size = 65536;
     msgpack::sbuffer sbuf;
@@ -572,24 +554,24 @@ TEST(MSGPACK, simple_buffer_fixext_4byte_65536)
 
     msgpack::object_handle oh =
         msgpack::unpack(sbuf.data(), sbuf.size());
-    EXPECT_EQ(size, oh.get().via.ext.size);
-    EXPECT_EQ(77, oh.get().via.ext.type());
-    EXPECT_TRUE(
+    BOOST_CHECK_EQUAL(size, oh.get().via.ext.size);
+    BOOST_CHECK_EQUAL(77, oh.get().via.ext.type());
+    BOOST_CHECK(
         std::equal(buf, buf + sizeof(buf), oh.get().via.ext.data()));
 
     msgpack::sbuffer sbuf2;
     msgpack::pack(sbuf2, oh.get());
     msgpack::object_handle oh2 =
         msgpack::unpack(sbuf2.data(), sbuf2.size());
-    EXPECT_EQ(size, oh2.get().via.ext.size);
-    EXPECT_EQ(77, oh2.get().via.ext.type());
-    EXPECT_TRUE(
+    BOOST_CHECK_EQUAL(size, oh2.get().via.ext.size);
+    BOOST_CHECK_EQUAL(77, oh2.get().via.ext.type());
+    BOOST_CHECK(
         std::equal(buf, buf + sizeof(buf), oh2.get().via.ext.data()));
 
-    EXPECT_EQ(oh.get(), oh2.get());
+    BOOST_CHECK_EQUAL(oh.get(), oh2.get());
 }
 
-TEST(MSGPACK, simple_buffer_ext_convert)
+BOOST_AUTO_TEST_CASE(simple_buffer_ext_convert)
 {
     std::size_t const size = 65536;
     msgpack::sbuffer sbuf;
@@ -603,13 +585,13 @@ TEST(MSGPACK, simple_buffer_ext_convert)
         msgpack::unpack(sbuf.data(), sbuf.size());
     msgpack::type::ext e;
     oh.get().convert(e);
-    EXPECT_EQ(size, e.size());
-    EXPECT_EQ(77, e.type());
-    EXPECT_TRUE(
+    BOOST_CHECK_EQUAL(size, e.size());
+    BOOST_CHECK_EQUAL(77, e.type());
+    BOOST_CHECK(
         std::equal(buf, buf + sizeof(buf), e.data()));
 }
 
-TEST(MSGPACK, simple_buffer_ext_pack_convert)
+BOOST_AUTO_TEST_CASE(simple_buffer_ext_pack_convert)
 {
     std::size_t const size = 65536;
     msgpack::sbuffer sbuf;
@@ -622,13 +604,13 @@ TEST(MSGPACK, simple_buffer_ext_pack_convert)
         msgpack::unpack(sbuf.data(), sbuf.size());
     msgpack::type::ext val2;
     oh.get().convert(val2);
-    EXPECT_EQ(size, val2.size());
-    EXPECT_EQ(77, val2.type());
-    EXPECT_TRUE(
+    BOOST_CHECK_EQUAL(size, val2.size());
+    BOOST_CHECK_EQUAL(77, val2.type());
+    BOOST_CHECK(
         std::equal(buf, buf + sizeof(buf), val2.data()));
 }
 
-TEST(MSGPACK, simple_buffer_ext_ref_convert)
+BOOST_AUTO_TEST_CASE(simple_buffer_ext_ref_convert)
 {
     std::size_t const size = 65536;
     msgpack::sbuffer sbuf;
@@ -642,13 +624,13 @@ TEST(MSGPACK, simple_buffer_ext_ref_convert)
         msgpack::unpack(sbuf.data(), sbuf.size());
     msgpack::type::ext_ref er;
     oh.get().convert(er);
-    EXPECT_EQ(size, er.size());
-    EXPECT_EQ(77, er.type());
-    EXPECT_TRUE(
+    BOOST_CHECK_EQUAL(size, er.size());
+    BOOST_CHECK_EQUAL(77, er.type());
+    BOOST_CHECK(
         std::equal(buf, buf + sizeof(buf), er.data()));
 }
 
-TEST(MSGPACK, simple_buffer_ext_ref_pack_convert)
+BOOST_AUTO_TEST_CASE(simple_buffer_ext_ref_pack_convert)
 {
     std::size_t const buf_size = 65536;
     std::size_t const data_size = buf_size - 1;
@@ -662,13 +644,13 @@ TEST(MSGPACK, simple_buffer_ext_ref_pack_convert)
         msgpack::unpack(sbuf.data(), sbuf.size());
     msgpack::type::ext_ref val2;
     oh.get().convert(val2);
-    EXPECT_EQ(data_size, val2.size());
-    EXPECT_EQ(77, val2.type());
-    EXPECT_TRUE(
+    BOOST_CHECK_EQUAL(data_size, val2.size());
+    BOOST_CHECK_EQUAL(77, val2.type());
+    BOOST_CHECK(
         std::equal(&buf[1], &buf[buf_size], val2.data()));
 }
 
-TEST(MSGPACK_STL, simple_buffer_string)
+BOOST_AUTO_TEST_CASE(simple_buffer_string)
 {
     for (unsigned int k = 0; k < kLoop; k++) {
         string val1;
@@ -678,65 +660,9 @@ TEST(MSGPACK_STL, simple_buffer_string)
         msgpack::pack(sbuf, val1);
         msgpack::object_handle oh =
             msgpack::unpack(sbuf.data(), sbuf.size());
-        EXPECT_EQ(oh.get().type, msgpack::type::STR);
+        BOOST_CHECK_EQUAL(oh.get().type, msgpack::type::STR);
         string val2 = oh.get().as<string>();
-        EXPECT_EQ(val1.size(), val2.size());
-        EXPECT_EQ(val1, val2);
-    }
-}
-
-TEST(MSGPACK_STL, simple_buffer_cstring)
-{
-    for (unsigned int k = 0; k < kLoop; k++) {
-        string val1;
-        for (unsigned int i = 0; i < kElements; i++)
-            val1 += static_cast<char>('a' + rand() % 26);
-        msgpack::sbuffer sbuf;
-        msgpack::pack(sbuf, val1.c_str());
-        msgpack::object_handle oh =
-            msgpack::unpack(sbuf.data(), sbuf.size());
-        EXPECT_EQ(oh.get().type, msgpack::type::STR);
-        string val2 = oh.get().as<string>();
-        EXPECT_EQ(val1.size(), val2.size());
-        EXPECT_EQ(val1, val2);
-    }
-}
-
-TEST(MSGPACK_STL, simple_buffer_non_const_cstring)
-{
-    for (unsigned int k = 0; k < kLoop; k++) {
-        string val1;
-        for (unsigned int i = 0; i < kElements; i++)
-            val1 += static_cast<char>('a' + rand() % 26);
-        msgpack::sbuffer sbuf;
-        char* s = new char[val1.size() + 1];
-        std::memcpy(s, val1.c_str(), val1.size() + 1);
-        msgpack::pack(sbuf, s);
-        delete [] s;
-        msgpack::object_handle oh =
-            msgpack::unpack(sbuf.data(), sbuf.size());
-        EXPECT_EQ(oh.get().type, msgpack::type::STR);
-        string val2 = oh.get().as<string>();
-        EXPECT_EQ(val1.size(), val2.size());
-        EXPECT_EQ(val1, val2);
-    }
-}
-
-TEST(MSGPACK_STL, simple_buffer_wstring)
-{
-    for (unsigned int k = 0; k < kLoop; k++) {
-        wstring val1;
-        for (unsigned int i = 0; i < kElements; i++)
-            val1 += L'a' + rand() % 26;
-        msgpack::sbuffer sbuf;
-        msgpack::pack(sbuf, val1);
-        msgpack::object_handle oh =
-            msgpack::unpack(sbuf.data(), sbuf.size());
-        EXPECT_EQ(oh.get().type, msgpack::type::ARRAY);
-        wstring val2 = oh.get().as<wstring>();
-        EXPECT_EQ(val1, val2);
-        wstring val3;
-        oh.get().convert(val3);
-        EXPECT_EQ(val1, val3);
+        BOOST_CHECK_EQUAL(val1.size(), val2.size());
+        BOOST_CHECK_EQUAL(val1, val2);
     }
 }

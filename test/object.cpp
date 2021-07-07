@@ -1,15 +1,7 @@
 #include <msgpack.hpp>
 
-#if defined(__GNUC__)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wconversion"
-#endif //defined(__GNUC__)
-
-#include <gtest/gtest.h>
-
-#if defined(__GNUC__)
-#pragma GCC diagnostic pop
-#endif //defined(__GNUC__)
+#define BOOST_TEST_MODULE object
+#include <boost/test/unit_test.hpp>
 
 enum enum_test {
     elem
@@ -70,7 +62,7 @@ std::ostream& operator<<(std::ostream& o, const myclass& m)
 }
 
 
-TEST(object, convert)
+BOOST_AUTO_TEST_CASE(convert)
 {
     myclass m1(1, "custom");
 
@@ -83,11 +75,11 @@ TEST(object, convert)
     myclass m2;
     oh.get().convert(m2);
 
-    EXPECT_EQ(m1, m2);
+    BOOST_CHECK_EQUAL(m1, m2);
 }
 
 
-TEST(object, as)
+BOOST_AUTO_TEST_CASE(as)
 {
     myclass m1(1, "custom");
 
@@ -97,10 +89,10 @@ TEST(object, as)
     msgpack::object_handle oh =
         msgpack::unpack(sbuf.data(), sbuf.size());
 
-    EXPECT_EQ(m1, oh.get().as<myclass>());
+    BOOST_CHECK_EQUAL(m1, oh.get().as<myclass>());
 }
 
-TEST(object, cross_zone_copy)
+BOOST_AUTO_TEST_CASE(cross_zone_copy)
 {
     myclass m1(1, "custom");
     m1.vec.push_back(1.0);
@@ -121,30 +113,30 @@ TEST(object, cross_zone_copy)
 
         obj1 << obj2;
 
-        EXPECT_EQ(obj1.via.array.ptr[2].via.array.ptr[0].via.f64, 1.0);
+        BOOST_CHECK_EQUAL(obj1.via.array.ptr[2].via.array.ptr[0].via.f64, 1.0);
 #if defined(MSGPACK_USE_LEGACY_NAME_AS_FLOAT)
-        EXPECT_EQ(obj1.via.array.ptr[2].via.array.ptr[0].via.dec, 1.0);
+        BOOST_CHECK_EQUAL(obj1.via.array.ptr[2].via.array.ptr[0].via.dec, 1.0);
 #endif // MSGPACK_USE_LEGACY_NAME_AS_FLOAT
-        EXPECT_EQ(obj1.via.array.ptr[3].via.map.ptr[0].key.via.str.ptr[0], 'o');
-        EXPECT_EQ(obj1.via.array.ptr[3].via.map.ptr[0].val.via.bin.ptr[0], 't');
-        EXPECT_NE(
+        BOOST_CHECK_EQUAL(obj1.via.array.ptr[3].via.map.ptr[0].key.via.str.ptr[0], 'o');
+        BOOST_CHECK_EQUAL(obj1.via.array.ptr[3].via.map.ptr[0].val.via.bin.ptr[0], 't');
+        BOOST_CHECK_NE(
             obj1.via.array.ptr[2].via.array.ptr,
             obj2.via.array.ptr[2].via.array.ptr);
-        EXPECT_NE(
+        BOOST_CHECK_NE(
             obj1.via.array.ptr[3].via.map.ptr,
             obj2.via.array.ptr[3].via.map.ptr);
-        EXPECT_NE(
-            obj1.via.array.ptr[3].via.map.ptr[0].key.via.str.ptr,
+        BOOST_CHECK(
+            obj1.via.array.ptr[3].via.map.ptr[0].key.via.str.ptr !=
             obj2.via.array.ptr[3].via.map.ptr[0].key.via.str.ptr);
-        EXPECT_NE(
-            obj1.via.array.ptr[3].via.map.ptr[0].val.via.bin.ptr,
+        BOOST_CHECK(
+            obj1.via.array.ptr[3].via.map.ptr[0].val.via.bin.ptr !=
             obj2.via.array.ptr[3].via.map.ptr[0].val.via.bin.ptr);
     }
 
-    EXPECT_EQ(m1, obj1.as<myclass>());
+    BOOST_CHECK_EQUAL(m1, obj1.as<myclass>());
 }
 
-TEST(object, cross_zone_copy_construct)
+BOOST_AUTO_TEST_CASE(cross_zone_copy_construct)
 {
     myclass m1(1, "custom");
     m1.vec.push_back(1.0);
@@ -162,28 +154,28 @@ TEST(object, cross_zone_copy_construct)
 
     msgpack::object obj1(obj2, z1);
 
-    EXPECT_EQ(obj1.via.array.ptr[2].via.array.ptr[0].via.f64, 1.0);
+    BOOST_CHECK_EQUAL(obj1.via.array.ptr[2].via.array.ptr[0].via.f64, 1.0);
 #if defined(MSGPACK_USE_LEGACY_NAME_AS_FLOAT)
-    EXPECT_EQ(obj1.via.array.ptr[2].via.array.ptr[0].via.dec, 1.0);
+    BOOST_CHECK_EQUAL(obj1.via.array.ptr[2].via.array.ptr[0].via.dec, 1.0);
 #endif // MSGPACK_USE_LEGACY_NAME_AS_FLOAT
-    EXPECT_EQ(obj1.via.array.ptr[3].via.map.ptr[0].key.via.str.ptr[0], 'o');
-    EXPECT_EQ(obj1.via.array.ptr[3].via.map.ptr[0].val.via.bin.ptr[0], 't');
-    EXPECT_NE(
+    BOOST_CHECK_EQUAL(obj1.via.array.ptr[3].via.map.ptr[0].key.via.str.ptr[0], 'o');
+    BOOST_CHECK_EQUAL(obj1.via.array.ptr[3].via.map.ptr[0].val.via.bin.ptr[0], 't');
+    BOOST_CHECK_NE(
         obj1.via.array.ptr[2].via.array.ptr,
         obj2.via.array.ptr[2].via.array.ptr);
-    EXPECT_NE(
+    BOOST_CHECK_NE(
         obj1.via.array.ptr[3].via.map.ptr,
         obj2.via.array.ptr[3].via.map.ptr);
-    EXPECT_NE(
-        obj1.via.array.ptr[3].via.map.ptr[0].key.via.str.ptr,
+    BOOST_CHECK(
+        obj1.via.array.ptr[3].via.map.ptr[0].key.via.str.ptr !=
         obj2.via.array.ptr[3].via.map.ptr[0].key.via.str.ptr);
-    EXPECT_NE(
-        obj1.via.array.ptr[3].via.map.ptr[0].val.via.bin.ptr,
+    BOOST_CHECK(
+        obj1.via.array.ptr[3].via.map.ptr[0].val.via.bin.ptr !=
         obj2.via.array.ptr[3].via.map.ptr[0].val.via.bin.ptr);
-    EXPECT_EQ(m1, obj1.as<myclass>());
+    BOOST_CHECK_EQUAL(m1, obj1.as<myclass>());
 }
 
-TEST(object, cross_zone_copy_ext)
+BOOST_AUTO_TEST_CASE(cross_zone_copy_ext)
 {
     msgpack::zone z1;
     msgpack::zone z2;
@@ -198,15 +190,15 @@ TEST(object, cross_zone_copy_ext)
 
     msgpack::object::with_zone obj2(z2);
     obj2 << obj1;
-    EXPECT_EQ(obj2.via.ext.size, 1u);
-    EXPECT_EQ(obj2.via.ext.ptr[0], 1);
-    EXPECT_EQ(obj2.via.ext.ptr[1], 2);
-    EXPECT_NE(
-        obj1.via.ext.ptr,
+    BOOST_CHECK_EQUAL(obj2.via.ext.size, 1u);
+    BOOST_CHECK_EQUAL(obj2.via.ext.ptr[0], 1);
+    BOOST_CHECK_EQUAL(obj2.via.ext.ptr[1], 2);
+    BOOST_CHECK(
+        obj1.via.ext.ptr !=
         obj2.via.ext.ptr);
 }
 
-TEST(object, cross_zone_copy_construct_ext)
+BOOST_AUTO_TEST_CASE(cross_zone_copy_construct_ext)
 {
     msgpack::zone z1;
     msgpack::zone z2;
@@ -220,155 +212,153 @@ TEST(object, cross_zone_copy_construct_ext)
     obj1.via.ext.size = 1;
 
     msgpack::object obj2(obj1, z2);
-    EXPECT_EQ(obj2.via.ext.size, 1u);
-    EXPECT_EQ(obj2.via.ext.ptr[0], 1);
-    EXPECT_EQ(obj2.via.ext.ptr[1], 2);
-    EXPECT_NE(
-        obj1.via.ext.ptr,
+    BOOST_CHECK_EQUAL(obj2.via.ext.size, 1u);
+    BOOST_CHECK_EQUAL(obj2.via.ext.ptr[0], 1);
+    BOOST_CHECK_EQUAL(obj2.via.ext.ptr[1], 2);
+    BOOST_CHECK(
+        obj1.via.ext.ptr !=
         obj2.via.ext.ptr);
 }
 
-TEST(object, print)
+BOOST_AUTO_TEST_CASE(print)
 {
     msgpack::object obj;
-    std::cout << obj << std::endl;
+    std::stringstream output;
+    output << obj;
+    BOOST_CHECK_EQUAL(output.str(), "null");
 }
 
-
-TEST(object, is_nil)
+BOOST_AUTO_TEST_CASE(is_nil)
 {
     msgpack::object obj;
-    EXPECT_TRUE(obj.is_nil());
+    BOOST_CHECK(obj.is_nil());
 }
 
-
-TEST(object, type_error)
+BOOST_AUTO_TEST_CASE(type_error)
 {
     msgpack::object obj(1);
-    EXPECT_THROW(obj.as<std::string>(), msgpack::type_error);
-    EXPECT_THROW(obj.as<std::vector<int> >(), msgpack::type_error);
-    EXPECT_EQ(1, obj.as<int>());
-    EXPECT_EQ(1, obj.as<short>());
-    EXPECT_EQ(1u, obj.as<unsigned int>());
-    EXPECT_EQ(1u, obj.as<unsigned long>());
+    BOOST_CHECK_THROW(obj.as<std::string>(), msgpack::type_error);
+    BOOST_CHECK_THROW(obj.as<std::vector<int> >(), msgpack::type_error);
+    BOOST_CHECK_EQUAL(1, obj.as<int>());
+    BOOST_CHECK_EQUAL(1, obj.as<short>());
+    BOOST_CHECK_EQUAL(1u, obj.as<unsigned int>());
+    BOOST_CHECK_EQUAL(1u, obj.as<unsigned long>());
 }
 
-
-TEST(object, equal_primitive)
+BOOST_AUTO_TEST_CASE(equal_primitive)
 {
     msgpack::object obj_nil;
-    EXPECT_EQ(obj_nil, msgpack::object());
+    BOOST_CHECK_EQUAL(obj_nil, msgpack::object());
 
     msgpack::object obj_int(1);
-    EXPECT_EQ(obj_int, msgpack::object(1));
-    EXPECT_EQ(obj_int, 1);
+    BOOST_CHECK_EQUAL(obj_int, msgpack::object(1));
+    BOOST_CHECK_EQUAL(obj_int, 1);
 
     msgpack::object obj_float(1.2);
-    EXPECT_EQ(obj_float, msgpack::object(1.2));
-    EXPECT_EQ(obj_float, 1.2);
+    BOOST_CHECK_EQUAL(obj_float, msgpack::object(1.2));
+    BOOST_CHECK_EQUAL(obj_float, 1.2);
 
     msgpack::object obj_bool(true);
-    EXPECT_EQ(obj_bool, msgpack::object(true));
-    EXPECT_EQ(obj_bool, true);
+    BOOST_CHECK_EQUAL(obj_bool, msgpack::object(true));
+    BOOST_CHECK_EQUAL(obj_bool, true);
 }
 
-
-TEST(object, construct_primitive)
+BOOST_AUTO_TEST_CASE(construct_primitive)
 {
     msgpack::object obj_nil;
-    EXPECT_EQ(msgpack::type::NIL, obj_nil.type);
+    BOOST_CHECK_EQUAL(msgpack::type::NIL, obj_nil.type);
 
     msgpack::object obj_uint(1);
-    EXPECT_EQ(msgpack::type::POSITIVE_INTEGER, obj_uint.type);
-    EXPECT_EQ(1u, obj_uint.via.u64);
+    BOOST_CHECK_EQUAL(msgpack::type::POSITIVE_INTEGER, obj_uint.type);
+    BOOST_CHECK_EQUAL(1u, obj_uint.via.u64);
 
     msgpack::object obj_int(-1);
-    EXPECT_EQ(msgpack::type::NEGATIVE_INTEGER, obj_int.type);
-    EXPECT_EQ(-1, obj_int.via.i64);
+    BOOST_CHECK_EQUAL(msgpack::type::NEGATIVE_INTEGER, obj_int.type);
+    BOOST_CHECK_EQUAL(-1, obj_int.via.i64);
 
     msgpack::object obj_float(1.2F);
-    EXPECT_EQ(msgpack::type::FLOAT32, obj_float.type);
-    EXPECT_EQ(1.2F, obj_float.via.f64);
+    BOOST_CHECK_EQUAL(msgpack::type::FLOAT32, obj_float.type);
+    BOOST_CHECK_EQUAL(1.2F, obj_float.via.f64);
 
     msgpack::object obj_double(1.2);
-    EXPECT_EQ(msgpack::type::FLOAT64, obj_double.type);
-    EXPECT_EQ(msgpack::type::FLOAT, obj_double.type);
-    EXPECT_EQ(1.2, obj_double.via.f64);
+    BOOST_CHECK_EQUAL(msgpack::type::FLOAT64, obj_double.type);
+    BOOST_CHECK_EQUAL(msgpack::type::FLOAT, obj_double.type);
+    BOOST_CHECK_EQUAL(1.2, obj_double.via.f64);
 #if defined(MSGPACK_USE_LEGACY_NAME_AS_FLOAT)
-    EXPECT_EQ(msgpack::type::DOUBLE, obj_double.type);
-    EXPECT_EQ(1.2, obj_double.via.dec);
+    BOOST_CHECK_EQUAL(msgpack::type::DOUBLE, obj_double.type);
+    BOOST_CHECK_EQUAL(1.2, obj_double.via.dec);
 #endif // MSGPACK_USE_LEGACY_NAME_AS_FLOAT
 
     msgpack::object obj_bool(true);
-    EXPECT_EQ(msgpack::type::BOOLEAN, obj_bool.type);
-    EXPECT_EQ(true, obj_bool.via.boolean);
+    BOOST_CHECK_EQUAL(msgpack::type::BOOLEAN, obj_bool.type);
+    BOOST_CHECK_EQUAL(true, obj_bool.via.boolean);
 }
 
-TEST(object, construct_enum)
+BOOST_AUTO_TEST_CASE(construct_enum)
 {
     msgpack::object obj(elem);
-    EXPECT_EQ(msgpack::type::POSITIVE_INTEGER, obj.type);
-    EXPECT_EQ(static_cast<uint64_t>(elem), obj.via.u64);
+    BOOST_CHECK_EQUAL(msgpack::type::POSITIVE_INTEGER, obj.type);
+    BOOST_CHECK_EQUAL(static_cast<uint64_t>(elem), obj.via.u64);
 }
 
 #if !defined(MSGPACK_USE_CPP03)
 
-TEST(object, construct_enum_newstyle)
+BOOST_AUTO_TEST_CASE(construct_enum_newstyle)
 {
     msgpack::object obj(enum_test::elem);
-    EXPECT_EQ(msgpack::type::POSITIVE_INTEGER, obj.type);
-    EXPECT_EQ(elem, obj.via.u64);
+    BOOST_CHECK_EQUAL(msgpack::type::POSITIVE_INTEGER, obj.type);
+    BOOST_CHECK_EQUAL(elem, obj.via.u64);
 }
 
 #endif // !defined(MSGPACK_USE_CPP03)
 
-TEST(object, construct_enum_outer)
+BOOST_AUTO_TEST_CASE(construct_enum_outer)
 {
     msgpack::object obj(outer_enum::elem);
-    EXPECT_EQ(msgpack::type::POSITIVE_INTEGER, obj.type);
-    EXPECT_EQ(static_cast<uint64_t>(elem), obj.via.u64);
+    BOOST_CHECK_EQUAL(msgpack::type::POSITIVE_INTEGER, obj.type);
+    BOOST_CHECK_EQUAL(static_cast<uint64_t>(elem), obj.via.u64);
 }
 
 #if !defined(MSGPACK_USE_CPP03)
 
-TEST(object, construct_enum_outer_newstyle)
+BOOST_AUTO_TEST_CASE(construct_enum_outer_newstyle)
 {
     msgpack::object obj(outer_enum::enum_test::elem);
-    EXPECT_EQ(msgpack::type::POSITIVE_INTEGER, obj.type);
-    EXPECT_EQ(elem, obj.via.u64);
+    BOOST_CHECK_EQUAL(msgpack::type::POSITIVE_INTEGER, obj.type);
+    BOOST_CHECK_EQUAL(elem, obj.via.u64);
 }
 
-TEST(object, construct_class_enum)
+BOOST_AUTO_TEST_CASE(construct_class_enum)
 {
     msgpack::object obj(enum_class_test::elem);
-    EXPECT_EQ(msgpack::type::POSITIVE_INTEGER, obj.type);
-    EXPECT_EQ(elem, obj.via.u64);
+    BOOST_CHECK_EQUAL(msgpack::type::POSITIVE_INTEGER, obj.type);
+    BOOST_CHECK_EQUAL(elem, obj.via.u64);
 }
 
 
-TEST(object, construct_class_enum_outer)
+BOOST_AUTO_TEST_CASE(construct_class_enum_outer)
 {
     msgpack::object obj(outer_enum_class::enum_class_test::elem);
-    EXPECT_EQ(msgpack::type::POSITIVE_INTEGER, obj.type);
-    EXPECT_EQ(elem, obj.via.u64);
+    BOOST_CHECK_EQUAL(msgpack::type::POSITIVE_INTEGER, obj.type);
+    BOOST_CHECK_EQUAL(elem, obj.via.u64);
 }
 
 #endif // !defined(MSGPACK_USE_CPP03)
 
-TEST(object, clone_int)
+BOOST_AUTO_TEST_CASE(clone_int)
 {
     int v = 0;
     msgpack::object obj(v);
     std::size_t sz1 = msgpack::aligned_zone_size(obj);
     msgpack::object_handle h = msgpack::clone(obj);
-    EXPECT_EQ(h.get(), obj);
-    EXPECT_EQ(sz1, msgpack::aligned_zone_size(h.get()));
+    BOOST_CHECK_EQUAL(h.get(), obj);
+    BOOST_CHECK_EQUAL(sz1, msgpack::aligned_zone_size(h.get()));
     h = msgpack::clone(obj);
-    EXPECT_EQ(h.get(), obj);
-    EXPECT_EQ(sz1, msgpack::aligned_zone_size(h.get()));
+    BOOST_CHECK_EQUAL(h.get(), obj);
+    BOOST_CHECK_EQUAL(sz1, msgpack::aligned_zone_size(h.get()));
 }
 
-TEST(object, clone_str)
+BOOST_AUTO_TEST_CASE(clone_str)
 {
     msgpack::object_handle oh;
     std::string v = "123456789";
@@ -377,17 +367,17 @@ TEST(object, clone_str)
         msgpack::object obj(v, z);
         std::size_t sz1 = msgpack::aligned_zone_size(obj);
         msgpack::object_handle h = msgpack::clone(obj);
-        EXPECT_EQ(h.get(), obj);
-        EXPECT_EQ(sz1, msgpack::aligned_zone_size(h.get()));
+        BOOST_CHECK_EQUAL(h.get(), obj);
+        BOOST_CHECK_EQUAL(sz1, msgpack::aligned_zone_size(h.get()));
         h = msgpack::clone(obj);
-        EXPECT_EQ(h.get(), obj);
-        EXPECT_EQ(sz1, msgpack::aligned_zone_size(h.get()));
+        BOOST_CHECK_EQUAL(h.get(), obj);
+        BOOST_CHECK_EQUAL(sz1, msgpack::aligned_zone_size(h.get()));
         oh = msgpack::move(h);
     }
-    EXPECT_EQ(v, oh.get().as<std::string>());
+    BOOST_CHECK_EQUAL(v, oh.get().as<std::string>());
 }
 
-TEST(object, clone_bin)
+BOOST_AUTO_TEST_CASE(clone_bin)
 {
     msgpack::object_handle oh;
     std::vector<char> v;
@@ -399,19 +389,19 @@ TEST(object, clone_bin)
         msgpack::object obj(v, z);
         std::size_t sz1 = msgpack::aligned_zone_size(obj);
         msgpack::object_handle h = msgpack::clone(obj);
-        EXPECT_EQ(h.get(), obj);
-        EXPECT_EQ(sz1, msgpack::aligned_zone_size(h.get()));
+        BOOST_CHECK_EQUAL(h.get(), obj);
+        BOOST_CHECK_EQUAL(sz1, msgpack::aligned_zone_size(h.get()));
         h = msgpack::clone(obj);
-        EXPECT_EQ(h.get(), obj);
-        EXPECT_EQ(sz1, msgpack::aligned_zone_size(h.get()));
+        BOOST_CHECK_EQUAL(h.get(), obj);
+        BOOST_CHECK_EQUAL(sz1, msgpack::aligned_zone_size(h.get()));
         oh = msgpack::move(h);
     }
     std::vector<char> v2 = oh.get().as<std::vector<char> >();
-    EXPECT_EQ(v.size(), v2.size());
-    EXPECT_TRUE(equal(v.begin(), v.end(), v2.begin()));
+    BOOST_CHECK_EQUAL(v.size(), v2.size());
+    BOOST_CHECK(equal(v.begin(), v.end(), v2.begin()));
 }
 
-TEST(object, clone_array)
+BOOST_AUTO_TEST_CASE(clone_array)
 {
     msgpack::object_handle oh;
     std::vector<int> v;
@@ -423,19 +413,19 @@ TEST(object, clone_array)
         msgpack::object obj(v, z);
         std::size_t sz1 = msgpack::aligned_zone_size(obj);
         msgpack::object_handle h = msgpack::clone(obj);
-        EXPECT_EQ(h.get(), obj);
-        EXPECT_EQ(sz1, msgpack::aligned_zone_size(h.get()));
+        BOOST_CHECK_EQUAL(h.get(), obj);
+        BOOST_CHECK_EQUAL(sz1, msgpack::aligned_zone_size(h.get()));
         h = msgpack::clone(obj);
-        EXPECT_EQ(h.get(), obj);
-        EXPECT_EQ(sz1, msgpack::aligned_zone_size(h.get()));
+        BOOST_CHECK_EQUAL(h.get(), obj);
+        BOOST_CHECK_EQUAL(sz1, msgpack::aligned_zone_size(h.get()));
         oh = msgpack::move(h);
     }
     std::vector<int> v2 = oh.get().as<std::vector<int> >();
-    EXPECT_EQ(v.size(), v2.size());
-    EXPECT_TRUE(equal(v.begin(), v.end(), v2.begin()));
+    BOOST_CHECK_EQUAL(v.size(), v2.size());
+    BOOST_CHECK(equal(v.begin(), v.end(), v2.begin()));
 }
 
-TEST(object, clone_map)
+BOOST_AUTO_TEST_CASE(clone_map)
 {
     msgpack::object_handle oh;
     std::map<int, std::string> v;
@@ -447,45 +437,128 @@ TEST(object, clone_map)
         msgpack::object obj(v, z);
         std::size_t sz1 = msgpack::aligned_zone_size(obj);
         msgpack::object_handle h = msgpack::clone(obj);
-        EXPECT_EQ(h.get(), obj);
-        EXPECT_EQ(sz1, msgpack::aligned_zone_size(h.get()));
+        BOOST_CHECK_EQUAL(h.get(), obj);
+        BOOST_CHECK_EQUAL(sz1, msgpack::aligned_zone_size(h.get()));
         h = msgpack::clone(obj);
-        EXPECT_EQ(h.get(), obj);
-        EXPECT_EQ(sz1, msgpack::aligned_zone_size(h.get()));
+        BOOST_CHECK_EQUAL(h.get(), obj);
+        BOOST_CHECK_EQUAL(sz1, msgpack::aligned_zone_size(h.get()));
         oh = msgpack::move(h);
     }
     std::map<int, std::string> v2 = oh.get().as<std::map<int, std::string> >();
-    EXPECT_EQ(v.size(), v2.size());
-    EXPECT_TRUE(equal(v.begin(), v.end(), v2.begin()));
+    BOOST_CHECK_EQUAL(v.size(), v2.size());
+    BOOST_CHECK(equal(v.begin(), v.end(), v2.begin()));
 }
 
-TEST(object, pack_float)
+BOOST_AUTO_TEST_CASE(pack_float)
 {
     msgpack::object obj(1.2F);
     std::stringstream ss1;
     msgpack::pack(ss1, obj);
     std::stringstream ss2;
     msgpack::pack(ss2, 1.2F);
-    EXPECT_EQ(static_cast<size_t>(5), ss1.str().size());
-    EXPECT_EQ(ss1.str(), ss2.str());
+    BOOST_CHECK_EQUAL(static_cast<size_t>(5), ss1.str().size());
+    BOOST_CHECK_EQUAL(ss1.str(), ss2.str());
 }
 
-TEST(object, pack_double)
+BOOST_AUTO_TEST_CASE(pack_double)
 {
     msgpack::object obj(1.2);
     std::stringstream ss1;
     msgpack::pack(ss1, obj);
     std::stringstream ss2;
     msgpack::pack(ss2, 1.2);
-    EXPECT_EQ(static_cast<size_t>(9), ss1.str().size());
-    EXPECT_EQ(ss1.str(), ss2.str());
+    BOOST_CHECK_EQUAL(static_cast<size_t>(9), ss1.str().size());
+    BOOST_CHECK_EQUAL(ss1.str(), ss2.str());
 }
 
-TEST(object, handle_operators)
+BOOST_AUTO_TEST_CASE(handle_operators)
 {
     int i = 1;
     msgpack::object obj(i);
     msgpack::object_handle oh = msgpack::clone(obj);
-    EXPECT_EQ(oh.get(), *oh);
-    EXPECT_EQ(oh->as<int>(), oh.get().as<int>());
+    BOOST_CHECK_EQUAL(oh.get(), *oh);
+    BOOST_CHECK_EQUAL(oh->as<int>(), oh.get().as<int>());
 }
+
+const unsigned int kLoop = 1000;
+const unsigned int kElements = 100;
+
+BOOST_AUTO_TEST_CASE(vector_char)
+{
+    for (unsigned int k = 0; k < kLoop; k++) {
+        std::vector<char> v1;
+        v1.push_back(1);
+        for (unsigned int i = 1; i < kElements; i++)
+            v1.push_back(static_cast<char>(i));
+        msgpack::object obj(v1);
+        BOOST_CHECK(obj.as<std::vector<char> >() == v1);
+        v1.front() = 42;
+        // obj refer to v1
+        BOOST_CHECK_EQUAL(obj.as<std::vector<char> >().front(), 42);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(vector_unsigned_char)
+{
+    if (!msgpack::is_same<uint8_t, unsigned char>::value) return;
+    for (unsigned int k = 0; k < kLoop; k++) {
+        std::vector<unsigned char> v1;
+        v1.push_back(1);
+        for (unsigned int i = 1; i < kElements; i++)
+            v1.push_back(static_cast<unsigned char>(i));
+        msgpack::object obj(v1);
+        BOOST_CHECK(obj.as<std::vector<unsigned char> >() == v1);
+        v1.front() = 42;
+        // obj refer to v1
+        BOOST_CHECK_EQUAL(obj.as<std::vector<unsigned char> >().front(), 42);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(raw_ref)
+{
+    std::string s = "abc";
+    msgpack::type::raw_ref v(s.data(), static_cast<uint32_t>(s.size()));
+    msgpack::zone z;
+    msgpack::object obj(v);
+    BOOST_CHECK(obj.as<msgpack::type::raw_ref>() == v);
+    s[0] = 'd';
+    BOOST_CHECK(obj.as<msgpack::type::raw_ref>() == v);
+}
+
+#if MSGPACK_CPP_VERSION >= 201703
+
+BOOST_AUTO_TEST_CASE(array_char)
+{
+    typedef std::array<char, kElements> test_t;
+    for (unsigned int k = 0; k < kLoop; k++) {
+        test_t v1;
+        v1[0] = 1;
+        for (unsigned int i = 1; i < kElements; i++)
+            v1[i] = static_cast<char>(rand());
+        msgpack::object obj(v1);
+        BOOST_CHECK(obj.as<test_t>() == v1);
+        v1.front() = 42;
+        // obj refer to v1
+        BOOST_CHECK_EQUAL(obj.as<test_t>().front(), 42);
+    }
+}
+
+
+BOOST_AUTO_TEST_CASE(array_unsigned_char)
+{
+    if (!msgpack::is_same<uint8_t, unsigned char>::value) return;
+    typedef std::array<unsigned char, kElements> test_t;
+    for (unsigned int k = 0; k < kLoop; k++) {
+        test_t v1;
+        v1[0] = 1;
+        for (unsigned int i = 1; i < kElements; i++)
+            v1[i] = static_cast<unsigned char>(rand());
+        msgpack::object obj(v1);
+        BOOST_CHECK(obj.as<test_t>() == v1);
+        v1.front() = 42;
+        // obj refer to v1
+        BOOST_CHECK_EQUAL(obj.as<test_t>().front(), 42);
+    }
+}
+
+#endif // MSGPACK_CPP_VERSION >= 201703
