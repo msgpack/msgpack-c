@@ -184,7 +184,7 @@ INSTALL (DIRECTORY include/
 
 INCLUDE (CMakePackageConfigHelpers)
 
-IF (CMAKE_VERSION VERSION_GREATER_EQUAL 3.14)
+IF (NOT (CMAKE_VERSION VERSION_LESS 3.14))
     SET (extra_version_file_args ARCH_INDEPENDENT)
 ENDIF ()
 SET (cmake_config_path "lib/cmake/msgpackc-cxx")
