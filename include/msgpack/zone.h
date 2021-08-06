@@ -107,7 +107,7 @@ static inline void* msgpack_zone_malloc(msgpack_zone* zone, size_t size)
 {
     char* aligned =
         (char*)(
-            (size_t)(
+            (uintptr_t)(
                 zone->chunk_list.ptr + (MSGPACK_ZONE_ALIGN - 1)
             ) / MSGPACK_ZONE_ALIGN * MSGPACK_ZONE_ALIGN
         );
@@ -120,7 +120,7 @@ static inline void* msgpack_zone_malloc(msgpack_zone* zone, size_t size)
     {
         void* ptr = msgpack_zone_malloc_expand(zone, size + (MSGPACK_ZONE_ALIGN - 1));
         if (ptr) {
-            return (char*)((size_t)(ptr) / MSGPACK_ZONE_ALIGN * MSGPACK_ZONE_ALIGN);
+            return (char*)((uintptr_t)(ptr) / MSGPACK_ZONE_ALIGN * MSGPACK_ZONE_ALIGN);
         }
     }
     return NULL;
