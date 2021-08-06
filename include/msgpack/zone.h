@@ -109,7 +109,7 @@ static inline void* msgpack_zone_malloc(msgpack_zone* zone, size_t size)
         (char*)(
             (uintptr_t)(
                 zone->chunk_list.ptr + (MSGPACK_ZONE_ALIGN - 1)
-            ) / MSGPACK_ZONE_ALIGN * MSGPACK_ZONE_ALIGN
+            ) & ~(uintptr_t)(MSGPACK_ZONE_ALIGN - 1)
         );
     size_t adjusted_size = size + (size_t)(aligned - zone->chunk_list.ptr);
     if(zone->chunk_list.free >= adjusted_size) {
@@ -120,7 +120,7 @@ static inline void* msgpack_zone_malloc(msgpack_zone* zone, size_t size)
     {
         void* ptr = msgpack_zone_malloc_expand(zone, size + (MSGPACK_ZONE_ALIGN - 1));
         if (ptr) {
-            return (char*)((uintptr_t)(ptr) / MSGPACK_ZONE_ALIGN * MSGPACK_ZONE_ALIGN);
+            return (char*)((uintptr_t)(ptr) & ~(uintptr_t)(MSGPACK_ZONE_ALIGN - 1));
         }
     }
     return NULL;
