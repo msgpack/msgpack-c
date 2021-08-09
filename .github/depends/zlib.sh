@@ -15,7 +15,7 @@ while getopts "b:t:p:" c; do
   case "$c" in
     b)
       bit="$OPTARG"
-      [ "$bit" != "32" ] && [ "$bit" != "64" ] && usage && exit 1
+      [ "$bit" != "32" ] && [ "$bit" != "64" ] && [ "$bit" != "both" ] && usage && exit 1
       ;;
     p)
       prefix="$OPTARG"
@@ -26,15 +26,26 @@ while getopts "b:t:p:" c; do
   esac
 done
 
+mkdir $prefix || exit 1
 wget https://zlib.net/zlib-1.2.11.tar.gz || exit 1
 tar -xf zlib-1.2.11.tar.gz || exit 1
 cd zlib-1.2.11
 
-mkdir $prefix
-cmake \
+build()
+{
+  cmake \
     -D CMAKE_BUILD_TYPE=Release \
-    -D CMAKE_INSTALL_PREFIX=$prefix \
-    -D CMAKE_C_FLAGS="-m${bit}" \
-    -D CMAKE_SHARED_LINKER_FLAGS="-m${bit}" \
+    -D CMAKE_INSTALL_PREFIX=$2/$1 \
+    -D CMAKE_C_FLAGS="-m$1" \
+    -D CMAKE_SHARED_LINKER_FLAGS="-m$1" \
+    -B build$1 \
     -S .
-cmake --build . --target install
+  cmake --build build$1 --target install
+}
+
+if [ "$bit" = "both" ]; then
+  build 32 $prefix
+  build 64 $prefix
+else
+  build $bit $prefix
+fi

@@ -11,11 +11,9 @@ EOL
 
 build_boost()
 {
-  mkdir $3 || exit 1
   ./b2 \
-      -j4 \
       --toolset=$1 \
-      --prefix=$3 \
+      --prefix=$3/$2 \
       --with-test \
       --with-headers \
       --with-chrono \
@@ -50,6 +48,7 @@ while getopts "b:t:p:" c; do
   esac
 done
 
+mkdir $prefix || exit 1
 wget https://boostorg.jfrog.io/artifactory/main/release/1.76.0/source/boost_1_76_0.tar.bz2 || exit 1
 tar xf boost_1_76_0.tar.bz2 || exit 1
 cd boost_1_76_0

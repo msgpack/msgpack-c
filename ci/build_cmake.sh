@@ -1,10 +1,11 @@
 #!/bin/bash
 
-mkdir $CXX-build  || exit 1
-mkdir $CXX-prefix || exit 1
+build_dir="$CXX-build"
+prefix_dir="`pwd`/$CXX-prefix"
+mkdir $build_dir  || exit 1
+mkdir $prefix_dir || exit 1
 
-if [ "${ARCH}" == "32" ]
-then
+if [ "${ARCH}" == "32" ]; then
     export BIT32="ON"
     export ARCH_FLAG="-m32"
 else
@@ -13,7 +14,7 @@ else
 fi
 
 cmake \
-    -D CMAKE_PREFIX_PATH="$HOME/boost-prefix;$HOME/zlib-prefix" \
+    -D CMAKE_PREFIX_PATH="${HOME}/boost-prefix/${ARCH};${HOME}/zlib-prefix/${ARCH}" \
     -D MSGPACK_BUILD_TESTS=ON \
     -D ${MSGPACK_CXX_VERSION} \
     -D MSGPACK_32BIT=${BIT32} \
@@ -21,17 +22,16 @@ cmake \
     -D MSGPACK_DEFAULT_API_VERSION=${API_VERSION} \
     -D MSGPACK_USE_X3_PARSE=${X3_PARSE} \
     -D CMAKE_CXX_FLAGS="${CXXFLAGS} ${ARCH_FLAG}" \
-    -D CMAKE_INSTALL_PREFIX=`pwd`/$CXX-prefix \
-    -B $CXX-build \
+    -D CMAKE_INSTALL_PREFIX=$prefix_dir \
+    -B $build_dir \
     -S . || exit 1
 
-cmake --build $CXX-build --target install || exit 1
+cmake --build $build_dir --target install || exit 1
 
-ctest -VV --test-dir $CXX-build || exit 1
+ctest -VV --test-dir $build_dir || exit 1
 
-if [ "${ARCH}" != "32" ] && [ `uname` = "Linux" ]
-then
-    ctest -T memcheck --test-dir $CXX-build | tee memcheck.log
+if [ "${ARCH}" != "32" ] && [ `uname` = "Linux" ]; then
+    ctest -T memcheck --test-dir $build_dir | tee memcheck.log
 
     ret=${PIPESTATUS[0]}
     if [ $ret -ne 0 ]
@@ -46,16 +46,15 @@ then
     fi
 fi
 
-if [ "${ARCH}" != "32" ]
-then
+if [ "${ARCH}" != "32" ]; then
     cd test-install || exit 1
 
-    mkdir $CXX-build
+    mkdir $build_dir
     cmake \
-        -D CMAKE_PREFIX_PATH="`pwd`/../$CXX-prefix;$HOME/boost-prefix" \
-        -B $CXX-build \
+        -D CMAKE_PREFIX_PATH="$prefix_dir;${HOME}/boost-prefix/${ARCH}" \
+        -B $build_dir \
         -S . || exit 1
-    cmake --build $CXX-build --target all || exit 1
+    cmake --build $build_dir --target all || exit 1
 
-    $CXX-build/test-install || exit 1
+    $build_dir/test-install || exit 1
 fi

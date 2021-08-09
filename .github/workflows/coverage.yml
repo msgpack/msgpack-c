@@ -16,10 +16,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-    - name: install depends
+    - name: Install build dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install g++-10-multilib lcov -y
+        sudo apt-get install g++-10 cmake lcov -y
         ./ci/set_gcc_10.sh
 
     - name: Cache boost
@@ -27,22 +27,22 @@ jobs:
       uses: actions/cache@v1
       with:
         path: ~/boost-prefix/
-        key: ${{ runner.os }}-boost-64-1-76-0-20210613
+        key: ${{ runner.os }}-boost-64-1-76-0-2021-08-09
 
     - name: Build boost
       if: steps.cache-boost.outputs.cache-hit != 'true'
-      run: ./.github/depends/boost.sh -b 64 -t gcc -p $HOME/boost-prefix/
+      run: ./.github/depends/boost.sh -b 64 -t gcc -p $HOME/boost-prefix
 
     - name: Cache zlib
       id: cache-zlib
       uses: actions/cache@v1
       with:
         path: ~/zlib-prefix/
-        key: ${{ runner.os }}-zlib-64-1-2-11-20210613
+        key: ${{ runner.os }}-zlib-64-1-2-11-2021-08-09
 
     - name: Build zlib
       if: steps.cache-zlib.outputs.cache-hit != 'true'
-      run: ./.github/depends/zlib.sh -b 64 -p $HOME/zlib-prefix/
+      run: ./.github/depends/zlib.sh -b 64 -p $HOME/zlib-prefix
 
     - name: Compile tests
       run: |
@@ -56,7 +56,7 @@ jobs:
             -D MSGPACK_BUILD_TESTS=ON \
             -D CMAKE_BUILD_TYPE=Debug \
             -D MSGPACK_GEN_COVERAGE=ON \
-            -D CMAKE_PREFIX_PATH="$HOME/zlib-prefix;$HOME/boost-prefix" \
+            -D CMAKE_PREFIX_PATH="$HOME/zlib-prefix/64;$HOME/boost-prefix/64" \
             -B build \
             -S . || exit 1
         cmake --build build --target all || exit 1
