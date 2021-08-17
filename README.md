@@ -64,72 +64,112 @@ int main()
 See [`QUICKSTART-CPP.md`](./QUICKSTART-CPP.md) for more details.
 
 Dependency
------
+----------
+
 msgpack-c requires [boost library](https://www.boost.org/).
-msgpack-c depends on only boost headers. You don't need to link boost libraries.
+C++ version of msgpack-c itself is a header-only library and depends only on
+boost headers. Tests depend on boost unit test framework and are linked with
+it, so if you want to build them, you need to have this dependency installed.
 
 Usage
 -----
 
-### C++ Header Only Library
+- If you build your project with cmake, you can find msgpack-c with a
+  canonical cmake-way:
 
-When you use msgpack on C++, you can just add
-msgpack-c/include to your include path:
+  ```cmake
+  # ...
+  find_package(msgpack REQUIRED)
+  # ...
+  target_link_libraries(your_target_name <PRIVATE/PUBLIC/INTERFACE> msgpackc-cxx)
+  # ...
+  ```
 
-    g++ -I msgpack-c/include -I path_to_boost your_source_file.cpp
+  This will search for `msgpack` cmake package in a system prefix and in
+  prefixes from `CMAKE_PREFIX_PATH`. Note that msgpack-c depends on boost
+  headers, and `msgpack` cmake package depends on `Boost` cmake package. The
+  library is header-only and `target_link_libraries` command just adds path
+  to msgpack-c headers to your compiler's include path.
 
+  A usage example can be found at [test-install](test-install) directory.
 
-### Building and Installing
+- If you do not use cmake, you can just add path yo msgpack-c and boost
+  headers to your include path:
 
-#### Install from git repository
+  ```bash
+  g++ -I msgpack-c/include -I path_to_boost your_source_file.cpp
+  ```
 
-##### Using the Terminal (CLI)
+Building and Installing
+-----------------------
+
+### Install from git repository
+
+#### Using the Terminal (CLI)
 
 You will need:
 
- - `gcc >= 4.1.0`
- - `cmake >= 3.0.0`
+- `gcc >= 4.1.0`
+- `cmake >= 3.1.0`
 
 C++03:
 
-    $ git clone https://github.com/msgpack/msgpack-c.git
-    $ cd msgpack-c
-    $ git checkout cpp_master
-    $ cmake .
-    $ make
-    $ sudo make install
+```bash
+git clone https://github.com/msgpack/msgpack-c.git
+cd msgpack-c
+git checkout cpp_master
+cmake .
+sudo cmake --build . --target install
+```
 
-If you want to setup C++17 version of msgpack instead,
-execute the following commands:
+If you want to build tests with different C++ version, you can use
+`MSGPACK_CXX11`, `MSGPACK_CXX14`, `MSGPACK_CXX17`, `MSGPACK_CXX20` options.
+Just replace the line
 
-    $ git clone https://github.com/msgpack/msgpack-c.git
-    $ cd msgpack-c
-    $ git checkout cpp_master
-    $ cmake -DMSGPACK_CXX17=ON .
-    $ make
-    $ sudo make install
+```bash
+cmake .
+```
 
-For C++11, replace `-DMSGPACK_CXX17=ON` with `-DMSGPACK_CXX11=ON`.
+with a line like that:
 
-`MSGPACK_CXX11` and `MSGPACK_CXX17` flags do not affect installation. They just switch test cases. All files are installed in every settings.
+```bash
+cmake -DMSGPACK_CXX20=ON .
+```
 
+Note that these flags do not affect installation. They just switch test cases.
+All files are installed in every settings.
+
+If you don't have superuser permissions or don't want to install the library
+to a system-wide prefix, you can use `CMAKE_INSTALL_PREFIX` option like that:
+
+```bash
+cmake -DCMAKE_INSTALL_PREFIX=/your/custom/prefix .
+```
+
+Other useful options:
+
+- `MSGPACK_BUILD_TESTS` (default `OFF`): build tests
+- `MSGPACK_BUILD_EXAMPLES` (default `OFF`): build examples
+- `MSGPACK_32BIT` (default `OFF`): 32bit compile
+- `MSGPACK_USE_X3_PARSE` (default `OFF`): use Boost X3 parse
+  (note that it requires C++14 or newer)
 
 #### GUI on Windows
 
-Clone msgpack-c git repository.
+Clone msgpack-c git repository with the command:
 
-    $ git clone https://github.com/msgpack/msgpack-c.git
+```
+git clone https://github.com/msgpack/msgpack-c.git
+```
 
-or using GUI git client.
+or using GUI git client (e.g. [tortoise git](https://code.google.com/p/tortoisegit/)).
 
-e.g.) tortoise git https://code.google.com/p/tortoisegit/
-
-1. Checkout to cpp_master branch
+1. Checkout to `cpp_master` branch
 
 2. Launch [cmake GUI client](http://www.cmake.org/cmake/resources/software.html).
 
-3. Set 'Where is the source code:' text box and 'Where to build
-the binaries:' text box.
+3. Set 'Where is the source code:' text box and
+   'Where to build the binaries:' text box.
 
 4. Click 'Configure' button.
 
@@ -141,7 +181,8 @@ the binaries:' text box.
 
 8. Build all.
 
-### Documentation
+Documentation
+-------------
 
 You can get additional information including the tutorial on the
 [wiki](https://github.com/msgpack/msgpack-c/wiki).
