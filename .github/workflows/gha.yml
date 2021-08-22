@@ -131,39 +131,51 @@ jobs:
 
         case ${{ matrix.pattern }} in
           0)
+            export CXX="clang++-10"
             export MSGPACK_CXX_VERSION="MSGPACK_CXX11=OFF"
             ;;
           1)
+            export CXX="g++-10"
             export MSGPACK_CXX_VERSION="MSGPACK_CXX11=ON"
             ;;
           2)
+            export CXX="clang++-10"
             export MSGPACK_CXX_VERSION="MSGPACK_CXX14=ON"
             ;;
           3)
+            export CXX="g++-10"
             export MSGPACK_CXX_VERSION="MSGPACK_CXX17=ON"
             ;;
           4)
+            export CXX="clang++-10"
             export MSGPACK_CXX_VERSION="MSGPACK_CXX20=ON"
             ;;
           5)
+            export CXX="g++-10"
             export ARCH=32
             ;;
           6)
+            export CXX="clang++-10"
             export API_VERSION=2
             ;;
           7)
+            export CXX="g++-10"
             export API_VERSION=1
             ;;
           8)
+            export CXX="clang++-10"
             export CHAR_SIGN="unsigned"
             ;;
           9)
+            export CXX="g++-10"
             export X3_PARSE="ON"
             ;;
           10)
+            export CXX="clang++-10"
             export ACTION="ci/build_regression.sh"
             ;;
           11)
+            export CXX="g++-10"
             export ARCH=32
             export CHAR_SIGN="unsigned"
             export X3_PARSE="ON"
@@ -171,17 +183,7 @@ jobs:
         esac
 
         # build and test
-
-        # g++
-        export CXX="g++-10"
         CMAKE_CXX_COMPILER="$CXX" CXXFLAGS="-Werror -g ${SANITIZE}" ci/build_cmake.sh || exit 1
-
-        # clang++
-        # with ubsan clang inserts undefined reference to `__mulodi4' on 32-bit build - skip this configuration
-        if ! [[ $SANITIZE != "" && $ARCH -eq 32 ]]; then
-          export CXX="clang++-10"
-          CMAKE_CXX_COMPILER="$CXX" CXXFLAGS="-Werror -g ${SANITIZE}" ci/build_cmake.sh || exit 1
-        fi
         cat Files.cmake| grep ".*\.[h|hpp]" | perl -pe 's/ //g' | sort > tmp1  && find include -name "*.h" -o -name "*.hpp" | sort > tmp2 && diff tmp1 tmp2
 
   windows:
