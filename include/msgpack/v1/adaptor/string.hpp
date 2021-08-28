@@ -30,16 +30,10 @@ struct convert<std::string> {
     msgpack::object const& operator()(msgpack::object const& o, std::string& v) const {
         switch (o.type) {
         case msgpack::type::BIN:
-            if (o.via.bin.size == 0)
-                v.clear();
-            else
-                v.assign(o.via.bin.ptr, o.via.bin.size);
+            v.assign(o.via.bin.ptr, o.via.bin.size);
             break;
         case msgpack::type::STR:
-            if (o.via.str.size == 0)
-                v.clear();
-            else
-                v.assign(o.via.str.ptr, o.via.str.size);
+            v.assign(o.via.str.ptr, o.via.str.size);
             break;
         default:
             throw msgpack::type_error();
