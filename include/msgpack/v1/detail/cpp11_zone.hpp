@@ -14,9 +14,12 @@
 #include "msgpack/cpp_config.hpp"
 #include "msgpack/zone_decl.hpp"
 
+#include <cstdint>
 #include <cstdlib>
 #include <memory>
 #include <vector>
+
+#include <boost/assert.hpp>
 
 namespace msgpack {
 
@@ -230,10 +233,11 @@ inline zone::zone(size_t chunk_size) noexcept:m_chunk_size(chunk_size), m_chunk_
 
 inline char* zone::get_aligned(char* ptr, size_t align)
 {
+    BOOST_ASSERT(align != 0 && (align & (align - 1)) == 0); // align must be 2^n (n >= 0)
     return
         reinterpret_cast<char*>(
-            reinterpret_cast<size_t>(
-            (ptr + (align - 1))) / align * align);
+            reinterpret_cast<uintptr_t>(ptr + (align - 1)) & ~static_cast<uintptr_t>(align - 1)
+        );
 }
 
 inline void* zone::allocate_align(size_t size, size_t align)
