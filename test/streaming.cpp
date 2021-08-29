@@ -1,19 +1,11 @@
 #include <msgpack.hpp>
 
-#if defined(__GNUC__)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wconversion"
-#endif //defined(__GNUC__)
-
-#include <gtest/gtest.h>
-
-#if defined(__GNUC__)
-#pragma GCC diagnostic pop
-#endif //defined(__GNUC__)
+#define BOOST_TEST_MODULE streaming
+#include <boost/test/unit_test.hpp>
 
 #include <sstream>
 
-TEST(streaming, basic)
+BOOST_AUTO_TEST_CASE(basic)
 {
     msgpack::sbuffer buffer;
 
@@ -44,25 +36,25 @@ TEST(streaming, basic)
             msgpack::object obj = oh.get();
             switch(count++) {
             case 0:
-                EXPECT_EQ(1, obj.as<int>());
+                BOOST_CHECK_EQUAL(1, obj.as<int>());
                 break;
             case 1:
-                EXPECT_EQ(2, obj.as<int>());
+                BOOST_CHECK_EQUAL(2, obj.as<int>());
                 break;
             case 2:
-                EXPECT_EQ(3, obj.as<int>());
+                BOOST_CHECK_EQUAL(3, obj.as<int>());
                 return;
             }
         }
 
-        EXPECT_TRUE(input < eof);
+        BOOST_CHECK(input < eof);
     }
 }
 
 // obsolete
 #if MSGPACK_DEFAULT_API_VERSION == 1
 
-TEST(streaming, basic_pointer)
+BOOST_AUTO_TEST_CASE(basic_pointer)
 {
     msgpack::sbuffer buffer;
 
@@ -100,18 +92,18 @@ TEST(streaming, basic_pointer)
             msgpack::object obj = oh.get();
             switch(count++) {
             case 0:
-                EXPECT_EQ(1, obj.as<int>());
+                BOOST_CHECK_EQUAL(1, obj.as<int>());
                 break;
             case 1:
-                EXPECT_EQ(2, obj.as<int>());
+                BOOST_CHECK_EQUAL(2, obj.as<int>());
                 break;
             case 2:
-                EXPECT_EQ(3, obj.as<int>());
+                BOOST_CHECK_EQUAL(3, obj.as<int>());
                 return;
             }
         }
 
-        EXPECT_TRUE(input < eof);
+        BOOST_CHECK(input < eof);
     }
 }
 
@@ -119,7 +111,7 @@ TEST(streaming, basic_pointer)
 
 #if !defined(MSGPACK_USE_CPP03)
 
-TEST(streaming, move)
+BOOST_AUTO_TEST_CASE(move)
 {
     msgpack::sbuffer buffer;
 
@@ -151,18 +143,18 @@ TEST(streaming, move)
             msgpack::object obj = oh.get();
             switch(count++) {
             case 0:
-                EXPECT_EQ(1, obj.as<int>());
+                BOOST_CHECK_EQUAL(1, obj.as<int>());
                 break;
             case 1:
-                EXPECT_EQ(2, obj.as<int>());
+                BOOST_CHECK_EQUAL(2, obj.as<int>());
                 break;
             case 2:
-                EXPECT_EQ(3, obj.as<int>());
+                BOOST_CHECK_EQUAL(3, obj.as<int>());
                 return;
             }
         }
 
-        EXPECT_TRUE(input < eof);
+        BOOST_CHECK(input < eof);
         pac = std::move(pac_in);
     }
 }
@@ -200,7 +192,7 @@ public:
 
     void on_message(msgpack::object obj, msgpack::unique_ptr<msgpack::zone>)
     {
-        EXPECT_EQ(expect, obj.as<int>());
+        BOOST_CHECK_EQUAL(expect, obj.as<int>());
     }
 
     int expect;
@@ -210,7 +202,7 @@ private:
     msgpack::unpacker pac;
 };
 
-TEST(streaming, event)
+BOOST_AUTO_TEST_CASE(event)
 {
     std::stringstream stream;
     msgpack::packer<std::ostream> pk(&stream);
@@ -234,7 +226,7 @@ TEST(streaming, event)
 #if MSGPACK_DEFAULT_API_VERSION == 1
 
 // backward compatibility
-TEST(streaming, basic_compat)
+BOOST_AUTO_TEST_CASE(basic_compat)
 {
     std::ostringstream stream;
     msgpack::packer<std::ostream> pk(&stream);
@@ -261,13 +253,13 @@ TEST(streaming, basic_compat)
 
             switch(count++) {
             case 0:
-                EXPECT_EQ(1, obj.as<int>());
+                BOOST_CHECK_EQUAL(1, obj.as<int>());
                 break;
             case 1:
-                EXPECT_EQ(2, obj.as<int>());
+                BOOST_CHECK_EQUAL(2, obj.as<int>());
                 break;
             case 2:
-                EXPECT_EQ(3, obj.as<int>());
+                BOOST_CHECK_EQUAL(3, obj.as<int>());
                 return;
             }
 
@@ -310,7 +302,7 @@ public:
 
     void on_message(msgpack::object obj, msgpack::unique_ptr<msgpack::zone>)
     {
-        EXPECT_EQ(expect, obj.as<int>());
+        BOOST_CHECK_EQUAL(expect, obj.as<int>());
     }
 
     int expect;
@@ -320,7 +312,7 @@ private:
     msgpack::unpacker pac;
 };
 
-TEST(streaming, event_compat)
+BOOST_AUTO_TEST_CASE(event_compat)
 {
     std::stringstream stream;
     msgpack::packer<std::ostream> pk(&stream);

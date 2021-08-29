@@ -1,66 +1,37 @@
 #!/bin/bash
 
-mkdir build
+build_dir="$CXX-build"
+prefix_dir="`pwd`/$CXX-prefix"
+mkdir $build_dir  || exit 1
+mkdir $prefix_dir || exit 1
 
-ret=$?
-if [ $ret -ne 0 ]
-then
-    exit $ret
-fi
-
-cd build
-
-ret=$?
-if [ $ret -ne 0 ]
-then
-    exit $ret
-fi
-
-if [ "${ARCH}" == "32" ]
-then
+if [ "${ARCH}" == "32" ]; then
     export BIT32="ON"
     export ARCH_FLAG="-m32"
-    ZLIB32="-DZLIB_LIBRARY=/usr/lib32/libz.a"
 else
     export BIT32="OFF"
     export ARCH_FLAG="-m64"
 fi
 
-cmake -DMSGPACK_CXX11=${CXX11} -DMSGPACK_CXX17=${CXX17} -DMSGPACK_32BIT=${BIT32} -DMSGPACK_CHAR_SIGN=${CHAR_SIGN} -DMSGPACK_DEFAULT_API_VERSION=${API_VERSION} -DMSGPACK_USE_X3_PARSE=${X3_PARSE} -DCMAKE_CXX_FLAGS="${ARCH_FLAG} ${CXXFLAGS}" ${ZLIB32} ..
+cmake \
+    -D CMAKE_PREFIX_PATH="${HOME}/boost-prefix/${ARCH};${HOME}/zlib-prefix/${ARCH}" \
+    -D MSGPACK_BUILD_TESTS=ON \
+    -D ${MSGPACK_CXX_VERSION} \
+    -D MSGPACK_32BIT=${BIT32} \
+    -D MSGPACK_CHAR_SIGN=${CHAR_SIGN} \
+    -D MSGPACK_DEFAULT_API_VERSION=${API_VERSION} \
+    -D MSGPACK_USE_X3_PARSE=${X3_PARSE} \
+    -D CMAKE_CXX_FLAGS="${CXXFLAGS} ${ARCH_FLAG}" \
+    -D CMAKE_INSTALL_PREFIX=$prefix_dir \
+    -B $build_dir \
+    -S . || exit 1
 
-ret=$?
-if [ $ret -ne 0 ]
-then
-    exit $ret
-fi
+cmake --build $build_dir --target install || exit 1
 
-make
+ctest -VV --test-dir $build_dir || exit 1
 
-ret=$?
-if [ $ret -ne 0 ]
-then
-    exit $ret
-fi
-
-ctest -VV
-
-ret=$?
-if [ $ret -ne 0 ]
-then
-    exit $ret
-fi
-
-make install DESTDIR=`pwd`/install
-
-ret=$?
-if [ $ret -ne 0 ]
-then
-    exit $ret
-fi
-
-if [ "${ARCH}" != "32" ] && [ `uname` = "Linux" ]
-then
-    ctest -T memcheck | tee memcheck.log
+if [ "${ARCH}" != "32" ] && [ `uname` = "Linux" ]; then
+    ctest -T memcheck --test-dir $build_dir | tee memcheck.log
 
     ret=${PIPESTATUS[0]}
     if [ $ret -ne 0 ]
@@ -75,39 +46,15 @@ then
     fi
 fi
 
-if [ "${ARCH}" != "32" ]
-then
-    mkdir install-test
+if [ "${ARCH}" != "32" ]; then
+    cd test-install || exit 1
 
-    ret=$?
-    if [ $ret -ne 0 ]
-    then
-        exit $ret
-    fi
+    mkdir $build_dir
+    cmake \
+        -D CMAKE_PREFIX_PATH="$prefix_dir;${HOME}/boost-prefix/${ARCH}" \
+        -B $build_dir \
+        -S . || exit 1
+    cmake --build $build_dir --target all || exit 1
 
-    cd install-test
-
-    ret=$?
-    if [ $ret -ne 0 ]
-    then
-        exit $ret
-    fi
-
-    ${CXX} ../../example/cpp03/simple.cpp -o simple -I `pwd`/../install/usr/local/include -I ${GTEST_ROOT}/include -L ${GTEST_ROOT}/lib -lgtest_main -lgtest
-
-    ret=$?
-    if [ $ret -ne 0 ]
-    then
-        exit $ret
-    fi
-
-    ./simple
-
-    ret=$?
-    if [ $ret -ne 0 ]
-    then
-        exit $ret
-    fi
+    $build_dir/test-install || exit 1
 fi
-
-exit 0

@@ -177,6 +177,9 @@ inline void unpack_str(unpack_user& u, const char* p, uint32_t l, msgpack::objec
         std::memcpy(tmp, p, l);
         o.via.str.ptr = tmp;
     }
+    else {
+        o.via.str.ptr = MSGPACK_NULLPTR;
+    }
     o.via.str.size = l;
 }
 
@@ -192,6 +195,9 @@ inline void unpack_bin(unpack_user& u, const char* p, uint32_t l, msgpack::objec
         char* tmp = static_cast<char*>(u.zone().allocate_align(l, MSGPACK_ZONE_ALIGNOF(char)));
         std::memcpy(tmp, p, l);
         o.via.bin.ptr = tmp;
+    }
+    else {
+        o.via.bin.ptr = MSGPACK_NULLPTR;
     }
     o.via.bin.size = l;
 }

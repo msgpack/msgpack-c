@@ -1,38 +1,30 @@
 #include <msgpack.hpp>
 
-#if defined(__GNUC__)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wconversion"
-#endif //defined(__GNUC__)
+#define BOOST_TEST_MODULE zone
+#include <boost/test/unit_test.hpp>
 
-#include <gtest/gtest.h>
-
-#if defined(__GNUC__)
-#pragma GCC diagnostic pop
-#endif //defined(__GNUC__)
-
-TEST(zone, allocate_align)
+BOOST_AUTO_TEST_CASE(allocate_align)
 {
     msgpack::zone z;
     char* start = (char*)z.allocate_align(1);
-    EXPECT_EQ(0ul, reinterpret_cast<std::size_t>(start) % sizeof(int));
+    BOOST_CHECK_EQUAL(0ul, reinterpret_cast<std::size_t>(start) % sizeof(int));
     for (std::size_t s = 1; s < sizeof(int); ++s) {
         z.allocate_no_align(s);
         char* buf_a = (char*)z.allocate_align(1);
-        EXPECT_EQ(0ul, reinterpret_cast<std::size_t>(buf_a) % sizeof(int));
+        BOOST_CHECK_EQUAL(0ul, reinterpret_cast<std::size_t>(buf_a) % sizeof(int));
     }
 }
 
-TEST(zone, allocate_align_custom)
+BOOST_AUTO_TEST_CASE(allocate_align_custom)
 {
     msgpack::zone z;
     for (std::size_t align = 1; align < 64; ++align) {
         char* start = (char*)z.allocate_align(1, align);
-        EXPECT_EQ(0ul, reinterpret_cast<std::size_t>(start) % align);
+        BOOST_CHECK_EQUAL(0ul, reinterpret_cast<std::size_t>(start) % align);
         for (std::size_t s = 1; s < align; ++s) {
             z.allocate_no_align(s);
             char* buf_a = (char*)z.allocate_align(1, align);
-            EXPECT_EQ(0ul, reinterpret_cast<std::size_t>(buf_a) % align);
+            BOOST_CHECK_EQUAL(0ul, reinterpret_cast<std::size_t>(buf_a) % align);
         }
     }
 }
@@ -54,21 +46,21 @@ private:
 };
 
 
-TEST(zone, allocate)
+BOOST_AUTO_TEST_CASE(allocate)
 {
     msgpack::zone z;
     myclass* m = z.allocate<myclass>();
-    EXPECT_EQ(m->num, 0);
-    EXPECT_EQ(m->str, "default");
+    BOOST_CHECK_EQUAL(m->num, 0);
+    BOOST_CHECK_EQUAL(m->str, "default");
 }
 
 
-TEST(zone, allocate_constructor)
+BOOST_AUTO_TEST_CASE(allocate_constructor)
 {
     msgpack::zone z;
     myclass* m = z.allocate<myclass>(7, "msgpack");
-    EXPECT_EQ(m->num, 7);
-    EXPECT_EQ(m->str, "msgpack");
+    BOOST_CHECK_EQUAL(m->num, 7);
+    BOOST_CHECK_EQUAL(m->str, "msgpack");
 }
 
 
@@ -78,7 +70,7 @@ static void custom_finalizer_func(void* user)
     delete m;
 }
 
-TEST(zone, push_finalizer)
+BOOST_AUTO_TEST_CASE(push_finalizer)
 {
     msgpack::zone z;
     myclass* m = new myclass();
@@ -86,7 +78,7 @@ TEST(zone, push_finalizer)
 }
 
 
-TEST(zone, push_finalizer_unique_ptr)
+BOOST_AUTO_TEST_CASE(push_finalizer_unique_ptr)
 {
     msgpack::zone z;
     msgpack::unique_ptr<myclass> am(new myclass());
@@ -94,10 +86,10 @@ TEST(zone, push_finalizer_unique_ptr)
 }
 
 
-TEST(zone, allocate_no_align)
+BOOST_AUTO_TEST_CASE(allocate_no_align)
 {
     msgpack::zone z;
-    char* buf1 = (char*)z.allocate_no_align(4);
-    char* buf2 = (char*)z.allocate_no_align(4);
-    EXPECT_EQ(buf1+4, buf2);
+    char* buf1 = reinterpret_cast<char*>(z.allocate_no_align(4));
+    char* buf2 = reinterpret_cast<char*>(z.allocate_no_align(4));
+    BOOST_CHECK_EQUAL(reinterpret_cast<void*>(buf1+4), reinterpret_cast<void*>(buf2));
 }

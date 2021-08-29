@@ -1,9 +1,6 @@
 IF (MSGPACK_USE_X3_PARSE AND MSGPACK_DEFAULT_API_VERSION VERSION_GREATER 1)
-    FIND_PACKAGE (Boost REQUIRED COMPONENTS context)
-
-    INCLUDE_DIRECTORIES (
-        ../include
-    )
+    FIND_PACKAGE (Boost REQUIRED COMPONENTS context system unit_test_framework)
+    FIND_PACKAGE (Threads REQUIRED)
 
     LIST (APPEND exec_PROGRAMS
         unpack.cpp
@@ -18,10 +15,8 @@ IF (MSGPACK_USE_X3_PARSE AND MSGPACK_DEFAULT_API_VERSION VERSION_GREATER 1)
             ${source_file_we}
             ${source_file}
         )
-        TARGET_INCLUDE_DIRECTORIES (${source_file_we}
-            PRIVATE
-                $<TARGET_PROPERTY:msgpackcxx,INTERFACE_INCLUDE_DIRECTORIES>
-        )
+        TARGET_LINK_LIBRARIES (${source_file_we} PRIVATE msgpackc-cxx)
+
         IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
             SET_PROPERTY (TARGET ${source_file_we} APPEND_STRING PROPERTY COMPILE_FLAGS " -Wall -Wextra")
         ENDIF ()
@@ -44,14 +39,12 @@ IF (MSGPACK_USE_X3_PARSE AND MSGPACK_DEFAULT_API_VERSION VERSION_GREATER 1)
             ${source_file_we}
             ${source_file}
         )
-        TARGET_INCLUDE_DIRECTORIES (${source_file_we}
-            PRIVATE
-                $<TARGET_PROPERTY:msgpackcxx,INTERFACE_INCLUDE_DIRECTORIES>
-        )
-        TARGET_LINK_LIBRARIES (${source_file_we}
-            ${Boost_CONTEXT_LIBRARY}
-            ${Boost_SYSTEM_LIBRARY}
-            ${CMAKE_THREAD_LIBS_INIT}
+        TARGET_LINK_LIBRARIES (${source_file_we} PRIVATE
+            msgpackc-cxx
+            Boost::context
+            Boost::system
+            Boost::unit_test_framework
+            Threads::Threads
         )
         IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
             SET_PROPERTY (TARGET ${source_file_we} APPEND_STRING PROPERTY COMPILE_FLAGS " -Wall -Wextra")

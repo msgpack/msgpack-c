@@ -9,16 +9,8 @@
 #include <list>
 #include <limits>
 
-#if defined(__GNUC__)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wconversion"
-#endif //defined(__GNUC__)
-
-#include <gtest/gtest.h>
-
-#if defined(__GNUC__)
-#pragma GCC diagnostic pop
-#endif //defined(__GNUC__)
+#define BOOST_TEST_MODULE MSGPACK
+#include <boost/test/unit_test.hpp>
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -55,7 +47,7 @@ const unsigned int kLoop = 1000;
                 msgpack::object obj = oh.get();                         \
                 vec_type::value_type val;                               \
                 obj.convert(val);                                       \
-                EXPECT_EQ(*it, val);                                    \
+                BOOST_CHECK_EQUAL(*it, val);                            \
                 ++it;                                                   \
             }                                                           \
             p += sz;                                                    \
@@ -64,97 +56,97 @@ const unsigned int kLoop = 1000;
         ;                                                               \
     }
 
-TEST(MSGPACK, stream_char)
+BOOST_AUTO_TEST_CASE(stream_char)
 {
     GEN_TEST_STREAM(char);
 }
 
-TEST(MSGPACK, stream_signed_char)
+BOOST_AUTO_TEST_CASE(stream_signed_char)
 {
     GEN_TEST_STREAM(signed char);
 }
 
-TEST(MSGPACK, stream_unsigned_char)
+BOOST_AUTO_TEST_CASE(stream_unsigned_char)
 {
     GEN_TEST_STREAM(unsigned char);
 }
 
-TEST(MSGPACK, stream_short)
+BOOST_AUTO_TEST_CASE(stream_short)
 {
     GEN_TEST_STREAM(short);
 }
 
-TEST(MSGPACK, stream_int)
+BOOST_AUTO_TEST_CASE(stream_int)
 {
     GEN_TEST_STREAM(int);
 }
 
-TEST(MSGPACK, stream_long)
+BOOST_AUTO_TEST_CASE(stream_long)
 {
     GEN_TEST_STREAM(long);
 }
 
-TEST(MSGPACK, stream_long_long)
+BOOST_AUTO_TEST_CASE(stream_long_long)
 {
     GEN_TEST_STREAM(long long);
 }
 
-TEST(MSGPACK, stream_unsigned_short)
+BOOST_AUTO_TEST_CASE(stream_unsigned_short)
 {
     GEN_TEST_STREAM(unsigned short);
 }
 
-TEST(MSGPACK, stream_unsigned_int)
+BOOST_AUTO_TEST_CASE(stream_unsigned_int)
 {
     GEN_TEST_STREAM(unsigned int);
 }
 
-TEST(MSGPACK, stream_unsigned_long)
+BOOST_AUTO_TEST_CASE(stream_unsigned_long)
 {
     GEN_TEST_STREAM(unsigned long);
 }
 
-TEST(MSGPACK, stream_unsigned_long_long)
+BOOST_AUTO_TEST_CASE(stream_unsigned_long_long)
 {
     GEN_TEST_STREAM(unsigned long long);
 }
 
-TEST(MSGPACK, stream_uint8)
+BOOST_AUTO_TEST_CASE(stream_uint8)
 {
     GEN_TEST_STREAM(uint8_t);
 }
 
-TEST(MSGPACK, stream_uint16)
+BOOST_AUTO_TEST_CASE(stream_uint16)
 {
     GEN_TEST_STREAM(uint16_t);
 }
 
-TEST(MSGPACK, stream_uint32)
+BOOST_AUTO_TEST_CASE(stream_uint32)
 {
     GEN_TEST_STREAM(uint32_t);
 }
 
-TEST(MSGPACK, stream_uint64)
+BOOST_AUTO_TEST_CASE(stream_uint64)
 {
     GEN_TEST_STREAM(uint64_t);
 }
 
-TEST(MSGPACK, stream_int8)
+BOOST_AUTO_TEST_CASE(stream_int8)
 {
     GEN_TEST_STREAM(int8_t);
 }
 
-TEST(MSGPACK, stream_int16)
+BOOST_AUTO_TEST_CASE(stream_int16)
 {
     GEN_TEST_STREAM(int16_t);
 }
 
-TEST(MSGPACK, stream_int32)
+BOOST_AUTO_TEST_CASE(stream_int32)
 {
     GEN_TEST_STREAM(int32_t);
 }
 
-TEST(MSGPACK, stream_int64)
+BOOST_AUTO_TEST_CASE(stream_int64)
 {
     GEN_TEST_STREAM(int64_t);
 }

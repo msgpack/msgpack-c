@@ -9,16 +9,8 @@
 #include <list>
 #include <limits>
 
-#if defined(__GNUC__)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wconversion"
-#endif //defined(__GNUC__)
-
-#include <gtest/gtest.h>
-
-#if defined(__GNUC__)
-#pragma GCC diagnostic pop
-#endif //defined(__GNUC__)
+#define BOOST_TEST_MODULE MSGPACK
+#include <boost/test/unit_test.hpp>
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -41,246 +33,246 @@ using namespace std;
             msgpack::object_handle oh;                                  \
             msgpack::unpack(oh, sbuf.data(), sbuf.size());              \
             test_type val2 = oh.get().as<test_type>();                  \
-            EXPECT_EQ(val1, val2);                                      \
+            BOOST_CHECK_EQUAL(val1, val2);                              \
         }                                                               \
     } while(0);
 
-TEST(MSGPACK, vrefbuffer_char)
+BOOST_AUTO_TEST_CASE(vrefbuffer_char)
 {
     msgpack::vrefbuffer vbuf;
     GEN_TEST_VREF(char, vbuf);
 }
 
-TEST(MSGPACK, vrefbuffer_signed_char)
+BOOST_AUTO_TEST_CASE(vrefbuffer_signed_char)
 {
     msgpack::vrefbuffer vbuf;
     GEN_TEST_VREF(signed char, vbuf);
 }
 
-TEST(MSGPACK, vrefbuffer_unsigned_char)
+BOOST_AUTO_TEST_CASE(vrefbuffer_unsigned_char)
 {
     msgpack::vrefbuffer vbuf;
     GEN_TEST_VREF(unsigned char, vbuf);
 }
 
-TEST(MSGPACK, vrefbuffer_short)
+BOOST_AUTO_TEST_CASE(vrefbuffer_short)
 {
     msgpack::vrefbuffer vbuf;
     GEN_TEST_VREF(short, vbuf);
 }
 
-TEST(MSGPACK, vrefbuffer_int)
+BOOST_AUTO_TEST_CASE(vrefbuffer_int)
 {
     msgpack::vrefbuffer vbuf;
     GEN_TEST_VREF(int, vbuf);
 }
 
-TEST(MSGPACK, vrefbuffer_long)
+BOOST_AUTO_TEST_CASE(vrefbuffer_long)
 {
     msgpack::vrefbuffer vbuf;
     GEN_TEST_VREF(long, vbuf);
 }
 
-TEST(MSGPACK, vrefbuffer_long_long)
+BOOST_AUTO_TEST_CASE(vrefbuffer_long_long)
 {
     msgpack::vrefbuffer vbuf;
     GEN_TEST_VREF(long long, vbuf);
 }
 
-TEST(MSGPACK, vrefbuffer_unsigned_short)
+BOOST_AUTO_TEST_CASE(vrefbuffer_unsigned_short)
 {
     msgpack::vrefbuffer vbuf;
     GEN_TEST_VREF(unsigned short, vbuf);
 }
 
-TEST(MSGPACK, vrefbuffer_unsigned_int)
+BOOST_AUTO_TEST_CASE(vrefbuffer_unsigned_int)
 {
     msgpack::vrefbuffer vbuf;
     GEN_TEST_VREF(unsigned int, vbuf);
 }
 
-TEST(MSGPACK, vrefbuffer_unsigned_long)
+BOOST_AUTO_TEST_CASE(vrefbuffer_unsigned_long)
 {
     msgpack::vrefbuffer vbuf;
     GEN_TEST_VREF(unsigned long, vbuf);
 }
 
-TEST(MSGPACK, vrefbuffer_unsigned_long_long)
+BOOST_AUTO_TEST_CASE(vrefbuffer_unsigned_long_long)
 {
     msgpack::vrefbuffer vbuf;
     GEN_TEST_VREF(unsigned long long, vbuf);
 }
 
-TEST(MSGPACK, vrefbuffer_uint8)
+BOOST_AUTO_TEST_CASE(vrefbuffer_uint8)
 {
     msgpack::vrefbuffer vbuf;
     GEN_TEST_VREF(uint8_t, vbuf);
 }
 
-TEST(MSGPACK, vrefbuffer_uint16)
+BOOST_AUTO_TEST_CASE(vrefbuffer_uint16)
 {
     msgpack::vrefbuffer vbuf;
     GEN_TEST_VREF(uint16_t, vbuf);
 }
 
-TEST(MSGPACK, vrefbuffer_uint32)
+BOOST_AUTO_TEST_CASE(vrefbuffer_uint32)
 {
     msgpack::vrefbuffer vbuf;
     GEN_TEST_VREF(uint32_t, vbuf);
 }
 
-TEST(MSGPACK, vrefbuffer_uint64)
+BOOST_AUTO_TEST_CASE(vrefbuffer_uint64)
 {
     msgpack::vrefbuffer vbuf;
     GEN_TEST_VREF(uint64_t, vbuf);
 }
 
-TEST(MSGPACK, vrefbuffer_int8)
+BOOST_AUTO_TEST_CASE(vrefbuffer_int8)
 {
     msgpack::vrefbuffer vbuf;
     GEN_TEST_VREF(int8_t, vbuf);
 }
 
-TEST(MSGPACK, vrefbuffer_int16)
+BOOST_AUTO_TEST_CASE(vrefbuffer_int16)
 {
     msgpack::vrefbuffer vbuf;
     GEN_TEST_VREF(int16_t, vbuf);
 }
 
-TEST(MSGPACK, vrefbuffer_int32)
+BOOST_AUTO_TEST_CASE(vrefbuffer_int32)
 {
     msgpack::vrefbuffer vbuf;
     GEN_TEST_VREF(int32_t, vbuf);
 }
 
-TEST(MSGPACK, vrefbuffer_int64)
+BOOST_AUTO_TEST_CASE(vrefbuffer_int64)
 {
     msgpack::vrefbuffer vbuf;
     GEN_TEST_VREF(int64_t, vbuf);
 }
 
 // small ref_size and chunk_size
-TEST(MSGPACK, vrefbuffer_small_char)
+BOOST_AUTO_TEST_CASE(vrefbuffer_small_char)
 {
     msgpack::vrefbuffer vbuf(0, 0);
     GEN_TEST_VREF(char, vbuf);
 }
 
-TEST(MSGPACK, vrefbuffer_small_signed_char)
+BOOST_AUTO_TEST_CASE(vrefbuffer_small_signed_char)
 {
     msgpack::vrefbuffer vbuf(0, 0);
     GEN_TEST_VREF(signed char, vbuf);
 }
 
-TEST(MSGPACK, vrefbuffer_small_unsigned_char)
+BOOST_AUTO_TEST_CASE(vrefbuffer_small_unsigned_char)
 {
     msgpack::vrefbuffer vbuf(0, 0);
     GEN_TEST_VREF(unsigned char, vbuf);
 }
 
-TEST(MSGPACK, vrefbuffer_small_short)
+BOOST_AUTO_TEST_CASE(vrefbuffer_small_short)
 {
     msgpack::vrefbuffer vbuf(0, 0);
     GEN_TEST_VREF(short, vbuf);
 }
 
-TEST(MSGPACK, vrefbuffer_small_int)
+BOOST_AUTO_TEST_CASE(vrefbuffer_small_int)
 {
     msgpack::vrefbuffer vbuf(0, 0);
     GEN_TEST_VREF(int, vbuf);
 }
 
-TEST(MSGPACK, vrefbuffer_small_long)
+BOOST_AUTO_TEST_CASE(vrefbuffer_small_long)
 {
     msgpack::vrefbuffer vbuf(0, 0);
     GEN_TEST_VREF(long, vbuf);
 }
 
-TEST(MSGPACK, vrefbuffer_small_long_long)
+BOOST_AUTO_TEST_CASE(vrefbuffer_small_long_long)
 {
     msgpack::vrefbuffer vbuf(0, 0);
     GEN_TEST_VREF(long long, vbuf);
 }
 
-TEST(MSGPACK, vrefbuffer_small_unsigned_short)
+BOOST_AUTO_TEST_CASE(vrefbuffer_small_unsigned_short)
 {
     msgpack::vrefbuffer vbuf(0, 0);
     GEN_TEST_VREF(unsigned short, vbuf);
 }
 
-TEST(MSGPACK, vrefbuffer_small_unsigned_int)
+BOOST_AUTO_TEST_CASE(vrefbuffer_small_unsigned_int)
 {
     msgpack::vrefbuffer vbuf(0, 0);
     GEN_TEST_VREF(unsigned int, vbuf);
 }
 
-TEST(MSGPACK, vrefbuffer_small_unsigned_long)
+BOOST_AUTO_TEST_CASE(vrefbuffer_small_unsigned_long)
 {
     msgpack::vrefbuffer vbuf(0, 0);
     GEN_TEST_VREF(unsigned long, vbuf);
 }
 
-TEST(MSGPACK, vrefbuffer_small_unsigned_long_long)
+BOOST_AUTO_TEST_CASE(vrefbuffer_small_unsigned_long_long)
 {
     msgpack::vrefbuffer vbuf(0, 0);
     GEN_TEST_VREF(unsigned long long, vbuf);
 }
 
-TEST(MSGPACK, vrefbuffer_small_uint8)
+BOOST_AUTO_TEST_CASE(vrefbuffer_small_uint8)
 {
     msgpack::vrefbuffer vbuf(0, 0);
     GEN_TEST_VREF(uint8_t, vbuf);
 }
 
-TEST(MSGPACK, vrefbuffer_small_uint16)
+BOOST_AUTO_TEST_CASE(vrefbuffer_small_uint16)
 {
     msgpack::vrefbuffer vbuf(0, 0);
     GEN_TEST_VREF(uint16_t, vbuf);
 }
 
-TEST(MSGPACK, vrefbuffer_small_uint32)
+BOOST_AUTO_TEST_CASE(vrefbuffer_small_uint32)
 {
     msgpack::vrefbuffer vbuf(0, 0);
     GEN_TEST_VREF(uint32_t, vbuf);
 }
 
-TEST(MSGPACK, vrefbuffer_small_uint64)
+BOOST_AUTO_TEST_CASE(vrefbuffer_small_uint64)
 {
     msgpack::vrefbuffer vbuf(0, 0);
     GEN_TEST_VREF(uint64_t, vbuf);
 }
 
-TEST(MSGPACK, vrefbuffer_small_int8)
+BOOST_AUTO_TEST_CASE(vrefbuffer_small_int8)
 {
     msgpack::vrefbuffer vbuf(0, 0);
     GEN_TEST_VREF(int8_t, vbuf);
 }
 
-TEST(MSGPACK, vrefbuffer_small_int16)
+BOOST_AUTO_TEST_CASE(vrefbuffer_small_int16)
 {
     msgpack::vrefbuffer vbuf(0, 0);
     GEN_TEST_VREF(int16_t, vbuf);
 }
 
-TEST(MSGPACK, vrefbuffer_small_int32)
+BOOST_AUTO_TEST_CASE(vrefbuffer_small_int32)
 {
     msgpack::vrefbuffer vbuf(0, 0);
     GEN_TEST_VREF(int32_t, vbuf);
 }
 
-TEST(MSGPACK, vrefbuffer_small_int64)
+BOOST_AUTO_TEST_CASE(vrefbuffer_small_int64)
 {
     msgpack::vrefbuffer vbuf(0, 0);
     GEN_TEST_VREF(int64_t, vbuf);
 }
 
-TEST(MSGPACK, vref_buffer_overflow)
+BOOST_AUTO_TEST_CASE(vref_buffer_overflow)
 {
     size_t ref_size = 0;
     size_t chunk_size = std::numeric_limits<size_t>::max();
     char *buf = (char *)malloc(0x1000);
-    ASSERT_THROW(msgpack::vrefbuffer vbuf(ref_size, chunk_size), std::bad_alloc);
+    BOOST_CHECK_THROW(msgpack::vrefbuffer vbuf(ref_size, chunk_size), std::bad_alloc);
     msgpack::vrefbuffer vbuf2(0, 0x1000);
-    ASSERT_THROW(vbuf2.append_copy(buf, chunk_size), std::bad_alloc);
+    BOOST_CHECK_THROW(vbuf2.append_copy(buf, chunk_size), std::bad_alloc);
     free(buf);
 }

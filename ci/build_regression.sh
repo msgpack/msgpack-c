@@ -1,20 +1,7 @@
 #!/bin/bash
 
-mkdir -p build
-
-ret=$?
-if [ $ret -ne 0 ]
-then
-    exit $ret
-fi
-
-cd build
-
-ret=$?
-if [ $ret -ne 0 ]
-then
-    exit $ret
-fi
+build_dir="$CXX-build"
+mkdir $build_dir || exit 1
 
 if [ "${ARCH}" == "32" ]
 then
@@ -22,28 +9,17 @@ then
     exit 1
 fi
 
-cmake -DMSGPACK_FUZZ_REGRESSION="ON" -DMSGPACK_CXX11="ON" -DMSGPACK_SAN=${MSGPACK_SAN} ..
+cmake \
+    -D CMAKE_PREFIX_PATH="${HOME}/boost-prefix/${ARCH};${HOME}/zlib-prefix/${ARCH}" \
+    -D MSGPACK_FUZZ_REGRESSION="ON" \
+    -D ${MSGPACK_CXX_VERSION} \
+    -D MSGPACK_CHAR_SIGN=${CHAR_SIGN} \
+    -D MSGPACK_DEFAULT_API_VERSION=${API_VERSION} \
+    -D MSGPACK_USE_X3_PARSE=${X3_PARSE} \
+    -D CMAKE_CXX_FLAGS="${CXXFLAGS}" \
+    -B $build_dir \
+    -S . || exit 1
 
-ret=$?
-if [ $ret -ne 0 ]
-then
-    exit $ret
-fi
+cmake --build $build_dir --target all || exit 1
 
-make
-
-ret=$?
-if [ $ret -ne 0 ]
-then
-    exit $ret
-fi
-
-make test
-
-ret=$?
-if [ $ret -ne 0 ]
-then
-    exit $ret
-fi
-
-exit 0
+ctest -VV --test-dir $build_dir || exit 1

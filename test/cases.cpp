@@ -1,16 +1,8 @@
 #include <msgpack.hpp>
 #include <fstream>
 
-#if defined(__GNUC__)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wconversion"
-#endif //defined(__GNUC__)
-
-#include <gtest/gtest.h>
-
-#if defined(__GNUC__)
-#pragma GCC diagnostic pop
-#endif //defined(__GNUC__)
+#define BOOST_TEST_MODULE cases
+#include <boost/test/unit_test.hpp>
 
 static void feed_file(msgpack::unpacker& pac, const char* path)
 {
@@ -28,7 +20,7 @@ static void feed_file(msgpack::unpacker& pac, const char* path)
     }
 }
 
-TEST(cases, format)
+BOOST_AUTO_TEST_CASE(format)
 {
 #if defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 7)) && !defined(__clang__)
 #pragma GCC diagnostic push
@@ -43,11 +35,11 @@ TEST(cases, format)
     msgpack::object_handle oh;
     while(pac.next(oh)) {
         msgpack::object_handle oh_compact;
-        EXPECT_TRUE( pac_compact.next(oh_compact) );
-        EXPECT_EQ(oh_compact.get(), oh.get());
+        BOOST_CHECK( pac_compact.next(oh_compact) );
+        BOOST_CHECK_EQUAL(oh_compact.get(), oh.get());
     }
 
-    EXPECT_FALSE( pac_compact.next(oh) );
+    BOOST_CHECK( !pac_compact.next(oh) );
 #if defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 7)) && !defined(__clang__)
 #pragma GCC diagnostic pop
 #endif // defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 7)) && !defined(__clang__)

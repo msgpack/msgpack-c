@@ -10,18 +10,8 @@
 #ifndef MSGPACK_V1_CPP_CONFIG_DECL_HPP
 #define MSGPACK_V1_CPP_CONFIG_DECL_HPP
 
+#include "msgpack/cpp_version.hpp"
 #include "msgpack/versioning.hpp"
-
-#if !defined(MSGPACK_USE_CPP03)
-# if defined(_MSC_VER)
-#  if _MSC_VER < 1900
-#    define MSGPACK_USE_CPP03
-#  endif
-# elif (__cplusplus < 201103L)
-#  define MSGPACK_USE_CPP03
-# endif
-#endif // MSGPACK_USE_CPP03
-
 
 #if defined(MSGPACK_USE_CPP03)
 
