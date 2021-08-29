@@ -14,6 +14,7 @@
 #include "msgpack/cpp_config.hpp"
 #include "msgpack/zone_decl.hpp"
 
+#include <stdint.h>
 #include <cstdlib>
 #include <memory>
 #include <vector>
