@@ -8,7 +8,7 @@ BOOST_AUTO_TEST_CASE(allocate_align)
     msgpack::zone z;
     char* start = (char*)z.allocate_align(1);
     BOOST_CHECK_EQUAL(0ul, reinterpret_cast<std::size_t>(start) % sizeof(int));
-    for (std::size_t s = 1; s < sizeof(int); ++s) {
+    for (std::size_t s = 1; s < sizeof(int); s <<= 1) {
         z.allocate_no_align(s);
         char* buf_a = (char*)z.allocate_align(1);
         BOOST_CHECK_EQUAL(0ul, reinterpret_cast<std::size_t>(buf_a) % sizeof(int));
@@ -18,10 +18,10 @@ BOOST_AUTO_TEST_CASE(allocate_align)
 BOOST_AUTO_TEST_CASE(allocate_align_custom)
 {
     msgpack::zone z;
-    for (std::size_t align = 1; align < 64; ++align) {
+    for (std::size_t align = 1; align < 64; align <<= 1) {
         char* start = (char*)z.allocate_align(1, align);
         BOOST_CHECK_EQUAL(0ul, reinterpret_cast<std::size_t>(start) % align);
-        for (std::size_t s = 1; s < align; ++s) {
+        for (std::size_t s = 1; s < align; s <<= 1) {
             z.allocate_no_align(s);
             char* buf_a = (char*)z.allocate_align(1, align);
             BOOST_CHECK_EQUAL(0ul, reinterpret_cast<std::size_t>(buf_a) % align);
