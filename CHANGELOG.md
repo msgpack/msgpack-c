@@ -1,3 +1,21 @@
+# 2021-08-29 version 4.0.0 for C++
+  * Improve zone alignment logic (#965)
+  * Fix v1 unpack logic for STR and BIN (#957, #951)
+  * Fix UB on memcmp with size 0 (#954)
+  * Fix `iovec` name conflict (#952)
+  * Add `std::array<std::byte>` `std::span<char>` `std::span<unsigned char>` `std::span<std::byte>` adaptors (#951)
+  * Improve documents (#918, #919, #951)
+  * Improve tests (#916)
+  * Introduce BOOST_ASSERT (#898)
+  * Improve build system (#897, #905, #924, #951)
+  * Improve Boost.Fusion support (#894)
+  * Check nullptr before call memcpy (#891)
+  * Refine and bugfix `std::chrono::time_point` adaptor (#888, #893)
+  * Improve CI (#884, #892, #895, #951, #955)
+## << breaking changes >>
+  * Separate C++ part of the msgpack-c  from C/C++ mixed msgpack-c (#876, #878)
+  * Require boost libraries. See README.md Dependency(#912)
+
 # 2020-06-05 version 3.3.0
   * Add json example for C (#870)
   * Add both header and body packing functions for C (#870)
