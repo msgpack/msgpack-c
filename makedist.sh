@@ -19,6 +19,7 @@ tar --append --file=$filename $prefix/test
 tar --append --file=$filename $prefix/include
 tar --append --file=$filename $prefix/erb
 tar --append --file=$filename $prefix/fuzz
+tar --append --file=$filename $prefix/cmake
 
 tar --append --file=$filename $prefix/CMakeLists.txt
 tar --append --file=$filename $prefix/Files.cmake
@@ -31,7 +32,7 @@ tar --append --file=$filename $prefix/ChangeLog
 tar --append --file=$filename $prefix/NEWS
 tar --append --file=$filename $prefix/COPYING
 tar --append --file=$filename $prefix/README
-
+tar --append --file=$filename $prefix/msgpack-config.cmake.in
 rm -f $prefix
 
 gzip -f $filename
