@@ -153,6 +153,8 @@ Other useful options:
 - `MSGPACK_32BIT` (default `OFF`): 32bit compile
 - `MSGPACK_USE_X3_PARSE` (default `OFF`): use Boost X3 parse
   (note that it requires C++14 or newer)
+- `MSGPACK_CHAR_SIGN` (not set explicitly by default): char sign to use (signed or unsigned)
+- `MSGPACK_USE_STATIC_BOOST` (default `OFF`): statically link with boost libraries
 
 #### GUI on Windows
 

@@ -1,5 +1,5 @@
 IF (MSGPACK_USE_X3_PARSE AND MSGPACK_DEFAULT_API_VERSION VERSION_GREATER 1)
-    FIND_PACKAGE (Boost REQUIRED COMPONENTS context system unit_test_framework)
+    FIND_PACKAGE (Boost REQUIRED COMPONENTS context system)
     FIND_PACKAGE (Threads REQUIRED)
 
     LIST (APPEND exec_PROGRAMS
@@ -43,7 +43,6 @@ IF (MSGPACK_USE_X3_PARSE AND MSGPACK_DEFAULT_API_VERSION VERSION_GREATER 1)
             msgpackc-cxx
             Boost::context
             Boost::system
-            Boost::unit_test_framework
             Threads::Threads
         )
         IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
