@@ -1,3 +1,6 @@
+# 2021-08-30 version 4.0.1 for C++
+  * Fix release tarball and its generation script (#967)
+
 # 2021-08-29 version 4.0.0 for C++
   * Improve zone alignment logic (#965)
   * Fix v1 unpack logic for STR and BIN (#957, #951)
