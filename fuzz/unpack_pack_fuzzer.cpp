@@ -1,6 +1,10 @@
 #include <msgpack.hpp>
 
-extern "C" int FuzzerTestOneInput(const uint8_t *data, size_t size) {
+// The function's signature must NOT be changed since other projects rely on it:
+// - libFuzzer
+// - AFL++
+// - Google's oss-fuzz (uses the previous two ones)
+extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
   try {
     // NOTE(derwolfe): by default the limits are set at 2^32-1 length. I'm
     // setting these at far smaller values to avoid OOMs
