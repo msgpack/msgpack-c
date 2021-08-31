@@ -38,7 +38,7 @@ void UnpackPackFuzzerRegressionTest(const std::string& fpath) {
   std::vector<char> bytes(length);
   in.read(bytes.data(), bytes.size());
   BOOST_REQUIRE(in);
-  BOOST_REQUIRE_EQUAL(0, FuzzerTestOneInput(reinterpret_cast<const uint8_t *>(bytes.data()), bytes.size()));
+  BOOST_REQUIRE_EQUAL(0, LLVMFuzzerTestOneInput(reinterpret_cast<const uint8_t *>(bytes.data()), bytes.size()));
 }
 
 boost::unit_test::test_suite* init_unit_test_suite(int /*argc*/, char* /*argv*/[])
