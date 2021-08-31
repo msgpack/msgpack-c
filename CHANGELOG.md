@@ -1,3 +1,7 @@
+# 2021-08-31 version 4.0.2 for C++
+  * Fix fuzzer interface function name (#972)
+  * Fix boost test link error and support both dynamin(default) and static link boost (#971)
+
 # 2021-08-30 version 4.0.1 for C++
   * Fix release tarball and its generation script (#967)
 
