@@ -1,0 +1,5 @@
+<map id="msgpack::adaptor::object&lt; T, Enabler, typename msgpack::enable_if&lt; !msgpack::is_same&lt; T, std::string &gt;::value &amp;&amp;!msgpack::is_array&lt; T &gt;::value &gt;::type &gt;" name="msgpack::adaptor::object&lt; T, Enabler, typename msgpack::enable_if&lt; !msgpack::is_same&lt; T, std::string &gt;::value &amp;&amp;!msgpack::is_array&lt; T &gt;::value &gt;::type &gt;">
+<area shape="rect" id="node1" title=" " alt="" coords="59,95,285,195"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,5,160,47"/>
+<area shape="rect" id="node3" title=" " alt="" coords="184,5,339,47"/>
+</map>

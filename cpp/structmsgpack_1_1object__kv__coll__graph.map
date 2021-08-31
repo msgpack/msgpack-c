@@ -1,0 +1,11 @@
+<map id="msgpack::object_kv" name="msgpack::object_kv">
+<area shape="rect" id="node1" title=" " alt="" coords="5,29,153,56"/>
+<area shape="rect" id="node6" href="$structmsgpack_1_1object__map.html" title=" " alt="" coords="231,63,385,89"/>
+<area shape="rect" id="node2" href="$structmsgpack_1_1object.html" title="Object class that corresponding to MessagePack format object." alt="" coords="751,76,877,103"/>
+<area shape="rect" id="node5" href="$structmsgpack_1_1object__array.html" title=" " alt="" coords="955,120,1124,147"/>
+<area shape="rect" id="node3" title=" " alt="" coords="522,63,614,89"/>
+<area shape="rect" id="node4" href="$unionmsgpack_1_1object_1_1union__type.html" title=" " alt="" coords="463,128,673,155"/>
+<area shape="rect" id="node7" href="$structmsgpack_1_1object__ext.html" title=" " alt="" coords="231,113,385,140"/>
+<area shape="rect" id="node8" href="$structmsgpack_1_1object__bin.html" title=" " alt="" coords="231,164,385,191"/>
+<area shape="rect" id="node9" href="$structmsgpack_1_1object__str.html" title=" " alt="" coords="231,215,385,241"/>
+</map>

@@ -1,0 +1,11 @@
+<map id="msgpack::size_overflow" name="msgpack::size_overflow">
+<area shape="rect" id="node1" title=" " alt="" coords="419,159,595,186"/>
+<area shape="rect" id="node4" href="$structmsgpack_1_1array__size__overflow.html" title=" " alt="" coords="667,5,822,47"/>
+<area shape="rect" id="node5" href="$structmsgpack_1_1bin__size__overflow.html" title=" " alt="" coords="643,71,847,98"/>
+<area shape="rect" id="node6" href="$structmsgpack_1_1depth__size__overflow.html" title=" " alt="" coords="667,123,822,164"/>
+<area shape="rect" id="node7" href="$structmsgpack_1_1ext__size__overflow.html" title=" " alt="" coords="643,189,847,215"/>
+<area shape="rect" id="node8" href="$structmsgpack_1_1map__size__overflow.html" title=" " alt="" coords="643,239,847,266"/>
+<area shape="rect" id="node9" href="$structmsgpack_1_1str__size__overflow.html" title=" " alt="" coords="643,290,847,317"/>
+<area shape="rect" id="node2" href="$structmsgpack_1_1unpack__error.html" title=" " alt="" coords="201,159,371,186"/>
+<area shape="rect" id="node3" title=" " alt="" coords="5,159,153,186"/>
+</map>

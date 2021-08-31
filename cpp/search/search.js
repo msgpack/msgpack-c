@@ -1,3 +1,27 @@
+/*
+ @licstart  The following is the entire license notice for the JavaScript code in this file.
+
+ The MIT License (MIT)
+
+ Copyright (C) 1997-2020 by Dimitri van Heesch
+
+ Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+ and associated documentation files (the "Software"), to deal in the Software without restriction,
+ including without limitation the rights to use, copy, modify, merge, publish, distribute,
+ sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+
+ The above copyright notice and this permission notice shall be included in all copies or
+ substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+ BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+ @licend  The above is the entire license notice for the JavaScript code in this file
+ */
 function convertToId(search)
 {
   var result = '';
@@ -56,9 +80,10 @@ function getYPos(item)
           storing this instance.  Is needed to be able to set timeouts.
    resultPath - path to use for external files
 */
-function SearchBox(name, resultsPath, inFrame, label)
+function SearchBox(name, resultsPath, inFrame, label, extension)
 {
   if (!name || !resultsPath) {  alert("Missing parameters to SearchBox."); }
+  if (!extension || extension == "") { extension = ".html"; }
 
   // ---------- Instance variables
   this.name                  = name;
@@ -73,6 +98,7 @@ function SearchBox(name, resultsPath, inFrame, label)
   this.searchActive          = false;
   this.insideFrame           = inFrame;
   this.searchLabel           = label;
+  this.extension             = extension;
 
   // ----------- DOM Elements
 
@@ -177,10 +203,9 @@ function SearchBox(name, resultsPath, inFrame, label)
         }
         return;
       }
-      else if (window.frames.MSearchResults.searchResults)
+      else
       {
-        var elem = window.frames.MSearchResults.searchResults.NavNext(0);
-        if (elem) elem.focus();
+        window.frames.MSearchResults.postMessage("take_focus", "*");
       }
     }
     else if (e.keyCode==27) // Escape out of the search field
@@ -324,13 +349,13 @@ function SearchBox(name, resultsPath, inFrame, label)
     if (idx!=-1)
     {
        var hexCode=idx.toString(16);
-       resultsPage = this.resultsPath + '/' + indexSectionNames[this.searchIndex] + '_' + hexCode + '.html';
+       resultsPage = this.resultsPath + '/' + indexSectionNames[this.searchIndex] + '_' + hexCode + this.extension;
        resultsPageWithSearch = resultsPage+'?'+escape(searchValue);
        hasResultsPage = true;
     }
     else // nothing available for this search term
     {
-       resultsPage = this.resultsPath + '/nomatches.html';
+       resultsPage = this.resultsPath + '/nomatches' + this.extension;
        resultsPageWithSearch = resultsPage;
        hasResultsPage = false;
     }
@@ -341,7 +366,7 @@ function SearchBox(name, resultsPath, inFrame, label)
     if (domPopupSearchResultsWindow.style.display!='block')
     {
        var domSearchBox = this.DOMSearchBox();
-       this.DOMSearchClose().style.display = 'inline';
+       this.DOMSearchClose().style.display = 'inline-block';
        if (this.insideFrame)
        {
          var domPopupSearchResults = this.DOMPopupSearchResults();
@@ -416,12 +441,12 @@ function SearchResults(name)
 
       while (element && element!=parentElement)
       {
-        if (element.nodeName == 'DIV' && element.className == 'SRChildren')
+        if (element.nodeName.toLowerCase() == 'div' && element.className == 'SRChildren')
         {
           return element;
         }
 
-        if (element.nodeName == 'DIV' && element.hasChildNodes())
+        if (element.nodeName.toLowerCase() == 'div' && element.hasChildNodes())
         {
            element = element.firstChild;
         }
@@ -788,4 +813,4 @@ function init_search()
   }
   searchBox.OnSelectItem(0);
 }
-
+/* @license-end */

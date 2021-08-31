@@ -1,0 +1,13 @@
+<map id="v2::object::with_zone" name="v2::object::with_zone">
+<area shape="rect" id="node1" title=" " alt="" coords="357,19,527,45"/>
+<area shape="rect" id="node2" href="$structmsgpack_1_1object.html" title="Object class that corresponding to MessagePack format object." alt="" coords="147,108,273,135"/>
+<area shape="rect" id="node5" href="$structmsgpack_1_1object__array.html" title=" " alt="" coords="551,135,720,161"/>
+<area shape="rect" id="node7" href="$structmsgpack_1_1object__kv.html" title=" " alt="" coords="368,195,516,221"/>
+<area shape="rect" id="node3" title=" " alt="" coords="5,108,97,135"/>
+<area shape="rect" id="node4" href="$unionmsgpack_1_1object_1_1union__type.html" title=" " alt="" coords="976,221,1187,248"/>
+<area shape="rect" id="node6" href="$structmsgpack_1_1object__map.html" title=" " alt="" coords="744,196,899,223"/>
+<area shape="rect" id="node8" href="$structmsgpack_1_1object__ext.html" title=" " alt="" coords="744,247,899,273"/>
+<area shape="rect" id="node9" href="$structmsgpack_1_1object__bin.html" title=" " alt="" coords="744,297,899,324"/>
+<area shape="rect" id="node10" href="$structmsgpack_1_1object__str.html" title=" " alt="" coords="744,348,899,375"/>
+<area shape="rect" id="node11" href="$classmsgpack_1_1zone.html" title=" " alt="" coords="153,5,267,32"/>
+</map>

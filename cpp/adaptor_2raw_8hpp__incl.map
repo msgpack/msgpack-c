@@ -1,0 +1,52 @@
+<map id="msgpack/adaptor/raw.hpp" name="msgpack/adaptor/raw.hpp">
+<area shape="rect" id="node1" title=" " alt="" coords="1202,5,1385,32"/>
+<area shape="rect" id="node2" href="$adaptor_2raw__decl_8hpp.html" title=" " alt="" coords="1104,80,1259,121"/>
+<area shape="rect" id="node50" href="$v1_2adaptor_2raw_8hpp.html" title=" " alt="" coords="1282,259,1430,300"/>
+<area shape="rect" id="node3" href="$v1_2adaptor_2raw__decl_8hpp.html" title=" " alt="" coords="1110,348,1258,389"/>
+<area shape="rect" id="node48" href="$v2_2adaptor_2raw__decl_8hpp.html" title=" " alt="" coords="1110,259,1258,300"/>
+<area shape="rect" id="node49" href="$v3_2adaptor_2raw__decl_8hpp.html" title=" " alt="" coords="1165,169,1313,211"/>
+<area shape="rect" id="node4" href="$versioning_8hpp.html" title=" " alt="" coords="231,1786,407,1813"/>
+<area shape="rect" id="node6" href="$adaptor_2adaptor__base_8hpp.html" title=" " alt="" coords="786,437,969,479"/>
+<area shape="rect" id="node39" title=" " alt="" coords="1350,1041,1421,1067"/>
+<area shape="rect" id="node47" title=" " alt="" coords="1284,445,1348,471"/>
+<area shape="rect" id="node5" href="$cpp__version_8hpp.html" title=" " alt="" coords="290,1868,473,1895"/>
+<area shape="rect" id="node7" href="$adaptor_2adaptor__base__decl_8hpp.html" title=" " alt="" coords="597,527,779,568"/>
+<area shape="rect" id="node44" href="$v1_2adaptor_2adaptor__base_8hpp.html" title=" " alt="" coords="451,616,599,657"/>
+<area shape="rect" id="node45" href="$v2_2adaptor_2adaptor__base_8hpp.html" title=" " alt="" coords="926,616,1074,657"/>
+<area shape="rect" id="node46" href="$v3_2adaptor_2adaptor__base_8hpp.html" title=" " alt="" coords="803,527,951,568"/>
+<area shape="rect" id="node8" href="$v1_2adaptor_2adaptor__base__decl_8hpp.html" title=" " alt="" coords="493,795,669,836"/>
+<area shape="rect" id="node42" href="$v2_2adaptor_2adaptor__base__decl_8hpp.html" title=" " alt="" coords="700,705,876,747"/>
+<area shape="rect" id="node43" href="$v3_2adaptor_2adaptor__base__decl_8hpp.html" title=" " alt="" coords="725,616,901,657"/>
+<area shape="rect" id="node9" href="$object__fwd_8hpp.html" title=" " alt="" coords="325,884,501,911"/>
+<area shape="rect" id="node26" href="$pack_8hpp.html" title=" " alt="" coords="826,884,961,911"/>
+<area shape="rect" id="node10" href="$object__fwd__decl_8hpp.html" title=" " alt="" coords="422,1033,570,1075"/>
+<area shape="rect" id="node23" href="$v1_2object__fwd_8hpp.html" title=" " alt="" coords="536,959,733,985"/>
+<area shape="rect" id="node24" href="$v2_2object__fwd_8hpp.html" title=" " alt="" coords="93,959,291,985"/>
+<area shape="rect" id="node25" href="$v3_2object__fwd_8hpp.html" title=" " alt="" coords="315,959,512,985"/>
+<area shape="rect" id="node11" href="$v1_2object__fwd__decl_8hpp.html" title=" " alt="" coords="263,1301,433,1343"/>
+<area shape="rect" id="node21" href="$v2_2object__fwd__decl_8hpp.html" title=" " alt="" coords="263,1212,433,1253"/>
+<area shape="rect" id="node22" href="$v3_2object__fwd__decl_8hpp.html" title=" " alt="" coords="263,1123,433,1164"/>
+<area shape="rect" id="node12" href="$zone_8hpp.html" title=" " alt="" coords="486,1398,621,1425"/>
+<area shape="rect" id="node19" title=" " alt="" coords="659,1398,738,1425"/>
+<area shape="rect" id="node20" title=" " alt="" coords="331,1398,410,1425"/>
+<area shape="rect" id="node13" href="$zone__decl_8hpp.html" title=" " alt="" coords="435,1480,605,1507"/>
+<area shape="rect" id="node18" href="$v1_2zone_8hpp.html" title=" " alt="" coords="597,1555,752,1581"/>
+<area shape="rect" id="node14" href="$v1_2zone__decl_8hpp.html" title=" " alt="" coords="382,1555,573,1581"/>
+<area shape="rect" id="node15" href="$cpp__config_8hpp.html" title=" " alt="" coords="528,1629,704,1656"/>
+<area shape="rect" id="node16" href="$cpp__config__decl_8hpp.html" title=" " alt="" coords="521,1779,669,1820"/>
+<area shape="rect" id="node17" href="$v1_2cpp__config_8hpp.html" title=" " alt="" coords="381,1704,579,1731"/>
+<area shape="rect" id="node27" href="$pack__decl_8hpp.html" title=" " alt="" coords="809,959,978,985"/>
+<area shape="rect" id="node36" href="$v1_2pack_8hpp.html" title=" " alt="" coords="1052,959,1207,985"/>
+<area shape="rect" id="node28" href="$v1_2pack__decl_8hpp.html" title=" " alt="" coords="750,1219,941,1246"/>
+<area shape="rect" id="node34" href="$v2_2pack__decl_8hpp.html" title=" " alt="" coords="645,1130,835,1157"/>
+<area shape="rect" id="node35" href="$v3_2pack__decl_8hpp.html" title=" " alt="" coords="594,1041,785,1067"/>
+<area shape="rect" id="node29" href="$sysdep_8hpp.html" title=" " alt="" coords="861,1309,1009,1335"/>
+<area shape="rect" id="node30" title=" " alt="" coords="827,1398,906,1425"/>
+<area shape="rect" id="node31" title=" " alt="" coords="930,1398,1009,1425"/>
+<area shape="rect" id="node32" title=" " alt="" coords="1033,1398,1119,1425"/>
+<area shape="rect" id="node33" title=" " alt="" coords="1143,1391,1291,1432"/>
+<area shape="rect" id="node37" title=" " alt="" coords="1240,1041,1325,1067"/>
+<area shape="rect" id="node38" title=" " alt="" coords="911,1041,975,1067"/>
+<area shape="rect" id="node40" title=" " alt="" coords="999,1041,1070,1067"/>
+<area shape="rect" id="node41" title=" " alt="" coords="1094,1041,1165,1067"/>
+</map>
