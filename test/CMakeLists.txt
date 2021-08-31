@@ -74,6 +74,9 @@ FOREACH (source_file ${check_PROGRAMS})
         ${source_file}
     )
 
+    TARGET_COMPILE_DEFINITIONS (${source_file_we} PRIVATE
+        $<IF:$<BOOL:${MSGPACK_USE_STATIC_BOOST}>,,BOOST_TEST_DYN_LINK>)
+
     TARGET_LINK_LIBRARIES (${source_file_we}
         msgpackc-cxx
         Boost::system
@@ -81,6 +84,7 @@ FOREACH (source_file ${check_PROGRAMS})
         Threads::Threads
         ZLIB::ZLIB
     )
+
     ADD_TEST (NAME ${source_file_we} COMMAND ${source_file_we})
 
     IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")

@@ -11,6 +11,10 @@ FOREACH (source_file ${check_PROGRAMS})
         ${source_file_we}
         ${source_file}
     )
+
+    TARGET_COMPILE_DEFINITIONS (${source_file_we} PRIVATE
+        $<IF:$<BOOL:${MSGPACK_USE_STATIC_BOOST}>,,BOOST_TEST_DYN_LINK>)
+
     TARGET_LINK_LIBRARIES (${source_file_we}
         msgpackc-cxx
         Threads::Threads
@@ -18,7 +22,9 @@ FOREACH (source_file ${check_PROGRAMS})
         Boost::system
         Boost::unit_test_framework
     )
+
     ADD_TEST (${source_file_we} ${source_file_we})
+
     IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
       SET_PROPERTY (TARGET ${source_file_we} APPEND_STRING PROPERTY COMPILE_FLAGS "-Wall -Wextra -Wno-mismatched-tags -g")
         IF ("${MSGPACK_SAN}" STREQUAL "ASAN")
