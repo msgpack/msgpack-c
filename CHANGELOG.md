@@ -1,3 +1,15 @@
+# 2021-08-01 version 4.0.0
+  * Fix and improve alignment logic (#962)
+  * Fix iovec name conflict (#953)
+  * Fix empty string print (#942)
+  * Fix buffer ptr size (#899)
+  * Fix UB. Check null pointer before using memcpy() (#890)
+  * Improve CI environment (#885, #899)
+
+## << breaking changes >>
+* Separate C part of the msgpack-c from C/C++ mixed msgpack-c (#876, #878)
+
+
 # 2020-06-05 version 3.3.0
   * Add json example for C (#870)
   * Add both header and body packing functions for C (#870)
