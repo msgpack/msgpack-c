@@ -210,7 +210,7 @@ jobs:
       run: |
         vcpkg update
         vcpkg install zlib:x64-windows
-        vcpkg install boost:x64-windows
+        vcpkg install boost-assert:x64-windows boost-numeric-conversion:x64-windows boost-variant:x64-windows boost-utility:x64-windows boost-fusion:x64-windows boost-optional:x64-windows boost-predef:x64-windows boost-preprocessor:x64-windows boost-timer:x64-windows boost-test:x64-windows
 
     - name: Build and test
       shell: powershell

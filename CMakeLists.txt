@@ -24,6 +24,7 @@ OPTION (MSGPACK_CXX20 "Using c++20 compiler" OFF)
 OPTION (MSGPACK_32BIT            "32bit compile"                        OFF)
 OPTION (MSGPACK_USE_X3_PARSE     "Use Boost X3 parse"                   OFF)
 OPTION (MSGPACK_BUILD_TESTS      "Build tests"                          OFF)
+OPTION (MSGPACK_BUILD_DOCS       "Build Doxygen documentation"          ON)
 OPTION (MSGPACK_FUZZ_REGRESSION  "Enable regression testing"            OFF)
 OPTION (MSGPACK_BUILD_EXAMPLES   "Build msgpack examples"               OFF)
 OPTION (MSGPACK_GEN_COVERAGE     "Generate coverage report"             OFF)
@@ -153,28 +154,30 @@ IF (MSGPACK_BUILD_EXAMPLES)
 ENDIF ()
 
 # Doxygen
-FIND_PACKAGE (Doxygen)
-IF (DOXYGEN_FOUND)
-    LIST (APPEND Doxyfile_cpp_CONTENT
-        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile_cpp
-        COMMAND ${CMAKE_COMMAND} -E echo "FILE_PATTERNS      = *.hpp" >> ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile_cpp
-        COMMAND ${CMAKE_COMMAND} -E echo "OUTPUT_DIRECTORY   = doc_cpp" >> ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile_cpp
-        COMMAND ${CMAKE_COMMAND} -E echo "INPUT              = ${CMAKE_CURRENT_SOURCE_DIR}/include" >> ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile_cpp
-        COMMAND ${CMAKE_COMMAND} -E echo "EXTRACT_ALL        = YES" >> ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile_cpp
-        COMMAND ${CMAKE_COMMAND} -E echo "STRIP_FROM_PATH    = ${CMAKE_CURRENT_SOURCE_DIR}/include" >> ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile_cpp
-    )
-    IF (DOXYGEN_DOT_FOUND)
+IF (MSGPACK_BUILD_DOCS)
+    FIND_PACKAGE (Doxygen)
+    IF (DOXYGEN_FOUND)
         LIST (APPEND Doxyfile_cpp_CONTENT
-            COMMAND ${CMAKE_COMMAND} -E echo "HAVE_DOT       = YES" >> ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile_cpp
+            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile_cpp
+            COMMAND ${CMAKE_COMMAND} -E echo "FILE_PATTERNS      = *.hpp" >> ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile_cpp
+            COMMAND ${CMAKE_COMMAND} -E echo "OUTPUT_DIRECTORY   = doc_cpp" >> ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile_cpp
+            COMMAND ${CMAKE_COMMAND} -E echo "INPUT              = ${CMAKE_CURRENT_SOURCE_DIR}/include" >> ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile_cpp
+            COMMAND ${CMAKE_COMMAND} -E echo "EXTRACT_ALL        = YES" >> ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile_cpp
+            COMMAND ${CMAKE_COMMAND} -E echo "STRIP_FROM_PATH    = ${CMAKE_CURRENT_SOURCE_DIR}/include" >> ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile_cpp
+        )
+        IF (DOXYGEN_DOT_FOUND)
+            LIST (APPEND Doxyfile_cpp_CONTENT
+                COMMAND ${CMAKE_COMMAND} -E echo "HAVE_DOT       = YES" >> ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile_cpp
+            )
+        ENDIF ()
+        ADD_CUSTOM_TARGET (
+            doxygen
+            ${Doxyfile_cpp_CONTENT}
+            COMMAND ${CMAKE_COMMAND} -E echo "PROJECT_NAME       = \"MessagePack for C++\"" >> ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile_cpp
+            COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile_cpp
+            VERBATIM
         )
     ENDIF ()
-    ADD_CUSTOM_TARGET (
-        doxygen
-        ${Doxyfile_cpp_CONTENT}
-        COMMAND ${CMAKE_COMMAND} -E echo "PROJECT_NAME       = \"MessagePack for C++\"" >> ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile_cpp
-        COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile_cpp
-        VERBATIM
-    )
 ENDIF ()
 
 # Install library.
