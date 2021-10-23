@@ -1,3 +1,7 @@
+# 2021-10-23 version 4.0.3 for C++
+  * Remove Enabler2 template parameter from object adaptor (#987)
+  * Add MSGPACK_BUILD_DOCS cmake option (#983, #984)
+
 # 2021-08-31 version 4.0.2 for C++
   * Fix fuzzer interface function name (#972)
   * Fix boost test link error and support both dynamin(default) and static link boost (#971)
