@@ -214,7 +214,7 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(simple_buffer, TypeParam, IntegerToFloatingPointTe
     if (numeric_limits<integer_type>::is_signed) v.push_back(static_cast<integer_type>(-1));
     else v.push_back(2);
     for (unsigned int i = 0; i < kLoop; i++) {
-        v.push_back(rand() % 0x7FFFFF);
+        v.push_back(static_cast<integer_type>(rand() % 0x7FFFFF));
     }
     for (unsigned int i = 0; i < v.size() ; i++) {
         msgpack::sbuffer sbuf;
