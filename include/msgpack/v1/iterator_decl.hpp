@@ -12,7 +12,7 @@
 #define MSGPACK_V1_ITERATOR_DECL_HPP
 #if !defined(MSGPACK_USE_CPP03)
 
-#include <msgpack/object_fwd.hpp>
+#include "msgpack/object_fwd.hpp"
 
 namespace msgpack {
 
