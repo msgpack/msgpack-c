@@ -467,11 +467,12 @@ struct object_stringize_visitor {
         return true;
     }
     bool visit_bin(const char* /*v*/, uint32_t size) {
-         m_os << "BIN(" << size << ")";
+        m_os << "\"BIN(size:" << size << ")\"";
         return true;
     }
-    bool visit_ext(const char* /*v*/, uint32_t size) {
-        m_os << "EXT(" << size << ")";
+    bool visit_ext(const char* v, uint32_t size) {
+        int type = ((size > 0) && (v[0] >= 0)) ? v[0] : -1;
+        m_os << "\"EXT(type:" << type << ",size:" << size << ")\"";
         return true;
     }
     bool start_array(uint32_t num_elements) {
