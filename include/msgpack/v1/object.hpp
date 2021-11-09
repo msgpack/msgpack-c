@@ -471,8 +471,12 @@ struct object_stringize_visitor {
         return true;
     }
     bool visit_ext(const char* v, uint32_t size) {
-        int type = ((size > 0) && (v[0] >= 0)) ? v[0] : -1;
-        m_os << "\"EXT(type:" << type << ",size:" << size << ")\"";
+        if (size == 0) {
+            m_os << "\"EXT(size:0)\"";
+        }
+        else {
+            m_os << "\"EXT(type:" << static_cast<int>(v[0]) << ",size:" << size - 1 << ")\"";
+        }
         return true;
     }
     bool start_array(uint32_t num_elements) {
