@@ -466,12 +466,17 @@ struct object_stringize_visitor {
         m_os << '"';
         return true;
     }
-    bool visit_bin(const char* v, uint32_t size) {
-        (m_os << '"').write(v, static_cast<std::streamsize>(size)) << '"';
+    bool visit_bin(const char* /*v*/, uint32_t size) {
+        m_os << "\"BIN(size:" << size << ")\"";
         return true;
     }
-    bool visit_ext(const char* /*v*/, uint32_t /*size*/) {
-        m_os << "EXT";
+    bool visit_ext(const char* v, uint32_t size) {
+        if (size == 0) {
+            m_os << "\"EXT(size:0)\"";
+        }
+        else {
+            m_os << "\"EXT(type:" << static_cast<int>(v[0]) << ",size:" << size - 1 << ")\"";
+        }
         return true;
     }
     bool start_array(uint32_t num_elements) {
