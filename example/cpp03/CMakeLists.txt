@@ -26,12 +26,15 @@ IF (NOT MSVC)
     )
 ENDIF ()
 
-if (Boost_TIMER_LIBRARY)
-    LIST (APPEND with_boost_lib_PROGRAMS
-        speed_test.cpp
-        speed_test_nested_array.cpp
-    )
-endif()
+
+IF (MSGPACK_USE_BOOST)
+    IF (Boost_TIMER_LIBRARY)
+        LIST (APPEND with_boost_lib_PROGRAMS
+            speed_test.cpp
+            speed_test_nested_array.cpp
+        )
+    ENDIF ()
+ENDIF ()
 
 FOREACH (source_file ${exec_PROGRAMS})
     GET_FILENAME_COMPONENT (source_file_we ${source_file} NAME_WE)

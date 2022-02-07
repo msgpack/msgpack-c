@@ -22,6 +22,7 @@ OPTION (MSGPACK_CXX17 "Using c++17 compiler" OFF)
 OPTION (MSGPACK_CXX20 "Using c++20 compiler" OFF)
 
 OPTION (MSGPACK_32BIT            "32bit compile"                        OFF)
+OPTION (MSGPACK_USE_BOOST        "Use Boost libraried"                  ON)
 OPTION (MSGPACK_USE_X3_PARSE     "Use Boost X3 parse"                   OFF)
 OPTION (MSGPACK_BUILD_TESTS      "Build tests"                          OFF)
 OPTION (MSGPACK_BUILD_DOCS       "Build Doxygen documentation"          ON)
@@ -62,14 +63,20 @@ IF (MSGPACK_32BIT)
     ENDIF ()
 ENDIF ()
 
-SET (Boost_USE_MULTITHREADED ON)
+IF (MSGPACK_USE_BOOST)
+    SET (Boost_USE_MULTITHREADED ON)
 
-IF (MSGPACK_USE_STATIC_BOOST)
-    MESSAGE (STATUS "Staticly linking with Boost")
-    SET (Boost_USE_STATIC_LIBS TRUE)
+    IF (MSGPACK_USE_STATIC_BOOST)
+        MESSAGE (STATUS "Staticly linking with Boost")
+        SET (Boost_USE_STATIC_LIBS TRUE)
+    ELSE ()
+        MESSAGE (STATUS "Dynamically linking with Boost")
+        SET (Boost_USE_STATIC_LIBS FALSE)
+    ENDIF ()
+
+    FIND_PACKAGE (Boost REQUIRED)
 ELSE ()
-    MESSAGE (STATUS "Dynamically linking with Boost")
-    SET (Boost_USE_STATIC_LIBS FALSE)
+    SET (CMAKE_CXX_FLAGS "-DMSGPACK_NO_BOOST ${CMAKE_CXX_FLAGS}")
 ENDIF ()
 
 IF (MSGPACK_CHAR_SIGN)
@@ -100,7 +107,6 @@ int main(int argc, char * argv[])
     ENDIF ()
 ENDIF ()
 
-FIND_PACKAGE (Boost REQUIRED)
 
 INCLUDE (Files.cmake)
 
@@ -113,7 +119,9 @@ TARGET_INCLUDE_DIRECTORIES (msgpackc-cxx
         $<INSTALL_INTERFACE:include>
 )
 
-TARGET_LINK_LIBRARIES (msgpackc-cxx INTERFACE Boost::boost)
+IF (MSGPACK_USE_BOOST)
+    TARGET_LINK_LIBRARIES (msgpackc-cxx INTERFACE Boost::boost)
+ENDIF ()
 
 IF (MSGPACK_GEN_COVERAGE)
     IF (NOT MSGPACK_BUILD_TESTS)
@@ -131,6 +139,9 @@ IF (MSGPACK_GEN_COVERAGE)
 ENDIF ()
 
 IF (MSGPACK_BUILD_TESTS)
+    IF (NOT MSGPACK_USE_BOOST)
+        MESSAGE(FATAL_ERROR "Test requires -DMSGPACK_USE_BOOST=ON")
+    ENDIF ()
     ENABLE_TESTING ()
     # MEMORYCHECK_COMMAND_OPTIONS needs to place prior to CTEST_MEMORYCHECK_COMMAND
     SET (MEMORYCHECK_COMMAND_OPTIONS "--leak-check=full --show-leak-kinds=definite,possible --error-exitcode=1")
