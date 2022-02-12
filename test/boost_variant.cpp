@@ -10,6 +10,13 @@
 #include "config.h"
 #endif
 
+#if defined(MSGPACK_NO_BOOST)
+
+BOOST_AUTO_TEST_CASE(empty)
+{
+}
+#else  // defined(MSGPACK_NO_BOOST)
+
 const double kEPS = 1e-10;
 
 // nil
@@ -819,3 +826,5 @@ BOOST_AUTO_TEST_CASE(object_with_zone_variant_ref_map)
     BOOST_CHECK_NO_THROW(boost::get<multimap_t>(val2));
     BOOST_CHECK(val1 == val2);
 }
+
+#endif // defined(MSGPACK_NO_BOOST)

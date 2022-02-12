@@ -71,6 +71,23 @@ C++ version of msgpack-c itself is a header-only library and depends only on
 boost headers. Tests depend on boost unit test framework and are linked with
 it, so if you want to build them, you need to have this dependency installed.
 
+Experimental support for removing boost dependency
+
+For cmake:
+
+```
+cmake -DMSGPACK_USE_BOOST=OFF ..
+```
+
+NOTE: `-DMSGPACK_BUILD_TESTS=ON` doesn't work with `-DMSGPACK_USE_BOOST=OFF`.
+
+For C++ compiler
+
+```
+clang++ -DMSGPACK_NO_BOOST your_code.cpp
+```
+
+
 Usage
 -----
 

@@ -18,6 +18,7 @@
 #include "msgpack/unpack_define.hpp"
 #include "msgpack/cpp_config.hpp"
 #include "msgpack/sysdep.hpp"
+#include "msgpack/assert.hpp"
 
 #include <memory>
 
@@ -25,8 +26,6 @@
 #if !defined(MSGPACK_USE_CPP03)
 #include <atomic>
 #endif
-
-#include <boost/assert.hpp>
 
 #if defined(_MSC_VER)
 // avoiding confliction std::max, std::min, and macro in windows.h
@@ -466,7 +465,7 @@ inline void context::check_ext_size<4>(std::size_t size) {
 
 inline int context::execute(const char* data, std::size_t len, std::size_t& off)
 {
-    BOOST_ASSERT(len >= off);
+    MSGPACK_ASSERT(len >= off);
 
     m_start = data;
     m_current = data + off;

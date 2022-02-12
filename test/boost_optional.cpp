@@ -9,6 +9,13 @@
 #include "config.h"
 #endif
 
+#if defined(MSGPACK_NO_BOOST)
+
+BOOST_AUTO_TEST_CASE(empty)
+{
+}
+#else  // defined(MSGPACK_NO_BOOST)
+
 BOOST_AUTO_TEST_CASE(pack_convert_nil)
 {
     std::stringstream ss;
@@ -176,3 +183,5 @@ BOOST_AUTO_TEST_CASE(pack_convert_no_def_con)
 }
 
 #endif // !defined(MSGPACK_USE_CPP03
+
+#endif // defined(MSGPACK_NO_BOOST)

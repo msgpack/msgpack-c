@@ -9,6 +9,13 @@
 #include "config.h"
 #endif
 
+#if defined(MSGPACK_NO_BOOST)
+
+BOOST_AUTO_TEST_CASE(empty)
+{
+}
+#else  // defined(MSGPACK_NO_BOOST)
+
 #if (BOOST_VERSION / 100000) >= 1 && ((BOOST_VERSION / 100) % 1000) >= 53
 
 BOOST_AUTO_TEST_CASE(pack_convert_string_ref)
@@ -46,3 +53,5 @@ BOOST_AUTO_TEST_CASE(object_with_zone_string_ref)
 }
 
 #endif // (BOOST_VERSION / 100000) >= 1 && ((BOOST_VERSION / 100) % 1000) >= 53
+
+#endif // defined(MSGPACK_NO_BOOST)

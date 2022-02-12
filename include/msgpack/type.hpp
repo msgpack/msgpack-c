@@ -65,8 +65,10 @@
 
 #endif // defined(MSGPACK_USE_CPP03)
 
+#if !defined(MSGPACK_NO_BOOST)
 #include "adaptor/boost/fusion.hpp"
 #include "adaptor/boost/msgpack_variant.hpp"
 #include "adaptor/boost/optional.hpp"
 #include "adaptor/boost/string_ref.hpp"
 #include "adaptor/boost/string_view.hpp"
+#endif // !defined(MSGPACK_NO_BOOST)

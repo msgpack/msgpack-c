@@ -9,6 +9,13 @@
 #include "config.h"
 #endif
 
+#if defined(MSGPACK_NO_BOOST)
+
+BOOST_AUTO_TEST_CASE(empty)
+{
+}
+#else  // defined(MSGPACK_NO_BOOST)
+
 // Avoid empty test tree on boost 1.60 and lower
 BOOST_AUTO_TEST_CASE(dummy)
 {
@@ -51,3 +58,5 @@ BOOST_AUTO_TEST_CASE(object_with_zone_string_view)
 }
 
 #endif // (BOOST_VERSION / 100000) >= 1 && ((BOOST_VERSION / 100) % 1000) >= 61
+
+#endif // defined(MSGPACK_NO_BOOST)
