@@ -1,3 +1,9 @@
+# 2022-02-12 version 4.1.0 for C++
+  * Add experimental support for no boost dependency (#1001)
+    * For cmake, add `-DMSGPACK_USE_BOOST=OFF`. For C++ compiler add `-DMSGPACK_NO_BOOST`.
+  * Improve BIN console output (#995)
+  * Fix include notation (#991)
+
 # 2021-10-23 version 4.0.3 for C++
   * Remove Enabler2 template parameter from object adaptor (#987)
   * Add MSGPACK_BUILD_DOCS cmake option (#983, #984)
