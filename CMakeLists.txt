@@ -191,6 +191,8 @@ IF (MSGPACK_BUILD_DOCS)
     ENDIF ()
 ENDIF ()
 
+include (GNUInstallDirs)
+
 # Install library.
 INSTALL (TARGETS msgpackc-cxx
          EXPORT msgpackc-cxx-targets
@@ -211,7 +213,7 @@ INCLUDE (CMakePackageConfigHelpers)
 IF (NOT (CMAKE_VERSION VERSION_LESS 3.14))
     SET (extra_version_file_args ARCH_INDEPENDENT)
 ENDIF ()
-SET (cmake_config_path "lib/cmake/msgpackc-cxx")
+SET (cmake_config_path "${CMAKE_INSTALL_LIBDIR}/cmake/msgpackc-cxx")
 
 # Configure the main package file from source tree.
 CONFIGURE_PACKAGE_CONFIG_FILE (
