@@ -861,6 +861,8 @@ BOOST_AUTO_TEST_CASE(no_def_con_array_simple_buffer)
     BOOST_CHECK(val1 == val2);
 }
 
+#if !defined(MSGPACK_NO_BOOST)
+
 BOOST_AUTO_TEST_CASE(system_clock)
 {
     std::chrono::system_clock::time_point val1;
@@ -1425,6 +1427,8 @@ BOOST_AUTO_TEST_CASE(high_resolution_clock_impl_now)
     oh.get().convert(val3);
     BOOST_CHECK(val1 == val3);
 }
+
+#endif // !defined(MSGPACK_NO_BOOST)
 
 
 BOOST_AUTO_TEST_CASE(timespec_pack_convert_zero)
