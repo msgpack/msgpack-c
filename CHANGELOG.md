@@ -1,3 +1,7 @@
+# 2022-03-09 version 4.1.1 for C++
+  * Remove chrono support on `MSGPACK_NO_BOOST` to fix  compile error.
+  * Improve build system (#1003)
+
 # 2022-02-12 version 4.1.0 for C++
   * Add experimental support for no boost dependency (#1001)
     * For cmake, add `-DMSGPACK_USE_BOOST=OFF`. For C++ compiler add `-DMSGPACK_NO_BOOST`.
