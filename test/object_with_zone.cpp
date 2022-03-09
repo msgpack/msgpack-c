@@ -917,6 +917,8 @@ BOOST_AUTO_TEST_CASE(tuple_empty)
     BOOST_CHECK(obj.as<test_t>() == v);
 }
 
+#if !defined(MSGPACK_NO_BOOST)
+
 BOOST_AUTO_TEST_CASE(system_clock)
 {
     std::chrono::system_clock::time_point v;
@@ -980,6 +982,8 @@ BOOST_AUTO_TEST_CASE(system_clock_impl_max)
     msgpack::object obj(v, z);
     BOOST_CHECK(obj.as<std::chrono::system_clock::time_point>() == v);
 }
+
+#endif // !defined(MSGPACK_NO_BOOST)
 
 #endif // !defined(MSGPACK_USE_CPP03)
 
