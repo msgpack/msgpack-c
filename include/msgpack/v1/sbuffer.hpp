@@ -10,6 +10,7 @@
 #ifndef MSGPACK_V1_SBUFFER_HPP
 #define MSGPACK_V1_SBUFFER_HPP
 
+#include "msgpack/v1/cpp_config_decl.hpp"
 #include "msgpack/v1/sbuffer_decl.hpp"
 #include "msgpack/assert.hpp"
 
