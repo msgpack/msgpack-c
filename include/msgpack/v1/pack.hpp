@@ -1138,6 +1138,11 @@ inline packer<Stream>& packer<Stream>::pack_unsigned_long_long(unsigned long lon
 template <typename Stream>
 inline packer<Stream>& packer<Stream>::pack_float(float d)
 {
+    if (d == int64_t(d))
+    {
+        pack_imp_int64(int64_t(d));
+        return *this;
+    }
     union { float f; uint32_t i; } mem;
     mem.f = d;
     char buf[5];
@@ -1149,6 +1154,12 @@ inline packer<Stream>& packer<Stream>::pack_float(float d)
 template <typename Stream>
 inline packer<Stream>& packer<Stream>::pack_double(double d)
 {
+    if (d == int64_t(d))
+    {
+        pack_imp_int64(int64_t(d));
+        return *this;
+    }
+
     union { double f; uint64_t i; } mem;
     mem.f = d;
     char buf[9];
