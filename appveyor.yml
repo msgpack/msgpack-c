@@ -23,10 +23,10 @@ environment:
       boost_subdir: lib32-msvc-14.0
 build_script:
   - ps: |
-      appveyor DownloadFile http://zlib.net/zlib-1.2.11.tar.gz -FileName zlib-1.2.11.tar.gz
-      7z x zlib-1.2.11.tar.gz 2> $null
-      7z x zlib-1.2.11.tar 2> $null
-      cd zlib-1.2.11
+      appveyor DownloadFile http://zlib.net/zlib-1.2.12.tar.gz -FileName zlib-1.2.12.tar.gz
+      7z x zlib-1.2.12.tar.gz 2> $null
+      7z x zlib-1.2.12.tar 2> $null
+      cd zlib-1.2.12
 
       md build
       md prefix
@@ -34,7 +34,7 @@ build_script:
 
       cmake `
           -G $env:msvc `
-          -D CMAKE_INSTALL_PREFIX="$env:APPVEYOR_BUILD_FOLDER\zlib-1.2.11\prefix" `
+          -D CMAKE_INSTALL_PREFIX="$env:APPVEYOR_BUILD_FOLDER\zlib-1.2.12\prefix" `
           ..
       if ($LastExitCode -ne 0) { exit $LastExitCode }
 
@@ -52,7 +52,7 @@ build_script:
           -D MSGPACK_BUILD_EXAMPLES=ON `
           -D MSGPACK_BUILD_TESTS=ON `
           -D CMAKE_EXE_LINKER_FLAGS=/LIBPATH:"$env:boost_prefix\$env:boost_subdir" `
-          -D CMAKE_PREFIX_PATH="$env:boost_prefix;$env:APPVEYOR_BUILD_FOLDER\zlib-1.2.11\prefix" `
+          -D CMAKE_PREFIX_PATH="$env:boost_prefix;$env:APPVEYOR_BUILD_FOLDER\zlib-1.2.12\prefix" `
           -D CMAKE_INSTALL_PREFIX="$env:APPVEYOR_BUILD_FOLDER\prefix" `
           -D CMAKE_CXX_FLAGS="/D_VARIADIC_MAX=10 /EHsc /DBOOST_ALL_DYN_LINK" `
           ..
@@ -62,5 +62,5 @@ build_script:
       if ($LastExitCode -ne 0) { exit $LastExitCode }
 
 test_script:
-- set PATH=%PATH%;%APPVEYOR_BUILD_FOLDER%\zlib-1.2.11\build\Release;%APPVEYOR_BUILD_FOLDER%\build\release;%boost_prefix%\%boost_subdir%
+- set PATH=%PATH%;%APPVEYOR_BUILD_FOLDER%\zlib-1.2.12\build\Release;%APPVEYOR_BUILD_FOLDER%\build\release;%boost_prefix%\%boost_subdir%
 - ctest -VV -C Release
