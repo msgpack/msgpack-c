@@ -27,7 +27,7 @@ http://www.boost.org/LICENSE_1_0.txt)
 #define MSGPACK_OS_LINUX MSGPACK_VERSION_NUMBER_NOT_AVAILABLE
 
 #if !defined(MSGPACK_PREDEF_DETAIL_OS_DETECTED) && ( \
-    defined(linux) || defined(__linux) \
+    defined(linux) || defined(__linux) || defined(__linux__) \
     )
 #   undef MSGPACK_OS_LINUX
 #   define MSGPACK_OS_LINUX MSGPACK_VERSION_NUMBER_AVAILABLE
