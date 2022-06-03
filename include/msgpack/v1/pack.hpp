@@ -1138,13 +1138,12 @@ inline packer<Stream>& packer<Stream>::pack_unsigned_long_long(unsigned long lon
 template <typename Stream>
 inline packer<Stream>& packer<Stream>::pack_float(float d)
 {
-    if (d == d) { // check for nan 
-        // compare d to limits::max() to avoid undefined behaviour
-        if (d >= 0 && d <= std::numeric_limits<uint64_t>::max() && d == uint64_t(d)) {
+    if(d == d) { // check for nan 
+        // compare d to limits to avoid undefined behaviour
+        if(d >= 0 && d <= std::numeric_limits<uint64_t>::max() && d == uint64_t(d)) {
             pack_imp_uint64(uint64_t(d));
-            return *this;
-        
-        } else if (d >= std::numeric_limits<int64_t>::min() && d == int64_t(d)) {
+            return *this;        
+        } else if(d >= std::numeric_limits<int64_t>::min() && d == int64_t(d)) {
             pack_imp_int64(int64_t(d));
             return *this;
         }
@@ -1161,13 +1160,12 @@ inline packer<Stream>& packer<Stream>::pack_float(float d)
 template <typename Stream>
 inline packer<Stream>& packer<Stream>::pack_double(double d)
 {
-    if (d == d) { // check for nan 
-        // compare d to limits::max() to avoid undefined behaviour
-        if (d >= 0 && d <= std::numeric_limits<uint64_t>::max() && d == uint64_t(d)) {
+    if(d == d) { // check for nan 
+        // compare d to limits to avoid undefined behaviour
+        if(d >= 0 && d <= std::numeric_limits<uint64_t>::max() && d == uint64_t(d)) {
             pack_imp_uint64(uint64_t(d));
-            return *this;
-        
-        } else if (d >= std::numeric_limits<int64_t>::min() && d == int64_t(d)) {
+            return *this;        
+        } else if(d >= std::numeric_limits<int64_t>::min() && d == int64_t(d)) {
             pack_imp_int64(int64_t(d));
             return *this;
         }
