@@ -31,10 +31,12 @@ jobs:
         export ARCH="64"
         if [ ${{ matrix.pattern }} == 0 ]; then
           export SHARED="ON"
+          export SAN="-fsanitize=address -fno-omit-frame-pointer"
           export CHAR_SIGN="unsigned"
         fi
         if [ ${{ matrix.pattern }} == 1 ]; then
           export SHARED="ON"
+          export SAN="-fsanitize=address -fno-omit-frame-pointer"
           export CHAR_SIGN="signed"
         fi
         if [ ${{ matrix.pattern }} == 2 ]; then
@@ -61,7 +63,7 @@ jobs:
         cd ..
 
         # build and test
-        CMAKE_CXX_COMPILER="${CXX}" CMAKE_C_COMPILER="${CC}" GTEST_ROOT="${BASE}/usr" CFLAGS="-Werror -g -fsanitize=undefined" CXXFLAGS="-Werror -g -fsanitize=undefined" ${ACTION}
+        CMAKE_CXX_COMPILER="${CXX}" CMAKE_C_COMPILER="${CC}" GTEST_ROOT="${BASE}/usr" CFLAGS="-Werror -g -fsanitize=undefined  -fno-sanitize-recover=all" CXXFLAGS="-Werror -g -ggdb3 -fsanitize=undefined  -fno-sanitize-recover=all" ${ACTION}
 
   linux:
     runs-on: ubuntu-18.04
@@ -87,6 +89,7 @@ jobs:
           ACTION="ci/build_cmake.sh"
           export ARCH="64"
           export SHARED="ON"
+          export SAN="-fsanitize=address -fno-omit-frame-pointer"
           export CHAR_SIGN="unsigned"
         fi
         if [ ${{ matrix.pattern }} == 1 ]; then
@@ -95,6 +98,7 @@ jobs:
           ACTION="ci/build_cmake.sh"
           export ARCH="32"
           export SHARED="ON"
+          export SAN="-fsanitize=address -fno-omit-frame-pointer"
           export CHAR_SIGN="signed"
         fi
         if [ ${{ matrix.pattern }} == 2 ]; then
@@ -103,6 +107,7 @@ jobs:
           ACTION="ci/build_cmake.sh"
           export ARCH="64"
           export SHARED="ON"
+          export SAN="-fsanitize=address -fno-omit-frame-pointer"
           export CHAR_SIGN="signed"
         fi
         if [ ${{ matrix.pattern }} == 3 ]; then
@@ -119,6 +124,7 @@ jobs:
           ACTION="ci/build_cmake.sh"
           export ARCH="64"
           export SHARED="ON"
+          export SAN="-fsanitize=address -fno-omit-frame-pointer"
           export CHAR_SIGN="signed"
         fi
         if [ ${{ matrix.pattern }} == 5 ]; then
@@ -127,6 +133,7 @@ jobs:
           ACTION="ci/build_cmake.sh"
           export ARCH="32"
           export SHARED="ON"
+          export SAN="-fsanitize=address -fno-omit-frame-pointer"
           export CHAR_SIGN="unsigned"
         fi
         if [ ${{ matrix.pattern }} == 6 ]; then
@@ -135,6 +142,7 @@ jobs:
           ACTION="ci/build_cmake.sh"
           export ARCH="64"
           export SHARED="ON"
+          export SAN="-fsanitize=address -fno-omit-frame-pointer"
           export CHAR_SIGN="unsigned"
         fi
         if [ ${{ matrix.pattern }} == 7 ]; then
@@ -172,7 +180,7 @@ jobs:
         fi
 
         # build and test
-        CMAKE_CXX_COMPILER="${CXX}" CMAKE_C_COMPILER="${CC}" GTEST_ROOT="${BASE}/usr" CFLAGS="-Werror -g -fsanitize=undefined" CXXFLAGS="-Werror -g -fsanitize=undefined" MSGPACK_SAN="${SAN}" ${ACTION}
+        CMAKE_CXX_COMPILER="${CXX}" CMAKE_C_COMPILER="${CC}" GTEST_ROOT="${BASE}/usr" CFLAGS="-Werror -g -fsanitize=undefined  -fno-sanitize-recover=all" CXXFLAGS="-Werror -g -ggdb3 -fsanitize=undefined  -fno-sanitize-recover=all" ${ACTION}
 
   windows:
     runs-on: windows-2019
