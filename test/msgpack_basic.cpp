@@ -154,6 +154,8 @@ BOOST_AUTO_TEST_CASE(simple_buffer_float)
     v.push_back(-0.0);
     v.push_back(1.0);
     v.push_back(-1.0);
+    v.push_back(1.1f);
+    v.push_back(-1.1f);
     v.push_back(numeric_limits<float>::min());
     v.push_back(numeric_limits<float>::max());
     v.push_back(nanf("tag"));
@@ -186,6 +188,12 @@ BOOST_AUTO_TEST_CASE(simple_buffer_float)
             BOOST_CHECK(std::isinf(val2));
         else
             BOOST_CHECK(fabs(val2 - val1) <= kEPS);
+
+        // check for compact storing of float
+        if (val1 == val1 && val1 == float(int64_t(val1)))
+            BOOST_REQUIRE_EQUAL(sbuf.size(),1);
+        else
+            BOOST_REQUIRE_EQUAL(sbuf.data()[0],char(0xca));
     }
 }
 
@@ -236,6 +244,8 @@ BOOST_AUTO_TEST_CASE(simple_buffer_double)
     v.push_back(-0.0);
     v.push_back(1.0);
     v.push_back(-1.0);
+    v.push_back(1.1);
+    v.push_back(-1.1);
     v.push_back(numeric_limits<double>::min());
     v.push_back(numeric_limits<double>::max());
     v.push_back(nanf("tag"));
@@ -272,6 +282,12 @@ BOOST_AUTO_TEST_CASE(simple_buffer_double)
             BOOST_CHECK(std::isinf(val2));
         else
             BOOST_CHECK(fabs(val2 - val1) <= kEPS);
+
+        // check for compact storing of double
+        if (val1 == val1 && val1 == double(int64_t(val1)))
+            BOOST_REQUIRE_EQUAL(sbuf.size(),1);
+        else
+            BOOST_REQUIRE_EQUAL(uint8_t(sbuf.data()[0]),uint8_t(0xcb));
     }
 }
 
