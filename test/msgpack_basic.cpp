@@ -190,7 +190,7 @@ BOOST_AUTO_TEST_CASE(simple_buffer_float)
             BOOST_CHECK(fabs(val2 - val1) <= kEPS);
 
         // check for compact storing of float
-        if (val1 == val1 && val1 == float(int64_t(val1)))
+        if (val1 == val1 && val1 >= float(std::numeric_limits<int64_t>::min()) && val1 <= float(std::numeric_limits<int64_t>::max()) && val1 == float(int64_t(val1)))
             BOOST_REQUIRE_EQUAL(sbuf.size(),1);
         else
             BOOST_REQUIRE_EQUAL(sbuf.data()[0],char(0xca));
@@ -284,7 +284,7 @@ BOOST_AUTO_TEST_CASE(simple_buffer_double)
             BOOST_CHECK(fabs(val2 - val1) <= kEPS);
 
         // check for compact storing of double
-        if (val1 == val1 && val1 == double(int64_t(val1)))
+        if (val1 == val1 && val1 >= double(std::numeric_limits<int64_t>::min()) && val1 <= double(std::numeric_limits<int64_t>::max()) && val1 == double(int64_t(val1)))
             BOOST_REQUIRE_EQUAL(sbuf.size(),1);
         else
             BOOST_REQUIRE_EQUAL(uint8_t(sbuf.data()[0]),uint8_t(0xcb));
