@@ -171,7 +171,7 @@ private:
     finalizer_array m_finalizer_array;
 
 public:
-    zone(size_t chunk_size = MSGPACK_ZONE_CHUNK_SIZE) noexcept;
+    zone(size_t chunk_size = MSGPACK_ZONE_CHUNK_SIZE);
 
 public:
     void* allocate_align(size_t size, size_t align = MSGPACK_ZONE_ALIGN);
@@ -226,7 +226,7 @@ private:
     char* allocate_expand(size_t size);
 };
 
-inline zone::zone(size_t chunk_size) noexcept:m_chunk_size(chunk_size), m_chunk_list(m_chunk_size)
+inline zone::zone(size_t chunk_size):m_chunk_size(chunk_size), m_chunk_list(m_chunk_size)
 {
 }
 
