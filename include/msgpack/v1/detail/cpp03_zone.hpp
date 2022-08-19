@@ -138,7 +138,7 @@ class zone {
     finalizer_array m_finalizer_array;
 
 public:
-    zone(size_t chunk_size = MSGPACK_ZONE_CHUNK_SIZE) /* throw() */;
+    zone(size_t chunk_size = MSGPACK_ZONE_CHUNK_SIZE);
 
 public:
     void* allocate_align(size_t size, size_t align = MSGPACK_ZONE_ALIGN);
@@ -239,7 +239,7 @@ private:
     zone& operator=(const zone&);
 };
 
-inline zone::zone(size_t chunk_size) /* throw() */ :m_chunk_size(chunk_size), m_chunk_list(m_chunk_size)
+inline zone::zone(size_t chunk_size):m_chunk_size(chunk_size), m_chunk_list(m_chunk_size)
 {
 }
 
