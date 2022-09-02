@@ -2,7 +2,9 @@
 
 include(CMakeFindDependencyMacro)
 
-find_dependency(Boost REQUIRED)
+IF (@MSGPACK_USE_BOOST@)
+    find_dependency(Boost REQUIRED)
+ENDIF ()
 
 include("${CMAKE_CURRENT_LIST_DIR}/msgpackc-cxx-targets.cmake")
 
