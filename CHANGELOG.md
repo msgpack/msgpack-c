@@ -1,3 +1,11 @@
+# 2022-09-07 version 4.1.2 for C++
+  * Fix noexcept on zone (#1030)
+  * Improve cmake support (#1028, #1032)
+  * Improve CI (#1023)
+  * Improve supporting platform (#1021)
+  * Refine double/float packing (#1018)
+  * Refine include files dependency (#1011)
+
 # 2022-03-09 version 4.1.1 for C++
   * Remove chrono support on `MSGPACK_NO_BOOST` to fix  compile error.
   * Improve build system (#1003)
