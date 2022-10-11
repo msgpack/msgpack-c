@@ -5,7 +5,7 @@ IF ((CMAKE_VERSION VERSION_GREATER 3.1) OR
     CMAKE_POLICY(SET CMP0054 NEW)
 ENDIF ()
 
-PROJECT (msgpack)
+PROJECT (msgpack C)
 
 FILE (READ ${CMAKE_CURRENT_SOURCE_DIR}/include/msgpack/version_master.h contents)
 STRING (REGEX MATCH "#define MSGPACK_VERSION_MAJOR *([0-9a-zA-Z_]*)" NULL_OUT ${contents})
