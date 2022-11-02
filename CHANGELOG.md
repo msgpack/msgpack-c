@@ -1,3 +1,6 @@
+# 2022-11-02 version 4.1.3 for C++
+  * Fix compile error that direct inclusion of chrono with `MSGPACK_NO_BOOST` (#1038))
+
 # 2022-09-07 version 4.1.2 for C++
   * Fix noexcept on zone (#1030)
   * Improve cmake support (#1028, #1032)
