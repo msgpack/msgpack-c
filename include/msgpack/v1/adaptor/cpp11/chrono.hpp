@@ -11,6 +11,8 @@
 #ifndef MSGPACK_V1_TYPE_CPP11_CHRONO_HPP
 #define MSGPACK_V1_TYPE_CPP11_CHRONO_HPP
 
+#if !defined(MSGPACK_NO_BOOST)
+
 #include "msgpack/versioning.hpp"
 #include "msgpack/adaptor/adaptor_base.hpp"
 #include "msgpack/object.hpp"
@@ -247,5 +249,7 @@ struct object_with_zone<std::chrono::time_point<Clock, Duration>> {
 /// @endcond
 
 } // namespace msgpack
+
+#endif // !defined(MSGPACK_NO_BOOST)
 
 #endif // MSGPACK_V1_TYPE_CPP11_CHRONO_HPP
