@@ -195,6 +195,7 @@ jobs:
       matrix:
         # MSVC2019 only supports /std:c++14, /std:c++17 and /std:c++latest
         cxx: [14, 17, 20]
+        pp_flag: ["/Zc:preprocessor-", "/Zc:preprocessor"]
     steps:
     - uses: actions/checkout@v2
 
@@ -225,7 +226,7 @@ jobs:
             -D CMAKE_TOOLCHAIN_FILE="C:/vcpkg/scripts/buildsystems/vcpkg.cmake" `
             -D MSGPACK_BUILD_TESTS=ON `
             -D $CPPVER `
-            -D CMAKE_CXX_FLAGS="/D_VARIADIC_MAX=10 /EHsc /D_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING /D_SILENCE_CXX17_ALLOCATOR_VOID_DEPRECATION_WARNING /D_SILENCE_CXX17_OLD_ALLOCATOR_MEMBERS_DEPRECATION_WARNING /W3 /WX" `
+            -D CMAKE_CXX_FLAGS="${{ matrix.pp_flag }} /D_VARIADIC_MAX=10 /EHsc /D_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING /D_SILENCE_CXX17_ALLOCATOR_VOID_DEPRECATION_WARNING /D_SILENCE_CXX17_OLD_ALLOCATOR_MEMBERS_DEPRECATION_WARNING /W3 /WX" `
             -B build `
             -S .
         if ($LastExitCode -ne 0) { exit $LastExitCode }
