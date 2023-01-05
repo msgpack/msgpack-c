@@ -2,7 +2,7 @@ CMAKE_MINIMUM_REQUIRED (VERSION 3.1 FATAL_ERROR)
 
 CMAKE_POLICY (SET CMP0054 NEW)
 
-PROJECT (msgpack LANGUAGES CXX)
+PROJECT (msgpackc-cxx LANGUAGES CXX)
 
 ADD_LIBRARY (msgpackc-cxx INTERFACE)
 
@@ -216,14 +216,14 @@ SET (cmake_config_path "${CMAKE_INSTALL_LIBDIR}/cmake/msgpackc-cxx")
 
 # Configure the main package file from source tree.
 CONFIGURE_PACKAGE_CONFIG_FILE (
-    msgpack-config.cmake.in
-    "${CMAKE_CURRENT_BINARY_DIR}/msgpack-config.cmake"
+    msgpackc-cxx-config.cmake.in
+    "${CMAKE_CURRENT_BINARY_DIR}/msgpackc-cxx-config.cmake"
     INSTALL_DESTINATION "${cmake_config_path}"
 )
 
 # Write package version file.
 WRITE_BASIC_PACKAGE_VERSION_FILE (
-    msgpack-config-version.cmake
+    msgpackc-cxx-config-version.cmake
     VERSION ${VERSION}
     COMPATIBILITY SameMajorVersion
     ${extra_version_file_args}
@@ -231,8 +231,8 @@ WRITE_BASIC_PACKAGE_VERSION_FILE (
 
 # Install the generated package version file and the main package file.
 INSTALL (FILES
-    "${CMAKE_CURRENT_BINARY_DIR}/msgpack-config.cmake"
-    "${CMAKE_CURRENT_BINARY_DIR}/msgpack-config-version.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/msgpackc-cxx-config.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/msgpackc-cxx-config-version.cmake"
     DESTINATION "${cmake_config_path}"
     COMPONENT msgpackc-cxx
 )
