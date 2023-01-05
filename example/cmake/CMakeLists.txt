@@ -6,7 +6,7 @@ if(EXAMPLE_MSGPACK_EMBEDDED)
     set(msgpack_DIR ${CMAKE_CURRENT_BINARY_DIR}/msgpack-c)
 endif()
 
-find_package(msgpack REQUIRED)
+find_package(msgpackc REQUIRED)
 
 add_executable (${PROJECT_NAME} ${CMAKE_CURRENT_LIST_DIR}/../simple_c.c)
 target_link_libraries(${PROJECT_NAME} msgpackc)
