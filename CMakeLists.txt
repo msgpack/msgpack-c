@@ -5,7 +5,7 @@ IF ((CMAKE_VERSION VERSION_GREATER 3.1) OR
     CMAKE_POLICY(SET CMP0054 NEW)
 ENDIF ()
 
-PROJECT (msgpack)
+PROJECT (msgpackc)
 
 FILE (READ ${CMAKE_CURRENT_SOURCE_DIR}/include/msgpack/version_master.h contents)
 STRING (REGEX MATCH "#define MSGPACK_VERSION_MAJOR *([0-9a-zA-Z_]*)" NULL_OUT ${contents})
@@ -254,7 +254,7 @@ IF (MSGPACK_ENABLE_SHARED AND MSGPACK_ENABLE_STATIC)
     LIST (APPEND MSGPACK_INSTALLTARGETS msgpackc-static)
 ENDIF ()
 
-INSTALL (TARGETS ${MSGPACK_INSTALLTARGETS} EXPORT msgpack-targets
+INSTALL (TARGETS ${MSGPACK_INSTALLTARGETS} EXPORT msgpackc-targets
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
@@ -298,36 +298,36 @@ ENDIF ()
 
 INCLUDE (CMakePackageConfigHelpers)
 
-SET (CMAKE_INSTALL_CMAKEDIR "${CMAKE_INSTALL_LIBDIR}/cmake/msgpack")
+SET (CMAKE_INSTALL_CMAKEDIR "${CMAKE_INSTALL_LIBDIR}/cmake/msgpackc")
 
 WRITE_BASIC_PACKAGE_VERSION_FILE (
-    msgpack-config-version.cmake
+    msgpackc-config-version.cmake
     VERSION ${VERSION}
     COMPATIBILITY SameMajorVersion
 )
 
 IF (NOT CMAKE_VERSION VERSION_LESS 3.0)
-    EXPORT (EXPORT msgpack-targets
-        FILE "${CMAKE_CURRENT_BINARY_DIR}/msgpack-targets.cmake"
+    EXPORT (EXPORT msgpackc-targets
+        FILE "${CMAKE_CURRENT_BINARY_DIR}/msgpackc-targets.cmake"
     )
 ENDIF ()
 
-CONFIGURE_PACKAGE_CONFIG_FILE (msgpack-config.cmake.in
-    msgpack-config.cmake
+CONFIGURE_PACKAGE_CONFIG_FILE (msgpackc-config.cmake.in
+    msgpackc-config.cmake
     INSTALL_DESTINATION "${CMAKE_INSTALL_CMAKEDIR}"
 )
 
-INSTALL (EXPORT msgpack-targets
+INSTALL (EXPORT msgpackc-targets
     FILE
-        msgpack-targets.cmake
+        msgpackc-targets.cmake
     DESTINATION
         "${CMAKE_INSTALL_CMAKEDIR}"
 )
 
 INSTALL (
     FILES
-        "${CMAKE_CURRENT_BINARY_DIR}/msgpack-config.cmake"
-        "${CMAKE_CURRENT_BINARY_DIR}/msgpack-config-version.cmake"
+        "${CMAKE_CURRENT_BINARY_DIR}/msgpackc-config.cmake"
+        "${CMAKE_CURRENT_BINARY_DIR}/msgpackc-config-version.cmake"
     DESTINATION
         "${CMAKE_INSTALL_CMAKEDIR}"
 )
