@@ -22,10 +22,10 @@ build_script:
 - cmake --build . --config Release
 - cd ..
 - cd ..
-- appveyor DownloadFile http://zlib.net/zlib-1.2.12.tar.gz -FileName zlib-1.2.12.tar.gz
-- 7z x zlib-1.2.12.tar.gz > NUL
-- 7z x zlib-1.2.12.tar > NUL
-- cd zlib-1.2.12
+- appveyor DownloadFile http://zlib.net/zlib-1.2.13.tar.gz -FileName zlib-1.2.13.tar.gz
+- 7z x zlib-1.2.13.tar.gz > NUL
+- 7z x zlib-1.2.13.tar > NUL
+- cd zlib-1.2.13
 - md build
 - cd build
 - cmake -G %msvc% ..
