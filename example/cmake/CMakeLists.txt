@@ -3,7 +3,7 @@ project (example)
 
 if(EXAMPLE_MSGPACK_EMBEDDED)
     add_subdirectory(msgpack-c)
-    set(msgpack_DIR ${CMAKE_CURRENT_BINARY_DIR}/msgpack-c)
+    set(msgpackc_DIR ${CMAKE_CURRENT_BINARY_DIR}/msgpack-c)
 endif()
 
 find_package(msgpackc REQUIRED)
