@@ -1,7 +1,7 @@
 # 2023-01-10 version 5.0.0 for C++
  * Fix config for new MSVC preprocessor (#1040)
 ## << breaking changes >>
- * Change CMake package name of C++ library to msgpackc-cxx (#1045)
+ * Change CMake package name of C++ library to msgpackc-cxx (#1045, #1048)
 
 # 2022-11-02 version 4.1.3 for C++
   * Fix compile error that direct inclusion of chrono with `MSGPACK_NO_BOOST` (#1038))
