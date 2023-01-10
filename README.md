@@ -1,7 +1,7 @@
 `msgpack` for C
 ===================
 
-Version 4.0.0 [![Build Status](https://github.com/msgpack/msgpack-c/workflows/CI/badge.svg?branch=c_master)](https://github.com/msgpack/msgpack-c/actions) [![Build status](https://ci.appveyor.com/api/projects/status/8kstcgt79qj123mw/branch/c_master?svg=true)](https://ci.appveyor.com/project/redboltz/msgpack-c/branch/c_master)
+Version 5.0.0 [![Build Status](https://github.com/msgpack/msgpack-c/workflows/CI/badge.svg?branch=c_master)](https://github.com/msgpack/msgpack-c/actions) [![Build status](https://ci.appveyor.com/api/projects/status/8kstcgt79qj123mw/branch/c_master?svg=true)](https://ci.appveyor.com/project/redboltz/msgpack-c/branch/c_master)
 [![codecov](https://codecov.io/gh/msgpack/msgpack-c/branch/c_master/graph/badge.svg)](https://codecov.io/gh/msgpack/msgpack-c/branch/c_master)
 
 It's like JSON but smaller and faster.

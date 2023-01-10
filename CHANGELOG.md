@@ -1,3 +1,8 @@
+# 2023-01-10 version 5.0.0
+  * Add additional address sanitizer for CI. (#1023)
+## << breaking changes >>
+  * Change CMake package name of C library to msgpackc (#1044)
+
 # 2021-08-01 version 4.0.0
   * Fix and improve alignment logic (#962)
   * Fix iovec name conflict (#953)
