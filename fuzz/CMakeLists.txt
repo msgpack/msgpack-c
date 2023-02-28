@@ -16,7 +16,7 @@ FOREACH (source_file ${check_PROGRAMS})
         $<IF:$<BOOL:${MSGPACK_USE_STATIC_BOOST}>,,BOOST_TEST_DYN_LINK>)
 
     TARGET_LINK_LIBRARIES (${source_file_we}
-        msgpackc-cxx
+        msgpack-cxx
         Threads::Threads
         Boost::filesystem
         Boost::system

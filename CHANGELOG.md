@@ -1,3 +1,8 @@
+# 2023-02-28 version 6.0.0
+## << breaking changes >>
+  * Change CMake package name of C++ library to msgpack-cxx (#1054)
+    Unified all C++ package, library, cmake, tarball name become msgpack-cxx.
+
 # 2023-01-10 version 5.0.0 for C++
  * Fix config for new MSVC preprocessor (#1040)
 ## << breaking changes >>

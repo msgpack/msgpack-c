@@ -17,7 +17,7 @@ IF (MSGPACK_CXX11 OR MSGPACK_CXX14 OR MSGPACK_CXX17)
             ${source_file}
         )
         TARGET_LINK_LIBRARIES (${source_file_we} PRIVATE
-            msgpackc-cxx
+            msgpack-cxx
         )
         IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
             SET_PROPERTY (TARGET ${source_file_we} APPEND_STRING PROPERTY COMPILE_FLAGS " -Wall -Wextra")

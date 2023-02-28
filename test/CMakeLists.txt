@@ -78,7 +78,7 @@ FOREACH (source_file ${check_PROGRAMS})
         $<IF:$<BOOL:${MSGPACK_USE_STATIC_BOOST}>,,BOOST_TEST_DYN_LINK>)
 
     TARGET_LINK_LIBRARIES (${source_file_we}
-        msgpackc-cxx
+        msgpack-cxx
         Boost::system
         Boost::unit_test_framework
         Threads::Threads
@@ -109,7 +109,7 @@ ADD_EXECUTABLE (
 )
 
 TARGET_LINK_LIBRARIES (multi_file
-    msgpackc-cxx
+    msgpack-cxx
 )
 
 ADD_TEST (multi_file multi_file)
