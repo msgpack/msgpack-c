@@ -6,5 +6,5 @@ includedir=@includedir@
 Name: MessagePack
 Description: Binary-based efficient object serialization library
 Version: @VERSION@
-Libs: -L${libdir} -lmsgpackc
+Libs: -L${libdir} -lmsgpack-c
 Cflags: -I${includedir}

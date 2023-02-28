@@ -1,3 +1,8 @@
+# 2023-02-28 version 6.0.0
+## << breaking changes >>
+  * Change CMake package name of C library to msgpack-c (#1053)
+    Unified all C package, library, cmake, tarball name become msgpack-c.
+
 # 2023-01-10 version 5.0.0
   * Add additional address sanitizer for CI. (#1023)
 ## << breaking changes >>

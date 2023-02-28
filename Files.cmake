@@ -1,5 +1,5 @@
 # Source files
-SET (msgpackc_SOURCES
+SET (msgpack-c_SOURCES
     src/objectc.c
     src/unpack.c
     src/version.c
@@ -8,7 +8,7 @@ SET (msgpackc_SOURCES
 )
 
 # Header files
-SET (msgpackc_common_HEADERS
+SET (msgpack-c_common_HEADERS
     include/msgpack.h
     include/msgpack/fbuffer.h
     include/msgpack/gcc_atomic.h
@@ -29,13 +29,13 @@ SET (msgpackc_common_HEADERS
 )
 
 # Header files will configured
-SET (msgpackc_configured_HEADERS
+SET (msgpack-c_configured_HEADERS
     include/msgpack/pack_template.h
     include/msgpack/sysdep.h
 )
 
 # All header files
-LIST (APPEND msgpackc_HEADERS
-    ${msgpackc_common_HEADERS}
-    ${msgpackc_configured_HEADERS}
+LIST (APPEND msgpack-c_HEADERS
+    ${msgpack-c_common_HEADERS}
+    ${msgpack-c_configured_HEADERS}
 )
