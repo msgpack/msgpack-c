@@ -5,7 +5,14 @@ IF ((CMAKE_VERSION VERSION_GREATER 3.1) OR
     CMAKE_POLICY(SET CMP0054 NEW)
 ENDIF ()
 
-PROJECT (msgpack-c)
+OPTION (MSGPACK_BUILD_TESTS "Build msgpack tests." ON)
+OPTION (MSGPACK_GEN_COVERAGE "Enable running gcov to get a test coverage report." OFF)
+
+if(MSGPACK_BUILD_TESTS)
+    PROJECT (msgpack-c)
+else()
+    PROJECT (msgpack-c C)
+endif()
 
 FILE (READ ${CMAKE_CURRENT_SOURCE_DIR}/include/msgpack/version_master.h contents)
 STRING (REGEX MATCH "#define MSGPACK_VERSION_MAJOR *([0-9a-zA-Z_]*)" NULL_OUT ${contents})
@@ -72,14 +79,6 @@ OPTION (MSGPACK_BUILD_EXAMPLES "Build msgpack examples." ON)
 
 IF (MSGPACK_CHAR_SIGN)
    SET (CMAKE_C_FLAGS "-f${MSGPACK_CHAR_SIGN}-char ${CMAKE_C_FLAGS}")
-ENDIF ()
-
-FIND_PACKAGE (GTest)
-FIND_PACKAGE (ZLIB)
-FIND_PACKAGE (Threads)
-IF (GTEST_FOUND AND ZLIB_FOUND AND THREADS_FOUND)
-    OPTION (MSGPACK_BUILD_TESTS "Build msgpack tests." ON)
-    OPTION (MSGPACK_GEN_COVERAGE "Enable running gcov to get a test coverage report." OFF)
 ENDIF ()
 
 IF (DEFINED BUILD_SHARED_LIBS)
