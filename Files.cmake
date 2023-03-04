@@ -1,4 +1,4 @@
-SET (msgpackc_HEADERS
+SET (msgpack-cxx_HEADERS
     include/msgpack.hpp
     include/msgpack/adaptor/adaptor_base.hpp
     include/msgpack/adaptor/adaptor_base_decl.hpp

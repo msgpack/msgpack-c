@@ -6,6 +6,6 @@ IF (@MSGPACK_USE_BOOST@)
     find_dependency(Boost REQUIRED)
 ENDIF ()
 
-include("${CMAKE_CURRENT_LIST_DIR}/msgpackc-cxx-targets.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/msgpack-cxx-targets.cmake")
 
-check_required_components(msgpackc-cxx)
+check_required_components(msgpack-cxx)

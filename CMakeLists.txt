@@ -2,9 +2,9 @@ CMAKE_MINIMUM_REQUIRED (VERSION 3.1 FATAL_ERROR)
 
 CMAKE_POLICY (SET CMP0054 NEW)
 
-PROJECT (msgpackc-cxx LANGUAGES CXX)
+PROJECT (msgpack-cxx LANGUAGES CXX)
 
-ADD_LIBRARY (msgpackc-cxx INTERFACE)
+ADD_LIBRARY (msgpack-cxx INTERFACE)
 
 FILE (READ ${CMAKE_CURRENT_SOURCE_DIR}/include/msgpack/version_master.hpp contents)
 STRING (REGEX MATCH "#define MSGPACK_VERSION_MAJOR *([0-9a-zA-Z_]*)" NULL_OUT ${contents})
@@ -57,11 +57,11 @@ ENDIF ()
 
 IF (MSGPACK_32BIT)
     IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-        TARGET_COMPILE_OPTIONS(msgpackc-cxx INTERFACE -m32)
-        TARGET_LINK_OPTIONS(msgpackc-cxx INTERFACE -m32)
+        TARGET_COMPILE_OPTIONS(msgpack-cxx INTERFACE -m32)
+        TARGET_LINK_OPTIONS(msgpack-cxx INTERFACE -m32)
     ELSEIF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-        TARGET_COMPILE_OPTIONS(msgpackc-cxx INTERFACE -m32)
-        TARGET_LINK_OPTIONS(msgpackc-cxx INTERFACE -m32)
+        TARGET_COMPILE_OPTIONS(msgpack-cxx INTERFACE -m32)
+        TARGET_LINK_OPTIONS(msgpack-cxx INTERFACE -m32)
     ENDIF ()
 ENDIF ()
 
@@ -78,18 +78,18 @@ IF (MSGPACK_USE_BOOST)
 
     FIND_PACKAGE (Boost REQUIRED)
 ELSE ()
-    TARGET_COMPILE_DEFINITIONS(msgpackc-cxx INTERFACE MSGPACK_NO_BOOST)
+    TARGET_COMPILE_DEFINITIONS(msgpack-cxx INTERFACE MSGPACK_NO_BOOST)
 ENDIF ()
 
 IF (MSGPACK_CHAR_SIGN)
-    TARGET_COMPILE_OPTIONS(msgpackc-cxx INTERFACE -f${MSGPACK_CHAR_SIGN}-char)
+    TARGET_COMPILE_OPTIONS(msgpack-cxx INTERFACE -f${MSGPACK_CHAR_SIGN}-char)
 ENDIF ()
 
 IF (MSGPACK_DEFAULT_API_VERSION)
-    TARGET_COMPILE_DEFINITIONS(msgpackc-cxx INTERFACE MSGPACK_DEFAULT_API_VERSION=${MSGPACK_DEFAULT_API_VERSION})
+    TARGET_COMPILE_DEFINITIONS(msgpack-cxx INTERFACE MSGPACK_DEFAULT_API_VERSION=${MSGPACK_DEFAULT_API_VERSION})
 ELSE ()
     SET (MSGPACK_DEFAULT_API_VERSION 3)
-    TARGET_COMPILE_DEFINITIONS(msgpackc-cxx INTERFACE MSGPACK_DEFAULT_API_VERSION=3)
+    TARGET_COMPILE_DEFINITIONS(msgpack-cxx INTERFACE MSGPACK_DEFAULT_API_VERSION=3)
 ENDIF ()
 
 IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
@@ -112,7 +112,7 @@ ENDIF ()
 
 INCLUDE (Files.cmake)
 
-TARGET_INCLUDE_DIRECTORIES (msgpackc-cxx
+TARGET_INCLUDE_DIRECTORIES (msgpack-cxx
     INTERFACE
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
@@ -120,7 +120,7 @@ TARGET_INCLUDE_DIRECTORIES (msgpackc-cxx
 )
 
 IF (MSGPACK_USE_BOOST)
-    TARGET_LINK_LIBRARIES (msgpackc-cxx INTERFACE Boost::boost)
+    TARGET_LINK_LIBRARIES (msgpack-cxx INTERFACE Boost::boost)
 ENDIF ()
 
 IF (MSGPACK_GEN_COVERAGE)
@@ -156,7 +156,7 @@ IF (MSGPACK_FUZZ_REGRESSION)
 ENDIF ()
 
 IF ("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "sparc")
-    TARGET_COMPILE_DEFINITIONS(msgpackc-cxx INTERFACE MSGPACK_ZONE_ALIGN=8)
+    TARGET_COMPILE_DEFINITIONS(msgpack-cxx INTERFACE MSGPACK_ZONE_ALIGN=8)
 ENDIF ()
 
 IF (MSGPACK_BUILD_EXAMPLES)
@@ -193,9 +193,9 @@ ENDIF ()
 include (GNUInstallDirs)
 
 # Install library.
-INSTALL (TARGETS msgpackc-cxx
-         EXPORT msgpackc-cxx-targets
-         COMPONENT msgpackc-cxx
+INSTALL (TARGETS msgpack-cxx
+         EXPORT msgpack-cxx-targets
+         COMPONENT msgpack-cxx
          # This provides include directory in exported target
          # relative to prefix in single directory we've put everything in.
          INCLUDES DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
@@ -204,7 +204,7 @@ INSTALL (TARGETS msgpackc-cxx
 # Install headers from source tree.
 INSTALL (DIRECTORY include/
          DESTINATION include
-         COMPONENT msgpackc-cxx
+         COMPONENT msgpack-cxx
 )
 
 INCLUDE (CMakePackageConfigHelpers)
@@ -212,18 +212,18 @@ INCLUDE (CMakePackageConfigHelpers)
 IF (NOT (CMAKE_VERSION VERSION_LESS 3.14))
     SET (extra_version_file_args ARCH_INDEPENDENT)
 ENDIF ()
-SET (cmake_config_path "${CMAKE_INSTALL_LIBDIR}/cmake/msgpackc-cxx")
+SET (cmake_config_path "${CMAKE_INSTALL_LIBDIR}/cmake/msgpack-cxx")
 
 # Configure the main package file from source tree.
 CONFIGURE_PACKAGE_CONFIG_FILE (
-    msgpackc-cxx-config.cmake.in
-    "${CMAKE_CURRENT_BINARY_DIR}/msgpackc-cxx-config.cmake"
+    msgpack-cxx-config.cmake.in
+    "${CMAKE_CURRENT_BINARY_DIR}/msgpack-cxx-config.cmake"
     INSTALL_DESTINATION "${cmake_config_path}"
 )
 
 # Write package version file.
 WRITE_BASIC_PACKAGE_VERSION_FILE (
-    msgpackc-cxx-config-version.cmake
+    msgpack-cxx-config-version.cmake
     VERSION ${VERSION}
     COMPATIBILITY SameMajorVersion
     ${extra_version_file_args}
@@ -231,16 +231,16 @@ WRITE_BASIC_PACKAGE_VERSION_FILE (
 
 # Install the generated package version file and the main package file.
 INSTALL (FILES
-    "${CMAKE_CURRENT_BINARY_DIR}/msgpackc-cxx-config.cmake"
-    "${CMAKE_CURRENT_BINARY_DIR}/msgpackc-cxx-config-version.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/msgpack-cxx-config.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/msgpack-cxx-config-version.cmake"
     DESTINATION "${cmake_config_path}"
-    COMPONENT msgpackc-cxx
+    COMPONENT msgpack-cxx
 )
 
 # This installs package in install tree for using installed targets.
 INSTALL (
-    EXPORT msgpackc-cxx-targets
-    FILE msgpackc-cxx-targets.cmake
+    EXPORT msgpack-cxx-targets
+    FILE msgpack-cxx-targets.cmake
     DESTINATION "${cmake_config_path}"
-    COMPONENT msgpackc-cxx
+    COMPONENT msgpack-cxx
 )

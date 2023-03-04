@@ -32,7 +32,7 @@ tar --append --file=$filename $prefix/ChangeLog
 tar --append --file=$filename $prefix/NEWS
 tar --append --file=$filename $prefix/COPYING
 tar --append --file=$filename $prefix/README
-tar --append --file=$filename $prefix/msgpackc-cxx-config.cmake.in
+tar --append --file=$filename $prefix/msgpack-cxx-config.cmake.in
 rm -f $prefix
 
 gzip -f $filename
