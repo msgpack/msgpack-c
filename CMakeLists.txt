@@ -5,7 +5,7 @@ IF ((CMAKE_VERSION VERSION_GREATER 3.1) OR
     CMAKE_POLICY(SET CMP0054 NEW)
 ENDIF ()
 
-PROJECT (msgpackc)
+PROJECT (msgpack-c)
 
 FILE (READ ${CMAKE_CURRENT_SOURCE_DIR}/include/msgpack/version_master.h contents)
 STRING (REGEX MATCH "#define MSGPACK_VERSION_MAJOR *([0-9a-zA-Z_]*)" NULL_OUT ${contents})
@@ -31,7 +31,7 @@ IF (BIGENDIAN)
     SET(MSGPACK_ENDIAN_LITTLE_BYTE 0)
 ELSE ()
     SET(MSGPACK_ENDIAN_BIG_BYTE 0)
-	SET(MSGPACK_ENDIAN_LITTLE_BYTE 1)
+        SET(MSGPACK_ENDIAN_LITTLE_BYTE 1)
 ENDIF ()
 
 CONFIGURE_FILE (
@@ -115,20 +115,20 @@ ENDIF ()
 INCLUDE (Files.cmake)
 
 CONFIGURE_FILE (
-    msgpack.pc.in
-    msgpack.pc
+    msgpack-c.pc.in
+    msgpack-c.pc
     @ONLY
 )
 
 IF (MSGPACK_ENABLE_SHARED OR MSGPACK_ENABLE_STATIC)
-    ADD_LIBRARY (msgpackc
-        ${msgpackc_SOURCES}
-        ${msgpackc_HEADERS}
+    ADD_LIBRARY (msgpack-c
+        ${msgpack-c_SOURCES}
+        ${msgpack-c_HEADERS}
     )
 
-    SET_TARGET_PROPERTIES (msgpackc PROPERTIES SOVERSION 2 VERSION 2.0.0)
+    SET_TARGET_PROPERTIES (msgpack-c PROPERTIES SOVERSION 2 VERSION 2.0.0)
 
-    TARGET_INCLUDE_DIRECTORIES (msgpackc
+    TARGET_INCLUDE_DIRECTORIES (msgpack-c
         PUBLIC
             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
             $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
@@ -141,12 +141,12 @@ ENDIF ()
 
 
 IF (MSGPACK_ENABLE_SHARED AND MSGPACK_ENABLE_STATIC)
-    ADD_LIBRARY (msgpackc-static STATIC
-        ${msgpackc_SOURCES}
-        ${msgpackc_HEADERS}
+    ADD_LIBRARY (msgpack-c-static STATIC
+        ${msgpack-c_SOURCES}
+        ${msgpack-c_HEADERS}
     )
 
-    TARGET_INCLUDE_DIRECTORIES (msgpackc-static
+    TARGET_INCLUDE_DIRECTORIES (msgpack-c-static
         PUBLIC
             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
             $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
@@ -156,13 +156,13 @@ IF (MSGPACK_ENABLE_SHARED AND MSGPACK_ENABLE_STATIC)
             ${CMAKE_CURRENT_SOURCE_DIR}
     )
 
-    SET_TARGET_PROPERTIES (msgpackc-static PROPERTIES OUTPUT_NAME "msgpackc")
+    SET_TARGET_PROPERTIES (msgpack-c-static PROPERTIES OUTPUT_NAME "msgpack-c")
 
     IF (MSGPACK_ENABLE_SHARED)
         IF (MSVC)
-            SET_TARGET_PROPERTIES (msgpackc PROPERTIES IMPORT_SUFFIX "_import.lib")
+            SET_TARGET_PROPERTIES (msgpack-c PROPERTIES IMPORT_SUFFIX "_import.lib")
         ELSEIF (MINGW)
-            SET_TARGET_PROPERTIES (msgpackc PROPERTIES IMPORT_SUFFIX ".dll.a")
+            SET_TARGET_PROPERTIES (msgpack-c PROPERTIES IMPORT_SUFFIX ".dll.a")
         ENDIF ()
     ENDIF ()
 ENDIF ()
@@ -194,19 +194,19 @@ ENDIF ()
 
 IF ("${CMAKE_C_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_C_COMPILER_ID}" STREQUAL "GNU")
     IF (MSGPACK_ENABLE_SHARED OR MSGPACK_ENABLE_STATIC)
-        SET_PROPERTY (TARGET msgpackc APPEND_STRING PROPERTY COMPILE_FLAGS " -Wall -Wextra -DPIC")
+        SET_PROPERTY (TARGET msgpack-c APPEND_STRING PROPERTY COMPILE_FLAGS " -Wall -Wextra -DPIC")
     ENDIF ()
     IF (MSGPACK_ENABLE_SHARED AND MSGPACK_ENABLE_STATIC)
-       SET_PROPERTY (TARGET msgpackc-static APPEND_STRING PROPERTY COMPILE_FLAGS " -Wall -Wextra" )
+       SET_PROPERTY (TARGET msgpack-c-static APPEND_STRING PROPERTY COMPILE_FLAGS " -Wall -Wextra" )
     ENDIF ()
 ENDIF ()
 
 IF ("${CMAKE_C_COMPILER_ID}" STREQUAL "Clang")
     IF (MSGPACK_ENABLE_SHARED OR MSGPACK_ENABLE_STATIC)
-        SET_PROPERTY (TARGET msgpackc APPEND_STRING PROPERTY COMPILE_FLAGS " -Wno-mismatched-tags")
+        SET_PROPERTY (TARGET msgpack-c APPEND_STRING PROPERTY COMPILE_FLAGS " -Wno-mismatched-tags")
     ENDIF ()
     IF (MSGPACK_ENABLE_SHARED AND MSGPACK_ENABLE_STATIC)
-        SET_PROPERTY (TARGET msgpackc-static APPEND_STRING PROPERTY COMPILE_FLAGS " -Wno-mismatched-tags")
+        SET_PROPERTY (TARGET msgpack-c-static APPEND_STRING PROPERTY COMPILE_FLAGS " -Wno-mismatched-tags")
     ENDIF ()
 ENDIF ()
 
@@ -227,7 +227,7 @@ IF ("${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC")
 ENDIF ()
 
 IF ("${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC90" OR "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC10")
-    SET_SOURCE_FILES_PROPERTIES(${msgpackc_SOURCES} PROPERTIES LANGUAGE C)
+    SET_SOURCE_FILES_PROPERTIES(${msgpack-c_SOURCES} PROPERTIES LANGUAGE C)
 ENDIF ()
 
 IF ("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "sparc")
@@ -247,28 +247,28 @@ IF (MSGPACK_BUILD_EXAMPLES)
 ENDIF ()
 
 IF (MSGPACK_ENABLE_SHARED OR MSGPACK_ENABLE_STATIC)
-    SET (MSGPACK_INSTALLTARGETS msgpackc)
+    SET (MSGPACK_INSTALLTARGETS msgpack-c)
 ENDIF ()
 
 IF (MSGPACK_ENABLE_SHARED AND MSGPACK_ENABLE_STATIC)
-    LIST (APPEND MSGPACK_INSTALLTARGETS msgpackc-static)
+    LIST (APPEND MSGPACK_INSTALLTARGETS msgpack-c-static)
 ENDIF ()
 
-INSTALL (TARGETS ${MSGPACK_INSTALLTARGETS} EXPORT msgpackc-targets
+INSTALL (TARGETS ${MSGPACK_INSTALLTARGETS} EXPORT msgpack-c-targets
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 )
-FOREACH (file ${msgpackc_common_HEADERS})
+FOREACH (file ${msgpack-c_common_HEADERS})
     GET_FILENAME_COMPONENT (dir ${file} PATH)
     INSTALL (FILES ${file} DESTINATION ${CMAKE_INSTALL_PREFIX}/${dir})
 ENDFOREACH ()
-FOREACH (file ${msgpackc_configured_HEADERS})
+FOREACH (file ${msgpack-c_configured_HEADERS})
     GET_FILENAME_COMPONENT (dir ${file} PATH)
     INSTALL (FILES ${CMAKE_CURRENT_BINARY_DIR}/${file} DESTINATION ${CMAKE_INSTALL_PREFIX}/${dir})
 ENDFOREACH ()
 IF (NOT MSVC)
-    INSTALL (FILES ${CMAKE_CURRENT_BINARY_DIR}/msgpack.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
+    INSTALL (FILES ${CMAKE_CURRENT_BINARY_DIR}/msgpack-c.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
 ENDIF ()
 
 # Doxygen
@@ -298,36 +298,36 @@ ENDIF ()
 
 INCLUDE (CMakePackageConfigHelpers)
 
-SET (CMAKE_INSTALL_CMAKEDIR "${CMAKE_INSTALL_LIBDIR}/cmake/msgpackc")
+SET (CMAKE_INSTALL_CMAKEDIR "${CMAKE_INSTALL_LIBDIR}/cmake/msgpack-c")
 
 WRITE_BASIC_PACKAGE_VERSION_FILE (
-    msgpackc-config-version.cmake
+    msgpack-c-config-version.cmake
     VERSION ${VERSION}
     COMPATIBILITY SameMajorVersion
 )
 
 IF (NOT CMAKE_VERSION VERSION_LESS 3.0)
-    EXPORT (EXPORT msgpackc-targets
-        FILE "${CMAKE_CURRENT_BINARY_DIR}/msgpackc-targets.cmake"
+    EXPORT (EXPORT msgpack-c-targets
+        FILE "${CMAKE_CURRENT_BINARY_DIR}/msgpack-c-targets.cmake"
     )
 ENDIF ()
 
-CONFIGURE_PACKAGE_CONFIG_FILE (msgpackc-config.cmake.in
-    msgpackc-config.cmake
+CONFIGURE_PACKAGE_CONFIG_FILE (msgpack-c-config.cmake.in
+    msgpack-c-config.cmake
     INSTALL_DESTINATION "${CMAKE_INSTALL_CMAKEDIR}"
 )
 
-INSTALL (EXPORT msgpackc-targets
+INSTALL (EXPORT msgpack-c-targets
     FILE
-        msgpackc-targets.cmake
+        msgpack-c-targets.cmake
     DESTINATION
         "${CMAKE_INSTALL_CMAKEDIR}"
 )
 
 INSTALL (
     FILES
-        "${CMAKE_CURRENT_BINARY_DIR}/msgpackc-config.cmake"
-        "${CMAKE_CURRENT_BINARY_DIR}/msgpackc-config-version.cmake"
+        "${CMAKE_CURRENT_BINARY_DIR}/msgpack-c-config.cmake"
+        "${CMAKE_CURRENT_BINARY_DIR}/msgpack-c-config-version.cmake"
     DESTINATION
         "${CMAKE_INSTALL_CMAKEDIR}"
 )

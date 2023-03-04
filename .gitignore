@@ -19,7 +19,7 @@ Makefile.in
 /config.log
 /config.status
 /libtool
-/msgpack.pc
+/msgpack-c.pc
 /src/msgpack/version.h
 /src/msgpack/version.hpp
 /stamp-h1

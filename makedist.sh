@@ -24,7 +24,7 @@ tar --append --file=$filename $prefix/CMakeLists.txt
 tar --append --file=$filename $prefix/Files.cmake
 tar --append --file=$filename $prefix/NOTICE
 tar --append --file=$filename $prefix/Doxyfile
-tar --append --file=$filename $prefix/msgpack.pc.in
+tar --append --file=$filename $prefix/msgpack-c.pc.in
 tar --append --file=$filename $prefix/AUTHORS
 tar --append --file=$filename $prefix/README.md
 tar --append --file=$filename $prefix/LICENSE_1_0.txt
@@ -32,7 +32,7 @@ tar --append --file=$filename $prefix/ChangeLog
 tar --append --file=$filename $prefix/NEWS
 tar --append --file=$filename $prefix/COPYING
 tar --append --file=$filename $prefix/README
-tar --append --file=$filename $prefix/msgpackc-config.cmake.in
+tar --append --file=$filename $prefix/msgpack-c-config.cmake.in
 
 rm -f $prefix
 

@@ -183,7 +183,7 @@ int main(void) {
         }
 
         /* results:
-         * $ gcc stream.cc -lmsgpackc -o stream
+         * $ gcc stream.cc -lmsgpack-c -o stream
          * $ ./stream
          * 1
          * 2

@@ -23,7 +23,7 @@ FOREACH (source_file ${check_PROGRAMS})
     )
 
     TARGET_LINK_LIBRARIES (${source_file_we}
-        msgpackc
+        msgpack-c
         ${GTEST_BOTH_LIBRARIES}
         ${ZLIB_LIBRARIES}
         ${CMAKE_THREAD_LIBS_INIT}
