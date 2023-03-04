@@ -1,4 +1,5 @@
-# 2023-02-28 version 6.0.0
+# 2023-03-02 version 6.0.0
+  * Remove C++ requirement if test is disabled (#1055)
 ## << breaking changes >>
   * Change CMake package name of C library to msgpack-c (#1053)
     Unified all C package, library, cmake, tarball name become msgpack-c.
