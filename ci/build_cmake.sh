@@ -33,7 +33,7 @@ then
     exit $ret
 fi
 
-make
+make VERBOSE=1
 
 ret=$?
 if [ $ret -ne 0 ]
@@ -60,17 +60,8 @@ fi
 
 if [ "${ARCH}" != "32" ] && [ `uname` = "Linux" ]
 then
-    ctest -T memcheck | tee memcheck.log
-
-    ret=${PIPESTATUS[0]}
-    if [ $ret -ne 0 ]
-    then
-        exit $ret
-    fi
-    cat memcheck.log | grep "Memory Leak" > /dev/null
-    ret=$?
-    if [ $ret -eq 0 ]
-    then
+    if ! ctest -T memcheck; then
+        find Testing/Temporary -name "MemoryChecker.*.log" -exec cat {} +
         exit 1
     fi
 fi
