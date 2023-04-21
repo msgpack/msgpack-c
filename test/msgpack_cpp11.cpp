@@ -252,6 +252,9 @@ struct equal_to : std::equal_to<Key> {
 template <class Key>
 struct set_allocator : std::allocator<Key> {
     using std::allocator<Key>::allocator;
+
+    template<class U>
+    struct rebind { using other = set_allocator<U>; };
 };
 
 // C++ named requirement Allocator implies that the first template type
@@ -262,6 +265,9 @@ struct set_allocator : std::allocator<Key> {
 template <typename KeyValuePair>
 struct map_allocator_impl : std::allocator<KeyValuePair> {
     using std::allocator<KeyValuePair>::allocator;
+
+    template<class U>
+    struct rebind { using other = map_allocator_impl<U>; };
 };
 
 template <class Key, class T>
@@ -270,6 +276,9 @@ using map_allocator = map_allocator_impl<std::pair<const Key, T>>;
 template <class T>
 struct allocator : std::allocator<T> {
     using std::allocator<T>::allocator;
+
+    template<class U>
+    struct rebind { using other = allocator<U>; };
 };
 
 } // namespace test
