@@ -25,7 +25,7 @@ else
     export ARCH_FLAG="-m64"
 fi
 
-cmake -DMSGPACK_32BIT=${BIT32} -DBUILD_SHARED_LIBS=${SHARED} -DMSGPACK_CHAR_SIGN=${CHAR_SIGN} -DCMAKE_CXX_FLAGS="${ARCH_FLAG} ${CXXFLAGS} ${SAN}" -DCMAKE_C_FLAGS="${CFLAGS} ${SAN}" ..
+cmake -DMSGPACK_BUILD_TESTS=ON -DMSGPACK_32BIT=${BIT32} -DBUILD_SHARED_LIBS=${SHARED} -DMSGPACK_CHAR_SIGN=${CHAR_SIGN} -DCMAKE_CXX_FLAGS="${ARCH_FLAG} ${CXXFLAGS} ${SAN}" -DCMAKE_C_FLAGS="${CFLAGS} ${SAN}" ..
 
 ret=$?
 if [ $ret -ne 0 ]
@@ -41,7 +41,7 @@ then
     exit $ret
 fi
 
-ctest -VV
+ctest -VVr
 
 ret=$?
 if [ $ret -ne 0 ]

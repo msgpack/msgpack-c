@@ -5,7 +5,7 @@ IF ((CMAKE_VERSION VERSION_GREATER 3.1) OR
     CMAKE_POLICY(SET CMP0054 NEW)
 ENDIF ()
 
-OPTION (MSGPACK_BUILD_TESTS "Build msgpack tests." ON)
+OPTION (MSGPACK_BUILD_TESTS "Build msgpack tests." OFF)
 OPTION (MSGPACK_GEN_COVERAGE "Enable running gcov to get a test coverage report." OFF)
 
 if(MSGPACK_BUILD_TESTS)
