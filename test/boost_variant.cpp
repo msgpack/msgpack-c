@@ -264,7 +264,7 @@ BOOST_AUTO_TEST_CASE(pack_convert_variant_float)
     BOOST_CHECK(val2.is_double());
     BOOST_CHECK(fabs(12.34 - val2.as_double()) <= kEPS);
     BOOST_CHECK_NO_THROW(boost::get<double>(val2));
-    BOOST_CHECK(fabs(val2.as_double() - val2.as_double()) <= kEPS);
+    BOOST_CHECK(fabs(val1.as_double() - val2.as_double()) <= kEPS);
 }
 
 BOOST_AUTO_TEST_CASE(object_variant_float)
@@ -277,7 +277,8 @@ BOOST_AUTO_TEST_CASE(object_variant_float)
     BOOST_CHECK(val2.is_double());
     BOOST_CHECK(fabs(12.34 - val2.as_double()) <= kEPS);
     BOOST_CHECK_NO_THROW(boost::get<double>(val2));
-    BOOST_CHECK(fabs(val2.as_double() - val2.as_double()) <= kEPS);
+    BOOST_CHECK(fabs(val1.as_double() - val2.as_double()) <= kEPS);
+    BOOST_CHECK(val1 == val2);
 }
 
 BOOST_AUTO_TEST_CASE(object_with_zone_variant_float)
@@ -291,7 +292,116 @@ BOOST_AUTO_TEST_CASE(object_with_zone_variant_float)
     BOOST_CHECK(val2.is_double());
     BOOST_CHECK(fabs(12.34 - val2.as_double()) <= kEPS);
     BOOST_CHECK_NO_THROW(boost::get<double>(val2));
-    BOOST_CHECK(fabs(val2.as_double() - val2.as_double()) <= kEPS);
+    BOOST_CHECK(fabs(val1.as_double() - val2.as_double()) <= kEPS);
+    BOOST_CHECK(val1 == val2);
+}
+
+BOOST_AUTO_TEST_CASE(pack_convert_variant_float_zero_atdp_positive)
+{
+    std::stringstream ss;
+    msgpack::type::variant val1 = 12.0;
+    BOOST_CHECK(val1.is_uint64_t());
+    BOOST_CHECK_EQUAL(val1.as_uint64_t(), 12);
+    BOOST_CHECK(fabs(12.0 - val1.as_double()) <= kEPS);
+
+    msgpack::pack(ss, val1);
+
+    std::string const& str = ss.str();
+    msgpack::object_handle oh =
+        msgpack::unpack(str.data(), str.size());
+    msgpack::type::variant val2 = oh.get().as<msgpack::type::variant>();
+    BOOST_CHECK(val2.is_uint64_t());
+    BOOST_CHECK_EQUAL(val2.as_uint64_t(), 12);
+    BOOST_CHECK_NO_THROW(boost::get<uint64_t>(val2));
+    BOOST_CHECK(fabs(12.0 - val2.as_double()) <= kEPS);
+    BOOST_CHECK_EQUAL(val1.as_uint64_t(), val2.as_uint64_t());
+}
+
+BOOST_AUTO_TEST_CASE(object_variant_float_zero_atdp_positive)
+{
+    msgpack::type::variant val1 = 12.0;
+    BOOST_CHECK(val1.is_uint64_t());
+    BOOST_CHECK_EQUAL(val1.as_uint64_t(), 12);
+    BOOST_CHECK(fabs(12.0 - val1.as_double()) <= kEPS);
+    msgpack::object obj(val1);
+    msgpack::type::variant val2 = obj.as<msgpack::type::variant>();
+    BOOST_CHECK(val2.is_uint64_t());
+    BOOST_CHECK_EQUAL(val2.as_uint64_t(), 12);
+    BOOST_CHECK_NO_THROW(boost::get<uint64_t>(val2));
+    BOOST_CHECK(fabs(12.0 - val2.as_double()) <= kEPS);
+    BOOST_CHECK_EQUAL(val1.as_uint64_t(), val2.as_uint64_t());
+    BOOST_CHECK(val1 == val2);
+}
+
+BOOST_AUTO_TEST_CASE(object_with_zone_variant_float_zero_atdp_positive)
+{
+    msgpack::zone z;
+    msgpack::type::variant val1 = 12.0;
+    BOOST_CHECK(val1.is_uint64_t());
+    BOOST_CHECK_EQUAL(val1.as_uint64_t(), 12);
+    BOOST_CHECK(fabs(12.0 - val1.as_double()) <= kEPS);
+    msgpack::object obj(val1, z);
+    msgpack::type::variant val2 = obj.as<msgpack::type::variant>();
+    BOOST_CHECK(val2.is_uint64_t());
+    BOOST_CHECK_EQUAL(val2.as_uint64_t(), 12);
+    BOOST_CHECK_NO_THROW(boost::get<uint64_t>(val2));
+    BOOST_CHECK_EQUAL(val1.as_uint64_t(), val2.as_uint64_t());
+    BOOST_CHECK(fabs(12.0 - val2.as_double()) <= kEPS);
+    BOOST_CHECK(val1 == val2);
+}
+
+BOOST_AUTO_TEST_CASE(pack_convert_variant_float_zero_atdp_negative)
+{
+    std::stringstream ss;
+    msgpack::type::variant val1 = -12.0;
+    BOOST_CHECK(val1.is_int64_t());
+    BOOST_CHECK_EQUAL(val1.as_int64_t(), -12);
+    BOOST_CHECK(fabs(-12.0 - val1.as_double()) <= kEPS);
+
+    msgpack::pack(ss, val1);
+
+    std::string const& str = ss.str();
+    msgpack::object_handle oh =
+        msgpack::unpack(str.data(), str.size());
+    msgpack::type::variant val2 = oh.get().as<msgpack::type::variant>();
+    BOOST_CHECK(val2.is_int64_t());
+    BOOST_CHECK_EQUAL(val2.as_int64_t(), -12);
+    BOOST_CHECK_NO_THROW(boost::get<int64_t>(val2));
+    BOOST_CHECK(fabs(-12.0 - val2.as_double()) <= kEPS);
+    BOOST_CHECK_EQUAL(val1.as_int64_t(), val2.as_int64_t());
+}
+
+BOOST_AUTO_TEST_CASE(object_variant_float_zero_atdp_negative)
+{
+    msgpack::type::variant val1 = -12.0;
+    BOOST_CHECK(val1.is_int64_t());
+    BOOST_CHECK_EQUAL(val1.as_int64_t(), -12);
+    BOOST_CHECK(fabs(-12.0 - val1.as_double()) <= kEPS);
+    msgpack::object obj(val1);
+    msgpack::type::variant val2 = obj.as<msgpack::type::variant>();
+    BOOST_CHECK(val2.is_int64_t());
+    BOOST_CHECK_EQUAL(val2.as_int64_t(), -12);
+    BOOST_CHECK_NO_THROW(boost::get<int64_t>(val2));
+    BOOST_CHECK(fabs(-12.0 - val2.as_double()) <= kEPS);
+    BOOST_CHECK_EQUAL(val1.as_int64_t(), val2.as_int64_t());
+    BOOST_CHECK(val1 == val2);
+}
+
+BOOST_AUTO_TEST_CASE(object_with_zone_variant_float_zero_atdp_negative)
+{
+    msgpack::zone z;
+    msgpack::type::variant val1 = -12.0;
+    BOOST_CHECK(val1.is_int64_t());
+    BOOST_CHECK_EQUAL(val1.as_int64_t(), -12);
+    BOOST_CHECK(fabs(-12.0 - val1.as_double()) <= kEPS);
+    msgpack::object obj(val1, z);
+    msgpack::type::variant val2 = obj.as<msgpack::type::variant>();
+    BOOST_CHECK(val2.is_int64_t());
+    BOOST_CHECK_EQUAL(val2.as_int64_t(), -12);
+    BOOST_CHECK_NO_THROW(boost::get<int64_t>(val2));
+    BOOST_CHECK(fabs(-12.0 - val2.as_double()) <= kEPS);
+    BOOST_CHECK_EQUAL(val1.as_int64_t(), val2.as_int64_t());
+    BOOST_CHECK(val1 == val2);
 }
 
 // str
