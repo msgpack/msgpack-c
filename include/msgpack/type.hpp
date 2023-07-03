@@ -63,6 +63,10 @@
 #include "adaptor/cpp17/carray_byte.hpp"
 #include "adaptor/cpp17/vector_byte.hpp"
 
+#if MSGPACK_HAS_INCLUDE(<variant>)
+#include "adaptor/cpp17/variant.hpp"
+#endif // MSGPACK_HAS_INCLUDE(<variant>)
+
 #if MSGPACK_HAS_INCLUDE(<span>)
 #include "adaptor/cpp20/span.hpp"
 #endif // MSGPACK_HAS_INCLUDE(<span>)

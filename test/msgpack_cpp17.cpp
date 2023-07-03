@@ -461,4 +461,15 @@ BOOST_AUTO_TEST_CASE(carray_byte_object_with_zone)
     }
 }
 
+BOOST_AUTO_TEST_CASE(variant_as) {
+  std::stringstream ss;
+  std::variant<bool, int, float, double> val1{1.0};
+  msgpack::pack(ss, val1);
+  std::string const& str = ss.str();
+  msgpack::object_handle oh =
+      msgpack::unpack(str.data(), str.size());
+  std::variant<bool, int, float, double> val2 = oh.get().as<std::variant<bool, int, float, double> >();
+  BOOST_CHECK(val1 == val2);
+}
+
 #endif // MSGPACK_CPP_VERSION >= 201703
