@@ -33,6 +33,7 @@ SET (msgpack-cxx_HEADERS
     include/msgpack/adaptor/cpp17/carray_byte.hpp
     include/msgpack/adaptor/cpp17/optional.hpp
     include/msgpack/adaptor/cpp17/string_view.hpp
+    include/msgpack/adaptor/cpp17/variant.hpp
     include/msgpack/adaptor/cpp17/vector_byte.hpp
     include/msgpack/adaptor/cpp20/span.hpp
     include/msgpack/adaptor/define.hpp
@@ -542,6 +543,7 @@ SET (msgpack-cxx_HEADERS
     include/msgpack/v1/adaptor/cpp17/carray_byte.hpp
     include/msgpack/v1/adaptor/cpp17/optional.hpp
     include/msgpack/v1/adaptor/cpp17/string_view.hpp
+    include/msgpack/v1/adaptor/cpp17/variant.hpp
     include/msgpack/v1/adaptor/cpp17/vector_byte.hpp
     include/msgpack/v1/adaptor/cpp20/span.hpp
     include/msgpack/v1/adaptor/define.hpp
