@@ -56,6 +56,7 @@ jobs:
             -D MSGPACK_BUILD_TESTS=ON \
             -D CMAKE_BUILD_TYPE=Debug \
             -D MSGPACK_GEN_COVERAGE=ON \
+            -D MSGPACK_USE_STD_VARIANT_ADAPTOR=ON \
             -D CMAKE_PREFIX_PATH="$HOME/zlib-prefix/64;$HOME/boost-prefix/64" \
             -B build \
             -S . || exit 1
