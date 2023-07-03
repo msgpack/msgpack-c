@@ -46,7 +46,7 @@ MSGPACK_API_VERSION_NAMESPACE(v1) {
   } // namespace detail
 
   template <typename... Ts>
-  struct as<std::variant<Ts...>, std::enable_if_t<(msgpack::has_as<Ts>::value && ...)>> {
+  struct as<std::variant<Ts...>, typename std::enable_if<(msgpack::has_as<Ts>::value && ...)>::type> {
     std::variant<Ts...> operator()(msgpack::object const &o) const {
       if (o.type != msgpack::type::ARRAY) {
         throw msgpack::type_error{};
