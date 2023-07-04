@@ -28,95 +28,111 @@ MSGPACK_API_VERSION_NAMESPACE(v1) {
 namespace adaptor {
 
 namespace detail {
-template<typename Target,
-         typename Source,
-         bool target_is_signed = std::is_signed<Target>::value,
-         bool source_is_signed = std::is_signed<Source>::value,
-         typename = typename std::enable_if<
-                      std::is_integral<Target>::value &&
-                      std::is_integral<Source>::value
-                    >::type>
+template <
+    typename Target,
+    typename Source,
+    bool target_is_signed = std::is_signed<Target>::value,
+    bool source_is_signed = std::is_signed<Source>::value,
+    typename = typename std::enable_if<
+                  std::is_integral<Target>::value &&
+                  std::is_integral<Source>::value
+               >::type
+>
 struct would_underflow {
-  // The default case includes the cases that Source being unsigned, and since Source
-  // is unsigned, no underflow can happen
-  would_underflow(Source) : value{false} {}
-  bool value;
+    // The default case includes the cases that Source being unsigned, and since Source
+    // is unsigned, no underflow can happen
+    would_underflow(Source) : value{false} {}
+    bool value;
 };
 
-template<typename Target, typename Source>
+template <typename Target, typename Source>
 struct would_underflow<Target, Source, false, true> {
-  // When Source is signed and Target is unsigned, we only need to compare with 0 to
-  // detect underflow, this works correctly and also avoids warnign from the compiler
-  would_underflow(Source source) : value{source < 0} {}
-  bool value;
+    // When Source is signed and Target is unsigned, we only need to compare with 0 to
+    // detect underflow, this works correctly and also avoids warnings from the compiler
+    would_underflow(Source source) : value{source < 0} {}
+    bool value;
 };
-template<typename Target, typename Source>
+template <typename Target, typename Source>
 struct would_underflow<Target, Source, true, true> {
-  // When Source and Target are signed, the promotion rules apply sensibly so we do not
-  // need to do anything
-  would_underflow(Source source) : value{source < std::numeric_limits<Target>::min()} {}
-  bool value;
+    // When Source and Target are signed, the promotion rules apply sensibly so we do
+    // not need to do anything
+    would_underflow(Source source)
+        : value{source < std::numeric_limits<Target>::min()} {}
+    bool value;
 };
 
-template<typename Target,
-         typename Source,
-         bool target_is_signed = std::is_signed<Target>::value,
-         bool source_is_signed = std::is_signed<Source>::value,
-         typename = typename std::enable_if<
-                      std::is_integral<Target>::value &&
-                      std::is_integral<Source>::value
-                    >::type>
+template <
+    typename Target,
+    typename Source,
+    bool target_is_signed = std::is_signed<Target>::value,
+    bool source_is_signed = std::is_signed<Source>::value,
+    typename = typename std::enable_if<
+                   std::is_integral<Target>::value &&
+                   std::is_integral<Source>::value
+               >::type
+>
 struct would_overflow {
-  // The default case is Source and Target having the same signedness, the promotion
-  // rules also apply sensibly here so nothing special needs to be done
-  would_overflow(Source source) : value{source > std::numeric_limits<Target>::max()} {}
-  bool value;
+    // The default case is Source and Target having the same signedness, the promotion
+    // rule also apply sensibly here so nothing special needs to be done
+    would_overflow(Source source)
+        : value{source > std::numeric_limits<Target>::max()} {}
+    bool value;
 };
-template<typename Target, typename Source>
-struct would_overflow <Target, Source,  false, true> {
-  // When Target is unsigned and Source is signed, we cannot rely on the promotion
-  // rules.
-  would_overflow(Source source)
-    : value{ sizeof(Target) >= sizeof(Source)
-            // Given Source is signed, Target being unsigned and having at least the
-            // same size makes impossible to overflow
-            ? false
-            // Source being larger than Target makes it safe to cast the maximum value
-            // of Target to Source
-            : source > static_cast<Source>(std::numeric_limits<Target>::max())} {}
-  bool value;
+template <typename Target, typename Source>
+struct would_overflow <Target, Source, false, true> {
+    // When Target is unsigned and Source is signed, we cannot rely on the promotion
+    // rule.
+    would_overflow(Source source)
+        : value{
+              sizeof(Target) >= sizeof(Source)
+              // Given Source is signed, Target being unsigned and having at least the
+              // same size makes impossible to overflow
+              ? false
+              // Source being larger than Target makes it safe to cast the maximum value
+              // of Target to Source
+              : source > static_cast<Source>(std::numeric_limits<Target>::max())
+          } {}
+    bool value;
 };
-template<typename Target, typename Source>
+template <typename Target, typename Source>
 struct would_overflow <Target, Source, true, false> {
-  // When Target is signed and Source is unsigned, we cannot rely on the promotion
-  // rules.
-  would_overflow(Source source)
-    : value{ sizeof(Target) > sizeof(Source)
-           // Target being larger than Source makes it impossible to overflow
-           ? false
-           // Source being unsigned and having at least the size of Target makes it
-           // safe to cast the maximum value of Target to Source
-           : source > static_cast<Source>(std::numeric_limits<Target>::max())} {}
-  bool value;
+    // When Target is signed and Source is unsigned, we cannot rely on the promotion
+    // rule.
+    would_overflow(Source source)
+        : value{
+              sizeof(Target) > sizeof(Source)
+              // Target being larger than Source makes it impossible to overflow
+              ? false
+              // Source being unsigned and having at least the size of Target makes it
+              // safe to cast the maximum value of Target to Source
+              : source > static_cast<Source>(std::numeric_limits<Target>::max())
+          } {}
+    bool value;
 };
 
-template<typename Target,
-         typename Source,
-         typename = typename std::enable_if<
-                      std::is_integral<Target>::value &&
-                      std::is_integral<Source>::value
-                    >::type>
+template <
+    typename Target,
+    typename Source,
+    typename = typename std::enable_if<
+                  std::is_integral<Target>::value &&
+                  std::is_integral<Source>::value
+               >::type
+>
 Target integral_cast(Source source) {
-  if (would_underflow<Target, Source>(source).value) {
-    throw std::underflow_error{"casting from Source to Target causes an underflow error"};
-  }
-  if(would_overflow<Target, Source>(source).value) {
-    throw std::overflow_error{"casting from Source to Target causes an overflow error"};;
-  }
+    if (would_underflow<Target, Source>(source).value) {
+        throw std::underflow_error{
+            "casting from Source to Target causes an underflow error"
+        };
+    }
+    if(would_overflow<Target, Source>(source).value) {
+        throw std::overflow_error{
+            "casting from Source to Target causes an overflow error"
+        };
+    }
 
-  return static_cast<Target>(source);
+    return static_cast<Target>(source);
 }
-}
+} // namespace detail
 
 template <typename Clock, typename Duration>
 struct as<std::chrono::time_point<Clock, Duration>> {
