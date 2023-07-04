@@ -49,3 +49,8 @@ Makefile
 /test/streaming_c
 /test/version
 /test/zone
+
+build
+*-build
+.cache
+compile_commands.json

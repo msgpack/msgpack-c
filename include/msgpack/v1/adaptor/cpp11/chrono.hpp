@@ -34,8 +34,8 @@ template <
     bool target_is_signed = std::is_signed<Target>::value,
     bool source_is_signed = std::is_signed<Source>::value,
     typename = typename std::enable_if<
-                  std::is_integral<Target>::value &&
-                  std::is_integral<Source>::value
+                   std::is_integral<Target>::value &&
+                   std::is_integral<Source>::value
                >::type
 >
 struct would_underflow {
@@ -114,8 +114,8 @@ template <
     typename Target,
     typename Source,
     typename = typename std::enable_if<
-                  std::is_integral<Target>::value &&
-                  std::is_integral<Source>::value
+                   std::is_integral<Target>::value &&
+                   std::is_integral<Source>::value
                >::type
 >
 Target integral_cast(Source source) {
