@@ -145,6 +145,7 @@ jobs:
           3)
             export CXX="g++-10"
             export MSGPACK_CXX_VERSION="MSGPACK_CXX17=ON"
+            export MSGPACK_USE_STD_VARIANT_ADAPTOR="MSGPACK_USE_STD_VARIANT_ADAPTOR=ON"
             ;;
           4)
             export CXX="clang++-10"

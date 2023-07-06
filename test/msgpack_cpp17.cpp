@@ -461,4 +461,30 @@ BOOST_AUTO_TEST_CASE(carray_byte_object_with_zone)
     }
 }
 
+#if defined(MSGPACK_USE_STD_VARIANT_ADAPTOR)
+
+BOOST_AUTO_TEST_CASE(variant_pack_unpack_as) {
+    std::stringstream ss;
+    std::variant<bool, int, float, double> val1{1.0};
+    msgpack::pack(ss, val1);
+    std::string const& str = ss.str();
+    msgpack::object_handle oh =
+        msgpack::unpack(str.data(), str.size());
+    std::variant<bool, int, float, double> val2 =
+        oh.get().as<std::variant<bool, int, float, double> >();
+    BOOST_CHECK(val1 == val2);
+    BOOST_CHECK_THROW((oh.get().as<std::variant<bool>>()), msgpack::type_error);
+}
+
+BOOST_AUTO_TEST_CASE(variant_with_zone) {
+    msgpack::zone z;
+    std::variant<bool, int, float, double> val1{1.0};
+    msgpack::object obj(val1, z);
+    std::variant<bool, int, float, double> val2 = obj.as<std::variant<bool, int, float, double>>();
+    BOOST_CHECK(val1 == val2);
+    BOOST_CHECK_THROW((obj.as<std::variant<bool>>()), msgpack::type_error);
+}
+
+#endif // defined(MSGPACK_USE_STD_VARIANT_ADAPTOR)
+
 #endif // MSGPACK_CPP_VERSION >= 201703
