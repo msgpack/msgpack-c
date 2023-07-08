@@ -1,8 +1,10 @@
-# 2023-07-08 version 6.0.0
+# 2023-07-08 version 6.1.0
   * Remove dependency on boost in chrono.hpp (#1076)
   * Add support for std::variant behavior (#1075)
   * Fix msgpack::type::variant behavior to respect MessagePack format (#1071)
   * Add rebind allocators (#1065)
+
+# 2023-03-02 version 6.0.0
 ## << breaking changes >>
   * Change CMake package name of C++ library to msgpack-cxx (#1054)
     Unified all C++ package, library, cmake, tarball name become msgpack-cxx.
