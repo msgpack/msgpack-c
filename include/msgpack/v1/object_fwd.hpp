@@ -53,16 +53,16 @@ template <typename T>
 struct has_as {
 private:
     template <typename U>
-    static auto check(U*) ->
+    static auto check_(U*) ->
         // Check v1 specialization
         typename std::is_same<
             decltype(adaptor::as<U>()(std::declval<msgpack::object>())),
             T
         >::type;
     template <typename...>
-    static std::false_type check(...);
+    static std::false_type check_(...);
 public:
-    using type = decltype(check<T>(MSGPACK_NULLPTR));
+    using type = decltype(check_<T>(MSGPACK_NULLPTR));
     static constexpr bool value = type::value;
 };
 
