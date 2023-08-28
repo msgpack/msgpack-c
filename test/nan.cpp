@@ -43,6 +43,9 @@ BOOST_AUTO_TEST_CASE(unpack_float_signaling)
     if (!std::numeric_limits<float>::has_signaling_NaN) {
         return;
     }
+    if (sizeof(void*) == 4) { // skip 32bit arch
+        return;
+    }
 
     std::stringstream ss;
     float val = std::numeric_limits<float>::signaling_NaN();
@@ -70,6 +73,9 @@ BOOST_AUTO_TEST_CASE(unpack_float_quiet)
     if (!std::numeric_limits<float>::has_quiet_NaN) {
         return;
     }
+    if (sizeof(void*) == 4) { // skip 32bit arch
+        return;
+    }
 
     std::stringstream ss;
     float val = std::numeric_limits<float>::quiet_NaN();
@@ -90,6 +96,9 @@ BOOST_AUTO_TEST_CASE(unpack_float_quiet)
 BOOST_AUTO_TEST_CASE(unpack_double_signaling)
 {
     if (!std::numeric_limits<double>::has_signaling_NaN) {
+        return;
+    }
+    if (sizeof(void*) == 4) { // skip 32bit arch
         return;
     }
 
@@ -119,6 +128,9 @@ BOOST_AUTO_TEST_CASE(unpack_double_quiet)
     if (!std::numeric_limits<double>::has_quiet_NaN) {
         return;
     }
+    if (sizeof(void*) == 4) { // skip 32bit arch
+        return;
+    }
 
     std::stringstream ss;
     double val = std::numeric_limits<double>::quiet_NaN();
@@ -142,6 +154,9 @@ BOOST_AUTO_TEST_CASE(object_float_signaling)
     if (!std::numeric_limits<float>::has_signaling_NaN) {
         return;
     }
+    if (sizeof(void*) == 4) { // skip 32bit arch
+        return;
+    }
 
     float val = std::numeric_limits<float>::signaling_NaN();
 #if defined(_MSC_VER)
@@ -161,6 +176,9 @@ BOOST_AUTO_TEST_CASE(object_float_quiet)
     if (!std::numeric_limits<float>::has_quiet_NaN) {
         return;
     }
+    if (sizeof(void*) == 4) { // skip 32bit arch
+        return;
+    }
 
     float val = std::numeric_limits<float>::quiet_NaN();
 
@@ -174,6 +192,9 @@ BOOST_AUTO_TEST_CASE(object_float_quiet)
 BOOST_AUTO_TEST_CASE(object_double_signaling)
 {
     if (!std::numeric_limits<double>::has_signaling_NaN) {
+        return;
+    }
+    if (sizeof(void*) == 4) { // skip 32bit arch
         return;
     }
 
@@ -195,6 +216,9 @@ BOOST_AUTO_TEST_CASE(object_double_quiet)
     if (!std::numeric_limits<double>::has_quiet_NaN) {
         return;
     }
+    if (sizeof(void*) == 4) { // skip 32bit arch
+        return;
+    }
 
     double val = std::numeric_limits<double>::quiet_NaN();
 
@@ -208,6 +232,9 @@ BOOST_AUTO_TEST_CASE(object_double_quiet)
 BOOST_AUTO_TEST_CASE(object_with_zone_float_signaling)
 {
     if (!std::numeric_limits<float>::has_signaling_NaN) {
+        return;
+    }
+    if (sizeof(void*) == 4) { // skip 32bit arch
         return;
     }
 
@@ -230,6 +257,9 @@ BOOST_AUTO_TEST_CASE(object_with_zone_float_quiet)
     if (!std::numeric_limits<float>::has_quiet_NaN) {
         return;
     }
+    if (sizeof(void*) == 4) { // skip 32bit arch
+        return;
+    }
 
     float val = std::numeric_limits<float>::quiet_NaN();
 
@@ -244,6 +274,9 @@ BOOST_AUTO_TEST_CASE(object_with_zone_float_quiet)
 BOOST_AUTO_TEST_CASE(object_with_zone_double_signaling)
 {
     if (!std::numeric_limits<double>::has_signaling_NaN) {
+        return;
+    }
+    if (sizeof(void*) == 4) { // skip 32bit arch
         return;
     }
 
@@ -264,6 +297,9 @@ BOOST_AUTO_TEST_CASE(object_with_zone_double_signaling)
 BOOST_AUTO_TEST_CASE(object_with_zone_double_quiet)
 {
     if (!std::numeric_limits<double>::has_quiet_NaN) {
+        return;
+    }
+    if (sizeof(void*) == 4) { // skip 32bit arch
         return;
     }
 
