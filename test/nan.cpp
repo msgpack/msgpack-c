@@ -9,6 +9,26 @@
 #include <cmath>
 #include <cstdlib>
 
+#if defined (_MSC_VER)
+
+#include <cfenv>
+
+template <typename T>
+inline bool is_quiet_nan(T t) {
+    std::feclearexcept(FE_ALL_EXCEPT);
+    T r = t * T();
+    (void)r;
+    int n = std::fetestexcept(FE_ALL_EXCEPT);
+    if (n == 0) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+#else  // defined (_MSC_VER)
+
 inline bool is_quiet_nan(double const& nan_val) {
     MSGPACK_ASSERT(nan_val != nan_val);
     uint64_t bit_pattern = reinterpret_cast<uint64_t const&>(nan_val);
@@ -23,20 +43,7 @@ inline bool is_quiet_nan(float const& nan_val) {
     return (bit_pattern >> is_quiet_bit_index) & 1;
 }
 
-inline void clear_quiet(double& nan_val) {
-    MSGPACK_ASSERT(nan_val != nan_val);
-    int is_quiet_bit_index = DBL_MANT_DIG - 2;
-    uint64_t mask = uint64_t(1) << is_quiet_bit_index;
-    reinterpret_cast<uint64_t&>(nan_val) &= ~mask;
-}
-
-inline void clear_quiet(float& nan_val) {
-    MSGPACK_ASSERT(nan_val != nan_val);
-    int is_quiet_bit_index = FLT_MANT_DIG - 2;
-    uint32_t mask = uint32_t(1) << is_quiet_bit_index;
-    reinterpret_cast<uint32_t&>(nan_val) &= ~mask;
-}
-
+#endif // defined (_MSC_VER)
 
 BOOST_AUTO_TEST_CASE(unpack_float_signaling)
 {
