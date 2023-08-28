@@ -252,7 +252,7 @@ public:
                 if (!v.visit_negative_integer(m_current->via.i64)) return;
                 break;
             case msgpack::type::FLOAT32:
-                if (!v.visit_float32(static_cast<float>(m_current->via.f64))) return;
+                if (!v.visit_float32(m_current->via.f32)) return;
                 break;
             case msgpack::type::FLOAT64:
                 if (!v.visit_float64(m_current->via.f64)) return;
@@ -717,7 +717,7 @@ private:
         }
         bool visit_float32(float v) {
             m_ptr->type = msgpack::type::FLOAT32;
-            m_ptr->via.f64 = v;
+            m_ptr->via.f32 = v;
             return true;
         }
         bool visit_float64(double v) {
@@ -910,7 +910,7 @@ struct object_equal_visitor {
         return true;
     }
     bool visit_float32(float v) {
-        if (m_ptr->type != msgpack::type::FLOAT32 || m_ptr->via.f64 != v) {
+        if (m_ptr->type != msgpack::type::FLOAT32 || m_ptr->via.f32 != v) {
             m_result = false;
             return false;
         }

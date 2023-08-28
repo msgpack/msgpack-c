@@ -97,7 +97,7 @@ public:
     bool visit_float32(float v) {
         msgpack::object* obj = m_stack.back();
         obj->type = msgpack::type::FLOAT32;
-        obj->via.f64 = v;
+        obj->via.f32 = v;
         return true;
     }
     bool visit_float64(double v) {

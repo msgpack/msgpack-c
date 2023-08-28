@@ -22,6 +22,7 @@ LIST (APPEND check_PROGRAMS
     msgpack_stream.cpp
     msgpack_tuple.cpp
     msgpack_vref.cpp
+    nan.cpp
     object.cpp
     object_with_zone.cpp
     pack_unpack.cpp

@@ -278,7 +278,7 @@ BOOST_AUTO_TEST_CASE(construct_primitive)
 
     msgpack::object obj_float(1.2F);
     BOOST_CHECK_EQUAL(msgpack::type::FLOAT32, obj_float.type);
-    BOOST_CHECK_EQUAL(1.2F, obj_float.via.f64);
+    BOOST_CHECK_EQUAL(1.2F, obj_float.via.f32);
 
     msgpack::object obj_double(1.2);
     BOOST_CHECK_EQUAL(msgpack::type::FLOAT64, obj_double.type);

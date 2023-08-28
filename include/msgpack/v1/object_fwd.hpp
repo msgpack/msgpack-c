@@ -82,6 +82,7 @@ struct object {
         double   dec; // obsolete
 #endif // MSGPACK_USE_LEGACY_NAME_AS_FLOAT
         double   f64;
+        float    f32;
         msgpack::object_array array;
         msgpack::object_map map;
         msgpack::object_str str;
