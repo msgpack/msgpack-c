@@ -49,10 +49,6 @@ BOOST_AUTO_TEST_CASE(unpack_float_signaling)
 
     std::stringstream ss;
     float val = std::numeric_limits<float>::signaling_NaN();
-#if defined(_MSC_VER)
-    // workaround. MSVC's signaling_NaN() returns quiet_NaN().
-    clear_quiet(val);
-#endif // defined(_MSC_VER)
 
     msgpack::pack(ss, val);
 
@@ -104,10 +100,6 @@ BOOST_AUTO_TEST_CASE(unpack_double_signaling)
 
     std::stringstream ss;
     double val = std::numeric_limits<double>::signaling_NaN();
-#if defined(_MSC_VER)
-    // workaround. MSVC's signaling_NaN() returns quiet_NaN().
-    clear_quiet(val);
-#endif // defined(_MSC_VER)
 
     msgpack::pack(ss, val);
 
@@ -159,10 +151,6 @@ BOOST_AUTO_TEST_CASE(object_float_signaling)
     }
 
     float val = std::numeric_limits<float>::signaling_NaN();
-#if defined(_MSC_VER)
-    // workaround. MSVC's signaling_NaN() returns quiet_NaN().
-    clear_quiet(val);
-#endif // defined(_MSC_VER)
 
     msgpack::object obj(val);
 
@@ -199,10 +187,6 @@ BOOST_AUTO_TEST_CASE(object_double_signaling)
     }
 
     double val = std::numeric_limits<double>::signaling_NaN();
-#if defined(_MSC_VER)
-    // workaround. MSVC's signaling_NaN() returns quiet_NaN().
-    clear_quiet(val);
-#endif // defined(_MSC_VER)
 
     msgpack::object obj(val);
 
@@ -239,10 +223,6 @@ BOOST_AUTO_TEST_CASE(object_with_zone_float_signaling)
     }
 
     float val = std::numeric_limits<float>::signaling_NaN();
-#if defined(_MSC_VER)
-    // workaround. MSVC's signaling_NaN() returns quiet_NaN().
-    clear_quiet(val);
-#endif // defined(_MSC_VER)
 
     msgpack::zone z;
     msgpack::object obj(val, z);
@@ -281,10 +261,6 @@ BOOST_AUTO_TEST_CASE(object_with_zone_double_signaling)
     }
 
     double val = std::numeric_limits<double>::signaling_NaN();
-#if defined(_MSC_VER)
-    // workaround. MSVC's signaling_NaN() returns quiet_NaN().
-    clear_quiet(val);
-#endif // defined(_MSC_VER)
 
     msgpack::zone z;
     msgpack::object obj(val, z);
