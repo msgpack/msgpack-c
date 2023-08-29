@@ -42,7 +42,7 @@ private:
             finalizer* fin = m_head;
             finalizer* tmp = nullptr;
             while(fin) {
-                (*(fin-1))();
+                (*fin)();
                 if (clear) {
                     tmp = fin;
                 }
@@ -53,10 +53,11 @@ private:
             }
         }
         ~finalizer_array() {
-            call(true);
+            clear();
         }
         void clear() {
             call(true);
+            m_head = MSGPACK_NULLPTR;
         }
         void push(void (*func)(void* data), void* data)
         {
@@ -68,13 +69,13 @@ private:
             m_head = n;
         }
 
+
         finalizer_array(finalizer_array&& other) noexcept: m_head(other.m_head) {
             other.m_head = MSGPACK_NULLPTR;
         }
-        finalizer_array& operator=(finalizer_array&& other) noexcept
-        {
-            this->~finalizer_array();
-            new (this) finalizer_array(std::move(other));
+        finalizer_array& operator=(finalizer_array&& other) noexcept {
+            m_head = other.m_head;
+            other.m_head = MSGPACK_NULLPTR;
             return *this;
         }
         finalizer* m_head;
@@ -95,6 +96,7 @@ private:
                 ::free(c);
                 c = n;
             }
+            m_head = MSGPACK_NULLPTR;
         }
         void clear(size_t chunk_size, char* ptr)
         {
@@ -187,6 +189,7 @@ inline zone::zone(size_t chunk_size):m_chunk_size(chunk_size), m_chunk_list(MSGP
 
 inline zone::~zone()
 {
+    m_finalizer_array.~finalizer_array();
     if(m_chunk_list) {
         m_chunk_list->~chunk_list();
         ::free(m_chunk_list);
@@ -198,9 +201,9 @@ inline char* zone::get_aligned(char* ptr, size_t align)
 {
     MSGPACK_ASSERT(align != 0 && (align & (align - 1)) == 0); // align must be 2^n (n >= 0)
     return
-            reinterpret_cast<char*>(
-                reinterpret_cast<uintptr_t>(ptr + (align - 1)) & ~static_cast<uintptr_t>(align - 1)
-            );
+        reinterpret_cast<char*>(
+            reinterpret_cast<uintptr_t>(ptr + (align - 1)) & ~static_cast<uintptr_t>(align - 1)
+        );
 }
 
 inline zone::chunk_list& zone::get_chank_lst()
