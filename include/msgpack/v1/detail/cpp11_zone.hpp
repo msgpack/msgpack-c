@@ -78,9 +78,9 @@ private:
             other.m_head = MSGPACK_NULLPTR;
             return *this;
         }
-        finalizer* m_head;
 
     private:
+        finalizer* m_head;
         finalizer_array(const finalizer_array&);
         finalizer_array& operator=(const finalizer_array&);
     };
@@ -106,7 +106,7 @@ private:
                 ::free(c);
                 c = n;
             }
-            m_head->m_next = MSGPACK_NULLPTR;
+            m_head = MSGPACK_NULLPTR;
             m_free = chunk_size;
             m_ptr  = ptr;
         }
