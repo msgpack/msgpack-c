@@ -25,7 +25,7 @@ namespace msgpack {
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
 /// @endcond
-    
+
 class zone {
 private:
     struct finalizer {
@@ -33,46 +33,41 @@ private:
         void operator()() { m_func(m_data); }
         void (*m_func)(void*);
         void* m_data;
-        finalizer* m_next{};
+        finalizer* m_next;
     };
     struct finalizer_array {
         finalizer_array(): m_head(MSGPACK_NULLPTR) {}
 
-        void call(bool clear = false) {
+        ~finalizer_array() {
+            clear();
+        }
+
+        void clear() {
             finalizer* fin = m_head;
             finalizer* tmp = nullptr;
             while(fin) {
                 (*fin)();
-                if (clear) {
-                    tmp = fin;
-                }
+                tmp = fin;
                 fin = fin->m_next;
-                if (clear) {
-                    delete tmp;
-                }
+                delete tmp;
             }
-        }
-        ~finalizer_array() {
-            clear();
-        }
-        void clear() {
-            call(true);
             m_head = MSGPACK_NULLPTR;
         }
-        void push(void (*func)(void* data), void* data)
-        {
+
+        void push(void (*func)(void* data), void* data) {
             m_head = new finalizer(func, data, m_head);
         }
+
         void pop() {
             auto n = m_head->m_next;
             delete m_head;
             m_head = n;
         }
 
-
         finalizer_array(finalizer_array&& other) noexcept: m_head(other.m_head) {
             other.m_head = MSGPACK_NULLPTR;
         }
+
         finalizer_array& operator=(finalizer_array&& other) noexcept {
             m_head = other.m_head;
             other.m_head = MSGPACK_NULLPTR;
@@ -84,9 +79,11 @@ private:
         finalizer_array(const finalizer_array&);
         finalizer_array& operator=(const finalizer_array&);
     };
+
     struct chunk {
         chunk* m_next;
     };
+
     struct chunk_list {
         chunk_list(size_t chunk_size, char* ptr): m_free(chunk_size), m_ptr(ptr), m_head(MSGPACK_NULLPTR) {}
         ~chunk_list() {
@@ -98,8 +95,8 @@ private:
             }
             m_head = MSGPACK_NULLPTR;
         }
-        void clear(size_t chunk_size, char* ptr)
-        {
+        
+        void clear(size_t chunk_size, char* ptr) {
             chunk* c = m_head;
             while(c) {
                 chunk* n = c->m_next;
@@ -114,12 +111,14 @@ private:
         size_t m_free;
         char* m_ptr;
         chunk* m_head;
+
     private:
         chunk_list(chunk_list&& other) noexcept = delete;
         chunk_list& operator=(chunk_list&& other) noexcept = delete;
         chunk_list(const chunk_list&);
         chunk_list& operator=(const chunk_list&);
     };
+
     size_t m_chunk_size;
     chunk_list* m_chunk_list{};
     finalizer_array m_finalizer_array;
@@ -141,23 +140,21 @@ public:
 
     void swap(zone& o);
 
-    static void* operator new(std::size_t size)
-    {
+    static void* operator new(std::size_t size) {
         void* p = ::malloc(size);
         if (!p) throw std::bad_alloc();
         return p;
     }
-    static void operator delete(void *p) noexcept
-    {
+
+    static void operator delete(void *p) noexcept {
         ::free(p);
     }
-    static void* operator new(std::size_t /*size*/, void* mem) noexcept
-    {
+
+    static void* operator new(std::size_t /*size*/, void* mem) noexcept {
         return mem;
     }
-    static void operator delete(void * /*p*/, void* /*mem*/) noexcept
-    {
-    }
+
+    static void operator delete(void * /*p*/, void* /*mem*/) noexcept {}
 
     template <typename T, typename... Args>
     T* allocate(Args... args);
@@ -183,12 +180,9 @@ private:
     char* allocate_expand(size_t size);
 };
 
-inline zone::zone(size_t chunk_size):m_chunk_size(chunk_size), m_chunk_list(MSGPACK_NULLPTR)
-{
-}
+inline zone::zone(size_t chunk_size):m_chunk_size(chunk_size), m_chunk_list(MSGPACK_NULLPTR) {}
 
-inline zone::~zone()
-{
+inline zone::~zone() {
     m_finalizer_array.~finalizer_array();
     if(m_chunk_list) {
         m_chunk_list->~chunk_list();
@@ -197,8 +191,7 @@ inline zone::~zone()
     }
 }
 
-inline char* zone::get_aligned(char* ptr, size_t align)
-{
+inline char* zone::get_aligned(char* ptr, size_t align) {
     MSGPACK_ASSERT(align != 0 && (align & (align - 1)) == 0); // align must be 2^n (n >= 0)
     return
         reinterpret_cast<char*>(
@@ -206,8 +199,7 @@ inline char* zone::get_aligned(char* ptr, size_t align)
         );
 }
 
-inline zone::chunk_list& zone::get_chank_lst()
-{
+inline zone::chunk_list& zone::get_chank_lst() {
     if (!m_chunk_list) {
         auto ptr = ::malloc(sizeof(chunk_list) + m_chunk_size);
         if (!ptr)
@@ -217,8 +209,7 @@ inline zone::chunk_list& zone::get_chank_lst()
     return *m_chunk_list;
 }
 
-inline void* zone::allocate_align(size_t size, size_t align)
-{
+inline void* zone::allocate_align(size_t size, size_t align) {
     chunk_list& chank_lst = get_chank_lst();
     char* aligned = get_aligned(chank_lst.m_ptr, align);
     size_t adjusted_size = size + static_cast<size_t>(aligned - chank_lst.m_ptr);
@@ -245,8 +236,7 @@ inline void* zone::allocate_no_align(size_t size) {
     return ptr;
 }
 
-inline char* zone::allocate_expand(size_t size)
-{
+inline char* zone::allocate_expand(size_t size) {
     chunk_list& cl = get_chank_lst();
     size_t sz = m_chunk_size;
 
@@ -272,39 +262,33 @@ inline char* zone::allocate_expand(size_t size)
     return ptr;
 }
 
-inline void zone::push_finalizer(void (*func)(void*), void* data)
-{
+inline void zone::push_finalizer(void (*func)(void*), void* data) {
     m_finalizer_array.push(func, data);
 }
 
 template <typename T>
-inline void zone::push_finalizer(msgpack::unique_ptr<T> obj)
-{
+inline void zone::push_finalizer(msgpack::unique_ptr<T> obj) {
     m_finalizer_array.push(&zone::object_delete<T>, obj.release());
 }
 
-inline void zone::clear()
-{
+inline void zone::clear() {
     m_finalizer_array.clear();
     if (m_chunk_list) {
         m_chunk_list->clear(m_chunk_size, reinterpret_cast<char*>(m_chunk_list) + sizeof(chunk_list));
     }
 }
 
-inline void zone::swap(zone& o)
-{
+inline void zone::swap(zone& o) {
     std::swap(*this, o);
 }
 
 template <typename T>
-void zone::object_delete(void* obj)
-{
+void zone::object_delete(void* obj) {
     delete static_cast<T*>(obj);
 }
 
 template <typename T>
-void zone::object_destruct(void* obj)
-{
+void zone::object_destruct(void* obj) {
     static_cast<T*>(obj)->~T();
 }
 
@@ -316,8 +300,7 @@ inline void zone::undo_allocate(size_t size) {
 
 
 template <typename T, typename... Args>
-T* zone::allocate(Args... args)
-{
+T* zone::allocate(Args... args) {
     void* x = allocate_align(sizeof(T), MSGPACK_ZONE_ALIGNOF(T));
     try {
         m_finalizer_array.push(&zone::object_destruct<T>, x);
@@ -334,9 +317,7 @@ T* zone::allocate(Args... args)
     }
 }
 
-inline std::size_t aligned_size(
-    std::size_t size,
-    std::size_t align) {
+inline std::size_t aligned_size(std::size_t size, std::size_t align) {
     return (size + align - 1) / align * align;
 }
 
