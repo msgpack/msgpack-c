@@ -45,7 +45,7 @@ class zone {
 
         void clear() {
             finalizer* fin = m_head;
-            finalizer* tmp = nullptr;
+            finalizer* tmp = MSGPACK_NULLPTR;
             while(fin) {
                 (*fin)();
                 tmp = fin;
