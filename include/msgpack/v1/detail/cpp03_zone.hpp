@@ -60,7 +60,7 @@ class zone {
         }
 
         void pop() {
-            auto n = m_head->m_next;
+            finalizer* n = m_head->m_next;
             delete m_head;
             m_head = n;
         }
@@ -241,7 +241,7 @@ inline char* zone::get_aligned(char* ptr, size_t align) {
 
 inline zone::chunk_list& zone::get_chank_lst() {
     if (!m_chunk_list) {
-        auto ptr = ::malloc(sizeof(chunk_list) + m_chunk_size);
+        void* ptr = ::malloc(sizeof(chunk_list) + m_chunk_size);
         if (!ptr)
             throw std::bad_alloc();
         m_chunk_list = new (ptr) chunk_list(m_chunk_size, reinterpret_cast<char*>(ptr) + sizeof(chunk_list));
@@ -322,7 +322,7 @@ inline void zone::swap(zone& o) {
     using std::swap;
     swap(m_chunk_size, o.m_chunk_size);
     swap(m_chunk_list, o.m_chunk_list);
-    swap(m_finalizer_array, o.m_finalizer_array);
+    swap(m_finalizer_array.m_head, o.m_finalizer_array.m_head);
 }
 
 template <typename T>
