@@ -35,6 +35,7 @@ private:
         void* m_data;
         finalizer* m_next;
     };
+
     struct finalizer_array {
         finalizer_array(): m_head(MSGPACK_NULLPTR) {}
 
@@ -95,7 +96,7 @@ private:
             }
             m_head = MSGPACK_NULLPTR;
         }
-        
+
         void clear(size_t chunk_size, char* ptr) {
             chunk* c = m_head;
             while(c) {
@@ -127,9 +128,13 @@ public:
     zone(size_t chunk_size = MSGPACK_ZONE_CHUNK_SIZE);
     ~zone();
 
-public:
     void* allocate_align(size_t size, size_t align = MSGPACK_ZONE_ALIGN);
+
     void* allocate_no_align(size_t size);
+
+    bool allocated() { 
+        return m_chunk_list != MSGPACK_NULLPTR; 
+    }
 
     void push_finalizer(void (*func)(void*), void* data);
 
@@ -298,6 +303,9 @@ inline void zone::undo_allocate(size_t size) {
     cl.m_free += size;
 }
 
+inline std::size_t aligned_size(std::size_t size, std::size_t align) {
+    return (size + align - 1) / align * align;
+}
 
 template <typename T, typename... Args>
 T* zone::allocate(Args... args) {
@@ -315,10 +323,6 @@ T* zone::allocate(Args... args) {
         undo_allocate(sizeof(T));
         throw;
     }
-}
-
-inline std::size_t aligned_size(std::size_t size, std::size_t align) {
-    return (size + align - 1) / align * align;
 }
 
 /// @cond
