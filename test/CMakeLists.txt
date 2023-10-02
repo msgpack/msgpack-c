@@ -79,7 +79,6 @@ FOREACH (source_file ${check_PROGRAMS})
 
     TARGET_LINK_LIBRARIES (${source_file_we}
         msgpack-cxx
-        Boost::system
         Boost::unit_test_framework
         Threads::Threads
         ZLIB::ZLIB

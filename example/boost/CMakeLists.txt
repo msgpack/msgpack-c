@@ -22,7 +22,6 @@ FOREACH (source_file ${exec_PROGRAMS})
     )
     TARGET_LINK_LIBRARIES (${source_file_we} PRIVATE
         msgpack-cxx
-        Boost::system
         Threads::Threads
     )
     IF (ZLIB_FOUND)

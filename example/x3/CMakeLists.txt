@@ -42,7 +42,6 @@ IF (MSGPACK_USE_X3_PARSE AND MSGPACK_DEFAULT_API_VERSION VERSION_GREATER 1)
         TARGET_LINK_LIBRARIES (${source_file_we} PRIVATE
             msgpack-cxx
             Boost::context
-            Boost::system
             Threads::Threads
         )
         IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
