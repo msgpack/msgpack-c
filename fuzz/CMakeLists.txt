@@ -19,7 +19,6 @@ FOREACH (source_file ${check_PROGRAMS})
         msgpack-cxx
         Threads::Threads
         Boost::filesystem
-        Boost::system
         Boost::unit_test_framework
     )
 
