@@ -1,5 +1,5 @@
 FIND_PACKAGE (Threads REQUIRED)
-FIND_PACKAGE (Boost REQUIRED COMPONENTS system filesystem unit_test_framework)
+FIND_PACKAGE (Boost REQUIRED COMPONENTS filesystem unit_test_framework)
 
 LIST (APPEND check_PROGRAMS
     regression_runner.cpp
@@ -19,7 +19,6 @@ FOREACH (source_file ${check_PROGRAMS})
         msgpack-cxx
         Threads::Threads
         Boost::filesystem
-        Boost::system
         Boost::unit_test_framework
     )
 
