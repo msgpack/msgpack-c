@@ -188,7 +188,7 @@ private:
 inline zone::zone(size_t chunk_size):m_chunk_size(chunk_size), m_chunk_list(MSGPACK_NULLPTR) {}
 
 inline zone::~zone() {
-    m_finalizer_array.~finalizer_array();
+    m_finalizer_array.clear();
     if(m_chunk_list) {
         m_chunk_list->~chunk_list();
         ::free(m_chunk_list);
