@@ -27,9 +27,10 @@ while getopts "b:t:p:" c; do
 done
 
 mkdir $prefix || exit 1
-wget https://zlib.net/zlib-1.3.tar.gz || exit 1
-tar -xf zlib-1.3.tar.gz || exit 1
-cd zlib-1.3
+wget https://zlib.net/current/zlib.tar.gz || exit 1
+mkdir zlib
+tar -xf zlib.tar.gz -C zlib || exit 1
+cd $(dirname $(find zlib -name zlib.h))
 
 build()
 {
