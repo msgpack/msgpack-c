@@ -27,10 +27,11 @@ SET (VERSION_REVISION ${CMAKE_MATCH_1})
 SET (VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_REVISION})
 
 LIST (APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/")
+include(GNUInstallDirs)
 SET (prefix ${CMAKE_INSTALL_PREFIX})
-SET (exec_prefix "\${prefix}")
-SET (libdir "\${exec_prefix}/lib")
-SET (includedir "\${prefix}/include")
+SET (exec_prefix ${CMAKE_INSTALL_PREFIX})
+SET (libdir ${CMAKE_INSTALL_LIBDIR})
+SET (includedir ${CMAKE_INSTALL_INCLUDEDIR})
 
 OPTION (MSGPACK_32BIT "32bit compile" OFF)
 
