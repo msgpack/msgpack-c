@@ -129,6 +129,9 @@ struct object {
     template <typename T>
     typename std::enable_if<!msgpack::has_as<T>::value, T>::type as() const;
 
+    template <typename T, typename C>
+    typename std::enable_if<!msgpack::has_as<T>::value, T>::type as(const C & param) const;
+
 #endif // defined(MSGPACK_USE_CPP03)
 
     /// Convert the object
@@ -144,6 +147,13 @@ struct object {
         T&
     >::type
     convert(T& v) const;
+
+    template <typename T, typename C>
+    typename msgpack::enable_if<
+        !msgpack::is_array<T>::value && !msgpack::is_pointer<T>::value,
+        T&
+    >::type
+    convert(T& v, const C& param) const;
 
     template <typename T, std::size_t N>
     T (&convert(T(&v)[N]) const)[N];
