@@ -562,3 +562,18 @@ BOOST_AUTO_TEST_CASE(array_unsigned_char)
 }
 
 #endif // MSGPACK_CPP_VERSION >= 201703
+
+#ifndef MSGPACK_USE_CPP03
+
+struct struct_without_adaptor
+{
+    int foo;
+};
+
+BOOST_AUTO_TEST_CASE(has_msgpack_unpack)
+{
+    static_assert(msgpack::v1::adaptor::impl::has_msgpack_unpack<struct_without_adaptor>::value == false, "");
+    static_assert(msgpack::v1::adaptor::impl::has_msgpack_unpack<myclass>::value, "");
+}
+
+#endif

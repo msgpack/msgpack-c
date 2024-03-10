@@ -87,6 +87,7 @@ struct is_pointer;
 
 #include <memory>
 #include <tuple>
+#include <type_traits>
 
 namespace msgpack {
 /// @cond
@@ -123,5 +124,24 @@ MSGPACK_API_VERSION_NAMESPACE(v1) {
 #else  // defined(__has_include)
 #define MSGPACK_HAS_INCLUDE(header) 0
 #endif // defined(__has_include)
+
+#if MSGPACK_CPP_VERSION >= 201703L
+
+namespace msgpack {
+/// @cond
+MSGPACK_API_VERSION_NAMESPACE(v1) {
+/// @endcond
+
+    // type_traits
+    using std::void_t;
+
+/// @cond
+}  // MSGPACK_API_VERSION_NAMESPACE(v1)
+/// @endcond
+}  // namespace msgpack
+
+
+#endif
+
 
 #endif // MSGPACK_V1_CPP_CONFIG_DECL_HPP
