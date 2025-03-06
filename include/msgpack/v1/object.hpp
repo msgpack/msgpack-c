@@ -1134,6 +1134,13 @@ inline typename std::enable_if<!msgpack::has_as<T>::value, T>::type object::as()
     return v;
 }
 
+template <typename T, typename C>
+inline typename std::enable_if<!msgpack::has_as<T>::value, T>::type object::as(const C & param) const {
+    T v;
+    convert(v, param);
+    return v;
+}
+
 #endif // defined(MSGPACK_USE_CPP03)
 
 inline object::object()
