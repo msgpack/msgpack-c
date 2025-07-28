@@ -257,6 +257,28 @@ public:
      */
     packer<Stream>& pack_fix_int64(int64_t d);
 
+    /// Packing float (fixed packed type).
+    /**
+     * The packed type is always float32.
+     * See https://github.com/msgpack/msgpack/blob/master/spec.md#formats-float
+     *
+     * @param d a packing object.
+     *
+     * @return The reference of `*this`.
+     */
+    packer<Stream>& pack_fix_float(float d);
+
+    /// Packing double (fixed packed type).
+    /**
+     * The packed type is always float64.
+     * See https://github.com/msgpack/msgpack/blob/master/spec.md#formats-float
+     *
+     * @param d a packing object.
+     *
+     * @return The reference of `*this`.
+     */
+    packer<Stream>& pack_fix_double(double d);
+
 
     /// Packing char
     /**
@@ -823,6 +845,36 @@ inline packer<Stream>& packer<Stream>::pack_fix_int64(int64_t d)
 {
     char buf[9];
     buf[0] = static_cast<char>(0xd3u); _msgpack_store64(&buf[1], d);
+    append_buffer(buf, 9);
+    return *this;
+}
+
+template <typename Stream>
+inline packer<Stream>& packer<Stream>::pack_fix_float(float d)
+{
+    union { float f; uint32_t i; } mem;
+    mem.f = d;
+    char buf[5];
+    buf[0] = static_cast<char>(0xcau); _msgpack_store32(&buf[1], mem.i);
+    append_buffer(buf, 5);
+    return *this;
+}
+
+template <typename Stream>
+inline packer<Stream>& packer<Stream>::pack_fix_double(double d)
+{
+    union { double f; uint64_t i; } mem;
+    mem.f = d;
+    char buf[9];
+    buf[0] = static_cast<char>(0xcbu);
+
+#if defined(TARGET_OS_IPHONE)
+    // ok
+#elif defined(__arm__) && !(__ARM_EABI__) // arm-oabi
+    // https://github.com/msgpack/msgpack-perl/pull/1
+    mem.i = (mem.i & 0xFFFFFFFFUL) << 32UL | (mem.i >> 32UL);
+#endif
+    _msgpack_store64(&buf[1], mem.i);
     append_buffer(buf, 9);
     return *this;
 }

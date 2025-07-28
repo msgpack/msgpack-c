@@ -189,6 +189,49 @@ BOOST_AUTO_TEST_CASE(simple_buffer_float)
     }
 }
 
+BOOST_AUTO_TEST_CASE(simple_buffer_pack_fix_float)
+{
+    vector<float> v;
+    v.push_back(0.0);
+    v.push_back(-0.0);
+    v.push_back(1.0);
+    v.push_back(-1.0);
+    v.push_back(numeric_limits<float>::min());
+    v.push_back(numeric_limits<float>::max());
+    v.push_back(nanf("tag"));
+    if (numeric_limits<float>::has_infinity) {
+        v.push_back(numeric_limits<float>::infinity());
+        v.push_back(-numeric_limits<float>::infinity());
+    }
+    if (numeric_limits<float>::has_quiet_NaN) {
+        v.push_back(numeric_limits<float>::quiet_NaN());
+    }
+    if (numeric_limits<float>::has_signaling_NaN) {
+        v.push_back(numeric_limits<float>::signaling_NaN());
+    }
+
+    for (unsigned int i = 0; i < kLoop; i++) {
+        v.push_back(static_cast<float>(msgpack_rand()));
+        v.push_back(static_cast<float>(-msgpack_rand()));
+    }
+    for (unsigned int i = 0; i < v.size() ; i++) {
+        msgpack::sbuffer sbuf;
+        msgpack::packer<msgpack::sbuffer> packer(sbuf);
+        float val1 = v[i];
+        packer.pack_fix_float(val1);
+        msgpack::object_handle oh =
+            msgpack::unpack(sbuf.data(), sbuf.size());
+        float val2 = oh.get().as<float>();
+
+        if (std::isnan(val1))
+            BOOST_CHECK(std::isnan(val2));
+        else if (std::isinf(val1))
+            BOOST_CHECK(std::isinf(val2));
+        else
+            BOOST_CHECK(fabs(val2 - val1) <= kEPS);
+    }
+}
+
 #endif // !defined(_MSC_VER) || _MSC_VER >=1800
 
 namespace {
@@ -262,6 +305,53 @@ BOOST_AUTO_TEST_CASE(simple_buffer_double)
         msgpack::sbuffer sbuf;
         double val1 = v[i];
         msgpack::pack(sbuf, val1);
+        msgpack::object_handle oh =
+            msgpack::unpack(sbuf.data(), sbuf.size());
+        double val2 = oh.get().as<double>();
+
+        if (std::isnan(val1))
+            BOOST_CHECK(std::isnan(val2));
+        else if (std::isinf(val1))
+            BOOST_CHECK(std::isinf(val2));
+        else
+            BOOST_CHECK(fabs(val2 - val1) <= kEPS);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(simple_buffer_pack_fix_double)
+{
+    vector<double> v;
+    v.push_back(0.0);
+    v.push_back(-0.0);
+    v.push_back(1.0);
+    v.push_back(-1.0);
+    v.push_back(numeric_limits<double>::min());
+    v.push_back(numeric_limits<double>::max());
+    v.push_back(nanf("tag"));
+    if (numeric_limits<double>::has_infinity) {
+        v.push_back(numeric_limits<double>::infinity());
+        v.push_back(-numeric_limits<double>::infinity());
+    }
+    if (numeric_limits<double>::has_quiet_NaN) {
+        v.push_back(numeric_limits<double>::quiet_NaN());
+    }
+    if (numeric_limits<double>::has_signaling_NaN) {
+        v.push_back(numeric_limits<double>::signaling_NaN());
+    }
+    for (unsigned int i = 0; i < kLoop; i++) {
+        v.push_back(msgpack_rand());
+        v.push_back(-msgpack_rand());
+    }
+
+    for (unsigned int i = 0; i < kLoop; i++) {
+        v.push_back(msgpack_rand());
+        v.push_back(-msgpack_rand());
+    }
+    for (unsigned int i = 0; i < v.size() ; i++) {
+        msgpack::sbuffer sbuf;
+        msgpack::packer<msgpack::sbuffer> packer(sbuf);
+        double val1 = v[i];
+        packer.pack_fix_double(val1);
         msgpack::object_handle oh =
             msgpack::unpack(sbuf.data(), sbuf.size());
         double val2 = oh.get().as<double>();
