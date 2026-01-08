@@ -1,5 +1,5 @@
 FIND_PACKAGE (Threads REQUIRED)
-FIND_PACKAGE (Boost REQUIRED COMPONENTS filesystem unit_test_framework)
+FIND_PACKAGE (Boost REQUIRED COMPONENTS filesystem unit_test_framework CONFIG)
 
 LIST (APPEND check_PROGRAMS
     regression_runner.cpp

@@ -1,6 +1,6 @@
 FIND_PACKAGE (Threads REQUIRED)
 FIND_PACKAGE (ZLIB)
-FIND_PACKAGE (Boost REQUIRED COMPONENTS unit_test_framework)
+FIND_PACKAGE (Boost REQUIRED COMPONENTS unit_test_framework CONFIG)
 
 LIST (APPEND check_PROGRAMS
     array_ref.cpp
