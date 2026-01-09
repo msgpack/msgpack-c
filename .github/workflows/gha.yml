@@ -17,7 +17,7 @@ jobs:
       matrix:
         pattern: [0, 1, 2, 3]
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v3
     - name: install gtest
       run: |
         brew install --force googletest
@@ -173,10 +173,10 @@ jobs:
       matrix:
         pattern: [0, 1, 2, 3]
     steps:
-    - uses: actions/checkout@v2.0.0
+    - uses: actions/checkout@v3
     - name: Cache vcpkg
       id: cache-vcpkg
-      uses: actions/cache@v1.1.2
+      uses: actions/cache@v3
       with:
         path: C:/vcpkg/installed
         key: windows-2019-vcpkg-v2
