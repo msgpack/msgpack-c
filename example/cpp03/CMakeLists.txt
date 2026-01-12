@@ -1,6 +1,6 @@
 FIND_PACKAGE (Threads REQUIRED)
 
-FIND_PACKAGE (Boost COMPONENTS timer CONFIG)
+FIND_PACKAGE (Boost COMPONENTS timer)
 
 LIST (APPEND exec_PROGRAMS
     class_intrusive.cpp
