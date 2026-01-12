@@ -2,7 +2,7 @@ version: 7.0.0.{build}
 
 branches:
   only:
-    - cpp_master
+  - cpp_master
 
 environment:
   matrix:
@@ -36,28 +36,6 @@ build_script:
       md prefix
       cd build
 
-      # Debug: Check Boost directories
-      Write-Host "=== Checking Boost installation at $env:boost_prefix ==="
-      if (Test-Path "$env:boost_prefix") {
-          Write-Host "Boost directory found!"
-          Write-Host "Top-level contents:"
-          dir $env:boost_prefix | Format-Table Name -AutoSize
-
-          Write-Host "=== Checking $env:boost_subdir ==="
-          if (Test-Path "$env:boost_prefix\$env:boost_subdir") {
-              Write-Host "Library directory found!"
-              dir "$env:boost_prefix\$env:boost_subdir" | Select-Object -First 10
-          } else {
-              Write-Host "$env:boost_subdir not found"
-          }
-      } else {
-          Write-Host "ERROR: Boost directory NOT found at $env:boost_prefix"
-      }
-
-      Write-Host "=== Starting CMake configuration ==="
-
-      $ErrorActionPreference = "Continue"
-
       cmake `
           -G $env:msvc `
           $env:cpp11 `
@@ -68,29 +46,12 @@ build_script:
           -D CMAKE_PREFIX_PATH="$env:boost_prefix;$env:APPVEYOR_BUILD_FOLDER\zlib-1.3.1\prefix" `
           -D CMAKE_INSTALL_PREFIX="$env:APPVEYOR_BUILD_FOLDER\prefix" `
           -D CMAKE_CXX_FLAGS="/D_VARIADIC_MAX=10 /EHsc /DBOOST_ALL_DYN_LINK" `
-          .. 2>&1 | Tee-Object -Variable cmakeOutput
-
-      Write-Host "=== Full CMake output: ==="
-      Write-Host $cmakeOutput
-
-      if ($LastExitCode -ne 0) {
-          Write-Host "=== CMake configuration FAILED with exit code $LastExitCode ==="
-          Write-Host "=== Checking if CMakeLists.txt exists ==="
-          if (Test-Path "..\CMakeLists.txt") {
-              Write-Host "CMakeLists.txt found"
-          } else {
-              Write-Host "CMakeLists.txt NOT found!"
-          }
-          Write-Host "=== Current directory: ==="
-          Get-Location
-          Write-Host "=== Directory contents: ==="
-          dir
-          exit $LastExitCode
-      }
+          ..
+      if ($LastExitCode -ne 0) { exit $LastExitCode }
 
       cmake --build . --config Release
       if ($LastExitCode -ne 0) { exit $LastExitCode }
 
 test_script:
-  - set PATH=%PATH%;%APPVEYOR_BUILD_FOLDER%\zlib-1.3.1\build\Release;%APPVEYOR_BUILD_FOLDER%\build\release;%boost_prefix%\%boost_subdir%
-  - ctest -VV -C Release
+- set PATH=%PATH%;%APPVEYOR_BUILD_FOLDER%\zlib-1.3.1\build\Release;%APPVEYOR_BUILD_FOLDER%\build\release;%boost_prefix%\%boost_subdir%
+- ctest -VV -C Release
