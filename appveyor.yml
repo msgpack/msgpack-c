@@ -66,8 +66,21 @@ build_script:
           -D CMAKE_PREFIX_PATH="$env:boost_prefix;$env:APPVEYOR_BUILD_FOLDER\zlib-1.3.1\prefix" `
           -D CMAKE_INSTALL_PREFIX="$env:APPVEYOR_BUILD_FOLDER\prefix" `
           -D CMAKE_CXX_FLAGS="/D_VARIADIC_MAX=10 /EHsc /DBOOST_ALL_DYN_LINK" `
+          --debug-find `
           ..
-      if ($LastExitCode -ne 0) { exit $LastExitCode }
+
+      if ($LastExitCode -ne 0) {
+          Write-Host "=== CMake configuration FAILED with exit code $LastExitCode ==="
+          Write-Host "=== Dumping CMakeOutput.log ==="
+          if (Test-Path "CMakeFiles/CMakeOutput.log") {
+              Get-Content "CMakeFiles/CMakeOutput.log"
+          }
+          Write-Host "=== Dumping CMakeError.log ==="
+          if (Test-Path "CMakeFiles/CMakeError.log") {
+              Get-Content "CMakeFiles/CMakeError.log"
+          }
+          exit $LastExitCode
+      }
 
       cmake --build . --config Release
       if ($LastExitCode -ne 0) { exit $LastExitCode }
