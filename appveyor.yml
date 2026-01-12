@@ -36,6 +36,34 @@ build_script:
       md prefix
       cd build
 
+      # Debug: Check Boost directories
+      Write-Host "=== Checking C:\Libraries for Boost installations ==="
+      dir C:\Libraries\boost* | Format-Table Name
+
+      Write-Host "=== Checking if boost_1_86_0 exists ==="
+      if (Test-Path "C:\Libraries\boost_1_86_0") {
+          Write-Host "boost_1_86_0 found!"
+          dir C:\Libraries\boost_1_86_0 | Format-Table Name
+
+          Write-Host "=== Checking lib32-msvc-14.0 ==="
+          if (Test-Path "C:\Libraries\boost_1_86_0\lib32-msvc-14.0") {
+              dir C:\Libraries\boost_1_86_0\lib32-msvc-14.0
+
+              Write-Host "=== Checking cmake directory ==="
+              if (Test-Path "C:\Libraries\boost_1_86_0\lib32-msvc-14.0\cmake") {
+                  dir C:\Libraries\boost_1_86_0\lib32-msvc-14.0\cmake
+              } else {
+                  Write-Host "cmake directory not found in lib32-msvc-14.0"
+              }
+          } else {
+              Write-Host "lib32-msvc-14.0 not found"
+          }
+      } else {
+          Write-Host "boost_1_86_0 NOT found!"
+      }
+
+      Write-Host "=== Starting CMake configuration ==="
+
       cmake `
           -G $env:msvc `
           $env:cpp11 `
