@@ -10,7 +10,7 @@
 #ifndef MSGPACK_VERSION_HPP
 #define MSGPACK_VERSION_HPP
 
-#include "version_master.h"
+#include "version_master.hpp"
 
 #define MSGPACK_STR(v) #v
 #define MSGPACK_VERSION_I(maj, min, rev) MSGPACK_STR(maj) "." MSGPACK_STR(min) "." MSGPACK_STR(rev)

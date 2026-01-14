@@ -13,7 +13,12 @@
 #include "msgpack/object_decl.hpp"
 #include "msgpack/adaptor/check_container_size.hpp"
 
-#include <iostream>
+#include <cstring>
+#include <stdexcept>
+#include <typeinfo>
+#include <limits>
+#include <ostream>
+#include <typeinfo>
 #include <iomanip>
 
 namespace msgpack {
@@ -461,12 +466,17 @@ struct object_stringize_visitor {
         m_os << '"';
         return true;
     }
-    bool visit_bin(const char* v, uint32_t size) {
-        (m_os << '"').write(v, static_cast<std::streamsize>(size)) << '"';
+    bool visit_bin(const char* /*v*/, uint32_t size) {
+        m_os << "\"BIN(size:" << size << ")\"";
         return true;
     }
-    bool visit_ext(const char* /*v*/, uint32_t /*size*/) {
-        m_os << "EXT";
+    bool visit_ext(const char* v, uint32_t size) {
+        if (size == 0) {
+            m_os << "\"EXT(size:0)\"";
+        }
+        else {
+            m_os << "\"EXT(type:" << static_cast<int>(v[0]) << ",size:" << size - 1 << ")\"";
+        }
         return true;
     }
     bool start_array(uint32_t num_elements) {
@@ -1160,27 +1170,6 @@ inline object::object(const T& v, msgpack::zone* z)
     msgpack::operator<<(oz, v);
     type = oz.type;
     via = oz.via;
-}
-
-
-inline object::object(const msgpack_object& o)
-{
-    // FIXME beter way?
-    std::memcpy(this, &o, sizeof(o));
-}
-
-inline void operator<< (msgpack::object& o, const msgpack_object& v)
-{
-    // FIXME beter way?
-    std::memcpy(static_cast<void*>(&o), &v, sizeof(v));
-}
-
-inline object::operator msgpack_object() const
-{
-    // FIXME beter way?
-    msgpack_object obj;
-    std::memcpy(&obj, this, sizeof(obj));
-    return obj;
 }
 
 

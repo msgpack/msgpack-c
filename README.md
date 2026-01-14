@@ -1,7 +1,8 @@
-`msgpack` for C/C++
+`msgpack` for C++
 ===================
 
-Version 3.2.0 [![Build Status](https://travis-ci.org/msgpack/msgpack-c.svg?branch=master)](https://travis-ci.org/msgpack/msgpack-c) [![Build status](https://ci.appveyor.com/api/projects/status/8kstcgt79qj123mw/branch/master?svg=true)](https://ci.appveyor.com/project/redboltz/msgpack-c/branch/master)
+Version 7.0.0 [![Build Status](https://github.com/msgpack/msgpack-c/workflows/CI/badge.svg?branch=cpp_master)](https://github.com/msgpack/msgpack-c/actions) [![Build status](https://ci.appveyor.com/api/projects/status/8kstcgt79qj123mw/branch/cpp_master?svg=true)](https://ci.appveyor.com/project/redboltz/msgpack-c/branch/cpp_master)
+[![codecov](https://codecov.io/gh/msgpack/msgpack-c/branch/cpp_master/graph/badge.svg)](https://codecov.io/gh/msgpack/msgpack-c/branch/cpp_master)
 
 It's like JSON but smaller and faster.
 
@@ -16,51 +17,6 @@ addition to the strings themselves.
 
 Example
 -------
-
-In C:
-
-```c
-#include <msgpack.h>
-#include <stdio.h>
-
-int main(void)
-{
-    /* msgpack::sbuffer is a simple buffer implementation. */
-    msgpack_sbuffer sbuf;
-    msgpack_sbuffer_init(&sbuf);
-
-    /* serialize values into the buffer using msgpack_sbuffer_write callback function. */
-    msgpack_packer pk;
-    msgpack_packer_init(&pk, &sbuf, msgpack_sbuffer_write);
-
-    msgpack_pack_array(&pk, 3);
-    msgpack_pack_int(&pk, 1);
-    msgpack_pack_true(&pk);
-    msgpack_pack_str(&pk, 7);
-    msgpack_pack_str_body(&pk, "example", 7);
-
-    /* deserialize the buffer into msgpack_object instance. */
-    /* deserialized object is valid during the msgpack_zone instance alive. */
-    msgpack_zone mempool;
-    msgpack_zone_init(&mempool, 2048);
-
-    msgpack_object deserialized;
-    msgpack_unpack(sbuf.data, sbuf.size, NULL, &mempool, &deserialized);
-
-    /* print the deserialized object. */
-    msgpack_object_print(stdout, deserialized);
-    puts("");
-
-    msgpack_zone_destroy(&mempool);
-    msgpack_sbuffer_destroy(&sbuf);
-
-    return 0;
-}
-```
-
-See [`QUICKSTART-C.md`](./QUICKSTART-C.md) for more details.
-
-In C++:
 
 ```c++
 #include <msgpack.hpp>
@@ -107,76 +63,145 @@ int main()
 
 See [`QUICKSTART-CPP.md`](./QUICKSTART-CPP.md) for more details.
 
+Dependency
+----------
+
+msgpack-c requires [boost library](https://www.boost.org/).
+C++ version of msgpack-c itself is a header-only library and depends only on
+boost headers. Tests depend on boost unit test framework and are linked with
+it, so if you want to build them, you need to have this dependency installed.
+
+Experimental support for removing boost dependency
+
+For cmake:
+
+```
+cmake -DMSGPACK_USE_BOOST=OFF ..
+```
+
+NOTE: `-DMSGPACK_BUILD_TESTS=ON` doesn't work with `-DMSGPACK_USE_BOOST=OFF`.
+
+For C++ compiler
+
+```
+clang++ -DMSGPACK_NO_BOOST your_code.cpp
+```
+
+
 Usage
 -----
 
-### C++ Header Only Library
+- If you build your project with cmake, you can find msgpack-c with a
+  canonical cmake-way:
 
-When you use msgpack on C++, you can just add
-msgpack-c/include to your include path:
+  ```cmake
+  # ...
+  find_package(msgpack REQUIRED)
+  # ...
+  target_link_libraries(your_target_name <PRIVATE/PUBLIC/INTERFACE> msgpack-cxx)
+  # ...
+  ```
 
-    g++ -I msgpack-c/include your_source_file.cpp
+  This will search for `msgpack` cmake package in a system prefix and in
+  prefixes from `CMAKE_PREFIX_PATH`. Note that msgpack-c depends on boost
+  headers, and `msgpack` cmake package depends on `Boost` cmake package. The
+  library is header-only and `target_link_libraries` command just adds path
+  to msgpack-c headers to your compiler's include path.
 
-If you want to use C version of msgpack, you need to build it. You can
-also install the C and C++ versions of msgpack.
+  A usage example can be found at [test-install](test-install) directory.
 
-### Building and Installing
+- If you do not use cmake, you can just add path yo msgpack-c and boost
+  headers to your include path:
 
-#### Install from git repository
+  ```bash
+  g++ -I msgpack-c/include -I path_to_boost your_source_file.cpp
+  ```
 
-##### Using the Terminal (CLI)
+Building and Installing
+-----------------------
+
+### Install from git repository
+
+#### Using the Terminal (CLI)
 
 You will need:
 
- - `gcc >= 4.1.0`
- - `cmake >= 2.8.0`
+- `gcc >= 4.1.0`
+- `cmake >= 3.1.0`
 
-C and C++03:
+C++03:
 
-    $ git clone https://github.com/msgpack/msgpack-c.git
-    $ cd msgpack-c
-    $ cmake .
-    $ make
-    $ sudo make install
+```bash
+git clone https://github.com/msgpack/msgpack-c.git
+cd msgpack-c
+git checkout cpp_master
+cmake .
+sudo cmake --build . --target install
+```
 
-If you want to setup C++11 or C++17 version of msgpack instead,
-execute the following commands:
+If you want to build tests with different C++ version, you can use
+`MSGPACK_CXX11`, `MSGPACK_CXX14`, `MSGPACK_CXX17`, `MSGPACK_CXX20` options.
+Just replace the line
 
-    $ git clone https://github.com/msgpack/msgpack-c.git
-    $ cd msgpack-c
-    $ cmake -DMSGPACK_CXX[11|17]=ON .
-    $ sudo make install
+```bash
+cmake .
+```
 
-`MSGPACK_CXX[11|17]` flags are not affected to installing files. Just switching test cases. All files are installed in every settings.
+with a line like that:
 
-When you use the C part of `msgpack-c`, you need to build and link the library. By default, both static/shared libraries are built. If you want to build only static library, set `BUILD_SHARED_LIBS=OFF` to cmake. If you want to build only shared library, set `BUILD_SHARED_L
+```bash
+cmake -DMSGPACK_CXX20=ON .
+```
+
+Note that these flags do not affect installation. They just switch test cases.
+All files are installed in every settings.
+
+If you don't have superuser permissions or don't want to install the library
+to a system-wide prefix, you can use `CMAKE_INSTALL_PREFIX` option like that:
+
+```bash
+cmake -DCMAKE_INSTALL_PREFIX=/your/custom/prefix .
+```
+
+Other useful options:
+
+- `MSGPACK_BUILD_TESTS` (default `OFF`): build tests
+- `MSGPACK_BUILD_EXAMPLES` (default `OFF`): build examples
+- `MSGPACK_32BIT` (default `OFF`): 32bit compile
+- `MSGPACK_USE_X3_PARSE` (default `OFF`): use Boost X3 parse
+  (note that it requires C++14 or newer)
+- `MSGPACK_CHAR_SIGN` (not set explicitly by default): char sign to use (signed or unsigned)
+- `MSGPACK_USE_STATIC_BOOST` (default `OFF`): statically link with boost libraries
 
 #### GUI on Windows
 
-Clone msgpack-c git repository.
+Clone msgpack-c git repository with the command:
 
-    $ git clone https://github.com/msgpack/msgpack-c.git
+```
+git clone https://github.com/msgpack/msgpack-c.git
+```
 
-or using GUI git client.
+or using GUI git client (e.g. [tortoise git](https://code.google.com/p/tortoisegit/)).
 
-e.g.) tortoise git https://code.google.com/p/tortoisegit/
+1. Checkout to `cpp_master` branch
 
-1. Launch [cmake GUI client](http://www.cmake.org/cmake/resources/software.html).
+2. Launch [cmake GUI client](http://www.cmake.org/cmake/resources/software.html).
 
-2. Set 'Where is the source code:' text box and 'Where to build
-the binaries:' text box.
+3. Set 'Where is the source code:' text box and
+   'Where to build the binaries:' text box.
 
-3. Click 'Configure' button.
+4. Click 'Configure' button.
 
-4. Choose your Visual Studio version.
+5. Choose your Visual Studio version.
 
-5. Click 'Generate' button.
+6. Click 'Generate' button.
 
-6. Open the created msgpack.sln on Visual Studio.
+7. Open the created msgpack.sln on Visual Studio.
 
-7. Build all.
+8. Build all.
 
-### Documentation
+Documentation
+-------------
 
 You can get additional information including the tutorial on the
 [wiki](https://github.com/msgpack/msgpack-c/wiki).

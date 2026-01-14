@@ -13,7 +13,9 @@
 #include "msgpack/versioning.hpp"
 #include "msgpack/cpp_config.hpp"
 #include "msgpack/zone_decl.hpp"
+#include "msgpack/assert.hpp"
 
+#include <cstdint>
 #include <cstdlib>
 #include <memory>
 #include <vector>
@@ -169,7 +171,7 @@ private:
     finalizer_array m_finalizer_array;
 
 public:
-    zone(size_t chunk_size = MSGPACK_ZONE_CHUNK_SIZE) noexcept;
+    zone(size_t chunk_size = MSGPACK_ZONE_CHUNK_SIZE);
 
 public:
     void* allocate_align(size_t size, size_t align = MSGPACK_ZONE_ALIGN);
@@ -224,16 +226,17 @@ private:
     char* allocate_expand(size_t size);
 };
 
-inline zone::zone(size_t chunk_size) noexcept:m_chunk_size(chunk_size), m_chunk_list(m_chunk_size)
+inline zone::zone(size_t chunk_size):m_chunk_size(chunk_size), m_chunk_list(m_chunk_size)
 {
 }
 
 inline char* zone::get_aligned(char* ptr, size_t align)
 {
+    MSGPACK_ASSERT(align != 0 && (align & (align - 1)) == 0); // align must be 2^n (n >= 0)
     return
         reinterpret_cast<char*>(
-            reinterpret_cast<size_t>(
-            (ptr + (align - 1))) / align * align);
+            reinterpret_cast<uintptr_t>(ptr + (align - 1)) & ~static_cast<uintptr_t>(align - 1)
+        );
 }
 
 inline void* zone::allocate_align(size_t size, size_t align)

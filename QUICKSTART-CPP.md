@@ -12,7 +12,7 @@ Same as QuickStart for C Language.
 
 ## First program
 
-Include `msgpack.hpp` header and link `msgpack` library to use MessagePack on your program.
+Include `msgpack.hpp` header to use MessagePack on your program.
 
 ```cpp
 #include <msgpack.hpp>

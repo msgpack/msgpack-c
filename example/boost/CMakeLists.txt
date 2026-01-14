@@ -1,21 +1,16 @@
-IF (MSGPACK_BOOST)
-    LIST (APPEND exec_PROGRAMS
-        msgpack_variant_capitalize.cpp
-        msgpack_variant_mapbased.cpp
-    )
-    IF (MSGPACK_CXX11 OR MSGPACK_CXX17)
-        FIND_PACKAGE (Threads REQUIRED)
-        LIST (APPEND exec_PROGRAMS
-            asio_send_recv.cpp
-        )
-        IF (ZLIB_FOUND)
-            INCLUDE_DIRECTORIES (
-                ${ZLIB_INCLUDE_DIRS}
-            )
-            LIST (APPEND exec_PROGRAMS
-                asio_send_recv_zlib.cpp
-            )
-        ENDIF ()
+FIND_PACKAGE (Boost REQUIRED)
+FIND_PACKAGE (Threads REQUIRED)
+FIND_PACKAGE (ZLIB REQUIRED)
+
+LIST (APPEND exec_PROGRAMS
+    msgpack_variant_capitalize.cpp
+    msgpack_variant_mapbased.cpp
+)
+
+IF (MSGPACK_CXX11 OR MSGPACK_CXX14 OR MSGPACK_CXX17 OR MSGPACK_CXX20)
+    LIST (APPEND exec_PROGRAMS asio_send_recv.cpp)
+    IF (ZLIB_FOUND)
+        LIST (APPEND exec_PROGRAMS asio_send_recv_zlib.cpp)
     ENDIF ()
 ENDIF ()
 
@@ -25,24 +20,18 @@ FOREACH (source_file ${exec_PROGRAMS})
         ${source_file_we}
         ${source_file}
     )
-    TARGET_INCLUDE_DIRECTORIES (${source_file_we}
-        PRIVATE
-            $<TARGET_PROPERTY:msgpackc,INTERFACE_INCLUDE_DIRECTORIES>
-    )
-    TARGET_LINK_LIBRARIES (${source_file_we}
-        ${Boost_SYSTEM_LIBRARY}
-        ${CMAKE_THREAD_LIBS_INIT}
+    TARGET_LINK_LIBRARIES (${source_file_we} PRIVATE
+        msgpack-cxx
+        Threads::Threads
     )
     IF (ZLIB_FOUND)
-        TARGET_LINK_LIBRARIES (${source_file_we}
-            ${ZLIB_LIBRARIES}
-        )
-    ENDIF()
-    IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+        TARGET_LINK_LIBRARIES (${source_file_we} PRIVATE ZLIB::ZLIB)
+    ENDIF ()
+    IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
         SET_PROPERTY (TARGET ${source_file_we} APPEND_STRING PROPERTY COMPILE_FLAGS " -Wall -Wextra")
     ENDIF ()
 
-    IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+    IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
         SET_PROPERTY (TARGET ${source_file_we} APPEND_STRING PROPERTY COMPILE_FLAGS " -Wno-mismatched-tags")
     ENDIF ()
 

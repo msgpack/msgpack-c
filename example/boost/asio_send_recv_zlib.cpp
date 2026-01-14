@@ -85,12 +85,12 @@ int main() {
                             }
                             std::cout << bytes_transferred << " bytes read." << std::endl;
                             print(std::string(std::string(&buf[0], buf.size())));
-                            strm.avail_in = bytes_transferred;
+                            strm.avail_in = static_cast<uInt>(bytes_transferred);
                             do {
                                 strm.next_in = reinterpret_cast<unsigned char*>(&buf[0]) + (bytes_transferred - strm.avail_in);
                                 int zret;
                                 unp.reserve_buffer(window_size);
-                                strm.avail_out = window_size;
+                                strm.avail_out = static_cast<uInt>(window_size);
                                 strm.next_out = reinterpret_cast<unsigned char*>(unp.buffer());
                                 do {
                                     zret = inflate(&strm, Z_NO_FLUSH);

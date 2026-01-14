@@ -13,6 +13,7 @@
 
 #include "msgpack/versioning.hpp"
 #include "msgpack/adaptor/adaptor_base.hpp"
+#include "msgpack/object.hpp"
 #include "msgpack/adaptor/check_container_size.hpp"
 
 #include <memory>

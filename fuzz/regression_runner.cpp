@@ -1,50 +1,49 @@
 #include <boost/filesystem.hpp>
-#include <gtest/gtest.h>
+
+// Use parameterized tests instead of modern data-driven test cases
+// because BOOST_DATA_TEST_CASE requires C++11 or newer. See:
+// - https://www.boost.org/doc/libs/1_76_0/libs/test/doc/html/boost_test/tests_organization/test_cases/param_test.html
+// - https://www.boost.org/doc/libs/1_76_0/libs/test/doc/html/boost_test/tests_organization/test_cases/test_case_generation.html
+#include <boost/test/included/unit_test.hpp>
+#include <boost/test/parameterized_test.hpp>
 
 #include <fstream>
-#include <iostream>
+#include <string>
 #include <vector>
 
 #include "unpack_pack_fuzzer.cpp"
-
-using ::testing::TestWithParam;
-using ::testing::ValuesIn;
-
 
 std::vector<std::string> ListDirectory(const std::string& path) {
   std::vector<std::string> v;
 
   boost::filesystem::path p(path);
-  boost::filesystem::directory_iterator f{p};
+  boost::filesystem::directory_iterator f(p);
 
-  if(boost::filesystem::is_directory(p)) {
-    while (f != boost::filesystem::directory_iterator{}) {
+  if (boost::filesystem::is_directory(p)) {
+    while (f != boost::filesystem::directory_iterator()) {
       v.push_back((*f++).path().string());
     }
   }
   return v;
 }
 
-class UnpackPackFuzzerRegressionTest : public ::testing::TestWithParam<std::string> {
-public:
-};
-
-TEST_P(UnpackPackFuzzerRegressionTest, Returns0) {
-  auto fpath = GetParam();
-  std::ifstream in(fpath, std::ifstream::binary);
+void UnpackPackFuzzerRegressionTest(const std::string& fpath) {
+  std::ifstream in(fpath.c_str(), std::ios_base::binary);
   if (!in) {
-    FAIL() << fpath << " not found";
+    BOOST_FAIL(fpath + " not found");
   }
   in.seekg(0, in.end);
   size_t length = in.tellg();
   in.seekg(0, in.beg);
   std::vector<char> bytes(length);
   in.read(bytes.data(), bytes.size());
-  assert(in);
-  EXPECT_EQ(0, LLVMFuzzerTestOneInput(reinterpret_cast<const uint8_t *>(bytes.data()),
-                                      bytes.size()));
+  BOOST_REQUIRE(in);
+  BOOST_REQUIRE_EQUAL(0, LLVMFuzzerTestOneInput(reinterpret_cast<const uint8_t *>(bytes.data()), bytes.size()));
 }
 
-INSTANTIATE_TEST_CASE_P(UnpackPackFuzzerRegressions,
-                        UnpackPackFuzzerRegressionTest,
-                        ::testing::ValuesIn(ListDirectory("../../fuzz/unpack_pack_fuzzer_regressions")));
+boost::unit_test::test_suite* init_unit_test_suite(int /*argc*/, char* /*argv*/[])
+{
+  std::vector<std::string> files = ListDirectory("../../fuzz/unpack_pack_fuzzer_regressions");
+  boost::unit_test::framework::master_test_suite().add(BOOST_PARAM_TEST_CASE(&UnpackPackFuzzerRegressionTest, files.begin(), files.end()));
+  return 0;
+}

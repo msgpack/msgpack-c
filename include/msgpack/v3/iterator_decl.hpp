@@ -12,7 +12,7 @@
 #define MSGPACK_V3_ITERATOR_DECL_HPP
 #if !defined(MSGPACK_USE_CPP03)
 
-#include <msgpack/v2/iterator_decl.hpp>
+#include "msgpack/v2/iterator_decl.hpp"
 
 namespace msgpack {
 

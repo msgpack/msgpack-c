@@ -11,6 +11,7 @@
 #define MSGPACK_V1_VREFBUFFER_HPP
 
 #include "msgpack/v1/vrefbuffer_decl.hpp"
+#include "msgpack/assert.hpp"
 
 #include <stdexcept>
 #include <algorithm>
@@ -24,11 +25,16 @@
 
 #if defined(unix) || defined(__unix) || defined(__APPLE__) || defined(__OpenBSD__)
 #include <sys/uio.h>
+namespace msgpack {
+typedef ::iovec iovec;
+} // namespace msgpack
 #else
+namespace msgpack {
 struct iovec {
     void  *iov_base;
     size_t iov_len;
 };
+} // namespace msgpack
 #endif
 
 namespace msgpack {
@@ -107,6 +113,10 @@ public:
 public:
     void write(const char* buf, size_t len)
     {
+        MSGPACK_ASSERT(buf || len == 0);
+
+        if (!buf) return;
+
         if(len < m_ref_size) {
             append_copy(buf, len);
         } else {
@@ -177,7 +187,7 @@ public:
         }
     }
 
-    const struct iovec* vector() const
+    const iovec* vector() const
     {
         return m_array;
     }

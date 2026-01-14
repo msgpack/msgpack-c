@@ -10,36 +10,17 @@
 #ifndef MSGPACK_DEFINE_DECL_HPP
 #define MSGPACK_DEFINE_DECL_HPP
 
-// BOOST_PP_VARIADICS is defined in boost/preprocessor/config/config.hpp
+#if defined(MSGPACK_NO_BOOST)
+
+// MSGPACK_PP_VARIADICS is defined in msgpack/preprocessor/config/config.hpp
 // http://www.boost.org/libs/preprocessor/doc/ref/variadics.html
 // However, supporting compiler detection is not complete. msgpack-c requires
-// variadic macro arguments support. So BOOST_PP_VARIADICS is defined here explicitly.
+// variadic macro arguments support. So MSGPACK_PP_VARIADICS is defined here explicitly.
 #if !defined(MSGPACK_PP_VARIADICS)
 #define MSGPACK_PP_VARIADICS
 #endif
 
 #include <msgpack/preprocessor.hpp>
-
-#include "msgpack/versioning.hpp"
-
-// for MSGPACK_ADD_ENUM
-#include "msgpack/adaptor/int.hpp"
-
-#define MSGPACK_DEFINE_ARRAY(...) \
-    template <typename Packer> \
-    void msgpack_pack(Packer& msgpack_pk) const \
-    { \
-        msgpack::type::make_define_array(__VA_ARGS__).msgpack_pack(msgpack_pk); \
-    } \
-    void msgpack_unpack(msgpack::object const& msgpack_o) \
-    { \
-        msgpack::type::make_define_array(__VA_ARGS__).msgpack_unpack(msgpack_o); \
-    }\
-    template <typename MSGPACK_OBJECT> \
-    void msgpack_object(MSGPACK_OBJECT* msgpack_o, msgpack::zone& msgpack_z) const \
-    { \
-        msgpack::type::make_define_array(__VA_ARGS__).msgpack_object(msgpack_o, msgpack_z); \
-    }
 
 #define MSGPACK_BASE_ARRAY(base) (*const_cast<base *>(static_cast<base const*>(this)))
 #define MSGPACK_NVP(name, value) (name) (value)
@@ -84,6 +65,85 @@
 
 #define MSGPACK_BASE_MAP(base) \
     (MSGPACK_PP_STRINGIZE(base))(*const_cast<base *>(static_cast<base const*>(this)))
+
+#else  // defined(MSGPACK_NO_BOOST)
+
+// BOOST_PP_VARIADICS is defined in boost/preprocessor/config/config.hpp
+// http://www.boost.org/libs/preprocessor/doc/ref/variadics.html
+// However, supporting compiler detection is not complete. msgpack-c requires
+// variadic macro arguments support. So BOOST_PP_VARIADICS is defined here explicitly.
+#if !defined(BOOST_PP_VARIADICS)
+#define BOOST_PP_VARIADICS
+#endif
+
+#include <boost/preprocessor.hpp>
+
+#define MSGPACK_BASE_ARRAY(base) (*const_cast<base *>(static_cast<base const*>(this)))
+#define MSGPACK_NVP(name, value) (name) (value)
+
+#define MSGPACK_DEFINE_MAP_EACH_PROC(r, data, elem) \
+    BOOST_PP_IF( \
+        BOOST_PP_IS_BEGIN_PARENS(elem), \
+        elem, \
+        (BOOST_PP_STRINGIZE(elem))(elem) \
+    )
+
+#define MSGPACK_DEFINE_MAP_IMPL(...) \
+    BOOST_PP_SEQ_TO_TUPLE( \
+        BOOST_PP_SEQ_FOR_EACH( \
+            MSGPACK_DEFINE_MAP_EACH_PROC, \
+            0, \
+            BOOST_PP_VARIADIC_TO_SEQ(__VA_ARGS__) \
+        ) \
+    )
+
+#define MSGPACK_DEFINE_MAP(...) \
+    template <typename Packer> \
+    void msgpack_pack(Packer& msgpack_pk) const \
+    { \
+        msgpack::type::make_define_map \
+            MSGPACK_DEFINE_MAP_IMPL(__VA_ARGS__) \
+            .msgpack_pack(msgpack_pk); \
+    } \
+    void msgpack_unpack(msgpack::object const& msgpack_o) \
+    { \
+        msgpack::type::make_define_map \
+            MSGPACK_DEFINE_MAP_IMPL(__VA_ARGS__) \
+            .msgpack_unpack(msgpack_o); \
+    }\
+    template <typename MSGPACK_OBJECT> \
+    void msgpack_object(MSGPACK_OBJECT* msgpack_o, msgpack::zone& msgpack_z) const \
+    { \
+        msgpack::type::make_define_map \
+            MSGPACK_DEFINE_MAP_IMPL(__VA_ARGS__) \
+            .msgpack_object(msgpack_o, msgpack_z); \
+    }
+
+#define MSGPACK_BASE_MAP(base) \
+    (BOOST_PP_STRINGIZE(base))(*const_cast<base *>(static_cast<base const*>(this)))
+
+#endif // defined(MSGPACK_NO_BOOST)
+
+#include "msgpack/versioning.hpp"
+
+// for MSGPACK_ADD_ENUM
+#include "msgpack/adaptor/int.hpp"
+
+#define MSGPACK_DEFINE_ARRAY(...) \
+    template <typename Packer> \
+    void msgpack_pack(Packer& msgpack_pk) const \
+    { \
+        msgpack::type::make_define_array(__VA_ARGS__).msgpack_pack(msgpack_pk); \
+    } \
+    void msgpack_unpack(msgpack::object const& msgpack_o) \
+    { \
+        msgpack::type::make_define_array(__VA_ARGS__).msgpack_unpack(msgpack_o); \
+    }\
+    template <typename MSGPACK_OBJECT> \
+    void msgpack_object(MSGPACK_OBJECT* msgpack_o, msgpack::zone& msgpack_z) const \
+    { \
+        msgpack::type::make_define_array(__VA_ARGS__).msgpack_object(msgpack_o, msgpack_z); \
+    }
 
 // MSGPACK_ADD_ENUM must be used in the global namespace.
 #define MSGPACK_ADD_ENUM(enum_name) \

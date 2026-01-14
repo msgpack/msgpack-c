@@ -10,8 +10,6 @@
 #ifndef MSGPACK_V1_TYPE_BOOST_MSGPACK_VARIANT_HPP
 #define MSGPACK_V1_TYPE_BOOST_MSGPACK_VARIANT_HPP
 
-#if defined(MSGPACK_USE_BOOST)
-
 #include "msgpack/v1/adaptor/boost/msgpack_variant_decl.hpp"
 
 #include "msgpack/adaptor/check_container_size.hpp"
@@ -28,7 +26,18 @@
 #include "msgpack/adaptor/vector.hpp"
 #include "msgpack/adaptor/map.hpp"
 
+
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wconversion"
+#endif // defined(__GNUC__)
+
 #include <boost/variant.hpp>
+
+#if defined(__GNUC__)
+#pragma GCC diagnostic pop
+#endif // defined(__GNUC__)
+
 #include <boost/operators.hpp>
 
 namespace msgpack {
@@ -113,6 +122,12 @@ struct basic_variant :
         int_init(v);
     }
     basic_variant(unsigned long long v):base(uint64_t(v)) {}
+    basic_variant(float v) {
+        double_init(v);
+    }
+    basic_variant(double v) {
+        double_init(v);
+    }
 
     bool is_nil() const {
         return boost::get<msgpack::type::nil_t>(this) != MSGPACK_NULLPTR;
@@ -168,39 +183,30 @@ struct basic_variant :
     int64_t as_int64_t() const {
         return boost::get<int64_t>(*this);
     }
-    int64_t& as_int64_t() {
-        return boost::get<int64_t>(*this);
-    }
     uint64_t as_uint64_t() const {
         return boost::get<uint64_t>(*this);
     }
-    uint64_t& as_uint64_t() {
-        return boost::get<uint64_t>(*this);
-    }
     double as_double() const {
-        return boost::get<double>(*this);
-    }
-    double& as_double() {
-        return boost::get<double>(*this);
+        if (is_double()) {
+            return boost::get<double>(*this);
+        }
+        if (is_int64_t()) {
+            return static_cast<double>(boost::get<int64_t>(*this));
+        }
+        if (is_uint64_t()) {
+            return static_cast<double>(boost::get<uint64_t>(*this));
+        }
+        throw msgpack::type_error();
     }
     std::string const& as_string() const {
-        return boost::get<std::string>(*this);
-    }
-    std::string& as_string() {
         return boost::get<std::string>(*this);
     }
 #if (BOOST_VERSION / 100000) >= 1 && ((BOOST_VERSION / 100) % 1000) >= 53
     boost::string_ref const& as_boost_string_ref() const {
         return boost::get<boost::string_ref>(*this);
     }
-    boost::string_ref& as_boost_string_ref() {
-        return boost::get<boost::string_ref>(*this);
-    }
 #endif // (BOOST_VERSION / 100000) >= 1 && ((BOOST_VERSION / 100) % 1000) >= 53
     std::vector<char> const& as_vector_char() const {
-        return boost::get<std::vector<char> >(*this);
-    }
-    std::vector<char>& as_vector_char() {
         return boost::get<std::vector<char> >(*this);
     }
     raw_ref const& as_raw_ref() const {
@@ -209,28 +215,16 @@ struct basic_variant :
     ext const& as_ext() const {
         return boost::get<ext>(*this);
     }
-    ext& as_ext() {
-        return boost::get<ext>(*this);
-    }
     ext_ref const& as_ext_ref() const {
         return boost::get<ext_ref>(*this);
     }
     std::vector<basic_variant<STR, BIN, EXT> > const& as_vector() const {
         return boost::get<std::vector<basic_variant<STR, BIN, EXT> > >(*this);
     }
-    std::vector<basic_variant<STR, BIN, EXT> >& as_vector() {
-        return boost::get<std::vector<basic_variant<STR, BIN, EXT> > >(*this);
-    }
     std::map<basic_variant<STR, BIN, EXT>, basic_variant<STR, BIN, EXT> > const& as_map() const {
         return boost::get<std::map<basic_variant<STR, BIN, EXT>, basic_variant<STR, BIN, EXT> > >(*this);
     }
-    std::map<basic_variant<STR, BIN, EXT>, basic_variant<STR, BIN, EXT> >& as_map() {
-        return boost::get<std::map<basic_variant<STR, BIN, EXT>, basic_variant<STR, BIN, EXT> > >(*this);
-    }
     std::multimap<basic_variant<STR, BIN, EXT>, basic_variant<STR, BIN, EXT> > const& as_multimap() const {
-        return boost::get<std::multimap<basic_variant<STR, BIN, EXT>, basic_variant<STR, BIN, EXT> > >(*this);
-    }
-    std::multimap<basic_variant<STR, BIN, EXT>, basic_variant<STR, BIN, EXT> >& as_multimap() {
         return boost::get<std::multimap<basic_variant<STR, BIN, EXT>, basic_variant<STR, BIN, EXT> > >(*this);
     }
 private:
@@ -242,6 +236,19 @@ private:
         else {
             static_cast<base&>(*this) = uint64_t(v);
         }
+    }
+    void double_init(double v) {
+        if (v == v) { // check for nan
+            if (v >= 0 && v <= double(std::numeric_limits<uint64_t>::max()) && v == double(uint64_t(v))) {
+                static_cast<base&>(*this) = uint64_t(v);
+                return;
+            }
+            else if (v < 0 && v >= double(std::numeric_limits<int64_t>::min()) && v == double(int64_t(v))) {
+                static_cast<base&>(*this) = int64_t(v);
+                return;
+            }
+        }
+        static_cast<base&>(*this) = v;
     }
 };
 
@@ -439,5 +446,4 @@ struct object_with_zone<type::basic_variant<STR, BIN, EXT> > {
 
 } // namespace msgpack
 
-#endif // MSGPACK_USE_BOOST
 #endif // MSGPACK_V1_TYPE_BOOST_MSGPACK_VARIANT_HPP

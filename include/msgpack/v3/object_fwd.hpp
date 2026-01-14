@@ -36,7 +36,7 @@ template <typename T>
 struct has_as {
 private:
     template <typename U>
-    static auto check(U*) ->
+    static auto check_(U*) ->
         typename std::enable_if<
             // check v3 specialization
             std::is_same<
@@ -52,9 +52,9 @@ private:
             std::true_type
         >::type;
     template <typename...>
-    static std::false_type check(...);
+    static std::false_type check_(...);
 public:
-    using type = decltype(check<T>(MSGPACK_NULLPTR));
+    using type = decltype(check_<T>(MSGPACK_NULLPTR));
     static constexpr bool value = type::value;
 };
 

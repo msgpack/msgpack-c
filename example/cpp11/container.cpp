@@ -25,8 +25,9 @@ void array() {
     std::stringstream ss;
     msgpack::pack(ss, a);
 
-    msgpack::object_handle oh = msgpack::unpack(ss.str().data(), ss.str().size());
-    msgpack::object obj = oh.get();
+    auto const& str = ss.str();
+    auto oh = msgpack::unpack(str.data(), str.size());
+    auto obj = oh.get();
 
     std::cout << obj << std::endl;
     assert((obj.as<std::array<int, 5>>()) == a);

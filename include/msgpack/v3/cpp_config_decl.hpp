@@ -11,6 +11,7 @@
 #define MSGPACK_V3_CPP_CONFIG_DECL_HPP
 
 #include "msgpack/v2/cpp_config_decl.hpp"
+#include "msgpack/cpp_version.hpp"
 
 #if defined(MSGPACK_USE_CPP03)
 

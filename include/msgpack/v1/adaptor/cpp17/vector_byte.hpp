@@ -10,10 +10,13 @@
 #ifndef MSGPACK_V1_TYPE_VECTOR_BYTE_HPP
 #define MSGPACK_V1_TYPE_VECTOR_BYTE_HPP
 
-#if __cplusplus >= 201703
+#include "msgpack/cpp_version.hpp"
+
+#if MSGPACK_CPP_VERSION >= 201703
 
 #include "msgpack/versioning.hpp"
 #include "msgpack/adaptor/adaptor_base.hpp"
+#include "msgpack/object.hpp"
 #include "msgpack/adaptor/check_container_size.hpp"
 
 #include <vector>
@@ -35,27 +38,27 @@ struct convert<std::vector<std::byte, Alloc> > {
         case msgpack::type::BIN:
             v.resize(o.via.bin.size);
             if (o.via.bin.size != 0) {
-#if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 7)) && !defined(__clang__)
+#if defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 7)) && !defined(__clang__)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
-#endif // (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 7)) && !defined(__clang__)
+#endif // defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 7)) && !defined(__clang__)
                 std::memcpy(&v.front(), o.via.bin.ptr, o.via.bin.size);
-#if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 7)) && !defined(__clang__)
+#if defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 7)) && !defined(__clang__)
 #pragma GCC diagnostic pop
-#endif // (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 7)) && !defined(__clang__)
+#endif // defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 7)) && !defined(__clang__)
             }
             break;
         case msgpack::type::STR:
             v.resize(o.via.str.size);
             if (o.via.str.size != 0) {
-#if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 7)) && !defined(__clang__)
+#if defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 7)) && !defined(__clang__)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
-#endif // (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 7)) && !defined(__clang__)
+#endif // defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 7)) && !defined(__clang__)
                 std::memcpy(&v.front(), o.via.str.ptr, o.via.str.size);
-#if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 7)) && !defined(__clang__)
+#if defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 7)) && !defined(__clang__)
 #pragma GCC diagnostic pop
-#endif // (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 7)) && !defined(__clang__)
+#endif // defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 7)) && !defined(__clang__)
             }
             break;
         default:
@@ -114,6 +117,6 @@ struct object_with_zone<std::vector<std::byte, Alloc> > {
 
 } // namespace msgpack
 
-#endif // __cplusplus >= 201703
+#endif // MSGPACK_CPP_VERSION >= 201703
 
 #endif // MSGPACK_V1_TYPE_VECTOR_BYTE_HPP

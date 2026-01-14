@@ -53,16 +53,16 @@ template <typename T>
 struct has_as {
 private:
     template <typename U>
-    static auto check(U*) ->
+    static auto check_(U*) ->
         // Check v1 specialization
         typename std::is_same<
             decltype(adaptor::as<U>()(std::declval<msgpack::object>())),
             T
         >::type;
     template <typename...>
-    static std::false_type check(...);
+    static std::false_type check_(...);
 public:
-    using type = decltype(check<T>(MSGPACK_NULLPTR));
+    using type = decltype(check_<T>(MSGPACK_NULLPTR));
     static constexpr bool value = type::value;
 };
 
@@ -179,9 +179,6 @@ struct object {
     /// Default constructor. The object is set to nil.
     object();
 
-    /// Copy constructor. Object is shallow copied.
-    object(const msgpack_object& o);
-
     /// Construct object from T
     /**
      * If `v` is the type that is corresponding to MessegePack format str, bin, ext, array, or map,
@@ -221,8 +218,6 @@ struct object {
 
     template <typename T>
     object& operator=(const T& v);
-
-    operator msgpack_object() const;
 
     struct with_zone;
 

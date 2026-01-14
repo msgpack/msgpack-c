@@ -10,10 +10,13 @@
 #ifndef MSGPACK_V1_TYPE_STRING_VIEW_HPP
 #define MSGPACK_V1_TYPE_STRING_VIEW_HPP
 
-#if __cplusplus >= 201703
+#include "msgpack/cpp_version.hpp"
+
+#if MSGPACK_CPP_VERSION >= 201703
 
 #include "msgpack/versioning.hpp"
 #include "msgpack/adaptor/adaptor_base.hpp"
+#include "msgpack/object.hpp"
 #include "msgpack/adaptor/check_container_size.hpp"
 
 #include <string_view>
@@ -81,6 +84,6 @@ struct object_with_zone<std::string_view> {
 
 } // namespace msgpack
 
-#endif // __cplusplus >= 201703
+#endif // MSGPACK_CPP_VERSION >= 201703
 
 #endif // MSGPACK_V1_TYPE_STRING_VIEW_HPP

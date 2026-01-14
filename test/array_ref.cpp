@@ -3,18 +3,14 @@
 #include <string>
 #include <sstream>
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wconversion"
-
-#include <gtest/gtest.h>
-
-#pragma GCC diagnostic pop
+#define BOOST_TEST_MODULE MSGPACK_ARRAY_REF
+#include <boost/test/unit_test.hpp>
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
 
-TEST(MSGPACK_ARRAY_REF, pack_unpack_convert_vector_char)
+BOOST_AUTO_TEST_CASE(pack_unpack_convert_vector_char)
 {
     std::vector<char> v;
     v.push_back('a');
@@ -28,14 +24,14 @@ TEST(MSGPACK_ARRAY_REF, pack_unpack_convert_vector_char)
     std::string const& str = ss.str();
     msgpack::object_handle oh =
         msgpack::unpack(str.data(), str.size());
-    EXPECT_EQ(oh.get().type, msgpack::type::ARRAY);
+    BOOST_CHECK_EQUAL(oh.get().type, msgpack::type::ARRAY);
     std::vector<char> v2;
     msgpack::type::array_ref<std::vector<char> > ar2(v2);
     oh.get().convert(ar2);
-    EXPECT_TRUE(ar1 == ar2);
+    BOOST_CHECK(ar1 == ar2);
 }
 
-TEST(MSGPACK_ARRAY_REF, pack_unpack_convert_vector_char_const)
+BOOST_AUTO_TEST_CASE(pack_unpack_convert_vector_char_const)
 {
     std::vector<char> v;
     v.push_back('a');
@@ -51,14 +47,14 @@ TEST(MSGPACK_ARRAY_REF, pack_unpack_convert_vector_char_const)
     std::string const& str = ss.str();
     msgpack::object_handle oh =
         msgpack::unpack(str.data(), str.size());
-    EXPECT_EQ(oh.get().type, msgpack::type::ARRAY);
+    BOOST_CHECK_EQUAL(oh.get().type, msgpack::type::ARRAY);
     std::vector<char> v2;
     msgpack::type::array_ref<std::vector<char> > ar2(v2);
     oh.get().convert(ar2);
-    EXPECT_TRUE(ar1 == ar2);
+    BOOST_CHECK(ar1 == ar2);
 }
 
-TEST(MSGPACK_ARRAY_REF, pack_unpack_convert_vector_unsigned_char)
+BOOST_AUTO_TEST_CASE(pack_unpack_convert_vector_unsigned_char)
 {
     std::vector<unsigned char> v;
     v.push_back('a');
@@ -72,14 +68,14 @@ TEST(MSGPACK_ARRAY_REF, pack_unpack_convert_vector_unsigned_char)
     std::string const& str = ss.str();
     msgpack::object_handle oh =
         msgpack::unpack(str.data(), str.size());
-    EXPECT_EQ(oh.get().type, msgpack::type::ARRAY);
+    BOOST_CHECK_EQUAL(oh.get().type, msgpack::type::ARRAY);
     std::vector<unsigned char> v2;
     msgpack::type::array_ref<std::vector<unsigned char> > ar2(v2);
     oh.get().convert(ar2);
-    EXPECT_TRUE(ar1 == ar2);
+    BOOST_CHECK(ar1 == ar2);
 }
 
-TEST(MSGPACK_ARRAY_REF, pack_unpack_convert_vector_unsigned_char_const)
+BOOST_AUTO_TEST_CASE(pack_unpack_convert_vector_unsigned_char_const)
 {
     std::vector<unsigned char> v;
     v.push_back('a');
@@ -95,14 +91,14 @@ TEST(MSGPACK_ARRAY_REF, pack_unpack_convert_vector_unsigned_char_const)
     std::string const& str = ss.str();
     msgpack::object_handle oh =
         msgpack::unpack(str.data(), str.size());
-    EXPECT_EQ(oh.get().type, msgpack::type::ARRAY);
+    BOOST_CHECK_EQUAL(oh.get().type, msgpack::type::ARRAY);
     std::vector<unsigned char> v2;
     msgpack::type::array_ref<std::vector<unsigned char> > ar2(v2);
     oh.get().convert(ar2);
-    EXPECT_TRUE(ar1 == ar2);
+    BOOST_CHECK(ar1 == ar2);
 }
 
-TEST(MSGPACK_ARRAY_REF, object_with_zone_vector_char)
+BOOST_AUTO_TEST_CASE(object_with_zone_vector_char)
 {
     std::vector<char> v;
     v.push_back('a');
@@ -113,14 +109,14 @@ TEST(MSGPACK_ARRAY_REF, object_with_zone_vector_char)
     msgpack::zone z;
     msgpack::object obj(ar1, z);
 
-    EXPECT_EQ(obj.type, msgpack::type::ARRAY);
+    BOOST_CHECK_EQUAL(obj.type, msgpack::type::ARRAY);
     std::vector<char> v2;
     msgpack::type::array_ref<std::vector<char> > ar2(v2);
     obj.convert(ar2);
-    EXPECT_TRUE(ar1 == ar2);
+    BOOST_CHECK(ar1 == ar2);
 }
 
-TEST(MSGPACK_ARRAY_REF, object_with_zone_vector_char_const)
+BOOST_AUTO_TEST_CASE(object_with_zone_vector_char_const)
 {
     std::vector<char> v;
     v.push_back('a');
@@ -133,14 +129,14 @@ TEST(MSGPACK_ARRAY_REF, object_with_zone_vector_char_const)
     msgpack::zone z;
     msgpack::object obj(ar1, z);
 
-    EXPECT_EQ(obj.type, msgpack::type::ARRAY);
+    BOOST_CHECK_EQUAL(obj.type, msgpack::type::ARRAY);
     std::vector<char> v2;
     msgpack::type::array_ref<std::vector<char> > ar2(v2);
     obj.convert(ar2);
-    EXPECT_TRUE(ar1 == ar2);
+    BOOST_CHECK(ar1 == ar2);
 }
 
-TEST(MSGPACK_ARRAY_REF, object_with_zone_vector_unsigned_char)
+BOOST_AUTO_TEST_CASE(object_with_zone_vector_unsigned_char)
 {
     std::vector<unsigned char> v;
     v.push_back('a');
@@ -151,14 +147,14 @@ TEST(MSGPACK_ARRAY_REF, object_with_zone_vector_unsigned_char)
     msgpack::zone z;
     msgpack::object obj(ar1, z);
 
-    EXPECT_EQ(obj.type, msgpack::type::ARRAY);
+    BOOST_CHECK_EQUAL(obj.type, msgpack::type::ARRAY);
     std::vector<unsigned char> v2;
     msgpack::type::array_ref<std::vector<unsigned char> > ar2(v2);
     obj.convert(ar2);
-    EXPECT_TRUE(ar1 == ar2);
+    BOOST_CHECK(ar1 == ar2);
 }
 
-TEST(MSGPACK_ARRAY_REF, object_with_zone_vector_unsigned_char_const)
+BOOST_AUTO_TEST_CASE(object_with_zone_vector_unsigned_char_const)
 {
     std::vector<unsigned char> v;
     v.push_back('a');
@@ -171,16 +167,16 @@ TEST(MSGPACK_ARRAY_REF, object_with_zone_vector_unsigned_char_const)
     msgpack::zone z;
     msgpack::object obj(ar1, z);
 
-    EXPECT_EQ(obj.type, msgpack::type::ARRAY);
+    BOOST_CHECK_EQUAL(obj.type, msgpack::type::ARRAY);
     std::vector<unsigned char> v2;
     msgpack::type::array_ref<std::vector<unsigned char> > ar2(v2);
     obj.convert(ar2);
-    EXPECT_TRUE(ar1 == ar2);
+    BOOST_CHECK(ar1 == ar2);
 }
 
 #if !defined(MSGPACK_USE_CPP03)
 
-TEST(MSGPACK_ARRAY_REF, pack_unpack_convert_array_char)
+BOOST_AUTO_TEST_CASE(pack_unpack_convert_array_char)
 {
     std::array<char, 3> v { { 'a', 'b', 'c' } };
 
@@ -191,14 +187,14 @@ TEST(MSGPACK_ARRAY_REF, pack_unpack_convert_array_char)
     std::string const& str = ss.str();
     msgpack::object_handle oh =
         msgpack::unpack(str.data(), str.size());
-    EXPECT_EQ(oh.get().type, msgpack::type::ARRAY);
+    BOOST_CHECK_EQUAL(oh.get().type, msgpack::type::ARRAY);
     std::array<char, 3> v2;
     msgpack::type::array_ref<std::array<char, 3> > ar2(v2);
     oh.get().convert(ar2);
-    EXPECT_TRUE(ar1 == ar2);
+    BOOST_CHECK(ar1 == ar2);
 }
 
-TEST(MSGPACK_ARRAY_REF, pack_unpack_convert_array_char_const)
+BOOST_AUTO_TEST_CASE(pack_unpack_convert_array_char_const)
 {
     std::array<char, 3> v { { 'a', 'b', 'c' } };
 
@@ -211,14 +207,14 @@ TEST(MSGPACK_ARRAY_REF, pack_unpack_convert_array_char_const)
     std::string const& str = ss.str();
     msgpack::object_handle oh =
         msgpack::unpack(str.data(), str.size());
-    EXPECT_EQ(oh.get().type, msgpack::type::ARRAY);
+    BOOST_CHECK_EQUAL(oh.get().type, msgpack::type::ARRAY);
     std::array<char, 3> v2;
     msgpack::type::array_ref<std::array<char, 3> > ar2(v2);
     oh.get().convert(ar2);
-    EXPECT_TRUE(ar1 == ar2);
+    BOOST_CHECK(ar1 == ar2);
 }
 
-TEST(MSGPACK_ARRAY_REF, pack_unpack_convert_array_unsigned_char)
+BOOST_AUTO_TEST_CASE(pack_unpack_convert_array_unsigned_char)
 {
     std::array<unsigned char, 3> v { { 'a', 'b', 'c' } };
 
@@ -229,14 +225,14 @@ TEST(MSGPACK_ARRAY_REF, pack_unpack_convert_array_unsigned_char)
     std::string const& str = ss.str();
     msgpack::object_handle oh =
         msgpack::unpack(str.data(), str.size());
-    EXPECT_EQ(oh.get().type, msgpack::type::ARRAY);
+    BOOST_CHECK_EQUAL(oh.get().type, msgpack::type::ARRAY);
     std::array<unsigned char, 3> v2;
     msgpack::type::array_ref<std::array<unsigned char, 3> > ar2(v2);
     oh.get().convert(ar2);
-    EXPECT_TRUE(ar1 == ar2);
+    BOOST_CHECK(ar1 == ar2);
 }
 
-TEST(MSGPACK_ARRAY_REF, pack_unpack_convert_array_unsigned_char_const)
+BOOST_AUTO_TEST_CASE(pack_unpack_convert_array_unsigned_char_const)
 {
     std::array<unsigned char, 3> v { { 'a', 'b', 'c' } };
 
@@ -249,14 +245,14 @@ TEST(MSGPACK_ARRAY_REF, pack_unpack_convert_array_unsigned_char_const)
     std::string const& str = ss.str();
     msgpack::object_handle oh =
         msgpack::unpack(str.data(), str.size());
-    EXPECT_EQ(oh.get().type, msgpack::type::ARRAY);
+    BOOST_CHECK_EQUAL(oh.get().type, msgpack::type::ARRAY);
     std::array<unsigned char, 3> v2;
     msgpack::type::array_ref<std::array<unsigned char, 3> > ar2(v2);
     oh.get().convert(ar2);
-    EXPECT_TRUE(ar1 == ar2);
+    BOOST_CHECK(ar1 == ar2);
 }
 
-TEST(MSGPACK_ARRAY_REF, object_with_zone_array_char)
+BOOST_AUTO_TEST_CASE(object_with_zone_array_char)
 {
     std::array<char, 3> v { { 'a', 'b', 'c' } };
 
@@ -264,14 +260,14 @@ TEST(MSGPACK_ARRAY_REF, object_with_zone_array_char)
     msgpack::zone z;
     msgpack::object obj(ar1, z);
 
-    EXPECT_EQ(obj.type, msgpack::type::ARRAY);
+    BOOST_CHECK_EQUAL(obj.type, msgpack::type::ARRAY);
     std::array<char, 3> v2;
     msgpack::type::array_ref<std::array<char, 3> > ar2(v2);
     obj.convert(ar2);
-    EXPECT_TRUE(ar1 == ar2);
+    BOOST_CHECK(ar1 == ar2);
 }
 
-TEST(MSGPACK_ARRAY_REF, object_with_zone_array_char_const)
+BOOST_AUTO_TEST_CASE(object_with_zone_array_char_const)
 {
     std::array<char, 3> v { { 'a', 'b', 'c' } };
 
@@ -281,14 +277,14 @@ TEST(MSGPACK_ARRAY_REF, object_with_zone_array_char_const)
     msgpack::zone z;
     msgpack::object obj(ar1, z);
 
-    EXPECT_EQ(obj.type, msgpack::type::ARRAY);
+    BOOST_CHECK_EQUAL(obj.type, msgpack::type::ARRAY);
     std::array<char, 3> v2;
     msgpack::type::array_ref<std::array<char, 3> > ar2(v2);
     obj.convert(ar2);
-    EXPECT_TRUE(ar1 == ar2);
+    BOOST_CHECK(ar1 == ar2);
 }
 
-TEST(MSGPACK_ARRAY_REF, object_with_zone_array_unsigned_char)
+BOOST_AUTO_TEST_CASE(object_with_zone_array_unsigned_char)
 {
     std::array<unsigned char, 3> v { { 'a', 'b', 'c' } };
 
@@ -296,14 +292,14 @@ TEST(MSGPACK_ARRAY_REF, object_with_zone_array_unsigned_char)
     msgpack::zone z;
     msgpack::object obj(ar1, z);
 
-    EXPECT_EQ(obj.type, msgpack::type::ARRAY);
+    BOOST_CHECK_EQUAL(obj.type, msgpack::type::ARRAY);
     std::array<unsigned char, 3> v2;
     msgpack::type::array_ref<std::array<unsigned char, 3> > ar2(v2);
     obj.convert(ar2);
-    EXPECT_TRUE(ar1 == ar2);
+    BOOST_CHECK(ar1 == ar2);
 }
 
-TEST(MSGPACK_ARRAY_REF, object_with_zone_array_unsigned_char_const)
+BOOST_AUTO_TEST_CASE(object_with_zone_array_unsigned_char_const)
 {
     std::array<unsigned char, 3> v { { 'a', 'b', 'c' } };
 
@@ -313,11 +309,11 @@ TEST(MSGPACK_ARRAY_REF, object_with_zone_array_unsigned_char_const)
     msgpack::zone z;
     msgpack::object obj(ar1, z);
 
-    EXPECT_EQ(obj.type, msgpack::type::ARRAY);
+    BOOST_CHECK_EQUAL(obj.type, msgpack::type::ARRAY);
     std::array<unsigned char, 3> v2;
     msgpack::type::array_ref<std::array<unsigned char, 3> > ar2(v2);
     obj.convert(ar2);
-    EXPECT_TRUE(ar1 == ar2);
+    BOOST_CHECK(ar1 == ar2);
 }
 
 #endif // !defined(MSGPACK_USE_CPP03)

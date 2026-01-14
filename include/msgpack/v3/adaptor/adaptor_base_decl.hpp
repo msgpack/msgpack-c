@@ -30,7 +30,7 @@ struct convert;
 template <typename T, typename Enabler = void>
 struct pack;
 
-template <typename T, typename Enabler = void, typename Enabler2 = void>
+template <typename T, typename Enabler = void>
 struct object;
 
 template <typename T, typename Enabler = void>

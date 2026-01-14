@@ -10,6 +10,8 @@
 #ifndef MSGPACK_VERSIONING_HPP
 #define MSGPACK_VERSIONING_HPP
 
+#include "msgpack/cpp_version.hpp"
+
 #if !defined(MSGPACK_DEFAULT_API_VERSION)
 #define MSGPACK_DEFAULT_API_VERSION 3
 #endif
@@ -56,16 +58,16 @@
 
 #define MSGPACK_DETAIL_PP_IS_NS_ENABLED(ns) MSGPACK_DETAIL_PP_CHECK(MSGPACK_DETAIL_PP_NS_ENABLED_PROBE(ns))
 
-#if __cplusplus < 201103L
+#ifdef MSGPACK_USE_CPP03
 #define MSGPACK_API_VERSION_NAMESPACE(ns) MSGPACK_DETAIL_PP_IIF(MSGPACK_DETAIL_PP_IS_NS_ENABLED(ns)) \
     (namespace ns{}; using namespace ns; namespace ns, \
      namespace ns)
 
-#else  // __cplusplus < 201103L
+#else  // MSGPACK_USE_CPP03
 
 #define MSGPACK_API_VERSION_NAMESPACE(ns) MSGPACK_DETAIL_PP_IIF(MSGPACK_DETAIL_PP_IS_NS_ENABLED(ns)) \
     (inline namespace ns, namespace ns)
 
-#endif // __cplusplus < 201103L
+#endif // MSGPACK_USE_CPP03
 
 #endif // MSGPACK_VERSIONING_HPP

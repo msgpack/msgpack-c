@@ -1,32 +1,27 @@
 IF (MSGPACK_USE_X3_PARSE AND MSGPACK_DEFAULT_API_VERSION VERSION_GREATER 1)
-    INCLUDE_DIRECTORIES (
-        ../include
-    )
+    FIND_PACKAGE (Boost REQUIRED COMPONENTS context)
+    FIND_PACKAGE (Threads REQUIRED)
 
     LIST (APPEND exec_PROGRAMS
         unpack.cpp
         parse.cpp
     )
-    IF (MSGPACK_BOOST)
-        LIST (APPEND with_boost_PROGRAMS
-            stream_unpack.cpp
-        )
-    ENDIF ()
+    LIST (APPEND with_boost_PROGRAMS
+        stream_unpack.cpp
+    )
     FOREACH (source_file ${exec_PROGRAMS})
         GET_FILENAME_COMPONENT (source_file_we ${source_file} NAME_WE)
         ADD_EXECUTABLE (
             ${source_file_we}
             ${source_file}
         )
-        TARGET_INCLUDE_DIRECTORIES (${source_file_we}
-            PRIVATE
-                $<TARGET_PROPERTY:msgpackc,INTERFACE_INCLUDE_DIRECTORIES>
-        )
-        IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+        TARGET_LINK_LIBRARIES (${source_file_we} PRIVATE msgpack-cxx)
+
+        IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
             SET_PROPERTY (TARGET ${source_file_we} APPEND_STRING PROPERTY COMPILE_FLAGS " -Wall -Wextra")
         ENDIF ()
 
-        IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+        IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
             SET_PROPERTY (TARGET ${source_file_we} APPEND_STRING PROPERTY COMPILE_FLAGS " -Wno-mismatched-tags")
         ENDIF ()
 
@@ -44,20 +39,16 @@ IF (MSGPACK_USE_X3_PARSE AND MSGPACK_DEFAULT_API_VERSION VERSION_GREATER 1)
             ${source_file_we}
             ${source_file}
         )
-        TARGET_INCLUDE_DIRECTORIES (${source_file_we}
-            PRIVATE
-                $<TARGET_PROPERTY:msgpackc,INTERFACE_INCLUDE_DIRECTORIES>
+        TARGET_LINK_LIBRARIES (${source_file_we} PRIVATE
+            msgpack-cxx
+            Boost::context
+            Threads::Threads
         )
-        TARGET_LINK_LIBRARIES (${source_file_we}
-            ${Boost_CONTEXT_LIBRARY}
-            ${Boost_SYSTEM_LIBRARY}
-            ${CMAKE_THREAD_LIBS_INIT}
-        )
-        IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+        IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
             SET_PROPERTY (TARGET ${source_file_we} APPEND_STRING PROPERTY COMPILE_FLAGS " -Wall -Wextra")
         ENDIF ()
 
-        IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+        IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
             SET_PROPERTY (TARGET ${source_file_we} APPEND_STRING PROPERTY COMPILE_FLAGS " -Wno-mismatched-tags")
         ENDIF ()
 

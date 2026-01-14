@@ -15,6 +15,7 @@
 #include <cstddef>
 
 #include "msgpack/parse_return.hpp"
+#include "msgpack/assert.hpp"
 
 namespace msgpack {
 
@@ -159,10 +160,10 @@ private:
             case MSGPACK_CT_MAP_KEY:
                 return visitor_holder.visitor().start_map_key() ? PARSE_CONTINUE : PARSE_STOP_VISITOR;
             case MSGPACK_CT_MAP_VALUE:
-                assert(0);
+                MSGPACK_ASSERT(0);
                 return PARSE_STOP_VISITOR;
             }
-            assert(0);
+            MSGPACK_ASSERT(0);
             return PARSE_STOP_VISITOR;
         }
         parse_return consume(VisitorHolder& visitor_holder, char const*& current) {
@@ -243,7 +244,7 @@ inline void check_ext_size<4>(std::size_t size) {
 template <typename VisitorHolder>
 inline parse_return context<VisitorHolder>::execute(const char* data, std::size_t len, std::size_t& off)
 {
-    assert(len >= off);
+    MSGPACK_ASSERT(len >= off);
 
     m_start = data;
     m_current = data + off;
