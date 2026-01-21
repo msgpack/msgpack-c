@@ -27,6 +27,7 @@ while getopts "b:t:p:" c; do
 done
 
 mkdir $prefix || exit 1
+
 wget https://zlib.net/zlib-1.3.1.tar.gz || exit 1
 tar -xf zlib-1.3.1.tar.gz || exit 1
 cd zlib-1.3.1
