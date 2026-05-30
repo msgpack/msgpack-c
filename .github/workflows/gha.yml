@@ -167,7 +167,7 @@ jobs:
         CMAKE_CXX_COMPILER="${CXX}" CMAKE_C_COMPILER="${CC}" GTEST_ROOT="${BASE}/usr" CFLAGS="-Werror -g -gdwarf-4 -fsanitize=undefined  -fno-sanitize-recover=all" CXXFLAGS="-Werror -g -ggdb3 -gdwarf-4 -fsanitize=undefined  -fno-sanitize-recover=all" ${ACTION}
 
   windows:
-    runs-on: windows-2019
+    runs-on: windows-2022
     strategy:
       fail-fast: false
       matrix:
@@ -179,7 +179,7 @@ jobs:
       uses: actions/cache@v3
       with:
         path: C:/vcpkg/installed
-        key: windows-2019-vcpkg-v2
+        key: windows-2022-vcpkg-v2
     - name: Build dependencies
       if: steps.cache-vcpkg.outputs.cache-hit != 'true'
       shell: powershell
