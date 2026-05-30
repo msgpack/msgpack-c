@@ -1,3 +1,14 @@
+# 2026-05-30 version 8.0.0
+  * Add old style find boost applying option to cmake. (#1172)
+  * Add missing include type_traits (#1162)
+  * Remove duplicated include (#1156, #1157)
+  * Fix MSVC C++20 modules error for nested msgpack::object::with_zone (#1154)
+  * Refine CI (#1150, #1151, #1163)
+  * Refine documents (#1146, #1149)
+
+## << breaking changes >>
+  * Update cmake minimum required to 3.5-4.0 (#1159)
+
 # 2024-11-02 version 7.0.0
   * Refine build system (#1133)
   * Refine CI (#1122)

@@ -100,34 +100,44 @@ jobs:
         sudo apt-get install g++-10-multilib -y  # for 32-bit compile
         ./ci/set_gcc_10.sh
 
+    - name: Set Architecture Environment
+      shell: bash
+      run: |
+        if [ "${{ matrix.pattern }}" = "5" ] || [ "${{ matrix.pattern }}" = "11" ]; then
+          echo "ARCH=32" >> $GITHUB_ENV
+          echo "BOOST_BIT=both" >> $GITHUB_ENV
+        else
+          echo "ARCH=64" >> $GITHUB_ENV
+          echo "BOOST_BIT=64" >> $GITHUB_ENV
+        fi
+        
     - name: Cache boost
       id: cache-boost
       uses: actions/cache@v3
       with:
         path: ~/boost-prefix/
-        key: ${{ runner.os }}-boost-1-85-0-2024-05-27
+        key: ${{ runner.os }}-boost-1-85-0-2026-05-30-${{ env.ARCH }}
 
     - name: Build boost
       if: steps.cache-boost.outputs.cache-hit != 'true'
-      run: ./.github/depends/boost.sh -b both -t gcc -p $HOME/boost-prefix
+      run: ./.github/depends/boost.sh -b ${{ env.BOOST_BIT }} -t gcc -p $HOME/boost-prefix
 
     - name: Cache zlib
       id: cache-zlib
       uses: actions/cache@v3
       with:
         path: ~/zlib-prefix/
-        key: ${{ runner.os }}-zlib-1-2-13-2022-11-02
+        key: ${{ runner.os }}-zlib-1-3-2-2026-05-30-${{ env.ARCH }}
 
     - name: Build zlib
       if: steps.cache-zlib.outputs.cache-hit != 'true'
-      run: ./.github/depends/zlib.sh -b both -p $HOME/zlib-prefix
+      run: ./.github/depends/zlib.sh -b ${{ env.BOOST_BIT }} -p $HOME/zlib-prefix
 
     - name: Build and test
       shell: bash
       run: |
         # default configuration - overwrite its params later depending on matrix.pattern
         export MSGPACK_CXX_VERSION="MSGPACK_CXX20=ON"
-        export ARCH=64
         export API_VERSION=3
         export CHAR_SIGN="signed"
         export X3_PARSE="OFF"
@@ -158,8 +168,8 @@ jobs:
             export NO_BOOST="-DMSGPACK_NO_BOOST"
             ;;
           5)
+            # ARCH=32
             export CXX="g++-10"
-            export ARCH=32
             ;;
           6)
             export CXX="clang++"
@@ -182,8 +192,8 @@ jobs:
             export ACTION="ci/build_regression.sh"
             ;;
           11)
+            # ARCH=32
             export CXX="g++-10"
-            export ARCH=32
             export CHAR_SIGN="unsigned"
             export X3_PARSE="ON"
             ;;
