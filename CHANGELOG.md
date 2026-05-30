@@ -1,3 +1,8 @@
+# 2026-05-30 version 7.0.0
+  * Refine CI (#1152)
+## << breaking changes >>
+  * Updated cmake minimum required to 3.5-4.0 (#1160)
+
 # 2024-08-17 version 6.1.0
   * Add object initializer functions (#1137)
   * Fix cmake warnings (#1133, #1137)
