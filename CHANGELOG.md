@@ -1,3 +1,6 @@
+# 2026-06-09 version 7.0.1
+  * Set `INSTALL_INTERFACE` to `CMAKE_INSTALL_INCLUDEDIR` (#1177)
+
 # 2026-05-30 version 7.0.0
   * Refine CI (#1152)
 ## << breaking changes >>
