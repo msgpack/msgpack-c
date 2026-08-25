@@ -213,7 +213,7 @@ public:
         empty->next = MSGPACK_NULLPTR;
 
         const size_t nused = static_cast<size_t>(m_tail - m_array);
-        if(to->m_tail + nused < m_end) {
+        if(to->m_tail + nused > to->m_end) {
             const size_t tosize = static_cast<size_t>(to->m_tail - to->m_array);
             const size_t reqsize = nused + tosize;
             size_t nnext = static_cast<size_t>(to->m_end - to->m_array) * 2;
