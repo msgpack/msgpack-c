@@ -1,3 +1,6 @@
+# 2026-08-25 version 7.0.2
+  * Fix  integer overflow on msgpack_unpacker_expand_buffer(). (#1182)
+
 # 2026-06-09 version 7.0.1
   * Set `INSTALL_INTERFACE` to `CMAKE_INSTALL_INCLUDEDIR` (#1177)
 
