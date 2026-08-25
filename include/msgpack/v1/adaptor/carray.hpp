@@ -30,11 +30,9 @@ struct convert<T[N]> {
         if (o.via.array.size > N) { throw msgpack::type_error(); }
         msgpack::object* p = o.via.array.ptr;
         msgpack::object* const pend = o.via.array.ptr + o.via.array.size;
-        do {
+        for (; p < pend; ++p, ++v) {
             p->convert(*v);
-            ++p;
-            ++v;
-        } while(p < pend);
+        }
         return o;
     }
 };
