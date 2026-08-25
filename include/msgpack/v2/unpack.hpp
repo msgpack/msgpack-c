@@ -48,6 +48,27 @@ public:
         set_referenced(false);
     }
 
+#if !defined(MSGPACK_USE_CPP03)
+    unpacker(unpacker&& other)
+        :parser_t(std::move(other)),
+         detail::create_object_visitor(std::move(other)),
+         m_z(std::move(other.m_z)),
+         m_finalizer(std::move(other.m_finalizer)) {
+        // The parser base copied a hook pointer that still refers to the
+        // moved-from object's m_finalizer; re-point it to our own. The zone
+        // itself is heap-allocated and only ownership moved, so the zone
+        // pointers held by the visitor and by m_finalizer stay valid.
+        parser_t::set_referenced_buffer_hook(m_finalizer);
+    }
+    unpacker& operator=(unpacker&& other) {
+        if (this != &other) {
+            this->~unpacker();
+            new (this) unpacker(std::move(other));
+        }
+        return *this;
+    }
+#endif // !defined(MSGPACK_USE_CPP03)
+
     detail::create_object_visitor& visitor() { return *this; }
     /// Unpack one msgpack::object.
     /**

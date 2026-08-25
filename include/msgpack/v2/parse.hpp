@@ -763,6 +763,14 @@ private:
     void expand_buffer(std::size_t size);
     parse_return execute_imp();
 
+protected:
+    // Re-point the buffer-hook, e.g. after a move of the owning object so that
+    // the hook refers to the moved-to object's member rather than the
+    // moved-from (soon to be destroyed) object's member.
+    void set_referenced_buffer_hook(ReferencedBufferHook& hook) {
+        m_referenced_buffer_hook = &hook;
+    }
+
 private:
     char* m_buffer;
     std::size_t m_used;
@@ -770,7 +778,7 @@ private:
     std::size_t m_off;
     std::size_t m_parsed;
     std::size_t m_initial_buffer_size;
-    ReferencedBufferHook& m_referenced_buffer_hook;
+    ReferencedBufferHook* m_referenced_buffer_hook;
 
 #if defined(MSGPACK_USE_CPP03)
 private:
@@ -787,7 +795,7 @@ template <typename VisitorHolder, typename ReferencedBufferHook>
 inline parser<VisitorHolder, ReferencedBufferHook>::parser(
     ReferencedBufferHook& hook,
     std::size_t initial_buffer_size)
-    :m_referenced_buffer_hook(hook)
+    :m_referenced_buffer_hook(&hook)
 {
     if(initial_buffer_size < COUNTER_SIZE) {
         initial_buffer_size = COUNTER_SIZE;
@@ -830,8 +838,10 @@ inline parser<VisitorHolder, ReferencedBufferHook>::parser(this_type&& other)
 
 template <typename VisitorHolder, typename ReferencedBufferHook>
 inline parser<VisitorHolder, ReferencedBufferHook>& parser<VisitorHolder, ReferencedBufferHook>::operator=(this_type&& other) {
-    this->~parser();
-    new (this) this_type(std::move(other));
+    if (this != &other) {
+        this->~parser();
+        new (this) this_type(std::move(other));
+    }
     return *this;
 }
 
@@ -914,7 +924,7 @@ inline void parser<VisitorHolder, ReferencedBufferHook>::expand_buffer(std::size
 
         if(static_cast<VisitorHolder&>(*this).referenced()) {
             try {
-                m_referenced_buffer_hook(m_buffer);
+                (*m_referenced_buffer_hook)(m_buffer);
             }
             catch (...) {
                 ::free(tmp);
