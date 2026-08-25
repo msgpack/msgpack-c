@@ -442,7 +442,11 @@ bool msgpack_unpacker_expand_buffer(msgpack_unpacker* mpac, size_t size)
 
     if(mpac->off == COUNTER_SIZE) {
         char* tmp;
-        size_t next_size = (mpac->used + mpac->free) * 2;  // include COUNTER_SIZE
+        size_t next_size;
+        if(size > SIZE_MAX - mpac->used) {
+            return false;
+        }
+        next_size = (mpac->used + mpac->free) * 2;  // include COUNTER_SIZE
         while(next_size < size + mpac->used) {
             size_t tmp_next_size = next_size * 2;
             if (tmp_next_size <= next_size) {
@@ -464,6 +468,9 @@ bool msgpack_unpacker_expand_buffer(msgpack_unpacker* mpac, size_t size)
         char* tmp;
         size_t next_size = mpac->initial_buffer_size;  // include COUNTER_SIZE
         size_t not_parsed = mpac->used - mpac->off;
+        if(size > SIZE_MAX - not_parsed - COUNTER_SIZE) {
+            return false;
+        }
         while(next_size < size + not_parsed + COUNTER_SIZE) {
             size_t tmp_next_size = next_size * 2;
             if (tmp_next_size <= next_size) {

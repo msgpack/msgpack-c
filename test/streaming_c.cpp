@@ -192,3 +192,54 @@ TEST(streaming, basic_with_size)
     msgpack_unpacker_free(unp);
     msgpack_sbuffer_free(buffer);
 }
+
+// https://github.com/msgpack/msgpack-c/issues/1181
+TEST(streaming, reserve_buffer_overflow_rewound)
+{
+    msgpack_unpacker mpac;
+    ASSERT_TRUE(msgpack_unpacker_init(&mpac, 8));
+
+    // off == COUNTER_SIZE path: size + used would wrap
+    size_t request = SIZE_MAX - 2;
+    EXPECT_FALSE(msgpack_unpacker_reserve_buffer(&mpac, request));
+
+    // a sane request still works
+    EXPECT_TRUE(msgpack_unpacker_reserve_buffer(&mpac, 64));
+    EXPECT_GE(msgpack_unpacker_buffer_capacity(&mpac), static_cast<size_t>(64));
+
+    msgpack_unpacker_destroy(&mpac);
+}
+
+TEST(streaming, reserve_buffer_overflow_not_rewound)
+{
+    msgpack_unpacker mpac;
+    ASSERT_TRUE(msgpack_unpacker_init(&mpac, 8));
+
+    // consume part of the buffer so off != COUNTER_SIZE
+    msgpack_sbuffer sbuf;
+    msgpack_sbuffer_init(&sbuf);
+    msgpack_packer pk;
+    msgpack_packer_init(&pk, &sbuf, msgpack_sbuffer_write);
+    msgpack_pack_int(&pk, 1);
+    msgpack_pack_int(&pk, 2);
+
+    ASSERT_TRUE(msgpack_unpacker_reserve_buffer(&mpac, sbuf.size));
+    memcpy(msgpack_unpacker_buffer(&mpac), sbuf.data, sbuf.size);
+    msgpack_unpacker_buffer_consumed(&mpac, sbuf.size);
+
+    msgpack_unpacked result;
+    msgpack_unpacked_init(&result);
+    ASSERT_EQ(MSGPACK_UNPACK_SUCCESS, msgpack_unpacker_next(&mpac, &result));
+    EXPECT_EQ(1, result.data.via.i64);
+
+    size_t request = SIZE_MAX - 2;
+    EXPECT_FALSE(msgpack_unpacker_reserve_buffer(&mpac, request));
+
+    // remaining data must still be parsable
+    ASSERT_EQ(MSGPACK_UNPACK_SUCCESS, msgpack_unpacker_next(&mpac, &result));
+    EXPECT_EQ(2, result.data.via.i64);
+
+    msgpack_unpacked_destroy(&result);
+    msgpack_sbuffer_destroy(&sbuf);
+    msgpack_unpacker_destroy(&mpac);
+}
