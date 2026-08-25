@@ -54,3 +54,12 @@ build
 *-build
 .cache
 compile_commands.json
+
+# Release archives
+*.tar.gz
+*.tar.xz
+
+# Editor backup / autosave files
+*~
+\#*\#
+.\#*

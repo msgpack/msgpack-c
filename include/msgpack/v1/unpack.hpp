@@ -21,6 +21,7 @@
 #include "msgpack/assert.hpp"
 
 #include <memory>
+#include <limits>
 
 
 #if !defined(MSGPACK_USE_CPP03)
@@ -1138,6 +1139,9 @@ inline void unpacker::expand_buffer(std::size_t size)
     }
 
     if(m_off == COUNTER_SIZE) {
+        if(size > std::numeric_limits<std::size_t>::max() - m_used) {
+            throw std::bad_alloc();
+        }
         std::size_t next_size = (m_used + m_free) * 2;    // include COUNTER_SIZE
         while(next_size < size + m_used) {
             std::size_t tmp_next_size = next_size * 2;
@@ -1159,6 +1163,9 @@ inline void unpacker::expand_buffer(std::size_t size)
     } else {
         std::size_t next_size = m_initial_buffer_size;  // include COUNTER_SIZE
         std::size_t not_parsed = m_used - m_off;
+        if(size > std::numeric_limits<std::size_t>::max() - not_parsed - COUNTER_SIZE) {
+            throw std::bad_alloc();
+        }
         while(next_size < size + not_parsed + COUNTER_SIZE) {
             std::size_t tmp_next_size = next_size * 2;
             if (tmp_next_size <= next_size) {
