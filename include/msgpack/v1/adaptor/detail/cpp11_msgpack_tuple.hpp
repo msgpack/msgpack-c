@@ -131,7 +131,8 @@ struct MsgpackTupleConverter<Tuple, 1> {
     static void convert (
         msgpack::object const& o,
         Tuple& v) {
-        o.via.array.ptr[0].convert<typename std::remove_reference<decltype(v.template get<0>())>::type>(v.template get<0>());
+        if (o.via.array.size >= 1)
+            o.via.array.ptr[0].convert<typename std::remove_reference<decltype(v.template get<0>())>::type>(v.template get<0>());
     }
 };
 
@@ -150,6 +151,7 @@ struct as<msgpack::type::tuple<Args...>, typename std::enable_if<msgpack::any_of
     msgpack::type::tuple<Args...> operator()(
         msgpack::object const& o) const {
         if (o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        if (o.via.array.size < sizeof...(Args)) { throw msgpack::type_error(); }
         return MsgpackTupleAs<Args...>::as(o);
     }
 };
