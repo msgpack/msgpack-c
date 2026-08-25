@@ -111,11 +111,11 @@ BOOST_AUTO_TEST_CASE(vrefbuffer_migrate)
     // fills the initial iovec array of both buffers, forcing migrate() to grow
     // the destination array.
     std::vector<std::string> bufs;
-    for (int i = 0; i < 8; ++i) bufs.push_back(std::string(256, static_cast<char>('a' + i)));
+    for (std::size_t i = 0; i < 8; ++i) bufs.push_back(std::string(256, static_cast<char>('a' + i)));
     msgpack::vrefbuffer from;
     msgpack::vrefbuffer to;
-    for (int i = 0; i < 4; ++i) from.write(bufs[i].data(), bufs[i].size());
-    for (int i = 4; i < 8; ++i) to.write(bufs[i].data(), bufs[i].size());
+    for (std::size_t i = 0; i < 4; ++i) from.write(bufs[i].data(), bufs[i].size());
+    for (std::size_t i = 4; i < 8; ++i) to.write(bufs[i].data(), bufs[i].size());
     const size_t from_n = from.vector_size();
     const size_t to_n = to.vector_size();
     from.migrate(&to); // must not overflow to's iovec array
