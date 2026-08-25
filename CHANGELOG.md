@@ -1,3 +1,25 @@
+# 2026-08-25 version 9.0.0
+  * Add regression tests for the fixes below. (#1183)
+  * Fix ext_ref comparison operators ignoring the last payload byte. (#1183)
+  * Fix out-of-bounds write on self-move-assignment of the create object visitor. (#1183)
+  * Fix broken array_ref<T[N]> comparison operators. (#1183)
+  * Fix heap buffer overflow in vrefbuffer::migrate() caused by a wrong growth check. (#1183)
+  * Fix v1 unpacker not applying str/bin/ext size limits on the reference path. (#1183)
+  * Fix x3 parser treating uint8 values as negative integers. (#1183)
+  * Fix double free / use-after-free in zone::swap() (C++03 only). (#1183)
+  * Fix use-after-free from wrong member destruction order in zone move-assignment. (#1183)
+  * Fix use-after-free after moving an unpacker (dangling referenced buffer hook). (#1183)
+  * Fix out-of-bounds read converting a short STR into std::array<char, N> / <unsigned char, N>. (#1183)
+  * Fix out-of-bounds read and null dereference converting an array whose size differs from the tuple arity. (#1183)
+  * Fix null pointer dereference converting an empty array into a C array T[N]. (#1183)
+  * Fix integer overflow in the unpacker buffer expansion size arithmetic. (#1183)
+
+## << breaking changes >>
+  *  Fix ext32 max size truncation on 64bit by widening visit_ext size to size_t. (#1183)
+    * If you have a custom visitor that implements visit_ext(), widen its size parameter from uint32_t to std::size_t:
+      * Before: bool visit_ext(const char* v, uint32_t size)
+      * After : bool visit_ext(const char* v, std::size_t size)
+
 # 2026-05-30 version 8.0.0
   * Add old style find boost applying option to cmake. (#1172)
   * Add missing include type_traits (#1162)

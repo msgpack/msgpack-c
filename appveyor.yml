@@ -1,4 +1,4 @@
-version: 8.0.0.{build}
+version: 9.0.0.{build}
 
 branches:
   only:
