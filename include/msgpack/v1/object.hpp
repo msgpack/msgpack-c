@@ -353,7 +353,7 @@ struct object_pack_visitor {
     }
     bool visit_ext(const char* v, std::size_t size) {
         m_packer.pack_ext(size - 1, static_cast<int8_t>(*v));
-        m_packer.pack_ext_body(v + 1, size - 1);
+        m_packer.pack_ext_body(v + 1, static_cast<uint32_t>(size - 1));
         return true;
     }
     bool start_array(uint32_t num_elements) {
@@ -746,7 +746,7 @@ private:
 
             // v contains type but length(size) doesn't count the type byte.
             // See https://github.com/msgpack/msgpack/blob/master/spec.md#ext-format-family
-            m_ptr->via.ext.size = size - 1;
+            m_ptr->via.ext.size = static_cast<uint32_t>(size - 1);
 
             char* ptr = static_cast<char*>(m_zone.allocate_align(size, MSGPACK_ZONE_ALIGNOF(char)));
             m_ptr->via.ext.ptr = ptr;
