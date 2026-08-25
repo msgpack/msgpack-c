@@ -167,12 +167,12 @@ inline void unpack_map_item(msgpack::object& c, msgpack::object const& k, msgpac
 inline void unpack_str(unpack_user& u, const char* p, uint32_t l, msgpack::object& o)
 {
     o.type = msgpack::type::STR;
+    if (l > u.limit().str()) throw msgpack::str_size_overflow("str size overflow");
     if (u.reference_func() && u.reference_func()(o.type, l, u.user_data())) {
         o.via.str.ptr = p;
         u.set_referenced(true);
     }
     else if (l > 0) {
-        if (l > u.limit().str()) throw msgpack::str_size_overflow("str size overflow");
         char* tmp = static_cast<char*>(u.zone().allocate_align(l, MSGPACK_ZONE_ALIGNOF(char)));
         std::memcpy(tmp, p, l);
         o.via.str.ptr = tmp;
@@ -186,12 +186,12 @@ inline void unpack_str(unpack_user& u, const char* p, uint32_t l, msgpack::objec
 inline void unpack_bin(unpack_user& u, const char* p, uint32_t l, msgpack::object& o)
 {
     o.type = msgpack::type::BIN;
+    if (l > u.limit().bin()) throw msgpack::bin_size_overflow("bin size overflow");
     if (u.reference_func() && u.reference_func()(o.type, l, u.user_data())) {
         o.via.bin.ptr = p;
         u.set_referenced(true);
     }
     else if (l > 0) {
-        if (l > u.limit().bin()) throw msgpack::bin_size_overflow("bin size overflow");
         char* tmp = static_cast<char*>(u.zone().allocate_align(l, MSGPACK_ZONE_ALIGNOF(char)));
         std::memcpy(tmp, p, l);
         o.via.bin.ptr = tmp;
@@ -205,12 +205,12 @@ inline void unpack_bin(unpack_user& u, const char* p, uint32_t l, msgpack::objec
 inline void unpack_ext(unpack_user& u, const char* p, std::size_t l, msgpack::object& o)
 {
     o.type = msgpack::type::EXT;
+    if (l > u.limit().ext()) throw msgpack::ext_size_overflow("ext size overflow");
     if (u.reference_func() && u.reference_func()(o.type, l, u.user_data())) {
         o.via.ext.ptr = p;
         u.set_referenced(true);
     }
     else {
-        if (l > u.limit().ext()) throw msgpack::ext_size_overflow("ext size overflow");
         char* tmp = static_cast<char*>(u.zone().allocate_align(l, MSGPACK_ZONE_ALIGNOF(char)));
         std::memcpy(tmp, p, l);
         o.via.ext.ptr = tmp;
@@ -1105,8 +1105,10 @@ inline unpacker::unpacker(unpacker&& other)
 }
 
 inline unpacker& unpacker::operator=(unpacker&& other) {
-    this->~unpacker();
-    new (this) unpacker(std::move(other));
+    if (this != &other) {
+        this->~unpacker();
+        new (this) unpacker(std::move(other));
+    }
     return *this;
 }
 
