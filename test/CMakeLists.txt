@@ -47,6 +47,7 @@ IF (MSGPACK_CXX11 OR MSGPACK_CXX14 OR MSGPACK_CXX17 OR MSGPACK_CXX20)
         msgpack_cpp11.cpp
         reference_cpp11.cpp
         reference_wrapper_cpp11.cpp
+        security_fixes_cpp11.cpp
         shared_ptr_cpp11.cpp
         unique_ptr_cpp11.cpp
 
