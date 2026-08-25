@@ -78,10 +78,8 @@ struct array_ref<T[N]> {
     template <typename U>
     bool operator==(array_ref<U> const& t) const {
         if (N != t.size()) return false;
-        T const* pself = data;
-        U const* pother = t.data;
-        for (; pself != &data[N]; ++pself, ++pother) {
-            if (*pself != *pother) return false;
+        for (std::size_t i = 0; i < N; ++i) {
+            if (!(data[i] == t.data[i])) return false;
         }
         return true;
     }
@@ -92,28 +90,32 @@ struct array_ref<T[N]> {
     template <typename U>
     bool operator< (array_ref<U> const& t) const
     {
-        T const* pself = data;
-        U const* pother = t.data;
-        for (; pself != &data[N] && pother != t.data[t.size()]; ++pself, ++pother) {
-            if (*pself < *pother) return true;
+        std::size_t n = (N < t.size()) ? N : t.size();
+        for (std::size_t i = 0; i < n; ++i) {
+            if (data[i] < t.data[i]) return true;
+            if (t.data[i] < data[i]) return false;
         }
-        if (N < t.size()) return true;
-        return false;
+        return N < t.size();
     }
     template <typename U>
     bool operator> (array_ref<U> const& t) const
     {
-        return t.data < data;
+        std::size_t n = (N < t.size()) ? N : t.size();
+        for (std::size_t i = 0; i < n; ++i) {
+            if (t.data[i] < data[i]) return true;
+            if (data[i] < t.data[i]) return false;
+        }
+        return t.size() < N;
     }
     template <typename U>
     bool operator<= (array_ref<U> const& t) const
     {
-        return !(t.data < data);
+        return !(*this > t);
     }
     template <typename U>
     bool operator>= (array_ref<U> const& t) const
     {
-        return !(data < t.data);
+        return !(*this < t);
     }
 };
 
