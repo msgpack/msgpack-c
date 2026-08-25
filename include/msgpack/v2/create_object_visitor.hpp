@@ -44,8 +44,10 @@ public:
         m_stack[0] = &m_obj;
     }
     create_object_visitor& operator=(create_object_visitor&& other) {
-        this->~create_object_visitor();
-        new (this) create_object_visitor(std::move(other));
+        if (this != &other) {
+            this->~create_object_visitor();
+            new (this) create_object_visitor(std::move(other));
+        }
         return *this;
     }
 #endif // !defined(MSGPACK_USE_CPP03)
@@ -154,7 +156,7 @@ public:
         }
         return true;
     }
-    bool visit_ext(const char* v, uint32_t size) {
+    bool visit_ext(const char* v, std::size_t size) {
         MSGPACK_ASSERT(v || size == 0);
         if (size > m_limit.ext()) throw msgpack::ext_size_overflow("ext size overflow");
         msgpack::object* obj = m_stack.back();

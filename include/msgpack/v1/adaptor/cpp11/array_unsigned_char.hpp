@@ -36,7 +36,7 @@ struct convert<std::array<unsigned char, N>> {
             break;
         case msgpack::type::STR:
             if(o.via.str.size > N) { throw msgpack::type_error(); }
-            std::memcpy(v.data(), o.via.str.ptr, N);
+            std::memcpy(v.data(), o.via.str.ptr, o.via.str.size);
             break;
         default:
             throw msgpack::type_error();

@@ -333,3 +333,65 @@ BOOST_AUTO_TEST_CASE(event_compat)
 }
 
 #endif // !defined(MSGPACK_USE_CPP03)
+
+// https://github.com/msgpack/msgpack-c/issues/1181
+template <typename Unpacker>
+void reserve_buffer_overflow_rewound_impl()
+{
+    Unpacker pac(MSGPACK_NULLPTR, MSGPACK_NULLPTR, 8);
+
+    // off == COUNTER_SIZE path: size + used would wrap
+    std::size_t request = std::numeric_limits<std::size_t>::max() - 2;
+    BOOST_CHECK_THROW(pac.reserve_buffer(request), std::bad_alloc);
+
+    // a sane request still works
+    pac.reserve_buffer(64);
+    BOOST_CHECK_GE(pac.buffer_capacity(), static_cast<std::size_t>(64));
+}
+
+template <typename Unpacker>
+void reserve_buffer_overflow_not_rewound_impl()
+{
+    Unpacker pac(MSGPACK_NULLPTR, MSGPACK_NULLPTR, 8);
+
+    // consume part of the buffer so off != COUNTER_SIZE
+    msgpack::sbuffer sbuf;
+    msgpack::packer<msgpack::sbuffer> pk(&sbuf);
+    pk.pack(1);
+    pk.pack(2);
+
+    pac.reserve_buffer(sbuf.size());
+    std::memcpy(pac.buffer(), sbuf.data(), sbuf.size());
+    pac.buffer_consumed(sbuf.size());
+
+    msgpack::object_handle oh;
+    BOOST_CHECK(pac.next(oh));
+    BOOST_CHECK_EQUAL(oh.get().as<int>(), 1);
+
+    std::size_t request = std::numeric_limits<std::size_t>::max() - 2;
+    BOOST_CHECK_THROW(pac.reserve_buffer(request), std::bad_alloc);
+
+    // remaining data must still be parsable
+    BOOST_CHECK(pac.next(oh));
+    BOOST_CHECK_EQUAL(oh.get().as<int>(), 2);
+}
+
+BOOST_AUTO_TEST_CASE(reserve_buffer_overflow_rewound)
+{
+    reserve_buffer_overflow_rewound_impl<msgpack::unpacker>();
+}
+
+BOOST_AUTO_TEST_CASE(reserve_buffer_overflow_rewound_v1)
+{
+    reserve_buffer_overflow_rewound_impl<msgpack::v1::unpacker>();
+}
+
+BOOST_AUTO_TEST_CASE(reserve_buffer_overflow_not_rewound)
+{
+    reserve_buffer_overflow_not_rewound_impl<msgpack::unpacker>();
+}
+
+BOOST_AUTO_TEST_CASE(reserve_buffer_overflow_not_rewound_v1)
+{
+    reserve_buffer_overflow_not_rewound_impl<msgpack::v1::unpacker>();
+}

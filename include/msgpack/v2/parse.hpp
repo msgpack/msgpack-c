@@ -13,6 +13,8 @@
 #if MSGPACK_DEFAULT_API_VERSION >= 2
 
 #include <cstddef>
+#include <limits>
+#include <new>
 
 #include "msgpack/unpack_define.hpp"
 #include "msgpack/parse_return.hpp"
@@ -479,7 +481,7 @@ inline parse_return context<VisitorHolder>::execute(const char* data, std::size_
                 load<uint8_t>(tmp, n);
                 m_trail = tmp + 1;
                 if(m_trail == 0) {
-                    bool visret = holder().visitor().visit_ext(n, static_cast<uint32_t>(m_trail));
+                    bool visret = holder().visitor().visit_ext(n, m_trail);
                     parse_return upr = after_visit_proc(visret, off);
                     if (upr != PARSE_CONTINUE) return upr;
                 }
@@ -521,7 +523,7 @@ inline parse_return context<VisitorHolder>::execute(const char* data, std::size_
                 load<uint16_t>(tmp, n);
                 m_trail = tmp + 1;
                 if(m_trail == 0) {
-                    bool visret = holder().visitor().visit_ext(n, static_cast<uint32_t>(m_trail));
+                    bool visret = holder().visitor().visit_ext(n, m_trail);
                     parse_return upr = after_visit_proc(visret, off);
                     if (upr != PARSE_CONTINUE) return upr;
                 }
@@ -565,7 +567,7 @@ inline parse_return context<VisitorHolder>::execute(const char* data, std::size_
                 m_trail = tmp;
                 ++m_trail;
                 if(m_trail == 0) {
-                    bool visret = holder().visitor().visit_ext(n, static_cast<uint32_t>(m_trail));
+                    bool visret = holder().visitor().visit_ext(n, m_trail);
                     parse_return upr = after_visit_proc(visret, off);
                     if (upr != PARSE_CONTINUE) return upr;
                 }
@@ -585,7 +587,7 @@ inline parse_return context<VisitorHolder>::execute(const char* data, std::size_
                 if (upr != PARSE_CONTINUE) return upr;
             } break;
             case MSGPACK_ACS_EXT_VALUE: {
-                bool visret = holder().visitor().visit_ext(n, static_cast<uint32_t>(m_trail));
+                bool visret = holder().visitor().visit_ext(n, m_trail);
                 parse_return upr = after_visit_proc(visret, off);
                 if (upr != PARSE_CONTINUE) return upr;
             } break;
@@ -761,6 +763,14 @@ private:
     void expand_buffer(std::size_t size);
     parse_return execute_imp();
 
+protected:
+    // Re-point the buffer-hook, e.g. after a move of the owning object so that
+    // the hook refers to the moved-to object's member rather than the
+    // moved-from (soon to be destroyed) object's member.
+    void set_referenced_buffer_hook(ReferencedBufferHook& hook) {
+        m_referenced_buffer_hook = &hook;
+    }
+
 private:
     char* m_buffer;
     std::size_t m_used;
@@ -768,7 +778,7 @@ private:
     std::size_t m_off;
     std::size_t m_parsed;
     std::size_t m_initial_buffer_size;
-    ReferencedBufferHook& m_referenced_buffer_hook;
+    ReferencedBufferHook* m_referenced_buffer_hook;
 
 #if defined(MSGPACK_USE_CPP03)
 private:
@@ -785,7 +795,7 @@ template <typename VisitorHolder, typename ReferencedBufferHook>
 inline parser<VisitorHolder, ReferencedBufferHook>::parser(
     ReferencedBufferHook& hook,
     std::size_t initial_buffer_size)
-    :m_referenced_buffer_hook(hook)
+    :m_referenced_buffer_hook(&hook)
 {
     if(initial_buffer_size < COUNTER_SIZE) {
         initial_buffer_size = COUNTER_SIZE;
@@ -828,8 +838,10 @@ inline parser<VisitorHolder, ReferencedBufferHook>::parser(this_type&& other)
 
 template <typename VisitorHolder, typename ReferencedBufferHook>
 inline parser<VisitorHolder, ReferencedBufferHook>& parser<VisitorHolder, ReferencedBufferHook>::operator=(this_type&& other) {
-    this->~parser();
-    new (this) this_type(std::move(other));
+    if (this != &other) {
+        this->~parser();
+        new (this) this_type(std::move(other));
+    }
     return *this;
 }
 
@@ -865,6 +877,9 @@ inline void parser<VisitorHolder, ReferencedBufferHook>::expand_buffer(std::size
     }
 
     if(m_off == COUNTER_SIZE) {
+        if(size > std::numeric_limits<std::size_t>::max() - m_used) {
+            throw std::bad_alloc();
+        }
         std::size_t next_size = (m_used + m_free) * 2;    // include COUNTER_SIZE
         while(next_size < size + m_used) {
             std::size_t tmp_next_size = next_size * 2;
@@ -886,6 +901,9 @@ inline void parser<VisitorHolder, ReferencedBufferHook>::expand_buffer(std::size
     } else {
         std::size_t next_size = m_initial_buffer_size;  // include COUNTER_SIZE
         std::size_t not_parsed = m_used - m_off;
+        if(size > std::numeric_limits<std::size_t>::max() - not_parsed - COUNTER_SIZE) {
+            throw std::bad_alloc();
+        }
         while(next_size < size + not_parsed + COUNTER_SIZE) {
             std::size_t tmp_next_size = next_size * 2;
             if (tmp_next_size <= next_size) {
@@ -906,7 +924,7 @@ inline void parser<VisitorHolder, ReferencedBufferHook>::expand_buffer(std::size
 
         if(static_cast<VisitorHolder&>(*this).referenced()) {
             try {
-                m_referenced_buffer_hook(m_buffer);
+                (*m_referenced_buffer_hook)(m_buffer);
             }
             catch (...) {
                 ::free(tmp);

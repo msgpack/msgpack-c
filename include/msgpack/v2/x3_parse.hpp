@@ -214,7 +214,7 @@ const auto mp_object_def =
         (
             [](auto& ctx){
                 auto& app_specific = x3::get<tag_app_specific>(ctx).get();
-                app_specific.vis.visit_negative_integer(_attr(ctx));
+                app_specific.vis.visit_positive_integer(_attr(ctx));
             }
         )
     ]
@@ -592,7 +592,7 @@ const auto mp_object_def =
             [](auto& ctx){
                 auto& app_specific = x3::get<tag_app_specific>(ctx).get();
                 auto const& ext = _attr(ctx);
-                auto size = static_cast<uint32_t>(std::distance(ext.begin(), ext.end()));
+                auto size = static_cast<std::size_t>(std::distance(ext.begin(), ext.end()));
                 app_specific.vis.visit_ext(size ? &ext.front() : nullptr, size);
             }
         )
@@ -616,7 +616,7 @@ const auto mp_object_def =
             [](auto& ctx){
                 auto& app_specific = x3::get<tag_app_specific>(ctx).get();
                 auto const& ext = _attr(ctx);
-                auto size = static_cast<uint32_t>(std::distance(ext.begin(), ext.end()));
+                auto size = static_cast<std::size_t>(std::distance(ext.begin(), ext.end()));
                 app_specific.vis.visit_ext(size ? &ext.front() : nullptr, size);
             }
         )
@@ -640,7 +640,7 @@ const auto mp_object_def =
             [](auto& ctx){
                 auto& app_specific = x3::get<tag_app_specific>(ctx).get();
                 auto const& ext = _attr(ctx);
-                auto size = static_cast<uint32_t>(std::distance(ext.begin(), ext.end()));
+                auto size = static_cast<std::size_t>(std::distance(ext.begin(), ext.end()));
                 app_specific.vis.visit_ext(size ? &ext.front() : nullptr, size);
             }
         )
@@ -664,7 +664,7 @@ const auto mp_object_def =
             [](auto& ctx){
                 auto& app_specific = x3::get<tag_app_specific>(ctx).get();
                 auto const& ext = _attr(ctx);
-                auto size = static_cast<uint32_t>(std::distance(ext.begin(), ext.end()));
+                auto size = static_cast<std::size_t>(std::distance(ext.begin(), ext.end()));
                 app_specific.vis.visit_ext(size ? &ext.front() : nullptr, size);
             }
         )
@@ -688,7 +688,7 @@ const auto mp_object_def =
             [](auto& ctx){
                 auto& app_specific = x3::get<tag_app_specific>(ctx).get();
                 auto const& ext = _attr(ctx);
-                auto size = static_cast<uint32_t>(std::distance(ext.begin(), ext.end()));
+                auto size = static_cast<std::size_t>(std::distance(ext.begin(), ext.end()));
                 app_specific.vis.visit_ext(size ? &ext.front() : nullptr, size);
             }
         )
@@ -712,7 +712,7 @@ const auto mp_object_def =
             [](auto& ctx){
                 auto& app_specific = x3::get<tag_app_specific>(ctx).get();
                 auto const& ext = _attr(ctx);
-                auto size = static_cast<uint32_t>(std::distance(ext.begin(), ext.end()));
+                auto size = static_cast<std::size_t>(std::distance(ext.begin(), ext.end()));
                 app_specific.vis.visit_ext(size ? &ext.front() : nullptr, size);
             }
         )
@@ -736,7 +736,7 @@ const auto mp_object_def =
             [](auto& ctx){
                 auto& app_specific = x3::get<tag_app_specific>(ctx).get();
                 auto const& ext = _attr(ctx);
-                auto size = static_cast<uint32_t>(std::distance(ext.begin(), ext.end()));
+                auto size = static_cast<std::size_t>(std::distance(ext.begin(), ext.end()));
                 app_specific.vis.visit_ext(size ? &ext.front() : nullptr, size);
             }
         )
@@ -760,7 +760,7 @@ const auto mp_object_def =
             [](auto& ctx){
                 auto& app_specific = x3::get<tag_app_specific>(ctx).get();
                 auto const& ext = _attr(ctx);
-                auto size = static_cast<uint32_t>(std::distance(ext.begin(), ext.end()));
+                auto size = static_cast<std::size_t>(std::distance(ext.begin(), ext.end()));
                 app_specific.vis.visit_ext(size ? &ext.front() : nullptr, size);
             }
         )

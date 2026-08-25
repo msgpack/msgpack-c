@@ -265,7 +265,7 @@ public:
                 break;
             case msgpack::type::EXT:
                 msgpack::detail::check_container_size<sizeof(std::size_t)>(m_current->via.ext.size);
-                if (!v.visit_ext(m_current->via.ext.ptr, m_current->via.ext.size + 1)) return;
+                if (!v.visit_ext(m_current->via.ext.ptr, static_cast<std::size_t>(m_current->via.ext.size) + 1)) return;
                 break;
             case msgpack::type::ARRAY:
                 if (!v.start_array(m_current->via.array.size)) return;
@@ -351,9 +351,9 @@ struct object_pack_visitor {
         m_packer.pack_bin_body(v, size);
         return true;
     }
-    bool visit_ext(const char* v, uint32_t size) {
+    bool visit_ext(const char* v, std::size_t size) {
         m_packer.pack_ext(size - 1, static_cast<int8_t>(*v));
-        m_packer.pack_ext_body(v + 1, size - 1);
+        m_packer.pack_ext_body(v + 1, static_cast<uint32_t>(size - 1));
         return true;
     }
     bool start_array(uint32_t num_elements) {
@@ -470,7 +470,7 @@ struct object_stringize_visitor {
         m_os << "\"BIN(size:" << size << ")\"";
         return true;
     }
-    bool visit_ext(const char* v, uint32_t size) {
+    bool visit_ext(const char* v, std::size_t size) {
         if (size == 0) {
             m_os << "\"EXT(size:0)\"";
         }
@@ -560,7 +560,7 @@ struct aligned_zone_size_visitor {
         m_size += msgpack::aligned_size(size, MSGPACK_ZONE_ALIGNOF(char));
         return true;
     }
-    bool visit_ext(const char*, uint32_t size) {
+    bool visit_ext(const char*, std::size_t size) {
         m_size += msgpack::aligned_size(size, MSGPACK_ZONE_ALIGNOF(char));
         return true;
     }
@@ -741,12 +741,12 @@ private:
             std::memcpy(ptr, v, size);
             return true;
         }
-        bool visit_ext(const char* v, uint32_t size) {
+        bool visit_ext(const char* v, std::size_t size) {
             m_ptr->type = msgpack::type::EXT;
 
             // v contains type but length(size) doesn't count the type byte.
             // See https://github.com/msgpack/msgpack/blob/master/spec.md#ext-format-family
-            m_ptr->via.ext.size = size - 1;
+            m_ptr->via.ext.size = static_cast<uint32_t>(size - 1);
 
             char* ptr = static_cast<char*>(m_zone.allocate_align(size, MSGPACK_ZONE_ALIGNOF(char)));
             m_ptr->via.ext.ptr = ptr;
@@ -941,7 +941,7 @@ struct object_equal_visitor {
         }
         return true;
     }
-    bool visit_ext(const char* v, uint32_t size) {
+    bool visit_ext(const char* v, std::size_t size) {
         if (m_ptr->type != msgpack::type::EXT ||
             m_ptr->via.ext.size != size - 1 ||
             std::memcmp(m_ptr->via.ext.ptr, v, size) != 0) {
