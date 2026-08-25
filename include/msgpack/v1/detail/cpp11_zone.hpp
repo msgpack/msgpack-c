@@ -150,6 +150,8 @@ private:
         chunk_list(chunk_list&& other) noexcept
             :m_free(other.m_free), m_ptr(other.m_ptr), m_head(other.m_head)
         {
+            other.m_free = 0;
+            other.m_ptr  = MSGPACK_NULLPTR;
             other.m_head = MSGPACK_NULLPTR;
         }
         chunk_list& operator=(chunk_list&& other) noexcept
@@ -208,7 +210,18 @@ public:
     T* allocate(Args... args);
 
     zone(zone&&) = default;
-    zone& operator=(zone&&) = default;
+    zone& operator=(zone&& other) {
+        if (this != &other) {
+            // Destroy in the correct order: run finalizers first (while our
+            // chunks are still alive), then release our chunks. A defaulted
+            // move-assignment would free the chunks before the finalizers run,
+            // causing use-after-free of zone-allocated objects.
+            m_finalizer_array = std::move(other.m_finalizer_array);
+            m_chunk_list = std::move(other.m_chunk_list);
+            m_chunk_size = other.m_chunk_size;
+        }
+        return *this;
+    }
     zone(const zone&) = delete;
     zone& operator=(const zone&) = delete;
 
@@ -279,6 +292,10 @@ inline char* zone::allocate_expand(size_t size)
             break;
         }
         sz = tmp_sz;
+    }
+
+    if((sizeof(chunk) + sz) < sz) {
+        throw std::bad_alloc();
     }
 
     chunk* c = static_cast<chunk*>(::malloc(sizeof(chunk) + sz));
