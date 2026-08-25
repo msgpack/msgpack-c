@@ -43,7 +43,7 @@ struct null_visitor {
     bool visit_bin(const char* /*v*/, uint32_t /*size*/) {
         return true;
     }
-    bool visit_ext(const char* /*v*/, uint32_t /*size*/) {
+    bool visit_ext(const char* /*v*/, std::size_t /*size*/) {
         return true;
     }
     bool start_array(uint32_t /*num_elements*/) {

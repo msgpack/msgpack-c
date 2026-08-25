@@ -156,7 +156,7 @@ public:
         }
         return true;
     }
-    bool visit_ext(const char* v, uint32_t size) {
+    bool visit_ext(const char* v, std::size_t size) {
         MSGPACK_ASSERT(v || size == 0);
         if (size > m_limit.ext()) throw msgpack::ext_size_overflow("ext size overflow");
         msgpack::object* obj = m_stack.back();
