@@ -44,8 +44,10 @@ public:
         m_stack[0] = &m_obj;
     }
     create_object_visitor& operator=(create_object_visitor&& other) {
-        this->~create_object_visitor();
-        new (this) create_object_visitor(std::move(other));
+        if (this != &other) {
+            this->~create_object_visitor();
+            new (this) create_object_visitor(std::move(other));
+        }
         return *this;
     }
 #endif // !defined(MSGPACK_USE_CPP03)
