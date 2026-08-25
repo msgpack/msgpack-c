@@ -294,6 +294,10 @@ inline char* zone::allocate_expand(size_t size)
         sz = tmp_sz;
     }
 
+    if((sizeof(chunk) + sz) < sz) {
+        throw std::bad_alloc();
+    }
+
     chunk* c = static_cast<chunk*>(::malloc(sizeof(chunk) + sz));
     if (!c) throw std::bad_alloc();
 
@@ -328,8 +332,16 @@ inline void zone::swap(zone& o)
 {
     using std::swap;
     swap(m_chunk_size, o.m_chunk_size);
-    swap(m_chunk_list, o.m_chunk_list);
-    swap(m_finalizer_array, o.m_finalizer_array);
+    // Swap the internal pointers directly. std::swap on chunk_list /
+    // finalizer_array would construct a temporary and run its owning
+    // destructor (freeing chunks and executing finalizers) on memory that
+    // has just been transferred to the other zone -> double free / UAF.
+    swap(m_chunk_list.m_free, o.m_chunk_list.m_free);
+    swap(m_chunk_list.m_ptr,  o.m_chunk_list.m_ptr);
+    swap(m_chunk_list.m_head, o.m_chunk_list.m_head);
+    swap(m_finalizer_array.m_tail,  o.m_finalizer_array.m_tail);
+    swap(m_finalizer_array.m_end,   o.m_finalizer_array.m_end);
+    swap(m_finalizer_array.m_array, o.m_finalizer_array.m_array);
 }
 
 template <typename T>
