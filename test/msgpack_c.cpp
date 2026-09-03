@@ -642,6 +642,40 @@ TEST(MSGPACKC, simple_buffer_fixext_4byte_65536)
     msgpack_sbuffer_destroy(&sbuf);
 }
 
+TEST(MSGPACKC, simple_buffer_ext_maxlen)
+{
+    // ext32's length header covers up to UINT32_MAX bytes of data, so this
+    // needs roughly 8GB of free memory (the source buffer plus the packed
+    // copy) and will skip itself rather than fail on a host that doesn't
+    // have that much to spare.
+    const size_t size = static_cast<size_t>(UINT32_MAX);
+    void* buf = calloc(size, 1);
+    if (buf == NULL) {
+        GTEST_SKIP() << "not enough memory to allocate a " << size << " byte buffer";
+    }
+
+    msgpack_sbuffer sbuf;
+    msgpack_sbuffer_init(&sbuf);
+    msgpack_packer pk;
+    msgpack_packer_init(&pk, &sbuf, msgpack_sbuffer_write);
+
+    msgpack_pack_ext(&pk, size, 82);
+    msgpack_pack_ext_body(&pk, buf, size);
+    msgpack_zone z;
+    msgpack_zone_init(&z, 2048);
+    msgpack_object obj;
+    msgpack_unpack_return ret =
+        msgpack_unpack(sbuf.data, sbuf.size, NULL, &z, &obj);
+    EXPECT_EQ(MSGPACK_UNPACK_SUCCESS, ret);
+    EXPECT_EQ(MSGPACK_OBJECT_EXT, obj.type);
+    EXPECT_EQ(82, obj.via.ext.type);
+    ASSERT_EQ(size, obj.via.ext.size);
+    EXPECT_EQ(0, memcmp(buf, obj.via.ext.ptr, size));
+    msgpack_zone_destroy(&z);
+    msgpack_sbuffer_destroy(&sbuf);
+    free(buf);
+}
+
 TEST(MSGPACKC, simple_buffer_timestamp_32)
 {
     msgpack_timestamp ts = {

@@ -53,7 +53,7 @@ msgpack_unpack_struct_decl(_stack) {
 msgpack_unpack_struct_decl(_context) {
     msgpack_unpack_user user;
     unsigned int cs;
-    unsigned int trail;
+    size_t trail;
     unsigned int top;
     /*
     msgpack_unpack_struct(_stack)* stack;
@@ -99,7 +99,7 @@ msgpack_unpack_func(int, _execute)(msgpack_unpack_struct(_context)* ctx, const c
         const unsigned char* const pe = (unsigned char*)data + len;
         const void* n = NULL;
 
-        unsigned int trail = ctx->trail;
+        size_t trail = ctx->trail;
         unsigned int cs = ctx->cs;
         unsigned int top = ctx->top;
         msgpack_unpack_struct(_stack)* stack = ctx->stack;
@@ -326,7 +326,7 @@ msgpack_unpack_func(int, _execute)(msgpack_unpack_struct(_context)* ctx, const c
                 case MSGPACK_CS_EXT_16:{
                     uint16_t tmp;
                     _msgpack_load16(uint16_t,n,&tmp);
-                    again_fixed_trail_if_zero(MSGPACK_ACS_EXT_VALUE, tmp + 1, _ext_zero);
+                    again_fixed_trail_if_zero(MSGPACK_ACS_EXT_VALUE, (size_t)tmp + 1, _ext_zero);
                 }
                 case MSGPACK_CS_STR_32:{
                     uint32_t tmp;
@@ -341,7 +341,11 @@ msgpack_unpack_func(int, _execute)(msgpack_unpack_struct(_context)* ctx, const c
                 case MSGPACK_CS_EXT_32:{
                     uint32_t tmp;
                     _msgpack_load32(uint32_t,n,&tmp);
-                    again_fixed_trail_if_zero(MSGPACK_ACS_EXT_VALUE, tmp + 1, _ext_zero);
+                    /* cast before adding: on a 64-bit size_t this lets an ext32 with
+                     * the maximum UINT32_MAX-byte payload carry its trailing type
+                     * byte without wrapping trail back to 0 the way `tmp + 1` would
+                     * when tmp is exactly UINT32_MAX */
+                    again_fixed_trail_if_zero(MSGPACK_ACS_EXT_VALUE, (size_t)tmp + 1, _ext_zero);
                 }
                 case MSGPACK_ACS_STR_VALUE:
                 _str_zero:
