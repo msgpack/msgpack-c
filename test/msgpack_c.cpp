@@ -642,16 +642,20 @@ TEST(MSGPACKC, simple_buffer_fixext_4byte_65536)
     msgpack_sbuffer_destroy(&sbuf);
 }
 
+// ext32's length header covers up to UINT32_MAX bytes of data. The packed
+// message (header + body) does not fit in a 32-bit size_t, so this test is
+// only built for 64-bit targets. On 32-bit builds gcc also rejects the
+// UINT32_MAX-sized calloc()/memcmp() under -Werror.
+#if SIZE_MAX > UINT32_MAX
 TEST(MSGPACKC, simple_buffer_ext_maxlen)
 {
-    // ext32's length header covers up to UINT32_MAX bytes of data, so this
-    // needs roughly 8GB of free memory (the source buffer plus the packed
-    // copy) and will skip itself rather than fail on a host that doesn't
-    // have that much to spare.
+    // Needs roughly 8GB of free memory (the source buffer plus the packed
+    // copy). If the allocation fails, pass vacuously instead of failing.
+    // (GTEST_SKIP() is not used because it requires googletest >= 1.10.)
     const size_t size = static_cast<size_t>(UINT32_MAX);
     void* buf = calloc(size, 1);
     if (buf == NULL) {
-        GTEST_SKIP() << "not enough memory to allocate a " << size << " byte buffer";
+        return;
     }
 
     msgpack_sbuffer sbuf;
@@ -675,6 +679,7 @@ TEST(MSGPACKC, simple_buffer_ext_maxlen)
     msgpack_sbuffer_destroy(&sbuf);
     free(buf);
 }
+#endif // SIZE_MAX > UINT32_MAX
 
 TEST(MSGPACKC, simple_buffer_timestamp_32)
 {
