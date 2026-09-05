@@ -1,3 +1,6 @@
+# 2026-09-05 version 7.0.3
+ * Fix ext32 unpacking of the maximum UINT32_MAX-byte payload. (#1185)
+
 # 2026-08-25 version 7.0.2
   * Fix  integer overflow on msgpack_unpacker_expand_buffer(). (#1182)
 
