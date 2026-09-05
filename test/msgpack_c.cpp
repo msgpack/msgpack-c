@@ -642,6 +642,45 @@ TEST(MSGPACKC, simple_buffer_fixext_4byte_65536)
     msgpack_sbuffer_destroy(&sbuf);
 }
 
+// ext32's length header covers up to UINT32_MAX bytes of data. The packed
+// message (header + body) does not fit in a 32-bit size_t, so this test is
+// only built for 64-bit targets. On 32-bit builds gcc also rejects the
+// UINT32_MAX-sized calloc()/memcmp() under -Werror.
+#if SIZE_MAX > UINT32_MAX
+TEST(MSGPACKC, simple_buffer_ext_maxlen)
+{
+    // Needs roughly 8GB of free memory (the source buffer plus the packed
+    // copy). If the allocation fails, pass vacuously instead of failing.
+    // (GTEST_SKIP() is not used because it requires googletest >= 1.10.)
+    const size_t size = static_cast<size_t>(UINT32_MAX);
+    void* buf = calloc(size, 1);
+    if (buf == NULL) {
+        return;
+    }
+
+    msgpack_sbuffer sbuf;
+    msgpack_sbuffer_init(&sbuf);
+    msgpack_packer pk;
+    msgpack_packer_init(&pk, &sbuf, msgpack_sbuffer_write);
+
+    msgpack_pack_ext(&pk, size, 82);
+    msgpack_pack_ext_body(&pk, buf, size);
+    msgpack_zone z;
+    msgpack_zone_init(&z, 2048);
+    msgpack_object obj;
+    msgpack_unpack_return ret =
+        msgpack_unpack(sbuf.data, sbuf.size, NULL, &z, &obj);
+    EXPECT_EQ(MSGPACK_UNPACK_SUCCESS, ret);
+    EXPECT_EQ(MSGPACK_OBJECT_EXT, obj.type);
+    EXPECT_EQ(82, obj.via.ext.type);
+    ASSERT_EQ(size, obj.via.ext.size);
+    EXPECT_EQ(0, memcmp(buf, obj.via.ext.ptr, size));
+    msgpack_zone_destroy(&z);
+    msgpack_sbuffer_destroy(&sbuf);
+    free(buf);
+}
+#endif // SIZE_MAX > UINT32_MAX
+
 TEST(MSGPACKC, simple_buffer_timestamp_32)
 {
     msgpack_timestamp ts = {

@@ -275,7 +275,7 @@ static inline int template_callback_map_item(unpack_user* u, msgpack_object* c, 
     return 0;
 }
 
-static inline int template_callback_str(unpack_user* u, const char* b, const char* p, unsigned int l, msgpack_object* o)
+static inline int template_callback_str(unpack_user* u, const char* b, const char* p, size_t l, msgpack_object* o)
 {
     MSGPACK_UNUSED(b);
     if (*u->z == NULL) {
@@ -291,7 +291,7 @@ static inline int template_callback_str(unpack_user* u, const char* b, const cha
     return 0;
 }
 
-static inline int template_callback_bin(unpack_user* u, const char* b, const char* p, unsigned int l, msgpack_object* o)
+static inline int template_callback_bin(unpack_user* u, const char* b, const char* p, size_t l, msgpack_object* o)
 {
     MSGPACK_UNUSED(b);
     if (*u->z == NULL) {
@@ -307,7 +307,7 @@ static inline int template_callback_bin(unpack_user* u, const char* b, const cha
     return 0;
 }
 
-static inline int template_callback_ext(unpack_user* u, const char* b, const char* p, unsigned int l, msgpack_object* o)
+static inline int template_callback_ext(unpack_user* u, const char* b, const char* p, size_t l, msgpack_object* o)
 {
     MSGPACK_UNUSED(b);
     if (l == 0) {
