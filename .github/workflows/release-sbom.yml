@@ -3,19 +3,30 @@ name: Release SBOM
 on:
   release:
     types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing c-* or cpp-* release tag to process
+        required: true
+        type: string
 
 permissions:
   contents: write
 
 jobs:
   sbom:
-    if: startsWith(github.event.release.tag_name, 'c-') || startsWith(github.event.release.tag_name, 'cpp-')
+    if: >-
+      (github.event_name == 'release' &&
+       (startsWith(github.event.release.tag_name, 'c-') ||
+        startsWith(github.event.release.tag_name, 'cpp-'))) ||
+      (github.event_name == 'workflow_dispatch' &&
+       (startsWith(inputs.tag, 'c-') || startsWith(inputs.tag, 'cpp-')))
     runs-on: ubuntu-latest
     steps:
       - name: Resolve release metadata
         id: release
         env:
-          TAG: ${{ github.event.release.tag_name }}
+          TAG: ${{ github.event.release.tag_name || inputs.tag }}
         shell: bash
         run: |
           set -euo pipefail
@@ -30,6 +41,7 @@ jobs:
               ;;
           esac
           archive="$project-$version.tar.gz"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
           echo "project=$project" >> "$GITHUB_OUTPUT"
           echo "version=$version" >> "$GITHUB_OUTPUT"
           echo "archive=$archive" >> "$GITHUB_OUTPUT"
@@ -38,7 +50,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
-          TAG: ${{ github.event.release.tag_name }}
+          TAG: ${{ steps.release.outputs.tag }}
           ARCHIVE: ${{ steps.release.outputs.archive }}
         run: gh release download "$TAG" --pattern "$ARCHIVE"
 
@@ -47,19 +59,24 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
-          TAG: ${{ github.event.release.tag_name }}
+          TAG: ${{ steps.release.outputs.tag }}
           ARCHIVE: ${{ steps.release.outputs.archive }}
         shell: bash
         run: |
           set -euo pipefail
-          expected="$(
+          asset="$(
             gh api "repos/$GH_REPO/releases/tags/$TAG" |
-              jq -er --arg archive "$ARCHIVE" '
-                .assets[]
-                | select(.name == $archive)
-                | .digest
+              jq -cer --arg archive "$ARCHIVE" '
+                [.assets[] | select(.name == $archive)]
+                | if length == 1
+                  then .[0]
+                  else error("expected exactly one matching release asset")
+                  end
               '
           )"
+          expected="$(jq -r '.digest // empty' <<<"$asset")"
+          url="$(jq -r '.browser_download_url // empty' <<<"$asset")"
+
           case "$expected" in
             sha256:*) ;;
             *)
@@ -67,6 +84,10 @@ jobs:
               exit 1
               ;;
           esac
+          if [[ -z "$url" ]]; then
+            echo "::error::Release asset $ARCHIVE has no download URL"
+            exit 1
+          fi
 
           actual="sha256:$(sha256sum "$ARCHIVE" | cut -d' ' -f1)"
           if [[ "$actual" != "$expected" ]]; then
@@ -74,6 +95,7 @@ jobs:
             exit 1
           fi
           echo "sha256=${actual#sha256:}" >> "$GITHUB_OUTPUT"
+          echo "url=$url" >> "$GITHUB_OUTPUT"
 
       - name: Download Syft
         id: syft
@@ -84,11 +106,13 @@ jobs:
       - name: Generate release SBOMs
         env:
           SYFT: ${{ steps.syft.outputs.cmd }}
-          TAG: ${{ github.event.release.tag_name }}
+          TAG: ${{ steps.release.outputs.tag }}
           PROJECT: ${{ steps.release.outputs.project }}
           VERSION: ${{ steps.release.outputs.version }}
           ARCHIVE: ${{ steps.release.outputs.archive }}
           SHA256: ${{ steps.archive.outputs.sha256 }}
+          ARCHIVE_URL: ${{ steps.archive.outputs.url }}
+          GH_REPO: ${{ github.repository }}
         shell: bash
         run: |
           set -euo pipefail
@@ -101,8 +125,8 @@ jobs:
             -o "spdx-json=$spdx" \
             -o "cyclonedx-json=$cdx"
 
-          purl="pkg:generic/msgpack/$PROJECT@$VERSION"
-          url="https://github.com/msgpack/msgpack-c/releases/download/$TAG/$ARCHIVE"
+          purl="pkg:github/$GH_REPO@$TAG"
+          url="$ARCHIVE_URL"
           root_id="$(
             jq -er '
               [
@@ -177,15 +201,55 @@ jobs:
           ' "$cdx" > "$cdx.tmp"
           mv "$cdx.tmp" "$cdx"
 
+      - name: Validate SBOMs
+        env:
+          PROJECT: ${{ steps.release.outputs.project }}
+          VERSION: ${{ steps.release.outputs.version }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          archive=sbom-utility-v0.19.2-linux-amd64.tar.gz
+          curl -fsSLO "https://github.com/CycloneDX/sbom-utility/releases/download/v0.19.2/$archive"
+          echo "e0cd37e6e67b1d0e44dbb7b38e055a4e2ee66db590bb8e7f89e2d9b650f4490b  $archive" |
+            sha256sum -c -
+          tar -xzf "$archive" sbom-utility
+
+          ./sbom-utility validate -q -i "$PROJECT-$VERSION.spdx.json"
+          ./sbom-utility validate -q -i "$PROJECT-$VERSION.cdx.json"
+
       - name: Attach SBOMs to release
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
-          TAG: ${{ github.event.release.tag_name }}
+          TAG: ${{ steps.release.outputs.tag }}
           PROJECT: ${{ steps.release.outputs.project }}
           VERSION: ${{ steps.release.outputs.version }}
+        shell: bash
         run: |
-          gh release upload "$TAG" \
-            "$PROJECT-$VERSION.spdx.json" \
-            "$PROJECT-$VERSION.cdx.json" \
-            --clobber
+          set -euo pipefail
+          release="$(gh api "repos/$GH_REPO/releases/tags/$TAG")"
+          files=(
+            "$PROJECT-$VERSION.spdx.json"
+            "$PROJECT-$VERSION.cdx.json"
+          )
+          missing=()
+
+          for file in "${files[@]}"; do
+            count="$(
+              jq --arg name "$file" '[.assets[] | select(.name == $name)] | length' <<<"$release"
+            )"
+            if [[ "$count" == 0 ]]; then
+              missing+=("$file")
+              continue
+            fi
+            if [[ "$count" != 1 ]]; then
+              echo "::error::Release has multiple assets named $file"
+              exit 1
+            fi
+
+            echo "$file already exists; leaving published evidence unchanged"
+          done
+
+          if ((${#missing[@]})); then
+            gh release upload "$TAG" "${missing[@]}"
+          fi
