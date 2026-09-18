@@ -1,0 +1,191 @@
+name: Release SBOM
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  sbom:
+    if: startsWith(github.event.release.tag_name, 'c-') || startsWith(github.event.release.tag_name, 'cpp-')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Resolve release metadata
+        id: release
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          case "$TAG" in
+            c-*)
+              project=msgpack-c
+              version="${TAG#c-}"
+              ;;
+            cpp-*)
+              project=msgpack-cxx
+              version="${TAG#cpp-}"
+              ;;
+          esac
+          archive="$project-$version.tar.gz"
+          echo "project=$project" >> "$GITHUB_OUTPUT"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "archive=$archive" >> "$GITHUB_OUTPUT"
+
+      - name: Download release archive
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          TAG: ${{ github.event.release.tag_name }}
+          ARCHIVE: ${{ steps.release.outputs.archive }}
+        run: gh release download "$TAG" --pattern "$ARCHIVE"
+
+      - name: Verify release archive digest
+        id: archive
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          TAG: ${{ github.event.release.tag_name }}
+          ARCHIVE: ${{ steps.release.outputs.archive }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          expected="$(
+            gh api "repos/$GH_REPO/releases/tags/$TAG" |
+              jq -er --arg archive "$ARCHIVE" '
+                .assets[]
+                | select(.name == $archive)
+                | .digest
+              '
+          )"
+          case "$expected" in
+            sha256:*) ;;
+            *)
+              echo "::error::Release asset $ARCHIVE has no SHA-256 digest"
+              exit 1
+              ;;
+          esac
+
+          actual="sha256:$(sha256sum "$ARCHIVE" | cut -d' ' -f1)"
+          if [[ "$actual" != "$expected" ]]; then
+            echo "::error::Release asset digest mismatch for $ARCHIVE"
+            exit 1
+          fi
+          echo "sha256=${actual#sha256:}" >> "$GITHUB_OUTPUT"
+
+      - name: Download Syft
+        id: syft
+        uses: anchore/sbom-action/download-syft@e22c389904149dbc22b58101806040fa8d37a610 # v0.24.0
+        with:
+          syft-version: v1.52.0
+
+      - name: Generate release SBOMs
+        env:
+          SYFT: ${{ steps.syft.outputs.cmd }}
+          TAG: ${{ github.event.release.tag_name }}
+          PROJECT: ${{ steps.release.outputs.project }}
+          VERSION: ${{ steps.release.outputs.version }}
+          ARCHIVE: ${{ steps.release.outputs.archive }}
+          SHA256: ${{ steps.archive.outputs.sha256 }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          spdx="$PROJECT-$VERSION.spdx.json"
+          cdx="$PROJECT-$VERSION.cdx.json"
+          "$SYFT" scan "$ARCHIVE" \
+            --source-name "$PROJECT" \
+            --source-version "$VERSION" \
+            --source-supplier MessagePack \
+            -o "spdx-json=$spdx" \
+            -o "cyclonedx-json=$cdx"
+
+          purl="pkg:generic/msgpack/$PROJECT@$VERSION"
+          url="https://github.com/msgpack/msgpack-c/releases/download/$TAG/$ARCHIVE"
+          root_id="$(
+            jq -er '
+              [
+                .relationships[]
+                | select(
+                    .spdxElementId == "SPDXRef-DOCUMENT"
+                    and .relationshipType == "DESCRIBES"
+                  )
+                | .relatedSpdxElement
+              ]
+              | if length == 1
+                then .[0]
+                else error("expected exactly one SPDX DESCRIBES root")
+                end
+            ' "$spdx"
+          )"
+
+          jq --arg id "$root_id" --arg sha "$SHA256" --arg url "$url" --arg purl "$purl" '
+            (.packages[] | select(.SPDXID == $id)) |=
+              (.licenseDeclared = "BSL-1.0"
+               | .downloadLocation = $url
+               | .primaryPackagePurpose = "LIBRARY"
+               | .checksums = (
+                   ((.checksums // []) + [{
+                     "algorithm": "SHA256",
+                     "checksumValue": $sha
+                   }])
+                   | unique_by([.algorithm, .checksumValue])
+                 )
+               | .externalRefs = (
+                   ((.externalRefs // []) + [{
+                     "referenceCategory": "PACKAGE-MANAGER",
+                     "referenceType": "purl",
+                     "referenceLocator": $purl
+                   }])
+                   | unique_by([
+                       .referenceCategory,
+                       .referenceType,
+                       .referenceLocator
+                     ])
+                 ))
+          ' "$spdx" > "$spdx.tmp"
+          mv "$spdx.tmp" "$spdx"
+
+          jq --arg sha "$SHA256" --arg url "$url" --arg purl "$purl" '
+            .metadata.component.type = "library"
+            | .metadata.component.supplier = {"name": "MessagePack"}
+            | .metadata.component.hashes = (
+                ((.metadata.component.hashes // []) + [{
+                  "alg": "SHA-256",
+                  "content": $sha
+                }])
+                | unique_by([.alg, .content])
+              )
+            | .metadata.component.licenses = (
+                ((.metadata.component.licenses // []) + [{
+                  "license": {"id": "BSL-1.0"}
+                }])
+                | unique_by([
+                    (.license.id // ""),
+                    (.expression // "")
+                  ])
+              )
+            | .metadata.component.purl = $purl
+            | .metadata.component.externalReferences = (
+                ((.metadata.component.externalReferences // []) + [{
+                  "type": "distribution",
+                  "url": $url
+                }])
+                | unique_by([.type, .url])
+              )
+          ' "$cdx" > "$cdx.tmp"
+          mv "$cdx.tmp" "$cdx"
+
+      - name: Attach SBOMs to release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          TAG: ${{ github.event.release.tag_name }}
+          PROJECT: ${{ steps.release.outputs.project }}
+          VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          gh release upload "$TAG" \
+            "$PROJECT-$VERSION.spdx.json" \
+            "$PROJECT-$VERSION.cdx.json" \
+            --clobber
