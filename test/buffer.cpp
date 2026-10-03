@@ -5,6 +5,8 @@
 #define BOOST_TEST_MODULE buffer
 #include <boost/test/unit_test.hpp>
 
+#include <sstream>
+#include <string>
 #include <string.h>
 
 BOOST_AUTO_TEST_CASE(sbuffer)
@@ -24,6 +26,41 @@ BOOST_AUTO_TEST_CASE(sbuffer)
 
     BOOST_CHECK_EQUAL(3ul, sbuf.size());
     BOOST_CHECK( memcmp(sbuf.data(), "aaa", 3) == 0 );
+}
+
+
+BOOST_AUTO_TEST_CASE(sbuffer_read_from)
+{
+    const std::string src = "abcdefghij";
+
+    std::istringstream is(src);
+    msgpack::sbuffer sbuf;
+
+    // A part of the stream is appended to the buffer.
+    BOOST_CHECK_EQUAL(4ul, sbuf.read_from(is, 4));
+    BOOST_CHECK_EQUAL(4ul, sbuf.size());
+    BOOST_CHECK( memcmp(sbuf.data(), "abcd", 4) == 0 );
+
+    // A request larger than the remaining data reads up to the end of the stream.
+    BOOST_CHECK_EQUAL(6ul, sbuf.read_from(is, 100));
+    BOOST_CHECK_EQUAL(10ul, sbuf.size());
+    BOOST_CHECK( memcmp(sbuf.data(), "abcdefghij", 10) == 0 );
+
+    // len == 0 reads nothing.
+    BOOST_CHECK_EQUAL(0ul, sbuf.read_from(is, 0));
+    BOOST_CHECK_EQUAL(10ul, sbuf.size());
+
+    // Reading at the end of the stream reads nothing.
+    is.clear();
+    BOOST_CHECK_EQUAL(0ul, sbuf.read_from(is, 1));
+    BOOST_CHECK_EQUAL(10ul, sbuf.size());
+
+    // The buffer grows as needed.
+    msgpack::sbuffer small(1);
+    std::istringstream is2(src);
+    BOOST_CHECK_EQUAL(10ul, small.read_from(is2, 10));
+    BOOST_CHECK_EQUAL(10ul, small.size());
+    BOOST_CHECK( memcmp(small.data(), "abcdefghij", 10) == 0 );
 }
 
 
