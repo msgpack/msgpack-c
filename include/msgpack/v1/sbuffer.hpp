@@ -16,6 +16,7 @@
 
 #include <stdexcept>
 #include <cstring>
+#include <istream>
 
 namespace msgpack {
 
@@ -79,6 +80,22 @@ public:
         }
         std::memcpy(m_data + m_size, buf, len);
         m_size += len;
+    }
+
+    size_t read_from(std::istream& is, size_t len)
+    {
+        if (len == 0) return 0;
+
+        if(m_alloc - m_size < len) {
+            expand_buffer(len);
+        }
+
+        is.read(m_data + m_size, static_cast<std::streamsize>(len));
+        const std::streamsize n = is.gcount();
+        if (n <= 0) return 0;
+
+        m_size += static_cast<size_t>(n);
+        return static_cast<size_t>(n);
     }
 
     char* data()
