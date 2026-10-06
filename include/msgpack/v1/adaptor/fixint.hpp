@@ -24,7 +24,7 @@ template <typename T>
 struct fix_int {
     typedef T value_type;
     fix_int() : value(0) { }
-    fix_int(T value) : value(value) { }
+    fix_int(T v) : value(v) { }
 
     operator T() const { return value; }
 
