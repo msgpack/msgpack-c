@@ -161,7 +161,7 @@ struct as<std::chrono::time_point<Clock, Duration>> {
             int64_t sec;
             _msgpack_load64(int64_t, o.via.ext.data() + 4, &sec);
 
-            if (sec > 0) {
+            if (sec >= 0) {
                 tp += std::chrono::seconds(sec);
                 tp += std::chrono::duration_cast<Duration>(
                     std::chrono::nanoseconds(nanosec));
@@ -215,7 +215,7 @@ struct convert<std::chrono::time_point<Clock, Duration>> {
             int64_t sec;
             _msgpack_load64(int64_t, o.via.ext.data() + 4, &sec);
 
-            if (sec > 0) {
+            if (sec >= 0) {
                 tp += std::chrono::seconds(sec);
                 tp += std::chrono::duration_cast<Duration>(
                     std::chrono::nanoseconds(nanosec));

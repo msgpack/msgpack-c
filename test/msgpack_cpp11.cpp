@@ -1008,6 +1008,24 @@ BOOST_AUTO_TEST_CASE(system_clock_64_max)
     BOOST_CHECK(val1 == val3);
 }
 
+BOOST_AUTO_TEST_CASE(system_clock_96_zero_seconds)
+{
+    // Timestamp96 can also encode a nonnegative subsecond value.
+    typedef std::chrono::time_point<std::chrono::system_clock, std::chrono::microseconds> time_point;
+    char packed[] = {
+        static_cast<char>(0xc7u), 12, static_cast<char>(-1),
+        0, 0, 1, static_cast<char>(0xf4u), // 500 nanoseconds
+        0, 0, 0, 0, 0, 0, 0, 0         // zero seconds
+    };
+    msgpack::object_handle oh =
+        msgpack::unpack(packed, sizeof(packed));
+    BOOST_CHECK_EQUAL(oh.get().as<time_point>().time_since_epoch().count(), 0);
+
+    time_point converted(std::chrono::microseconds(123));
+    oh.get().convert(converted);
+    BOOST_CHECK_EQUAL(converted.time_since_epoch().count(), 0);
+}
+
 BOOST_AUTO_TEST_CASE(system_clock_impl_min)
 {
     std::chrono::system_clock::time_point val1(std::chrono::system_clock::time_point::min());
