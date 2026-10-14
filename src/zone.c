@@ -146,6 +146,10 @@ bool msgpack_zone_push_finalizer_expand(msgpack_zone* zone,
         nnext = nused * 2;
     }
 
+    if((nnext < nused) || ((sizeof(msgpack_zone_finalizer)*nnext) < nnext)) {
+        /* nused * 2 or the realloc size would wrap around */
+        return false;
+    }
     tmp = (msgpack_zone_finalizer*)realloc(fa->array,
                 sizeof(msgpack_zone_finalizer) * nnext);
     if(tmp == NULL) {

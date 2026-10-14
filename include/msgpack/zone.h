@@ -112,6 +112,11 @@ static inline void* msgpack_zone_malloc(msgpack_zone* zone, size_t size)
             ) & ~(uintptr_t)(MSGPACK_ZONE_ALIGN - 1)
         );
     size_t adjusted_size = size + (size_t)(aligned - zone->chunk_list.ptr);
+
+    if (size + (MSGPACK_ZONE_ALIGN - 1) < size) {
+        /* size + the alignment padding would wrap around */
+        return NULL;
+    }
     if(zone->chunk_list.free >= adjusted_size) {
         zone->chunk_list.free -= adjusted_size;
         zone->chunk_list.ptr  += adjusted_size;
