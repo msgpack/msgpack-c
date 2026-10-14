@@ -113,8 +113,13 @@ int msgpack_vrefbuffer_append_ref(msgpack_vrefbuffer* vbuf,
     if(vbuf->tail == vbuf->end) {
         const size_t nused = (size_t)(vbuf->tail - vbuf->array);
         const size_t nnext = nused * 2;
+        msgpack_iovec* nvec;
 
-        msgpack_iovec* nvec = (msgpack_iovec*)realloc(
+        if((nnext < nused) || ((sizeof(msgpack_iovec)*nnext) < nnext)) {
+            /* nused * 2 or the realloc size would wrap around */
+            return -1;
+        }
+        nvec = (msgpack_iovec*)realloc(
                 vbuf->array, sizeof(msgpack_iovec)*nnext);
         if(nvec == NULL) {
             return -1;

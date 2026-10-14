@@ -64,6 +64,11 @@ static inline int msgpack_sbuffer_write(void* data, const char* buf, size_t len)
     assert(buf || len == 0);
     if(!buf) return 0;
 
+    if((sbuf->size + len) < len) {
+        /* size + len would wrap around */
+        return -1;
+    }
+
     if(sbuf->alloc - sbuf->size < len) {
         void* tmp;
         size_t nsize = (sbuf->alloc) ?
