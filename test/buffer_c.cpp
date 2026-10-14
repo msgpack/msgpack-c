@@ -85,6 +85,21 @@ TEST(buffer, sbuffer_c)
     msgpack_sbuffer_free(sbuf);
 }
 
+TEST(buffer, sbuffer_c_size_overflow)
+{
+    msgpack_sbuffer *sbuf;
+
+    sbuf = msgpack_sbuffer_new();
+    EXPECT_TRUE(sbuf != NULL);
+    EXPECT_EQ(0, msgpack_sbuffer_write(sbuf, "0123456789abcdef", 16));
+    /* size + len must not wrap around: the write has to be rejected */
+    EXPECT_EQ(-1, msgpack_sbuffer_write(sbuf, "a", (size_t)-1 - 8));
+    EXPECT_EQ(16U, sbuf->size);
+    EXPECT_EQ(0, memcmp(sbuf->data, "0123456789abcdef", 16));
+
+    msgpack_sbuffer_free(sbuf);
+}
+
 TEST(buffer, vrefbuffer_c)
 {
     const char *raw = "I was about to sail away in a junk,"

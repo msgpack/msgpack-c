@@ -80,6 +80,11 @@ void* msgpack_zone_malloc_expand(msgpack_zone* zone, size_t size)
         sz = tmp_sz;
     }
 
+    if ((sizeof(msgpack_zone_chunk) + sz) < sz) {
+        /* sizeof(chunk) + sz would wrap around */
+        return NULL;
+    }
+
     chunk = (msgpack_zone_chunk*)malloc(
             sizeof(msgpack_zone_chunk) + sz);
     if (chunk == NULL) {
