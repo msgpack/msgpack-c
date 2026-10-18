@@ -5,6 +5,8 @@
 #define BOOST_TEST_MODULE buffer
 #include <boost/test/unit_test.hpp>
 
+#include <limits>
+#include <new>
 #include <sstream>
 #include <string>
 #include <string.h>
@@ -61,6 +63,26 @@ BOOST_AUTO_TEST_CASE(sbuffer_read_from)
     BOOST_CHECK_EQUAL(10ul, small.read_from(is2, 10));
     BOOST_CHECK_EQUAL(10ul, small.size());
     BOOST_CHECK( memcmp(small.data(), "abcdefghij", 10) == 0 );
+}
+
+BOOST_AUTO_TEST_CASE(sbuffer_size_overflow)
+{
+    msgpack::sbuffer sbuf;
+    sbuf.write("0123456789abcdef", 16);
+
+    // size + len must not wrap around: the request has to be rejected
+    // before the buffer is touched.
+    const std::size_t len = std::numeric_limits<std::size_t>::max() - 8;
+    BOOST_CHECK_THROW(sbuf.write("a", len), std::bad_alloc);
+    std::istringstream is("a");
+    BOOST_CHECK_THROW(sbuf.read_from(is, len), std::bad_alloc);
+
+    BOOST_CHECK_EQUAL(16ul, sbuf.size());
+    BOOST_CHECK( memcmp(sbuf.data(), "0123456789abcdef", 16) == 0 );
+
+    sbuf.write("g", 1);
+    BOOST_CHECK_EQUAL(17ul, sbuf.size());
+    BOOST_CHECK( memcmp(sbuf.data(), "0123456789abcdefg", 17) == 0 );
 }
 
 
