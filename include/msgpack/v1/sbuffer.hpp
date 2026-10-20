@@ -17,6 +17,7 @@
 #include <stdexcept>
 #include <cstring>
 #include <istream>
+#include <limits>
 
 namespace msgpack {
 
@@ -130,6 +131,11 @@ public:
 private:
     void expand_buffer(size_t len)
     {
+        if(len > std::numeric_limits<size_t>::max() - m_size) {
+            // m_size + len would wrap around
+            throw std::bad_alloc();
+        }
+
         size_t nsize = (m_alloc > 0) ?
                 m_alloc * 2 : MSGPACK_SBUFFER_INIT_SIZE;
 

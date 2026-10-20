@@ -15,6 +15,7 @@
 
 #include <stdexcept>
 #include <algorithm>
+#include <limits>
 
 #if defined(_MSC_VER)
 // avoiding confliction std::max, std::min, and macro in windows.h
@@ -130,6 +131,12 @@ public:
             const size_t nused = static_cast<size_t>(m_tail - m_array);
             const size_t nnext = nused * 2;
 
+            if(nnext < nused ||
+               nnext > std::numeric_limits<size_t>::max() / sizeof(iovec)) {
+                // nused * 2 or the realloc size would wrap around
+                throw std::bad_alloc();
+            }
+
             iovec* nvec = static_cast<iovec*>(::realloc(
                 m_array, sizeof(iovec)*nnext));
             if(!nvec) {
@@ -224,6 +231,12 @@ public:
                     break;
                 }
                 nnext = tmp_nnext;
+            }
+
+            if(nnext > std::numeric_limits<size_t>::max() / sizeof(iovec)) {
+                // the realloc size would wrap around
+                ::free(empty);
+                throw std::bad_alloc();
             }
 
             iovec* nvec = static_cast<iovec*>(::realloc(

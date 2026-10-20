@@ -3,6 +3,9 @@
 #define BOOST_TEST_MODULE zone
 #include <boost/test/unit_test.hpp>
 
+#include <limits>
+#include <new>
+
 BOOST_AUTO_TEST_CASE(allocate_align)
 {
     msgpack::zone z;
@@ -92,4 +95,22 @@ BOOST_AUTO_TEST_CASE(allocate_no_align)
     char* buf1 = reinterpret_cast<char*>(z.allocate_no_align(4));
     char* buf2 = reinterpret_cast<char*>(z.allocate_no_align(4));
     BOOST_CHECK_EQUAL(reinterpret_cast<void*>(buf1+4), reinterpret_cast<void*>(buf2));
+}
+
+BOOST_AUTO_TEST_CASE(allocate_size_overflow)
+{
+    msgpack::zone z;
+    const std::size_t max = std::numeric_limits<std::size_t>::max();
+
+    // size + the alignment padding would wrap around: the request has to be
+    // rejected without any allocation attempt.
+    BOOST_CHECK_THROW(z.allocate_align(max - 2), std::bad_alloc);
+    BOOST_CHECK_THROW(z.allocate_align(max - 2, 64), std::bad_alloc);
+    // sizeof(chunk) + size would wrap around in the expansion.
+    BOOST_CHECK_THROW(z.allocate_no_align(max), std::bad_alloc);
+
+    // The zone stays usable afterwards.
+    char* buf = reinterpret_cast<char*>(z.allocate_align(1));
+    BOOST_CHECK(buf != MSGPACK_NULLPTR);
+    BOOST_CHECK_EQUAL(0ul, reinterpret_cast<std::size_t>(buf) % MSGPACK_ZONE_ALIGN);
 }

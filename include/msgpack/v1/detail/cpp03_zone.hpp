@@ -17,6 +17,7 @@
 
 #include <stdint.h>
 #include <cstdlib>
+#include <limits>
 #include <memory>
 #include <vector>
 
@@ -70,6 +71,11 @@ class zone {
                     72 / sizeof(finalizer) : 8;
             } else {
                 nnext = nused * 2;
+            }
+            if(nnext < nused ||
+               nnext > std::numeric_limits<size_t>::max() / sizeof(finalizer)) {
+                // nused * 2 or the realloc size would wrap around
+                throw std::bad_alloc();
             }
             finalizer* tmp =
                 static_cast<finalizer*>(::realloc(m_array, sizeof(finalizer) * nnext));
@@ -254,6 +260,10 @@ inline char* zone::get_aligned(char* ptr, size_t align)
 
 inline void* zone::allocate_align(size_t size, size_t align)
 {
+    if(size > std::numeric_limits<size_t>::max() - (align - 1)) {
+        // size + the alignment padding would wrap around
+        throw std::bad_alloc();
+    }
     char* aligned = get_aligned(m_chunk_list.m_ptr, align);
     size_t adjusted_size = size + static_cast<size_t>(aligned - m_chunk_list.m_ptr);
     if (m_chunk_list.m_free < adjusted_size) {
