@@ -967,6 +967,22 @@ BOOST_AUTO_TEST_CASE(system_clock_64_max)
     BOOST_CHECK(obj.as<std::chrono::system_clock::time_point>() == v);
 }
 
+BOOST_AUTO_TEST_CASE(system_clock_minutes)
+{
+    std::chrono::time_point<std::chrono::system_clock, std::chrono::minutes> v(std::chrono::minutes(2));
+    msgpack::zone z;
+    msgpack::object obj(v, z);
+    BOOST_CHECK(obj.as<std::chrono::system_clock::time_point>() == v);
+}
+
+BOOST_AUTO_TEST_CASE(system_clock_minutes_negative)
+{
+    std::chrono::time_point<std::chrono::system_clock, std::chrono::minutes> v(std::chrono::minutes(-2));
+    msgpack::zone z;
+    msgpack::object obj(v, z);
+    BOOST_CHECK(obj.as<std::chrono::system_clock::time_point>() == v);
+}
+
 BOOST_AUTO_TEST_CASE(system_clock_impl_min)
 {
     std::chrono::system_clock::time_point v(std::chrono::system_clock::time_point::min());

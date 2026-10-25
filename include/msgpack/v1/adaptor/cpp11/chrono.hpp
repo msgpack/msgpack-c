@@ -246,20 +246,15 @@ template <typename Clock, typename Duration>
 struct pack<std::chrono::time_point<Clock, Duration>> {
     template <typename Stream>
     msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, std::chrono::time_point<Clock, Duration> const& v) const {
-        int64_t count = detail::integral_cast<int64_t>(v.time_since_epoch().count());
-        int64_t nano_num =
-            Duration::period::ratio::num *
-            (1000000000L / Duration::period::ratio::den);
-
-        int64_t nanosec = count % (1000000000L / nano_num) * nano_num;
-        int64_t sec = 0;
+        std::chrono::seconds whole_sec =
+            std::chrono::duration_cast<std::chrono::seconds>(v.time_since_epoch());
+        int64_t nanosec = std::chrono::duration_cast<std::chrono::nanoseconds>(
+            v.time_since_epoch() - whole_sec).count();
+        int64_t sec = whole_sec.count();
         if (nanosec < 0) {
             nanosec = 1000000000L + nanosec;
             --sec;
         }
-        sec += count
-            * Duration::period::ratio::num
-            / Duration::period::ratio::den;
 
         if ((sec >> 34) == 0) {
             uint64_t data64 = (detail::integral_cast<uint64_t>(nanosec) << 34) | detail::integral_cast<uint64_t>(sec);
@@ -296,21 +291,15 @@ struct pack<std::chrono::time_point<Clock, Duration>> {
 template <typename Clock, typename Duration>
 struct object_with_zone<std::chrono::time_point<Clock, Duration>> {
     void operator()(msgpack::object::with_zone& o, const std::chrono::time_point<Clock, Duration>& v) const {
-        int64_t count = detail::integral_cast<int64_t>(v.time_since_epoch().count());
-
-        int64_t nano_num =
-            Duration::period::ratio::num *
-            (1000000000L / Duration::period::ratio::den);
-
-        int64_t nanosec = count % (1000000000L / nano_num) * nano_num;
-        int64_t sec = 0;
+        std::chrono::seconds whole_sec =
+            std::chrono::duration_cast<std::chrono::seconds>(v.time_since_epoch());
+        int64_t nanosec = std::chrono::duration_cast<std::chrono::nanoseconds>(
+            v.time_since_epoch() - whole_sec).count();
+        int64_t sec = whole_sec.count();
         if (nanosec < 0) {
             nanosec = 1000000000L + nanosec;
             --sec;
         }
-        sec += count
-            * Duration::period::ratio::num
-            / Duration::period::ratio::den;
         if ((sec >> 34) == 0) {
             uint64_t data64 = (detail::integral_cast<uint64_t>(nanosec) << 34) | detail::integral_cast<uint64_t>(sec);
             if ((data64 & 0xffffffff00000000L) == 0) {
