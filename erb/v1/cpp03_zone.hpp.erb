@@ -21,6 +21,36 @@
 #include <memory>
 #include <vector>
 
+// AddressSanitizer interior redzones.
+//
+// The zone carves many objects out of one malloc()ed chunk, so an overflow
+// from one zone-allocated object into its neighbour stays inside a live heap
+// block and is invisible to ASan. When building with ASan, every allocation
+// is followed by a poisoned redzone, and chunks of the configured size are
+// kept poisoned until handed out, so that clear() also poisons stale objects.
+// Builds without ASan are not affected.
+// Define MSGPACK_ZONE_NO_ASAN_ANNOTATIONS to disable this, e.g. when
+// instrumented and uninstrumented code share a zone.
+#if !defined(MSGPACK_ZONE_NO_ASAN_ANNOTATIONS)
+#if defined(__SANITIZE_ADDRESS__)
+#define MSGPACK_ZONE_ASAN_ANNOTATIONS
+#elif defined(__has_feature)
+#if __has_feature(address_sanitizer)
+#define MSGPACK_ZONE_ASAN_ANNOTATIONS
+#endif
+#endif
+#endif
+
+#if defined(MSGPACK_ZONE_ASAN_ANNOTATIONS)
+#include <sanitizer/asan_interface.h>
+// ASan shadow granularity: objects start on a granule boundary.
+#define MSGPACK_ZONE_ASAN_GRANULE 8
+// Minimum number of poisoned bytes between two zone allocations.
+#ifndef MSGPACK_ZONE_ASAN_REDZONE_SIZE
+#define MSGPACK_ZONE_ASAN_REDZONE_SIZE 16
+#endif
+#endif
+
 <% GENERATION_LIMIT = 15 %>
 namespace msgpack {
 
@@ -108,6 +138,9 @@ class zone {
             m_free = chunk_size;
             m_ptr  = reinterpret_cast<char*>(c) + sizeof(chunk);
             c->m_next = MSGPACK_NULLPTR;
+#if defined(MSGPACK_ZONE_ASAN_ANNOTATIONS)
+            zone::asan_poison_new_chunk(m_ptr, m_free);
+#endif
         }
         ~chunk_list()
         {
@@ -134,6 +167,9 @@ class zone {
             m_head->m_next = MSGPACK_NULLPTR;
             m_free = chunk_size;
             m_ptr  = reinterpret_cast<char*>(m_head) + sizeof(chunk);
+#if defined(MSGPACK_ZONE_ASAN_ANNOTATIONS)
+            ASAN_POISON_MEMORY_REGION(m_ptr, m_free);
+#endif
         }
         size_t m_free;
         char* m_ptr;
@@ -195,6 +231,10 @@ private:
     static char* get_aligned(char* ptr, size_t align);
 
     char* allocate_expand(size_t size);
+#if defined(MSGPACK_ZONE_ASAN_ANNOTATIONS)
+    void* allocate_asan(size_t size, size_t align);
+    static void asan_poison_new_chunk(char* ptr, size_t size);
+#endif
 private:
     zone(const zone&);
     zone& operator=(const zone&);
@@ -215,6 +255,9 @@ inline char* zone::get_aligned(char* ptr, size_t align)
 
 inline void* zone::allocate_align(size_t size, size_t align)
 {
+#if defined(MSGPACK_ZONE_ASAN_ANNOTATIONS)
+    return allocate_asan(size, align);
+#else
     if(size > std::numeric_limits<size_t>::max() - (align - 1)) {
         // size + the alignment padding would wrap around
         throw std::bad_alloc();
@@ -230,10 +273,14 @@ inline void* zone::allocate_align(size_t size, size_t align)
     m_chunk_list.m_free -= adjusted_size;
     m_chunk_list.m_ptr  += adjusted_size;
     return aligned;
+#endif
 }
 
 inline void* zone::allocate_no_align(size_t size)
 {
+#if defined(MSGPACK_ZONE_ASAN_ANNOTATIONS)
+    return allocate_asan(size, 1);
+#else
     char* ptr = m_chunk_list.m_ptr;
     if(m_chunk_list.m_free < size) {
         ptr = allocate_expand(size);
@@ -242,7 +289,55 @@ inline void* zone::allocate_no_align(size_t size)
     m_chunk_list.m_ptr  += size;
 
     return ptr;
+#endif
 }
+
+#if defined(MSGPACK_ZONE_ASAN_ANNOTATIONS)
+inline void zone::asan_poison_new_chunk(char* ptr, size_t size)
+{
+    // GCC takes passing the new, uninitialized chunk to ASan for a read.
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+#endif // defined(__GNUC__) && !defined(__clang__)
+    ASAN_POISON_MEMORY_REGION(ptr, size);
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic pop
+#endif // defined(__GNUC__) && !defined(__clang__)
+}
+
+inline void* zone::allocate_asan(size_t size, size_t align)
+{
+    // Same as allocate_align(), but each object starts on an ASan granule
+    // and is followed by MSGPACK_ZONE_ASAN_REDZONE_SIZE bytes that stay
+    // poisoned, so writing past the object is reported as use-after-poison.
+    if (align < MSGPACK_ZONE_ASAN_GRANULE) {
+        align = MSGPACK_ZONE_ASAN_GRANULE;
+    }
+    const size_t redzone = MSGPACK_ZONE_ASAN_REDZONE_SIZE;
+    if(size > std::numeric_limits<size_t>::max() - (align - 1) - redzone) {
+        throw std::bad_alloc();
+    }
+    char* aligned = get_aligned(m_chunk_list.m_ptr, align);
+    size_t adjusted_size = size + redzone + static_cast<size_t>(aligned - m_chunk_list.m_ptr);
+    bool fresh = false;
+    if (m_chunk_list.m_free < adjusted_size) {
+        size_t enough_size = size + redzone + align - 1;
+        char* ptr = allocate_expand(enough_size);
+        // allocate_expand() leaves chunks larger than m_chunk_size unpoisoned.
+        fresh = enough_size > m_chunk_size;
+        aligned = get_aligned(ptr, align);
+        adjusted_size = size + redzone + static_cast<size_t>(aligned - m_chunk_list.m_ptr);
+    }
+    m_chunk_list.m_free -= adjusted_size;
+    m_chunk_list.m_ptr  += adjusted_size;
+    if (!fresh) {
+        ASAN_UNPOISON_MEMORY_REGION(aligned, size);
+    }
+    ASAN_POISON_MEMORY_REGION(aligned + size, redzone);
+    return aligned;
+}
+#endif
 
 inline char* zone::allocate_expand(size_t size)
 {
@@ -272,6 +367,13 @@ inline char* zone::allocate_expand(size_t size)
     cl->m_head = c;
     cl->m_free = sz;
     cl->m_ptr  = ptr;
+#if defined(MSGPACK_ZONE_ASAN_ANNOTATIONS)
+    // Only poison chunks of the configured size up front, so that a single
+    // huge allocation costs no shadow updates proportional to its size.
+    if (size <= m_chunk_size) {
+        asan_poison_new_chunk(ptr, sz);
+    }
+#endif
 
     return ptr;
 }
@@ -323,8 +425,14 @@ void zone::object_delete(void* obj)
 
 inline void zone::undo_allocate(size_t size)
 {
+#if defined(MSGPACK_ZONE_ASAN_ANNOTATIONS)
+    size += MSGPACK_ZONE_ASAN_REDZONE_SIZE;
+#endif
     m_chunk_list.m_ptr  -= size;
     m_chunk_list.m_free += size;
+#if defined(MSGPACK_ZONE_ASAN_ANNOTATIONS)
+    ASAN_POISON_MEMORY_REGION(m_chunk_list.m_ptr, size);
+#endif
 }
 
 inline std::size_t aligned_size(
