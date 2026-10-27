@@ -138,4 +138,24 @@ template<class T> struct is_pointer : detail::is_pointer_helper<typename remove_
 #define MSGPACK_DEPRECATED(msg)
 #endif // MSGPACK_CPP_VERSION >= 201402L
 
+
+#if !defined(MSGPACK_USE_CPP03) && MSGPACK_CPP_VERSION < 201703L
+
+namespace msgpack {
+
+/// @cond
+MSGPACK_API_VERSION_NAMESPACE(v1) {
+/// @endcond
+
+template<typename...> using void_t = void;
+
+/// @cond
+}  // MSGPACK_API_VERSION_NAMESPACE(v1)
+/// @endcond
+
+}  // namespace msgpack
+
+#endif
+
+
 #endif // MSGPACK_V1_CPP_CONFIG_HPP

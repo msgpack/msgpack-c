@@ -640,10 +640,17 @@ struct packer_serializer {
 } // namespace detail
 
 // Adaptor functors' member functions definitions.
+#ifdef MSGPACK_USE_CPP03
 template <typename T, typename Enabler>
 inline
 msgpack::object const&
 adaptor::convert<T, Enabler>::operator()(msgpack::object const& o, T& v) const {
+#else
+template <typename T>
+inline
+msgpack::object const&
+adaptor::convert<T, typename std::enable_if<adaptor::impl::has_msgpack_unpack<T>::value>::type>::operator()(msgpack::object const& o, T& v) const {
+#endif
     v.msgpack_unpack(o.convert());
     return o;
 }
