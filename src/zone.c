@@ -28,6 +28,9 @@ static inline bool init_chunk_list(msgpack_zone_chunk_list* cl, size_t chunk_siz
     cl->free = chunk_size;
     cl->ptr  = ((char*)chunk) + sizeof(msgpack_zone_chunk);
     chunk->next = NULL;
+#if defined(MSGPACK_ZONE_ASAN_ANNOTATIONS)
+    ASAN_POISON_MEMORY_REGION(cl->ptr, cl->free);
+#endif
 
     return true;
 }
@@ -62,6 +65,9 @@ static inline void clear_chunk_list(msgpack_zone_chunk_list* cl, size_t chunk_si
     cl->head->next = NULL;
     cl->free = chunk_size;
     cl->ptr  = ((char*)cl->head) + sizeof(msgpack_zone_chunk);
+#if defined(MSGPACK_ZONE_ASAN_ANNOTATIONS)
+    ASAN_POISON_MEMORY_REGION(cl->ptr, cl->free);
+#endif
 }
 
 void* msgpack_zone_malloc_expand(msgpack_zone* zone, size_t size)
@@ -96,6 +102,14 @@ void* msgpack_zone_malloc_expand(msgpack_zone* zone, size_t size)
         cl->head = chunk;
         cl->free = sz - size;
         cl->ptr  = ptr + size;
+#if defined(MSGPACK_ZONE_ASAN_ANNOTATIONS)
+        /* Only poison the rest of chunks of the configured size, so that a
+         * single huge allocation costs no shadow updates proportional to
+         * its size. */
+        if (size <= zone->chunk_size) {
+            ASAN_POISON_MEMORY_REGION(cl->ptr, cl->free);
+        }
+#endif
 
         return ptr;
     }
