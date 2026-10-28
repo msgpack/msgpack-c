@@ -337,11 +337,15 @@ static int msgpack_object_bin_print_buffer(char *buffer, size_t buffer_size, con
         if (ptr[i] == '"') {
             MSGPACK_CHECKED_CALL(ret, snprintf, aux_buffer, aux_buffer_size, "\\\"");
         } else if (isprint((unsigned char)ptr[i])) {
-            if (aux_buffer_size > 0) {
-                memcpy(aux_buffer, ptr + i, 1);
-                aux_buffer = aux_buffer + 1;
-                aux_buffer_size = aux_buffer_size - 1;
+            // keep room for the terminator, as snprintf does
+            if (aux_buffer_size <= 1) {
+                if (aux_buffer_size == 1) { *aux_buffer = '\0'; }
+                return 0;
             }
+            memcpy(aux_buffer, ptr + i, 1);
+            aux_buffer = aux_buffer + 1;
+            aux_buffer_size = aux_buffer_size - 1;
+            *aux_buffer = '\0';
         } else {
             MSGPACK_CHECKED_CALL(ret, snprintf, aux_buffer, aux_buffer_size, "\\x%02x", (unsigned char)ptr[i]);
         }

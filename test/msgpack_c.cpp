@@ -1651,6 +1651,32 @@ TEST(MSGPACKC, object_bin_print_buffer_overflow) {
   EXPECT_STREQ("\"test\"", buffer);
 }
 
+TEST(MSGPACKC, object_bin_print_buffer_overflow_terminated) {
+  msgpack_object obj;
+  obj.type = MSGPACK_OBJECT_BIN;
+  obj.via.bin.ptr = "test";
+  obj.via.bin.size = 4;
+  char buffer[7];
+
+  for (size_t size = 1; size < sizeof(buffer); ++size) {
+    memset(buffer, 'x', sizeof(buffer));
+    EXPECT_EQ(0, msgpack_object_print_buffer(buffer, size, obj));
+    EXPECT_TRUE(memchr(buffer, '\0', size) != NULL);
+  }
+
+  obj.type = MSGPACK_OBJECT_EXT;
+  obj.via.ext.type = 1;
+  obj.via.ext.ptr = "test";
+  obj.via.ext.size = 4;
+  char ext_buffer[15];
+
+  for (size_t size = 1; size < sizeof(ext_buffer); ++size) {
+    memset(ext_buffer, 'x', sizeof(ext_buffer));
+    EXPECT_EQ(0, msgpack_object_print_buffer(ext_buffer, size, obj));
+    EXPECT_TRUE(memchr(ext_buffer, '\0', size) != NULL);
+  }
+}
+
 TEST(MSGPACKC, init_msgpack_obj_nil) {
     msgpack_object obj;
     msgpack_object_init_nil(&obj);
