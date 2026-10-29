@@ -161,3 +161,42 @@ TEST(buffer, vrefbuffer_c)
     free(buf);
     msgpack_vrefbuffer_free(vbuf);
 }
+
+TEST(buffer, vrefbuffer_c_migrate_grows_destination)
+{
+    static const char payload[64] = "payload";
+    msgpack_vrefbuffer a, b;
+    msgpack_vrefbuffer *vbuf, *to;
+    const msgpack_iovec *iov;
+    size_t i;
+
+    EXPECT_TRUE(msgpack_vrefbuffer_init(&a, 0, 0));
+    EXPECT_TRUE(msgpack_vrefbuffer_init(&b, 0, 0));
+    for (i = 0; i < 20; ++i) {
+        EXPECT_EQ(0, msgpack_vrefbuffer_append_ref(&a, payload, sizeof(payload)));
+        EXPECT_EQ(0, msgpack_vrefbuffer_append_ref(&b, payload, sizeof(payload)));
+    }
+
+    /* Migrate into the buffer whose iovec array sits higher in memory.
+     * With that layout a check against vbuf->end instead of to->end never
+     * grows `to`, although it has no room for the 20 incoming iovecs. */
+    vbuf = &a;
+    to = &b;
+    if ((uintptr_t)a.array > (uintptr_t)b.array) {
+        vbuf = &b;
+        to = &a;
+    }
+
+    EXPECT_EQ(0, msgpack_vrefbuffer_migrate(vbuf, to));
+    EXPECT_EQ(0U, msgpack_vrefbuffer_veclen(vbuf));
+    EXPECT_EQ(40U, msgpack_vrefbuffer_veclen(to));
+    EXPECT_TRUE(to->tail <= to->end);
+    iov = msgpack_vrefbuffer_vec(to);
+    for (i = 0; i < 40; ++i) {
+        EXPECT_EQ((const void*)payload, (const void*)iov[i].iov_base);
+        EXPECT_EQ(sizeof(payload), iov[i].iov_len);
+    }
+
+    msgpack_vrefbuffer_destroy(&a);
+    msgpack_vrefbuffer_destroy(&b);
+}
