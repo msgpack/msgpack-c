@@ -198,7 +198,7 @@ int msgpack_vrefbuffer_migrate(msgpack_vrefbuffer* vbuf, msgpack_vrefbuffer* to)
 
     {
         const size_t nused = (size_t)(vbuf->tail - vbuf->array);
-        if(to->tail + nused < vbuf->end) {
+        if(nused > (size_t)(to->end - to->tail)) {
             msgpack_iovec* nvec;
             const size_t tosize = (size_t)(to->tail - to->array);
             const size_t reqsize = nused + tosize;
