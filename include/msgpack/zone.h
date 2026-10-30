@@ -125,7 +125,13 @@ static inline void* msgpack_zone_malloc(msgpack_zone* zone, size_t size)
     {
         void* ptr = msgpack_zone_malloc_expand(zone, size + (MSGPACK_ZONE_ALIGN - 1));
         if (ptr) {
-            return (char*)((uintptr_t)(ptr) & ~(uintptr_t)(MSGPACK_ZONE_ALIGN - 1));
+            /* round up into the padding reserved above; rounding down
+             * would hand out the new chunk's header */
+            return (char*)(
+                (uintptr_t)(
+                    (char*)ptr + (MSGPACK_ZONE_ALIGN - 1)
+                ) & ~(uintptr_t)(MSGPACK_ZONE_ALIGN - 1)
+            );
         }
     }
     return NULL;
