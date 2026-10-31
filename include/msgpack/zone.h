@@ -12,6 +12,37 @@
 
 #include "sysdep.h"
 
+/* AddressSanitizer interior redzones.
+ *
+ * The zone carves many objects out of one malloc()ed chunk, so an overflow
+ * from one zone-allocated object into its neighbour stays inside a live heap
+ * block and is invisible to ASan. When building with ASan, every allocation
+ * is followed by a poisoned redzone, and chunks of the configured size are
+ * kept poisoned until handed out, so that msgpack_zone_clear() also poisons
+ * stale objects. Builds without ASan are not affected.
+ * Define MSGPACK_ZONE_NO_ASAN_ANNOTATIONS to disable this, e.g. when
+ * instrumented and uninstrumented code share a zone.
+ */
+#if !defined(MSGPACK_ZONE_NO_ASAN_ANNOTATIONS)
+#if defined(__SANITIZE_ADDRESS__)
+#define MSGPACK_ZONE_ASAN_ANNOTATIONS
+#elif defined(__has_feature)
+#if __has_feature(address_sanitizer)
+#define MSGPACK_ZONE_ASAN_ANNOTATIONS
+#endif
+#endif
+#endif
+
+#if defined(MSGPACK_ZONE_ASAN_ANNOTATIONS)
+#include <sanitizer/asan_interface.h>
+/* ASan shadow granularity: objects start on a granule boundary. */
+#define MSGPACK_ZONE_ASAN_GRANULE 8
+/* Minimum number of poisoned bytes between two zone allocations. */
+#ifndef MSGPACK_ZONE_ASAN_REDZONE_SIZE
+#define MSGPACK_ZONE_ASAN_REDZONE_SIZE 16
+#endif
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -87,8 +118,50 @@ void msgpack_zone_clear(msgpack_zone* zone);
 MSGPACK_DLLEXPORT
 void* msgpack_zone_malloc_expand(msgpack_zone* zone, size_t size);
 
+#if defined(MSGPACK_ZONE_ASAN_ANNOTATIONS)
+/* Same as msgpack_zone_malloc(), but each object starts on an ASan granule
+ * and is followed by MSGPACK_ZONE_ASAN_REDZONE_SIZE bytes that stay
+ * poisoned, so writing past the object is reported as use-after-poison. */
+static inline void* msgpack_zone_asan_malloc(msgpack_zone* zone, size_t size, size_t align)
+{
+    msgpack_zone_chunk_list* const cl = &zone->chunk_list;
+    const size_t redzone = MSGPACK_ZONE_ASAN_REDZONE_SIZE;
+    char* aligned;
+    size_t adjusted_size;
+
+    if (align < MSGPACK_ZONE_ASAN_GRANULE) {
+        align = MSGPACK_ZONE_ASAN_GRANULE;
+    }
+    if (size > (size_t)-1 - (align - 1) - redzone) {
+        return NULL;
+    }
+    aligned = (char*)(
+        ((uintptr_t)cl->ptr + (align - 1)) & ~(uintptr_t)(align - 1));
+    adjusted_size = size + redzone + (size_t)(aligned - cl->ptr);
+    if (cl->free >= adjusted_size) {
+        cl->free -= adjusted_size;
+        cl->ptr  += adjusted_size;
+        ASAN_UNPOISON_MEMORY_REGION(aligned, size);
+    } else {
+        /* A new chunk is unpoisoned where it is handed out. */
+        char* ptr = (char*)msgpack_zone_malloc_expand(zone, size + redzone + (align - 1));
+        if (ptr == NULL) {
+            return NULL;
+        }
+        aligned = (char*)(
+            ((uintptr_t)ptr + (align - 1)) & ~(uintptr_t)(align - 1));
+        ASAN_POISON_MEMORY_REGION(ptr, (size_t)(aligned - ptr));
+    }
+    ASAN_POISON_MEMORY_REGION(aligned + size, redzone);
+    return aligned;
+}
+#endif
+
 static inline void* msgpack_zone_malloc_no_align(msgpack_zone* zone, size_t size)
 {
+#if defined(MSGPACK_ZONE_ASAN_ANNOTATIONS)
+    return msgpack_zone_asan_malloc(zone, size, 1);
+#else
     char* ptr;
     msgpack_zone_chunk_list* cl = &zone->chunk_list;
 
@@ -101,10 +174,14 @@ static inline void* msgpack_zone_malloc_no_align(msgpack_zone* zone, size_t size
     cl->ptr  += size;
 
     return ptr;
+#endif
 }
 
 static inline void* msgpack_zone_malloc(msgpack_zone* zone, size_t size)
 {
+#if defined(MSGPACK_ZONE_ASAN_ANNOTATIONS)
+    return msgpack_zone_asan_malloc(zone, size, MSGPACK_ZONE_ALIGN);
+#else
     char* aligned =
         (char*)(
             (uintptr_t)(
@@ -129,6 +206,7 @@ static inline void* msgpack_zone_malloc(msgpack_zone* zone, size_t size)
         }
     }
     return NULL;
+#endif
 }
 
 
