@@ -65,6 +65,19 @@ BOOST_AUTO_TEST_CASE(array_char_str_no_overread)
     BOOST_CHECK_EQUAL(a[2], 'Z'); // untouched
 }
 
+// A5: as<std::array<T, N>> reads exactly N elements through as_impl, so a wire
+// array shorter than N (or empty) must throw instead of reading past the end.
+BOOST_AUTO_TEST_CASE(array_as_short_array_throws)
+{
+    using tp = std::chrono::system_clock::time_point;
+    msgpack::object_handle oh0 = msgpack::unpack("\x90", 1); // [] -> would deref null
+    BOOST_CHECK_THROW((oh0.get().as<std::array<tp, 2> >()), msgpack::type_error);
+
+    const char b1[] = "\x91\xd6\xff\x00\x00\x00\x00"; // [ts32] -> would read ptr[1..2]
+    msgpack::object_handle oh1 = msgpack::unpack(b1, sizeof(b1) - 1);
+    BOOST_CHECK_THROW((oh1.get().as<std::array<tp, 3> >()), msgpack::type_error);
+}
+
 // B1: moving a (v2) unpacker must not leave the parser referencing the
 // moved-from object's buffer hook.
 BOOST_AUTO_TEST_CASE(unpacker_move_buffer_hook)
