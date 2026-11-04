@@ -13,6 +13,7 @@ SET (check_PROGRAMS
     msgpack_c.cpp
     pack_unpack_c.cpp
     streaming_c.cpp
+    zone_align_c.cpp
     zone_c.cpp
 )
 
