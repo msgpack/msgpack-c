@@ -41,6 +41,18 @@
 #error msgpack_pack_append_buffer callback is not defined
 #endif
 
+/*
+ * Container and raw lengths travel in a header field that is at most 32
+ * bits wide. Refuse a size_t that does not fit instead of emitting its low
+ * 32 bits, which would leave the header disagreeing with the body.
+ */
+#if SIZE_MAX > UINT32_MAX
+#define msgpack_pack_check_container_size(n) \
+    do { if((n) > UINT32_MAX) { return -1; } } while(0)
+#else
+#define msgpack_pack_check_container_size(n) do { } while(0)
+#endif
+
 #if defined(_MSC_VER)
 #   pragma warning(push)
 #   pragma warning(disable : 4204)   /* nonstandard extension used: non-constant aggregate initializer */
@@ -719,6 +731,7 @@ msgpack_pack_inline_func(_false)(msgpack_pack_user x)
 
 msgpack_pack_inline_func(_array)(msgpack_pack_user x, size_t n)
 {
+    msgpack_pack_check_container_size(n);
     if(n < 16) {
         unsigned char d = 0x90 | (uint8_t)n;
         msgpack_pack_append_buffer(x, &d, 1);
@@ -740,6 +753,7 @@ msgpack_pack_inline_func(_array)(msgpack_pack_user x, size_t n)
 
 msgpack_pack_inline_func(_map)(msgpack_pack_user x, size_t n)
 {
+    msgpack_pack_check_container_size(n);
     if(n < 16) {
         unsigned char d = 0x80 | (uint8_t)n;
         msgpack_pack_append_buffer(x, &TAKE8_8(d), 1);
@@ -761,6 +775,7 @@ msgpack_pack_inline_func(_map)(msgpack_pack_user x, size_t n)
 
 msgpack_pack_inline_func(_str)(msgpack_pack_user x, size_t l)
 {
+    msgpack_pack_check_container_size(l);
     if(l < 32) {
         unsigned char d = 0xa0 | (uint8_t)l;
         msgpack_pack_append_buffer(x, &TAKE8_8(d), 1);
@@ -790,6 +805,7 @@ msgpack_pack_inline_func(_str_body)(msgpack_pack_user x, const void* b, size_t l
 
 msgpack_pack_inline_func(_v4raw)(msgpack_pack_user x, size_t l)
 {
+    msgpack_pack_check_container_size(l);
     if(l < 32) {
         unsigned char d = 0xa0 | (uint8_t)l;
         msgpack_pack_append_buffer(x, &TAKE8_8(d), 1);
@@ -815,6 +831,7 @@ msgpack_pack_inline_func(_v4raw_body)(msgpack_pack_user x, const void* b, size_t
 
 msgpack_pack_inline_func(_bin)(msgpack_pack_user x, size_t l)
 {
+    msgpack_pack_check_container_size(l);
     if(l < 256) {
         unsigned char buf[2];
         buf[0] = 0xc4; buf[1] = (uint8_t)l;
@@ -841,6 +858,7 @@ msgpack_pack_inline_func(_bin_body)(msgpack_pack_user x, const void* b, size_t l
 
 msgpack_pack_inline_func(_ext)(msgpack_pack_user x, size_t l, int8_t type)
 {
+    msgpack_pack_check_container_size(l);
     switch(l) {
     case 1: {
         unsigned char buf[2];
@@ -937,6 +955,8 @@ msgpack_pack_inline_func(_timestamp)(msgpack_pack_user x, const msgpack_timestam
 #undef TAKE8_16
 #undef TAKE8_32
 #undef TAKE8_64
+
+#undef msgpack_pack_check_container_size
 
 #undef msgpack_pack_real_uint8
 #undef msgpack_pack_real_uint16

@@ -681,6 +681,46 @@ TEST(MSGPACKC, simple_buffer_ext_maxlen)
 }
 #endif // SIZE_MAX > UINT32_MAX
 
+// The length field of a str/bin/ext/array/map header is at most 32 bits
+// wide. A size_t that does not fit is rejected rather than narrowed into a
+// header that disagrees with the body the caller appends next.
+#if SIZE_MAX > UINT32_MAX
+TEST(MSGPACKC, pack_length_over_uint32)
+{
+    // 2^32 + 1: the low 32 bits say "1 byte"
+    const size_t over = static_cast<size_t>(UINT32_MAX) + 2;
+
+    msgpack_sbuffer sbuf;
+    msgpack_sbuffer_init(&sbuf);
+    msgpack_packer pk;
+    msgpack_packer_init(&pk, &sbuf, msgpack_sbuffer_write);
+
+    EXPECT_EQ(-1, msgpack_pack_str(&pk, over));
+    EXPECT_EQ(-1, msgpack_pack_v4raw(&pk, over));
+    EXPECT_EQ(-1, msgpack_pack_bin(&pk, over));
+    EXPECT_EQ(-1, msgpack_pack_ext(&pk, over, 1));
+    EXPECT_EQ(-1, msgpack_pack_array(&pk, over));
+    EXPECT_EQ(-1, msgpack_pack_map(&pk, over));
+    // a rejected header leaves nothing in the buffer
+    EXPECT_EQ(0u, sbuf.size);
+
+    // the largest encodable length still goes out as str32 / ext32
+    EXPECT_EQ(0, msgpack_pack_str(&pk, static_cast<size_t>(UINT32_MAX)));
+    EXPECT_EQ(5u, sbuf.size);
+    EXPECT_EQ(static_cast<char>(0xdbu), sbuf.data[0]);
+    EXPECT_EQ(static_cast<char>(0xffu), sbuf.data[1]);
+    EXPECT_EQ(static_cast<char>(0xffu), sbuf.data[4]);
+    EXPECT_EQ(0, msgpack_pack_ext(&pk, static_cast<size_t>(UINT32_MAX), 1));
+    EXPECT_EQ(11u, sbuf.size);
+    EXPECT_EQ(static_cast<char>(0xc9u), sbuf.data[5]);
+    EXPECT_EQ(static_cast<char>(0xffu), sbuf.data[6]);
+    EXPECT_EQ(static_cast<char>(0xffu), sbuf.data[9]);
+    EXPECT_EQ(static_cast<char>(0x01u), sbuf.data[10]);
+
+    msgpack_sbuffer_destroy(&sbuf);
+}
+#endif // SIZE_MAX > UINT32_MAX
+
 TEST(MSGPACKC, simple_buffer_timestamp_32)
 {
     msgpack_timestamp ts = {
