@@ -1,4 +1,5 @@
 #include <msgpack/fbuffer.h>
+#include <msgpack/pack.h>
 #include <msgpack/zbuffer.h>
 #include <msgpack/sbuffer.h>
 #include <msgpack/vrefbuffer.h>
@@ -59,6 +60,30 @@ TEST(buffer, fbuffer_c)
         EXPECT_TRUE(ch != EOF);
         EXPECT_EQ('a', (char) ch);
     }
+    EXPECT_EQ(EOF, fgetc(file));
+    fclose(file);
+}
+
+TEST(buffer, fbuffer_c_empty_write)
+{
+#if defined(_MSC_VER)
+    FILE* file;
+    tmpfile_s(&file);
+#else  // defined(_MSC_VER)
+    FILE* file = tmpfile();
+#endif // defined(_MSC_VER)
+    ASSERT_TRUE(file != NULL);
+
+    EXPECT_EQ(0, msgpack_fbuffer_write(file, "", 0));
+
+    msgpack_packer pk;
+    msgpack_packer_init(&pk, file, msgpack_fbuffer_write);
+    EXPECT_EQ(0, msgpack_pack_str(&pk, 0));
+    EXPECT_EQ(0, msgpack_pack_str_body(&pk, "", 0));
+
+    fflush(file);
+    rewind(file);
+    EXPECT_EQ(0xa0, fgetc(file));
     EXPECT_EQ(EOF, fgetc(file));
     fclose(file);
 }
