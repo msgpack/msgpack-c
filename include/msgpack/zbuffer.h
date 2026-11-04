@@ -13,6 +13,7 @@
 #include "sysdep.h"
 #include <stdlib.h>
 #include <string.h>
+#include <limits.h>
 #include <assert.h>
 #include <zlib.h>
 
@@ -67,7 +68,8 @@ static inline bool msgpack_zbuffer_init(msgpack_zbuffer* zbuf,
         int level, size_t init_size)
 {
     memset(zbuf, 0, sizeof(msgpack_zbuffer));
-    zbuf->init_size = init_size;
+    /* 0 means the default size, as in msgpack_vrefbuffer_init() */
+    zbuf->init_size = init_size ? init_size : MSGPACK_ZBUFFER_INIT_SIZE;
     if(deflateInit(&zbuf->stream, level) != Z_OK) {
         free(zbuf->data);
         return false;
@@ -103,17 +105,29 @@ static inline bool msgpack_zbuffer_expand(msgpack_zbuffer* zbuf)
 {
     size_t used = (size_t)((char *)(zbuf->stream.next_out) - zbuf->data);
     size_t csize = used + zbuf->stream.avail_out;
+    size_t nsize;
+    size_t avail;
+    const size_t max_avail = UINT_MAX;
+    char* tmp;
 
-    size_t nsize = (csize == 0) ? zbuf->init_size : csize * 2;
+    if(csize > ((size_t)-1) / 2) {
+        /* csize * 2 would wrap around */
+        return false;
+    }
 
-    char* tmp = (char*)realloc(zbuf->data, nsize);
+    nsize = (csize == 0) ? zbuf->init_size : csize * 2;
+
+    tmp = (char*)realloc(zbuf->data, nsize);
     if(tmp == NULL) {
         return false;
     }
 
+    avail = nsize - used;
+
     zbuf->data = tmp;
     zbuf->stream.next_out  = (Bytef*)(tmp + used);
-    zbuf->stream.avail_out = (uInt)(nsize - used);
+    /* avail_out is narrower than size_t on 64-bit platforms */
+    zbuf->stream.avail_out = (avail > max_avail) ? UINT_MAX : (uInt)avail;
 
     return true;
 }
@@ -121,24 +135,31 @@ static inline bool msgpack_zbuffer_expand(msgpack_zbuffer* zbuf)
 static inline int msgpack_zbuffer_write(void* data, const char* buf, size_t len)
 {
     msgpack_zbuffer* zbuf = (msgpack_zbuffer*)data;
+    const size_t max_avail = UINT_MAX;
 
     assert(buf || len == 0);
     if(!buf) return 0;
 
     zbuf->stream.next_in = (Bytef*)buf;
-    zbuf->stream.avail_in = (uInt)len;
 
-    while(zbuf->stream.avail_in > 0) {
-        if(zbuf->stream.avail_out < MSGPACK_ZBUFFER_RESERVE_SIZE) {
-            if(!msgpack_zbuffer_expand(zbuf)) {
+    /* avail_in is narrower than size_t on 64-bit platforms */
+    do {
+        uInt chunk = (len > max_avail) ? UINT_MAX : (uInt)len;
+        zbuf->stream.avail_in = chunk;
+        len -= chunk;
+
+        while(zbuf->stream.avail_in > 0) {
+            if(zbuf->stream.avail_out < MSGPACK_ZBUFFER_RESERVE_SIZE) {
+                if(!msgpack_zbuffer_expand(zbuf)) {
+                    return -1;
+                }
+            }
+
+            if(deflate(&zbuf->stream, Z_NO_FLUSH) != Z_OK) {
                 return -1;
             }
         }
-
-        if(deflate(&zbuf->stream, Z_NO_FLUSH) != Z_OK) {
-            return -1;
-        }
-    }
+    } while(len > 0);
 
     return 0;
 }

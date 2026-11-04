@@ -36,6 +36,17 @@ TEST(buffer, zbuffer_c)
     msgpack_zbuffer_destroy(&zbuf);
 }
 
+TEST(buffer, zbuffer_c_zero_init_size)
+{
+    msgpack_zbuffer zbuf;
+    EXPECT_TRUE(msgpack_zbuffer_init(&zbuf, 1, 0));
+    EXPECT_EQ(0, msgpack_zbuffer_write(&zbuf, "a", 1));
+
+    EXPECT_TRUE(msgpack_zbuffer_flush(&zbuf) != NULL);
+
+    msgpack_zbuffer_destroy(&zbuf);
+}
+
 TEST(buffer, fbuffer_c)
 {
 #if defined(_MSC_VER)
