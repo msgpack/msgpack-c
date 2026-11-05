@@ -18,7 +18,14 @@ struct msgpack_zone_chunk {
 
 static inline bool init_chunk_list(msgpack_zone_chunk_list* cl, size_t chunk_size)
 {
-    msgpack_zone_chunk* chunk = (msgpack_zone_chunk*)malloc(
+    msgpack_zone_chunk* chunk;
+
+    if((sizeof(msgpack_zone_chunk) + chunk_size) < chunk_size) {
+        /* sizeof(chunk) + chunk_size would wrap around */
+        return false;
+    }
+
+    chunk = (msgpack_zone_chunk*)malloc(
             sizeof(msgpack_zone_chunk) + chunk_size);
     if(chunk == NULL) {
         return false;
