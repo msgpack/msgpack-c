@@ -99,6 +99,10 @@ class zone {
     struct chunk_list {
         chunk_list(size_t chunk_size)
         {
+            if(chunk_size > std::numeric_limits<size_t>::max() - sizeof(chunk)) {
+                // sizeof(chunk) + chunk_size would wrap around
+                throw std::bad_alloc();
+            }
             chunk* c = static_cast<chunk*>(::malloc(sizeof(chunk) + chunk_size));
             if(!c) {
                 throw std::bad_alloc();
