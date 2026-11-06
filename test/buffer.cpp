@@ -133,6 +133,14 @@ BOOST_AUTO_TEST_CASE(zbuffer)
     zbuf.flush();
 }
 
+BOOST_AUTO_TEST_CASE(zbuffer_init_size_zero)
+{
+    // init_size 0: expand has to fail instead of reallocating to 0 bytes
+    msgpack::zbuffer zbuf(Z_DEFAULT_COMPRESSION, 0);
+    BOOST_CHECK_THROW(zbuf.write("ZZZ", 3), std::bad_alloc);
+    BOOST_CHECK_THROW(zbuf.write("ABC", 3), std::bad_alloc);
+}
+
 BOOST_AUTO_TEST_CASE(fbuffer)
 {
 #if defined(_MSC_VER)

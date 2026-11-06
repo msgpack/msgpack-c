@@ -129,6 +129,11 @@ private:
         size_t csize = used + m_stream.avail_out;
         size_t nsize = (csize == 0) ? m_init_size : csize * 2;
 
+        if(nsize == 0 || nsize < csize) {
+            // m_init_size is 0, or csize * 2 would wrap around
+            return false;
+        }
+
         char* tmp = static_cast<char*>(::realloc(m_data, nsize));
         if(tmp == MSGPACK_NULLPTR) {
             return false;
