@@ -1717,6 +1717,48 @@ TEST(MSGPACKC, object_bin_print_buffer_overflow_terminated) {
   }
 }
 
+TEST(MSGPACKC, object_print_buffer_bin_empty) {
+  msgpack_object obj;
+  obj.type = MSGPACK_OBJECT_BIN;
+  obj.via.bin.ptr = "";
+  obj.via.bin.size = 0;
+  char buffer[3];
+
+  EXPECT_EQ(0, msgpack_object_print_buffer(buffer, 2, obj));
+  EXPECT_EQ(2, msgpack_object_print_buffer(buffer, 3, obj));
+  EXPECT_STREQ("\"\"", buffer);
+}
+
+TEST(MSGPACKC, object_print_buffer_ext_empty) {
+  msgpack_object obj;
+  obj.type = MSGPACK_OBJECT_EXT;
+  obj.via.ext.type = 1;
+  obj.via.ext.ptr = "";
+  obj.via.ext.size = 0;
+  char buffer[11];
+
+  EXPECT_EQ(0, msgpack_object_print_buffer(buffer, 10, obj));
+  EXPECT_EQ(10, msgpack_object_print_buffer(buffer, 11, obj));
+  EXPECT_STREQ("(ext: 1)\"\"", buffer);
+}
+
+TEST(MSGPACKC, object_print_buffer_array_bin_ext_empty) {
+  // [1, bin 8 with no bytes, ext 8 of type 1 with no bytes, 3]
+  const char data[] = { '\x94', '\x01', '\xc4', '\x00', '\xc7', '\x00', '\x01', '\x03' };
+  const char * expected = "[1, \"\", (ext: 1)\"\", 3]";
+  char buffer[32];
+
+  msgpack_zone z;
+  msgpack_zone_init(&z, 2048);
+  msgpack_object obj;
+  EXPECT_EQ(MSGPACK_UNPACK_SUCCESS, msgpack_unpack(data, sizeof(data), NULL, &z, &obj));
+
+  EXPECT_EQ((int)strlen(expected), msgpack_object_print_buffer(buffer, sizeof(buffer), obj));
+  EXPECT_STREQ(expected, buffer);
+
+  msgpack_zone_destroy(&z);
+}
+
 TEST(MSGPACKC, init_msgpack_obj_nil) {
     msgpack_object obj;
     msgpack_object_init_nil(&obj);
