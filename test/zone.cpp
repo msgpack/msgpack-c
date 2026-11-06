@@ -114,3 +114,19 @@ BOOST_AUTO_TEST_CASE(allocate_size_overflow)
     BOOST_CHECK(buf != MSGPACK_NULLPTR);
     BOOST_CHECK_EQUAL(0ul, reinterpret_cast<std::size_t>(buf) % MSGPACK_ZONE_ALIGN);
 }
+
+BOOST_AUTO_TEST_CASE(constructor_chunk_size_overflow)
+{
+    const std::size_t max = std::numeric_limits<std::size_t>::max();
+
+    // sizeof(chunk) + chunk_size would wrap around in the constructor: the
+    // request has to be rejected without any allocation attempt. The chunk
+    // header is one pointer, so max - (sizeof(void*) - 1) is the smallest
+    // chunk size that wraps.
+    BOOST_CHECK_THROW(msgpack::zone z(max), std::bad_alloc);
+    BOOST_CHECK_THROW(msgpack::zone z(max - (sizeof(void*) - 1)), std::bad_alloc);
+
+    // A zone with the default chunk size is still constructible.
+    msgpack::zone z;
+    BOOST_CHECK(z.allocate_align(1) != MSGPACK_NULLPTR);
+}
