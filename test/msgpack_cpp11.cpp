@@ -1074,6 +1074,50 @@ BOOST_AUTO_TEST_CASE(system_clock_picoseconds)
     BOOST_CHECK(val1 == val2);
 }
 
+BOOST_AUTO_TEST_CASE(system_clock_out_of_range)
+{
+    typedef std::chrono::system_clock::time_point time_point;
+    // timestamp96 with tv_sec = INT64_MAX
+    char packed_max[] = {
+        static_cast<char>(0xc7u), 12, static_cast<char>(-1),
+        0, 0, 0, 0,
+        0x7f, static_cast<char>(0xffu), static_cast<char>(0xffu), static_cast<char>(0xffu),
+        static_cast<char>(0xffu), static_cast<char>(0xffu), static_cast<char>(0xffu), static_cast<char>(0xffu)
+    };
+    msgpack::object_handle oh =
+        msgpack::unpack(packed_max, sizeof(packed_max));
+    BOOST_CHECK_THROW(oh.get().as<time_point>(), std::overflow_error);
+    time_point val;
+    BOOST_CHECK_THROW(oh.get().convert(val), std::overflow_error);
+
+    // timestamp96 with tv_sec = INT64_MIN
+    char packed_min[] = {
+        static_cast<char>(0xc7u), 12, static_cast<char>(-1),
+        0, 0, 0, 0,
+        static_cast<char>(0x80u), 0, 0, 0, 0, 0, 0, 0
+    };
+    oh = msgpack::unpack(packed_min, sizeof(packed_min));
+    BOOST_CHECK_THROW(oh.get().as<time_point>(), std::underflow_error);
+    BOOST_CHECK_THROW(oh.get().convert(val), std::underflow_error);
+}
+
+BOOST_AUTO_TEST_CASE(system_clock_picoseconds_out_of_range)
+{
+    typedef std::chrono::duration<int64_t, std::pico> picoseconds;
+    typedef std::chrono::time_point<std::chrono::system_clock, picoseconds> time_point;
+    // timestamp32 with tv_sec = UINT32_MAX, about 4.3e21 ps
+    char packed[] = {
+        static_cast<char>(0xd6u), static_cast<char>(-1),
+        static_cast<char>(0xffu), static_cast<char>(0xffu),
+        static_cast<char>(0xffu), static_cast<char>(0xffu)
+    };
+    msgpack::object_handle oh =
+        msgpack::unpack(packed, sizeof(packed));
+    BOOST_CHECK_THROW(oh.get().as<time_point>(), std::overflow_error);
+    time_point val;
+    BOOST_CHECK_THROW(oh.get().convert(val), std::overflow_error);
+}
+
 BOOST_AUTO_TEST_CASE(system_clock_impl_min)
 {
     std::chrono::system_clock::time_point val1(std::chrono::system_clock::time_point::min());
