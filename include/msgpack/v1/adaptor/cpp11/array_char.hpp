@@ -32,11 +32,11 @@ struct convert<std::array<char, N>> {
         switch (o.type) {
         case msgpack::type::BIN:
             if(o.via.bin.size > N) { throw msgpack::type_error(); }
-            std::memcpy(v.data(), o.via.bin.ptr, o.via.bin.size);
+            if(o.via.bin.size != 0) std::memcpy(v.data(), o.via.bin.ptr, o.via.bin.size);
             break;
         case msgpack::type::STR:
             if(o.via.str.size > N) { throw msgpack::type_error(); }
-            std::memcpy(v.data(), o.via.str.ptr, o.via.str.size);
+            if(o.via.str.size != 0) std::memcpy(v.data(), o.via.str.ptr, o.via.str.size);
             break;
         default:
             throw msgpack::type_error();
@@ -83,7 +83,7 @@ struct object_with_zone<std::array<char, N>> {
         char* ptr = static_cast<char*>(o.zone.allocate_align(size, MSGPACK_ZONE_ALIGNOF(char)));
         o.via.bin.ptr = ptr;
         o.via.bin.size = size;
-        std::memcpy(ptr, v.data(), size);
+        if (size != 0) std::memcpy(ptr, v.data(), size);
     }
 };
 

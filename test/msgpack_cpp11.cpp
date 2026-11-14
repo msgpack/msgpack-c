@@ -202,6 +202,11 @@ BOOST_AUTO_TEST_CASE(simple_buffer_array_char_empty)
     array<char, 0> val2 = oh.get().as<array<char, 0> >();
     BOOST_CHECK_EQUAL(val1.size(), val2.size());
     BOOST_CHECK(equal(val1.begin(), val1.end(), val2.begin()));
+
+    msgpack::zone z;
+    msgpack::object obj(val1, z);
+    BOOST_CHECK_EQUAL(obj.type, msgpack::type::BIN);
+    BOOST_CHECK_EQUAL(obj.via.bin.size, 0u);
 }
 
 BOOST_AUTO_TEST_CASE(simple_buffer_array_unsigned_char)
@@ -234,6 +239,34 @@ BOOST_AUTO_TEST_CASE(simple_buffer_array_unsigned_char_empty)
     array<unsigned char, 0> val2 = oh.get().as<array<unsigned char, 0> >();
     BOOST_CHECK_EQUAL(val1.size(), val2.size());
     BOOST_CHECK(equal(val1.begin(), val1.end(), val2.begin()));
+
+    msgpack::zone z;
+    msgpack::object obj(val1, z);
+    BOOST_CHECK_EQUAL(obj.type, msgpack::type::BIN);
+    BOOST_CHECK_EQUAL(obj.via.bin.size, 0u);
+}
+
+BOOST_AUTO_TEST_CASE(empty_object_to_array_char)
+{
+    char const data[] = { static_cast<char>(0xa0) };
+    msgpack::object_handle str = msgpack::unpack(data, sizeof(data));
+    array<char, 1> str_char = { { 1 } };
+    array<unsigned char, 1> str_unsigned_char = { { 1 } };
+    str.get().convert(str_char);
+    str.get().convert(str_unsigned_char);
+    BOOST_CHECK_EQUAL(str_char[0], 1);
+    BOOST_CHECK_EQUAL(str_unsigned_char[0], 1u);
+
+    msgpack::object bin;
+    bin.type = msgpack::type::BIN;
+    bin.via.bin.ptr = MSGPACK_NULLPTR;
+    bin.via.bin.size = 0;
+    array<char, 1> bin_char = { { 1 } };
+    array<unsigned char, 1> bin_unsigned_char = { { 1 } };
+    bin.convert(bin_char);
+    bin.convert(bin_unsigned_char);
+    BOOST_CHECK_EQUAL(bin_char[0], 1);
+    BOOST_CHECK_EQUAL(bin_unsigned_char[0], 1u);
 }
 
 // strong typedefs

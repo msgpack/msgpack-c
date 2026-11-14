@@ -223,6 +223,29 @@ BOOST_AUTO_TEST_CASE(obj_with_zone_unsigned_char_as_bin)
     BOOST_CHECK_EQUAL(v1[1], v2[1]);
 }
 
+BOOST_AUTO_TEST_CASE(empty_object_to_char_arrays)
+{
+    char const data[] = { static_cast<char>(0xa0) };
+    msgpack::object_handle str = msgpack::unpack(data, sizeof(data));
+    char str_char[1] = { 1 };
+    unsigned char str_unsigned_char[1] = { 1 };
+    str.get().convert(str_char);
+    str.get().convert(str_unsigned_char);
+    BOOST_CHECK_EQUAL(str_char[0], 0);
+    BOOST_CHECK_EQUAL(str_unsigned_char[0], 0u);
+
+    msgpack::object bin;
+    bin.type = msgpack::type::BIN;
+    bin.via.bin.ptr = MSGPACK_NULLPTR;
+    bin.via.bin.size = 0;
+    char bin_char[1] = { 1 };
+    unsigned char bin_unsigned_char[1] = { 1 };
+    bin.convert(bin_char);
+    bin.convert(bin_unsigned_char);
+    BOOST_CHECK_EQUAL(bin_char[0], 1);
+    BOOST_CHECK_EQUAL(bin_unsigned_char[0], 1u);
+}
+
 BOOST_AUTO_TEST_CASE(pack_unpack_signed_char)
 {
     std::stringstream ss;
