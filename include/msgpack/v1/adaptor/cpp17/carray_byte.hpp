@@ -36,11 +36,11 @@ struct convert<std::byte[N]> {
         switch (o.type) {
         case msgpack::type::BIN:
             if (o.via.bin.size > N) { throw msgpack::type_error(); }
-            std::memcpy(v, o.via.bin.ptr, o.via.bin.size);
+            if (o.via.bin.size != 0) std::memcpy(v, o.via.bin.ptr, o.via.bin.size);
             break;
         case msgpack::type::STR:
             if (o.via.str.size > N) { throw msgpack::type_error(); }
-            std::memcpy(v, o.via.str.ptr, o.via.str.size);
+            if (o.via.str.size != 0) std::memcpy(v, o.via.str.ptr, o.via.str.size);
             if (o.via.str.size < N) v[o.via.str.size] = std::byte{'\0'};
             break;
         default:

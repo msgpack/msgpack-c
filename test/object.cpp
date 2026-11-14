@@ -377,6 +377,22 @@ BOOST_AUTO_TEST_CASE(clone_str)
     BOOST_CHECK_EQUAL(v, oh.get().as<std::string>());
 }
 
+BOOST_AUTO_TEST_CASE(empty_str_with_null_pointer)
+{
+    char const data[] = { static_cast<char>(0xa0) };
+    msgpack::object_handle parsed = msgpack::unpack(data, sizeof(data));
+    msgpack::object_handle first = msgpack::clone(parsed.get());
+    BOOST_CHECK(first.get().via.str.ptr == MSGPACK_NULLPTR);
+    BOOST_CHECK(first.get() == first.get());
+
+    msgpack::zone z;
+    msgpack::object copy(first.get(), z);
+    BOOST_CHECK(copy == first.get());
+
+    msgpack::object_handle second = msgpack::clone(first.get());
+    BOOST_CHECK(second.get() == first.get());
+}
+
 BOOST_AUTO_TEST_CASE(clone_bin)
 {
     msgpack::object_handle oh;
@@ -399,6 +415,19 @@ BOOST_AUTO_TEST_CASE(clone_bin)
     std::vector<char> v2 = oh.get().as<std::vector<char> >();
     BOOST_CHECK_EQUAL(v.size(), v2.size());
     BOOST_CHECK(equal(v.begin(), v.end(), v2.begin()));
+}
+
+BOOST_AUTO_TEST_CASE(empty_bin_with_null_pointer)
+{
+    msgpack::object value;
+    value.type = msgpack::type::BIN;
+    value.via.bin.ptr = MSGPACK_NULLPTR;
+    value.via.bin.size = 0;
+    BOOST_CHECK(value == value);
+
+    msgpack::zone z;
+    msgpack::object copy(value, z);
+    BOOST_CHECK(copy == value);
 }
 
 BOOST_AUTO_TEST_CASE(clone_array)

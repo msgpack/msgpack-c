@@ -43,13 +43,13 @@ struct v4raw_ref {
 
     bool operator< (const v4raw_ref& x) const
     {
-        if(size == x.size) { return std::memcmp(ptr, x.ptr, size) < 0; }
+        if(size == x.size) { return (size == 0 ? false : std::memcmp(ptr, x.ptr, size) < 0); }
         else { return size < x.size; }
     }
 
     bool operator> (const v4raw_ref& x) const
     {
-        if(size == x.size) { return std::memcmp(ptr, x.ptr, size) > 0; }
+        if(size == x.size) { return (size == 0 ? false : std::memcmp(ptr, x.ptr, size) > 0); }
         else { return size > x.size; }
     }
 };

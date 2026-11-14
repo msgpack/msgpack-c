@@ -159,6 +159,14 @@ BOOST_AUTO_TEST_CASE(v4_pack_unpack_fix_l)
     BOOST_CHECK(rr1 == rr2);
 }
 
+BOOST_AUTO_TEST_CASE(v4_empty_ordering)
+{
+    msgpack::type::v4raw_ref lhs;
+    msgpack::type::v4raw_ref rhs;
+    BOOST_CHECK(!(lhs < rhs));
+    BOOST_CHECK(!(lhs > rhs));
+}
+
 BOOST_AUTO_TEST_CASE(v4_pack_unpack_fix_h)
 {
     std::string s(0x1f, 'A');

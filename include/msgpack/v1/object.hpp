@@ -730,7 +730,7 @@ private:
             m_ptr->via.str.size = size;
             char* ptr = static_cast<char*>(m_zone.allocate_align(size, MSGPACK_ZONE_ALIGNOF(char)));
             m_ptr->via.str.ptr = ptr;
-            std::memcpy(ptr, v, size);
+            if (size != 0) std::memcpy(ptr, v, size);
             return true;
         }
         bool visit_bin(const char* v, uint32_t size) {
@@ -738,7 +738,7 @@ private:
             m_ptr->via.bin.size = size;
             char* ptr = static_cast<char*>(m_zone.allocate_align(size, MSGPACK_ZONE_ALIGNOF(char)));
             m_ptr->via.bin.ptr = ptr;
-            std::memcpy(ptr, v, size);
+            if (size != 0) std::memcpy(ptr, v, size);
             return true;
         }
         bool visit_ext(const char* v, std::size_t size) {
@@ -926,7 +926,7 @@ struct object_equal_visitor {
     bool visit_str(const char* v, uint32_t size) {
         if (m_ptr->type != msgpack::type::STR ||
             m_ptr->via.str.size != size ||
-            std::memcmp(m_ptr->via.str.ptr, v, size) != 0) {
+            (size != 0 && std::memcmp(m_ptr->via.str.ptr, v, size) != 0)) {
             m_result = false;
             return false;
         }
@@ -935,7 +935,7 @@ struct object_equal_visitor {
     bool visit_bin(const char* v, uint32_t size) {
         if (m_ptr->type != msgpack::type::BIN ||
             m_ptr->via.bin.size != size ||
-            std::memcmp(m_ptr->via.bin.ptr, v, size) != 0) {
+            (size != 0 && std::memcmp(m_ptr->via.bin.ptr, v, size) != 0)) {
             m_result = false;
             return false;
         }
