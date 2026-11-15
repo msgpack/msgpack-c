@@ -746,6 +746,17 @@ BOOST_AUTO_TEST_CASE(ext_65536)
         std::equal(buf, buf + sizeof(buf), oh.get().via.ext.data()));
 }
 
+BOOST_AUTO_TEST_CASE(ext32_max_size_truncated)
+{
+    // ext32 header announcing a 0xffffffff byte payload, followed by only
+    // a type byte and a positive fixint
+    const char data[] = { '\xc9', '\xff', '\xff', '\xff', '\xff', 0x01, 0x02 };
+    std::string str(data, sizeof(data));
+    BOOST_CHECK_THROW(
+        msgpack::unpack(str.begin(), str.end()),
+        msgpack::unpack_error);
+}
+
 BOOST_AUTO_TEST_CASE(unpack_referenced_1)
 {
     std::string v = "ABC";
