@@ -22,7 +22,7 @@ build_script:
 - cmake --build . --config Release
 - cd ..
 - cd ..
-- appveyor DownloadFile http://zlib.net/zlib-1.3.2.tar.gz -FileName zlib-1.3.2.tar.gz
+- appveyor DownloadFile https://github.com/madler/zlib/releases/download/v1.3.2/zlib-1.3.2.tar.gz -FileName zlib-1.3.2.tar.gz
 - 7z x zlib-1.3.2.tar.gz > NUL
 - 7z x zlib-1.3.2.tar > NUL
 - cd zlib-1.3.2
