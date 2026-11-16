@@ -187,6 +187,28 @@ static inline int template_callback_false(unpack_user* u, msgpack_object* o)
     return 0;
 }
 
+/*
+ * Optional, compile-time hardening limits for the number of elements an
+ * array, or key/value pairs a map, may declare before its backing store is
+ * allocated. They bound the up-front allocation that a tiny message can
+ * request: a 5-byte array32/map32 header (e.g. 0xdf 0xff 0xff 0xff 0xff) can
+ * otherwise ask for ~100-200 GB before a single element byte is read, which
+ * makes a resource-exhaustion attack very cheap (see issue #1013).
+ *
+ * Both default to 0, which means "no limit" and preserves the previous
+ * behavior exactly: with the default the checks below compile out entirely.
+ * Define them to a non-zero value at build time
+ * (e.g. -DMSGPACK_UNPACK_ARRAY_LIMIT=1000000) to reject any array or map
+ * whose declared element count exceeds the limit with
+ * MSGPACK_UNPACK_PARSE_ERROR.
+ */
+#ifndef MSGPACK_UNPACK_ARRAY_LIMIT
+#define MSGPACK_UNPACK_ARRAY_LIMIT 0
+#endif
+#ifndef MSGPACK_UNPACK_MAP_LIMIT
+#define MSGPACK_UNPACK_MAP_LIMIT 0
+#endif
+
 static inline int template_callback_array(unpack_user* u, unsigned int n, msgpack_object* o)
 {
     size_t size;
@@ -197,6 +219,11 @@ static inline int template_callback_array(unpack_user* u, unsigned int n, msgpac
 #if SIZE_MAX == UINT_MAX
     if (n > SIZE_MAX/sizeof(msgpack_object))
         return MSGPACK_UNPACK_NOMEM_ERROR;
+#endif
+
+#if MSGPACK_UNPACK_ARRAY_LIMIT
+    if (n > MSGPACK_UNPACK_ARRAY_LIMIT)
+        return MSGPACK_UNPACK_PARSE_ERROR;
 #endif
 
     o->type = MSGPACK_OBJECT_ARRAY;
@@ -241,6 +268,11 @@ static inline int template_callback_map(unpack_user* u, unsigned int n, msgpack_
 #if SIZE_MAX == UINT_MAX
     if (n > SIZE_MAX/sizeof(msgpack_object_kv))
         return MSGPACK_UNPACK_NOMEM_ERROR;
+#endif
+
+#if MSGPACK_UNPACK_MAP_LIMIT
+    if (n > MSGPACK_UNPACK_MAP_LIMIT)
+        return MSGPACK_UNPACK_PARSE_ERROR;
 #endif
 
     o->type = MSGPACK_OBJECT_MAP;
