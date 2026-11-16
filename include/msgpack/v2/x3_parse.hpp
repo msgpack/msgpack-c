@@ -18,6 +18,9 @@
 
 #include "msgpack/versioning.hpp"
 #include "msgpack/x3_parse_decl.hpp"
+#include "msgpack/unpack_exception.hpp"
+
+#include <limits>
 
 #if __GNUC__ >= 4
 #pragma GCC diagnostic push
@@ -747,7 +750,11 @@ const auto mp_object_def =
         (
             [](auto& ctx){
                 auto& app_specific = x3::get<tag_app_specific>(ctx).get();
-                app_specific.index_sizes.emplace_back(_attr(ctx)+1);
+                std::size_t size = _attr(ctx);
+                if (size == std::numeric_limits<std::size_t>::max()) {
+                    throw msgpack::ext_size_overflow("ext size overflow");
+                }
+                app_specific.index_sizes.emplace_back(size + 1);
             }
         )
     ]
