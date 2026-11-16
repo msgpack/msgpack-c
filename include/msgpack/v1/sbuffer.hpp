@@ -74,6 +74,7 @@ public:
     {
         MSGPACK_ASSERT(buf || len == 0);
 
+        if (len == 0) return;
         if (!buf) return;
 
         if(m_alloc - m_size < len) {

@@ -5,6 +5,7 @@
 #define BOOST_TEST_MODULE buffer
 #include <boost/test/unit_test.hpp>
 
+#include <cstdlib>
 #include <limits>
 #include <new>
 #include <sstream>
@@ -28,6 +29,19 @@ BOOST_AUTO_TEST_CASE(sbuffer)
 
     BOOST_CHECK_EQUAL(3ul, sbuf.size());
     BOOST_CHECK( memcmp(sbuf.data(), "aaa", 3) == 0 );
+}
+
+
+BOOST_AUTO_TEST_CASE(sbuffer_zero_write_after_release)
+{
+    msgpack::sbuffer sbuf;
+    std::free(sbuf.release());
+    BOOST_CHECK(sbuf.data() == MSGPACK_NULLPTR);
+
+    char const value = 'x';
+    sbuf.write(&value, 0);
+    BOOST_CHECK_EQUAL(0ul, sbuf.size());
+    BOOST_CHECK(sbuf.data() == MSGPACK_NULLPTR);
 }
 
 

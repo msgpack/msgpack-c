@@ -461,6 +461,23 @@ BOOST_AUTO_TEST_CASE(carray_byte_object_with_zone)
     }
 }
 
+BOOST_AUTO_TEST_CASE(empty_object_to_carray_byte)
+{
+    char const data[] = { static_cast<char>(0xa0) };
+    msgpack::object_handle str = msgpack::unpack(data, sizeof(data));
+    std::byte str_value[1] = { std::byte{1} };
+    str.get().convert(str_value);
+    BOOST_CHECK(str_value[0] == std::byte{0});
+
+    msgpack::object bin;
+    bin.type = msgpack::type::BIN;
+    bin.via.bin.ptr = MSGPACK_NULLPTR;
+    bin.via.bin.size = 0;
+    std::byte bin_value[1] = { std::byte{1} };
+    bin.convert(bin_value);
+    BOOST_CHECK(bin_value[0] == std::byte{1});
+}
+
 #if defined(MSGPACK_USE_STD_VARIANT_ADAPTOR)
 
 BOOST_AUTO_TEST_CASE(variant_pack_unpack_as) {
