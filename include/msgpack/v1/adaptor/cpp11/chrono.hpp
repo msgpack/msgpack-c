@@ -132,6 +132,54 @@ Target integral_cast(Source source) {
 
     return static_cast<Target>(source);
 }
+
+// Adds d to tp without overflowing Duration's integer rep. The seconds field of
+// a timestamp comes straight off the wire, so scaling it to Duration's ticks
+// (1e9 for nanoseconds, 1e12 for picoseconds) can exceed the rep's range.
+template <typename Clock, typename Duration, typename Rep, typename Period>
+void checked_add(
+    std::chrono::time_point<Clock, Duration>& tp,
+    std::chrono::duration<Rep, Period> d,
+    std::false_type /* floating point rep */) {
+    typedef typename Duration::rep rep;
+    typedef std::ratio_divide<Period, typename Duration::period> ratio;
+    static_assert(ratio::den == 1, "d must convert to Duration exactly");
+    rep const max = std::chrono::duration_values<rep>::max();
+    rep const min = std::chrono::duration_values<rep>::min();
+    rep const factor = static_cast<rep>(ratio::num);
+    rep v = integral_cast<rep>(d.count());
+    if (v > max / factor) {
+        throw std::overflow_error{"timestamp does not fit the time_point"};
+    }
+    if (v < min / factor) {
+        throw std::underflow_error{"timestamp does not fit the time_point"};
+    }
+    v *= factor;
+    rep const cur = tp.time_since_epoch().count();
+    if (v > 0 && cur > max - v) {
+        throw std::overflow_error{"timestamp does not fit the time_point"};
+    }
+    if (v < 0 && cur < min - v) {
+        throw std::underflow_error{"timestamp does not fit the time_point"};
+    }
+    tp += Duration(v);
+}
+
+template <typename Clock, typename Duration, typename Rep, typename Period>
+void checked_add(
+    std::chrono::time_point<Clock, Duration>& tp,
+    std::chrono::duration<Rep, Period> d,
+    std::true_type /* floating point rep */) {
+    tp += d;
+}
+
+template <typename Clock, typename Duration, typename Rep, typename Period>
+void checked_add(
+    std::chrono::time_point<Clock, Duration>& tp,
+    std::chrono::duration<Rep, Period> d) {
+    checked_add(tp, d, std::integral_constant<bool,
+        std::chrono::treat_as_floating_point<typename Duration::rep>::value>());
+}
 } // namespace detail
 
 template <typename Clock, typename Duration>
@@ -144,16 +192,16 @@ struct as<std::chrono::time_point<Clock, Duration>> {
         case 4: {
             uint32_t sec;
             _msgpack_load32(uint32_t, o.via.ext.data(), &sec);
-            tp += std::chrono::seconds(sec);
+            detail::checked_add(tp, std::chrono::seconds(sec));
         } break;
         case 8: {
             uint64_t value;
             _msgpack_load64(uint64_t, o.via.ext.data(), &value);
             uint32_t nanosec = detail::integral_cast<uint32_t>(value >> 34);
             uint64_t sec = value & 0x00000003ffffffffLL;
-            tp += std::chrono::duration_cast<Duration>(
-                std::chrono::nanoseconds(nanosec));
-            tp += std::chrono::seconds(sec);
+            detail::checked_add(tp, std::chrono::duration_cast<Duration>(
+                std::chrono::nanoseconds(nanosec)));
+            detail::checked_add(tp, std::chrono::seconds(sec));
         } break;
         case 12: {
             uint32_t nanosec;
@@ -162,20 +210,20 @@ struct as<std::chrono::time_point<Clock, Duration>> {
             _msgpack_load64(int64_t, o.via.ext.data() + 4, &sec);
 
             if (sec >= 0) {
-                tp += std::chrono::seconds(sec);
-                tp += std::chrono::duration_cast<Duration>(
-                    std::chrono::nanoseconds(nanosec));
+                detail::checked_add(tp, std::chrono::seconds(sec));
+                detail::checked_add(tp, std::chrono::duration_cast<Duration>(
+                    std::chrono::nanoseconds(nanosec)));
             }
             else {
                 if (nanosec == 0) {
-                    tp += std::chrono::seconds(sec);
+                    detail::checked_add(tp, std::chrono::seconds(sec));
                 }
                 else {
                     ++sec;
-                    tp += std::chrono::seconds(sec);
+                    detail::checked_add(tp, std::chrono::seconds(sec));
                     int64_t ns = detail::integral_cast<int64_t>(nanosec) - 1000000000L;
-                    tp += std::chrono::duration_cast<Duration>(
-                        std::chrono::nanoseconds(ns));
+                    detail::checked_add(tp, std::chrono::duration_cast<Duration>(
+                        std::chrono::nanoseconds(ns)));
                 }
             }
         } break;
@@ -196,7 +244,7 @@ struct convert<std::chrono::time_point<Clock, Duration>> {
         case 4: {
             uint32_t sec;
             _msgpack_load32(uint32_t, o.via.ext.data(), &sec);
-            tp += std::chrono::seconds(sec);
+            detail::checked_add(tp, std::chrono::seconds(sec));
             v = tp;
         } break;
         case 8: {
@@ -204,9 +252,9 @@ struct convert<std::chrono::time_point<Clock, Duration>> {
             _msgpack_load64(uint64_t, o.via.ext.data(), &value);
             uint32_t nanosec = detail::integral_cast<uint32_t>(value >> 34);
             uint64_t sec = value & 0x00000003ffffffffLL;
-            tp += std::chrono::duration_cast<Duration>(
-                std::chrono::nanoseconds(nanosec));
-            tp += std::chrono::seconds(sec);
+            detail::checked_add(tp, std::chrono::duration_cast<Duration>(
+                std::chrono::nanoseconds(nanosec)));
+            detail::checked_add(tp, std::chrono::seconds(sec));
             v = tp;
         } break;
         case 12: {
@@ -216,20 +264,20 @@ struct convert<std::chrono::time_point<Clock, Duration>> {
             _msgpack_load64(int64_t, o.via.ext.data() + 4, &sec);
 
             if (sec >= 0) {
-                tp += std::chrono::seconds(sec);
-                tp += std::chrono::duration_cast<Duration>(
-                    std::chrono::nanoseconds(nanosec));
+                detail::checked_add(tp, std::chrono::seconds(sec));
+                detail::checked_add(tp, std::chrono::duration_cast<Duration>(
+                    std::chrono::nanoseconds(nanosec)));
             }
             else {
                 if (nanosec == 0) {
-                    tp += std::chrono::seconds(sec);
+                    detail::checked_add(tp, std::chrono::seconds(sec));
                 }
                 else {
                     ++sec;
-                    tp += std::chrono::seconds(sec);
+                    detail::checked_add(tp, std::chrono::seconds(sec));
                     int64_t ns = detail::integral_cast<int64_t>(nanosec) - 1000000000L;
-                    tp += std::chrono::duration_cast<Duration>(
-                        std::chrono::nanoseconds(ns));
+                    detail::checked_add(tp, std::chrono::duration_cast<Duration>(
+                        std::chrono::nanoseconds(ns)));
                 }
             }
 
