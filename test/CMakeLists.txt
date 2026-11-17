@@ -11,6 +11,7 @@ SET (check_PROGRAMS
     buffer_c.cpp
     fixint_c.cpp
     msgpack_c.cpp
+    msgpack_test_suite.cpp
     pack_unpack_c.cpp
     streaming_c.cpp
     zbuffer_sizes_c.cpp
