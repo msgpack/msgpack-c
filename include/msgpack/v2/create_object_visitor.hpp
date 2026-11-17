@@ -15,6 +15,7 @@
 #include "msgpack/v2/create_object_visitor_decl.hpp"
 #include "msgpack/v2/null_visitor.hpp"
 #include "msgpack/assert.hpp"
+#include "msgpack/v2/embed_stack.hpp"
 
 namespace msgpack {
 
@@ -28,7 +29,6 @@ class create_object_visitor : public msgpack::v2::null_visitor {
 public:
     create_object_visitor(unpack_reference_func f, void* user_data, unpack_limit const& limit)
         :m_func(f), m_user_data(user_data), m_limit(limit) {
-        m_stack.reserve(MSGPACK_EMBED_STACK_SIZE);
         m_stack.push_back(&m_obj);
     }
 
@@ -266,7 +266,7 @@ public:
     void* m_user_data;
     unpack_limit m_limit;
     msgpack::object m_obj;
-    std::vector<msgpack::object*> m_stack;
+    embed_stack<msgpack::object*, MSGPACK_EMBED_STACK_SIZE> m_stack;
     msgpack::zone* m_zone;
     bool m_referenced;
 };

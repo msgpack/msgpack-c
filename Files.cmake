@@ -650,6 +650,7 @@ SET (msgpack-cxx_HEADERS
     include/msgpack/v2/create_object_visitor_decl.hpp
     include/msgpack/v2/detail/cpp03_zone_decl.hpp
     include/msgpack/v2/detail/cpp11_zone_decl.hpp
+    include/msgpack/v2/embed_stack.hpp
     include/msgpack/v2/fbuffer_decl.hpp
     include/msgpack/v2/iterator_decl.hpp
     include/msgpack/v2/meta_decl.hpp

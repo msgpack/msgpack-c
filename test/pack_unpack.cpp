@@ -600,3 +600,63 @@ BOOST_AUTO_TEST_CASE(unpack_empty_map_32)
     BOOST_CHECK_EQUAL(oh.get().via.map.size, 0u);
     BOOST_CHECK_EQUAL(off, 5u);
 }
+
+// Nesting deeper than MSGPACK_EMBED_STACK_SIZE: the parse stacks keep that many levels inline and the
+// rest in a vector.
+static std::string nested_array_and_map(std::size_t depth)
+{
+    msgpack::sbuffer sbuf;
+    msgpack::packer<msgpack::sbuffer> pk(sbuf);
+    for (std::size_t i = 0; i < depth; ++i) {
+        if (i % 2 == 0) pk.pack_array(2);
+        else { pk.pack_map(1); pk.pack(static_cast<int>(i)); }
+    }
+    pk.pack(42);
+    for (std::size_t i = depth; i-- > 0; ) {    // the second element of each array, innermost first
+        if (i % 2 == 0) pk.pack(static_cast<int>(i));
+    }
+    return std::string(sbuf.data(), sbuf.size());
+}
+
+static void check_nested_array_and_map(msgpack::object const* o, std::size_t depth)
+{
+    for (std::size_t i = 0; i < depth; ++i) {
+        if (i % 2 == 0) {
+            BOOST_REQUIRE_EQUAL(o->type, msgpack::type::ARRAY);
+            BOOST_REQUIRE_EQUAL(o->via.array.size, 2u);
+            BOOST_CHECK_EQUAL(o->via.array.ptr[1].as<int>(), static_cast<int>(i));
+            o = &o->via.array.ptr[0];
+        }
+        else {
+            BOOST_REQUIRE_EQUAL(o->type, msgpack::type::MAP);
+            BOOST_REQUIRE_EQUAL(o->via.map.size, 1u);
+            BOOST_CHECK_EQUAL(o->via.map.ptr[0].key.as<int>(), static_cast<int>(i));
+            o = &o->via.map.ptr[0].val;
+        }
+    }
+    BOOST_CHECK_EQUAL(o->as<int>(), 42);
+}
+
+BOOST_AUTO_TEST_CASE(unpack_deeply_nested)
+{
+    std::size_t const depths[] = { 1, MSGPACK_EMBED_STACK_SIZE - 1, MSGPACK_EMBED_STACK_SIZE,
+                                   MSGPACK_EMBED_STACK_SIZE + 1, 3 * MSGPACK_EMBED_STACK_SIZE + 7 };
+    for (std::size_t k = 0; k < sizeof(depths) / sizeof(depths[0]); ++k) {
+        std::string buf = nested_array_and_map(depths[k]);
+        msgpack::object_handle oh = msgpack::unpack(buf.data(), buf.size());
+        check_nested_array_and_map(&oh.get(), depths[k]);
+
+        // the same, one byte at a time through the streaming unpacker
+        msgpack::unpacker unp;
+        msgpack::object_handle soh;
+        bool done = false;
+        for (std::size_t i = 0; i < buf.size(); ++i) {
+            unp.reserve_buffer(1);
+            unp.buffer()[0] = buf[i];
+            unp.buffer_consumed(1);
+            if (unp.next(soh)) { BOOST_CHECK_EQUAL(i, buf.size() - 1); done = true; }
+        }
+        BOOST_REQUIRE(done);
+        check_nested_array_and_map(&soh.get(), depths[k]);
+    }
+}

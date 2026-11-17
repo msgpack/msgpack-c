@@ -16,6 +16,7 @@
 
 #include "msgpack/parse_return.hpp"
 #include "msgpack/assert.hpp"
+#include "msgpack/v2/embed_stack.hpp"
 
 namespace msgpack {
 
@@ -145,13 +146,11 @@ private:
 
     struct unpack_stack {
         struct stack_elem {
+            stack_elem():m_type(MSGPACK_CT_ARRAY_ITEM), m_rest(0) {}
             stack_elem(msgpack_container_type type, uint32_t rest):m_type(type), m_rest(rest) {}
             msgpack_container_type m_type;
             uint32_t m_rest;
         };
-        unpack_stack() {
-            m_stack.reserve(MSGPACK_EMBED_STACK_SIZE);
-        }
         parse_return push(VisitorHolder& visitor_holder, msgpack_container_type type, uint32_t rest) {
             m_stack.push_back(stack_elem(type, rest));
             switch (type) {
@@ -220,7 +219,7 @@ private:
         bool empty() const { return m_stack.empty(); }
         void clear() { m_stack.clear(); }
     private:
-        std::vector<stack_elem> m_stack;
+        msgpack::v2::detail::embed_stack<stack_elem, MSGPACK_EMBED_STACK_SIZE> m_stack;
     };
 
     char const* m_start;
