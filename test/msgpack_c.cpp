@@ -1717,6 +1717,26 @@ TEST(MSGPACKC, object_bin_print_buffer_overflow_terminated) {
   }
 }
 
+TEST(MSGPACKC, object_str_print_buffer_size_over_int_max) {
+  // a str32 header can declare up to UINT32_MAX bytes; the precision must
+  // not wrap negative and let snprintf scan for a NUL past the payload
+  msgpack_object obj;
+  obj.type = MSGPACK_OBJECT_STR;
+  obj.via.str.ptr = "test";
+  obj.via.str.size = 0x80000000u;
+  char buffer[64];
+
+  memset(buffer, 'x', sizeof(buffer));
+  EXPECT_EQ(0, msgpack_object_print_buffer(buffer, sizeof(buffer), obj));
+  EXPECT_TRUE(memchr(buffer, '\0', sizeof(buffer)) != NULL);
+  EXPECT_TRUE(strstr(buffer, "test") == NULL);
+
+  obj.via.str.size = 0xffffffffu;
+  memset(buffer, 'x', sizeof(buffer));
+  EXPECT_EQ(0, msgpack_object_print_buffer(buffer, sizeof(buffer), obj));
+  EXPECT_TRUE(strstr(buffer, "test") == NULL);
+}
+
 TEST(MSGPACKC, init_msgpack_obj_nil) {
     msgpack_object obj;
     msgpack_object_init_nil(&obj);
