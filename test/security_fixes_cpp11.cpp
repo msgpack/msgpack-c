@@ -144,6 +144,28 @@ BOOST_AUTO_TEST_CASE(zone_allocate_overflow)
         std::bad_alloc);
 }
 
+// B6: vrefbuffer::clear keeps only the head chunk and treats it as
+// m_chunk_size bytes, so after migrate the head must still be one of the
+// destination's own chunks, not a smaller chunk taken from the source.
+BOOST_AUTO_TEST_CASE(vrefbuffer_clear_after_migrate)
+{
+    const std::string payload(256, 'a');
+    msgpack::vrefbuffer from(MSGPACK_VREFBUFFER_REF_SIZE, 64);
+    msgpack::vrefbuffer to;
+    from.append_copy(payload.data(), 8);
+    const void* from_chunk = from.vector()[0].iov_base;
+
+    from.migrate(&to);
+    to.clear();
+
+    to.append_copy(payload.data(), 1);
+    BOOST_REQUIRE(to.vector()[0].iov_base != from_chunk);
+    to.append_copy(payload.data() + 1, payload.size() - 1);
+    BOOST_REQUIRE_EQUAL(to.vector_size(), 1u);
+    BOOST_CHECK_EQUAL(to.vector()[0].iov_len, payload.size());
+    BOOST_CHECK(std::memcmp(to.vector()[0].iov_base, payload.data(), payload.size()) == 0);
+}
+
 // C1: ext_ref comparison must include the whole payload (used to drop the last
 // byte via memcmp(..., m_size)).
 BOOST_AUTO_TEST_CASE(ext_ref_full_payload_compare)
