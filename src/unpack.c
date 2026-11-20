@@ -286,7 +286,7 @@ static inline int template_callback_str(unpack_user* u, const char* b, const cha
     }
     o->type = MSGPACK_OBJECT_STR;
     o->via.str.ptr = p;
-    o->via.str.size = l;
+    o->via.str.size = (uint32_t)l;
     u->referenced = true;
     return 0;
 }
@@ -302,7 +302,7 @@ static inline int template_callback_bin(unpack_user* u, const char* b, const cha
     }
     o->type = MSGPACK_OBJECT_BIN;
     o->via.bin.ptr = p;
-    o->via.bin.size = l;
+    o->via.bin.size = (uint32_t)l;
     u->referenced = true;
     return 0;
 }
@@ -322,7 +322,7 @@ static inline int template_callback_ext(unpack_user* u, const char* b, const cha
     o->type = MSGPACK_OBJECT_EXT;
     o->via.ext.type = *p;
     o->via.ext.ptr = p + 1;
-    o->via.ext.size = l - 1;
+    o->via.ext.size = (uint32_t)(l - 1);
     u->referenced = true;
     return 0;
 }

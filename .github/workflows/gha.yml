@@ -191,27 +191,31 @@ jobs:
       run: |
         if (${{ matrix.pattern }} -eq 0) {
           $ARCH="x64"
+          $TRIPLET="x64-windows"
           $SHARED="ON"
         }
         elseif (${{ matrix.pattern }} -eq 1) {
           $ARCH="x64"
+          $TRIPLET="x64-windows"
           $SHARED="OFF"
         }
         elseif (${{ matrix.pattern }} -eq 2) {
           $ARCH="Win32"
+          $TRIPLET="x86-windows"
           $SHARED="ON"
         }
         else {
           $ARCH="Win32"
+          $TRIPLET="x86-windows"
           $SHARED="OFF"
         }
 
         $CUR=(Get-Location).Path
         md build
         cd build
-        cmake -A $ARCH -DBUILD_SHARED_LIBS=$SHARED -DCMAKE_TOOLCHAIN_FILE="C:/vcpkg/scripts/buildsystems/vcpkg.cmake" "-DCMAKE_CXX_FLAGS=/D_VARIADIC_MAX=10 /EHsc /D_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING" ..
+        cmake -A $ARCH -DMSGPACK_BUILD_TESTS=ON -DBUILD_SHARED_LIBS=$SHARED -DCMAKE_TOOLCHAIN_FILE="C:/vcpkg/scripts/buildsystems/vcpkg.cmake" "-DCMAKE_CXX_FLAGS=/D_VARIADIC_MAX=10 /EHsc /D_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING" ..
         cmake --build . --config Release
         $pathbak="$env:PATH"
-        $env:PATH="C:\vcpkg\installed\x64-windows\bin;$CUR\build\Release;$pathbak"
-        ctest -V
+        $env:PATH="C:\vcpkg\installed\$TRIPLET\bin;$CUR\build\Release;$pathbak"
+        ctest -V -C Release
         $env:PATH=$pathbak
