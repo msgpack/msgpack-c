@@ -26,10 +26,12 @@ static int count_deflated_bytes(z_streamp strm, int /* flush */)
 #pragma GCC diagnostic pop
 #endif //defined(__GNUC__)
 
+// The two tests below need a size_t wider than zlib's uInt. They are guarded
+// with the preprocessor rather than a runtime check so that the constants do
+// not overflow (and warn) on 32-bit targets.
 TEST(zbuffer_sizes, write_length_wider_than_avail_in)
 {
-    if(sizeof(size_t) <= sizeof(uInt)) return;
-
+#if SIZE_MAX > UINT_MAX
     const size_t len = static_cast<size_t>(UINT_MAX) + 2;
     const char byte = 0;
     msgpack_zbuffer zbuf;
@@ -40,6 +42,7 @@ TEST(zbuffer_sizes, write_length_wider_than_avail_in)
     EXPECT_EQ(static_cast<unsigned long long>(len), deflated_bytes);
 
     msgpack_zbuffer_destroy(&zbuf);
+#endif // SIZE_MAX > UINT_MAX
 }
 
 TEST(zbuffer_sizes, expand_refuses_to_wrap_the_doubled_size)
@@ -57,8 +60,7 @@ TEST(zbuffer_sizes, expand_refuses_to_wrap_the_doubled_size)
 
 TEST(zbuffer_sizes, expand_keeps_output_space_past_4_gib)
 {
-    if(sizeof(size_t) <= sizeof(uInt)) return;
-
+#if SIZE_MAX > UINT_MAX
     msgpack_zbuffer zbuf;
     ASSERT_TRUE(msgpack_zbuffer_init(&zbuf, 1, MSGPACK_ZBUFFER_INIT_SIZE));
 
@@ -71,4 +73,5 @@ TEST(zbuffer_sizes, expand_keeps_output_space_past_4_gib)
     }
 
     msgpack_zbuffer_destroy(&zbuf);
+#endif // SIZE_MAX > UINT_MAX
 }
