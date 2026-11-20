@@ -264,8 +264,10 @@ public:
         while(last->next) {
             last = last->next;
         }
-        last->next = toib->head;
-        toib->head = ib->head;
+        // link behind to's head: clear() keeps the head chunk and
+        // assumes it holds to->m_chunk_size bytes
+        last->next = toib->head->next;
+        toib->head->next = ib->head;
 
         if(toib->free < ib->free) {
             toib->free = ib->free;
