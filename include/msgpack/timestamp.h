@@ -37,14 +37,19 @@ static inline bool msgpack_object_to_timestamp(const msgpack_object* obj, msgpac
     case 8: {
         uint64_t value;
         _msgpack_load64(uint64_t, obj->via.ext.ptr, &value);
+        if ((value >> 34) > 999999999) return false;
         ts->tv_nsec = (uint32_t)(value >> 34);
         ts->tv_sec = value & 0x00000003ffffffffLL;
         return true;
     }
-    case 12:
-        _msgpack_load32(uint32_t, obj->via.ext.ptr, &ts->tv_nsec);
+    case 12: {
+        uint32_t nsec;
+        _msgpack_load32(uint32_t, obj->via.ext.ptr, &nsec);
+        if (nsec > 999999999) return false;
+        ts->tv_nsec = nsec;
         _msgpack_load64(int64_t, obj->via.ext.ptr + 4, &ts->tv_sec);
         return true;
+    }
     default:
         return false;
     }
