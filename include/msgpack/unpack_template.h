@@ -187,11 +187,11 @@ msgpack_unpack_func(int, _execute)(msgpack_unpack_struct(_context)* ctx, const c
                     case 0xc4: // bin 8
                     case 0xc5: // bin 16
                     case 0xc6: // bin 32
-                        again_fixed_trail(NEXT_CS(p), 1 << (((unsigned int)*p) & 0x03));
+                        again_fixed_trail(NEXT_CS(p), (size_t)1 << (((unsigned int)*p) & 0x03));
                     case 0xc7: // ext 8
                     case 0xc8: // ext 16
                     case 0xc9: // ext 32
-                        again_fixed_trail(NEXT_CS(p), 1 << ((((unsigned int)*p) + 1) & 0x03));
+                        again_fixed_trail(NEXT_CS(p), (size_t)1 << ((((unsigned int)*p) + 1) & 0x03));
                     case 0xca:  // float
                     case 0xcb:  // double
                     case 0xcc:  // unsigned int  8
@@ -202,20 +202,20 @@ msgpack_unpack_func(int, _execute)(msgpack_unpack_struct(_context)* ctx, const c
                     case 0xd1:  // signed int 16
                     case 0xd2:  // signed int 32
                     case 0xd3:  // signed int 64
-                        again_fixed_trail(NEXT_CS(p), 1 << (((unsigned int)*p) & 0x03));
+                        again_fixed_trail(NEXT_CS(p), (size_t)1 << (((unsigned int)*p) & 0x03));
                     case 0xd4:  // fixext 1
                     case 0xd5:  // fixext 2
                     case 0xd6:  // fixext 4
                     case 0xd7:  // fixext 8
                         again_fixed_trail_if_zero(MSGPACK_ACS_EXT_VALUE,
-                            (1 << (((unsigned int)*p) & 0x03)) + 1, _ext_zero);
+                            ((size_t)1 << (((unsigned int)*p) & 0x03)) + 1, _ext_zero);
                     case 0xd8:  // fixext 16
                         again_fixed_trail_if_zero(MSGPACK_ACS_EXT_VALUE, 16+1, _ext_zero);
 
                     case 0xd9:  // str 8
                     case 0xda:  // str 16
                     case 0xdb:  // str 32
-                        again_fixed_trail(NEXT_CS(p), 1 << ((((unsigned int)*p) & 0x03) - 1));
+                        again_fixed_trail(NEXT_CS(p), (size_t)1 << ((((unsigned int)*p) & 0x03) - 1));
                     case 0xdc:  // array 16
                     case 0xdd:  // array 32
                     case 0xde:  // map 16
