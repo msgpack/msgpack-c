@@ -402,6 +402,9 @@ int msgpack_object_print_buffer(char *buffer, size_t buffer_size, msgpack_object
     case MSGPACK_OBJECT_STR:
         MSGPACK_CHECKED_CALL(ret, snprintf, aux_buffer, aux_buffer_size, "\"");
         if (o.via.str.size > 0) {
+            // the precision is an int: a larger size would turn negative and
+            // make snprintf read up to the next NUL instead of size bytes
+            if (o.via.str.size > INT_MAX) { return 0; }
             MSGPACK_CHECKED_CALL(ret, snprintf, aux_buffer, aux_buffer_size, "%.*s", (int)o.via.str.size, o.via.str.ptr);
         }
         MSGPACK_CHECKED_CALL(ret, snprintf, aux_buffer, aux_buffer_size, "\"");
