@@ -236,3 +236,35 @@ TEST(buffer, vrefbuffer_c_migrate_grows_destination)
     msgpack_vrefbuffer_destroy(&a);
     msgpack_vrefbuffer_destroy(&b);
 }
+
+TEST(buffer, vrefbuffer_c_clear_after_migrate)
+{
+    char payload[256];
+    msgpack_vrefbuffer small, big;
+    const msgpack_vrefbuffer_chunk* small_chunk;
+    const msgpack_iovec *iov;
+
+    memset(payload, 'a', sizeof(payload));
+
+    /* The source's chunks are smaller than the destination's chunk_size. */
+    EXPECT_TRUE(msgpack_vrefbuffer_init(&small, 0, 64));
+    EXPECT_TRUE(msgpack_vrefbuffer_init(&big, 0, 0));
+    EXPECT_EQ(0, msgpack_vrefbuffer_append_copy(&small, payload, 8));
+    small_chunk = small.inner_buffer.head;
+
+    EXPECT_EQ(0, msgpack_vrefbuffer_migrate(&small, &big));
+
+    /* clear keeps only the head chunk and treats it as big.chunk_size
+     * bytes, so the head must still be one of big's own chunks. */
+    msgpack_vrefbuffer_clear(&big);
+    ASSERT_NE(small_chunk, big.inner_buffer.head);
+
+    EXPECT_EQ(0, msgpack_vrefbuffer_append_copy(&big, payload, sizeof(payload)));
+    EXPECT_EQ(1U, msgpack_vrefbuffer_veclen(&big));
+    iov = msgpack_vrefbuffer_vec(&big);
+    EXPECT_EQ(sizeof(payload), iov[0].iov_len);
+    EXPECT_EQ(0, memcmp(payload, iov[0].iov_base, sizeof(payload)));
+
+    msgpack_vrefbuffer_destroy(&small);
+    msgpack_vrefbuffer_destroy(&big);
+}

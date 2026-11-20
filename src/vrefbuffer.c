@@ -237,8 +237,10 @@ int msgpack_vrefbuffer_migrate(msgpack_vrefbuffer* vbuf, msgpack_vrefbuffer* to)
             while(last->next != NULL) {
                 last = last->next;
             }
-            last->next = toib->head;
-            toib->head = ib->head;
+            /* link behind to's head: msgpack_vrefbuffer_clear keeps the
+             * head chunk and assumes it holds to->chunk_size bytes */
+            last->next = toib->head->next;
+            toib->head->next = ib->head;
 
             if(toib->free < ib->free) {
                 toib->free = ib->free;
