@@ -198,6 +198,7 @@ struct as<std::chrono::time_point<Clock, Duration>> {
             uint64_t value;
             _msgpack_load64(uint64_t, o.via.ext.data(), &value);
             uint32_t nanosec = detail::integral_cast<uint32_t>(value >> 34);
+            if (nanosec > 999999999) { throw msgpack::type_error(); }
             uint64_t sec = value & 0x00000003ffffffffLL;
             detail::checked_add(tp, std::chrono::duration_cast<Duration>(
                 std::chrono::nanoseconds(nanosec)));
@@ -206,6 +207,7 @@ struct as<std::chrono::time_point<Clock, Duration>> {
         case 12: {
             uint32_t nanosec;
             _msgpack_load32(uint32_t, o.via.ext.data(), &nanosec);
+            if (nanosec > 999999999) { throw msgpack::type_error(); }
             int64_t sec;
             _msgpack_load64(int64_t, o.via.ext.data() + 4, &sec);
 
@@ -251,6 +253,7 @@ struct convert<std::chrono::time_point<Clock, Duration>> {
             uint64_t value;
             _msgpack_load64(uint64_t, o.via.ext.data(), &value);
             uint32_t nanosec = detail::integral_cast<uint32_t>(value >> 34);
+            if (nanosec > 999999999) { throw msgpack::type_error(); }
             uint64_t sec = value & 0x00000003ffffffffLL;
             detail::checked_add(tp, std::chrono::duration_cast<Duration>(
                 std::chrono::nanoseconds(nanosec)));
@@ -260,6 +263,7 @@ struct convert<std::chrono::time_point<Clock, Duration>> {
         case 12: {
             uint32_t nanosec;
             _msgpack_load32(uint32_t, o.via.ext.data(), &nanosec);
+            if (nanosec > 999999999) { throw msgpack::type_error(); }
             int64_t sec;
             _msgpack_load64(int64_t, o.via.ext.data() + 4, &sec);
 

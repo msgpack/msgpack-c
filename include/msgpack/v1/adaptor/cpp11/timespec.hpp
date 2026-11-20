@@ -39,12 +39,14 @@ struct convert<timespec> {
         case 8: {
             uint64_t value;
             _msgpack_load64(uint64_t, o.via.ext.data(), &value);
+            if ((value >> 34) > 999999999) { throw msgpack::type_error(); }
             v.tv_sec = static_cast<decltype(v.tv_sec)>(value & 0x00000003ffffffffLL);
             v.tv_nsec= static_cast<decltype(v.tv_nsec)>(value >> 34);
         } break;
         case 12: {
             uint32_t nanosec;
             _msgpack_load32(uint32_t, o.via.ext.data(), &nanosec);
+            if (nanosec > 999999999) { throw msgpack::type_error(); }
             int64_t sec;
             _msgpack_load64(int64_t, o.via.ext.data() + 4, &sec);
             v.tv_sec = static_cast<decltype(v.tv_sec)>(sec);

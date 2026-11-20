@@ -1118,6 +1118,32 @@ BOOST_AUTO_TEST_CASE(system_clock_picoseconds_out_of_range)
     BOOST_CHECK_THROW(oh.get().convert(val), std::overflow_error);
 }
 
+BOOST_AUTO_TEST_CASE(system_clock_nanosec_out_of_range)
+{
+    typedef std::chrono::system_clock::time_point time_point;
+    // timestamp64 with nanoseconds = 1000000000, seconds = 0
+    char packed64[] = {
+        static_cast<char>(0xd7u), static_cast<char>(-1),
+        static_cast<char>(0xeeu), 0x6b, 0x28, 0x00, 0, 0, 0, 0
+    };
+    msgpack::object_handle oh =
+        msgpack::unpack(packed64, sizeof(packed64));
+    BOOST_CHECK_THROW(oh.get().as<time_point>(), msgpack::type_error);
+    time_point val;
+    BOOST_CHECK_THROW(oh.get().convert(val), msgpack::type_error);
+
+    // timestamp96 with nanoseconds = UINT32_MAX, seconds = -1
+    char packed96[] = {
+        static_cast<char>(0xc7u), 12, static_cast<char>(-1),
+        static_cast<char>(0xffu), static_cast<char>(0xffu), static_cast<char>(0xffu), static_cast<char>(0xffu),
+        static_cast<char>(0xffu), static_cast<char>(0xffu), static_cast<char>(0xffu), static_cast<char>(0xffu),
+        static_cast<char>(0xffu), static_cast<char>(0xffu), static_cast<char>(0xffu), static_cast<char>(0xffu)
+    };
+    oh = msgpack::unpack(packed96, sizeof(packed96));
+    BOOST_CHECK_THROW(oh.get().as<time_point>(), msgpack::type_error);
+    BOOST_CHECK_THROW(oh.get().convert(val), msgpack::type_error);
+}
+
 BOOST_AUTO_TEST_CASE(system_clock_impl_min)
 {
     std::chrono::system_clock::time_point val1(std::chrono::system_clock::time_point::min());
@@ -1706,5 +1732,26 @@ BOOST_AUTO_TEST_CASE(timespec_object_with_zone_64bit_sec_max_nano)
     BOOST_CHECK_EQUAL(val1.tv_nsec, val2.tv_nsec);
 }
 
+
+BOOST_AUTO_TEST_CASE(timespec_nanosec_out_of_range)
+{
+    // timestamp64 with nanoseconds = 1000000000, seconds = 0
+    char packed64[] = {
+        static_cast<char>(0xd7u), static_cast<char>(-1),
+        static_cast<char>(0xeeu), 0x6b, 0x28, 0x00, 0, 0, 0, 0
+    };
+    msgpack::object_handle oh =
+        msgpack::unpack(packed64, sizeof(packed64));
+    BOOST_CHECK_THROW(oh.get().as<timespec>(), msgpack::type_error);
+
+    // timestamp96 with nanoseconds = UINT32_MAX, seconds = 0
+    char packed96[] = {
+        static_cast<char>(0xc7u), 12, static_cast<char>(-1),
+        static_cast<char>(0xffu), static_cast<char>(0xffu), static_cast<char>(0xffu), static_cast<char>(0xffu),
+        0, 0, 0, 0, 0, 0, 0, 0
+    };
+    oh = msgpack::unpack(packed96, sizeof(packed96));
+    BOOST_CHECK_THROW(oh.get().as<timespec>(), msgpack::type_error);
+}
 
 #endif // !defined(MSGPACK_USE_CPP03)
