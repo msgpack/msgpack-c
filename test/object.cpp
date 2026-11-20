@@ -401,6 +401,38 @@ BOOST_AUTO_TEST_CASE(clone_bin)
     BOOST_CHECK(equal(v.begin(), v.end(), v2.begin()));
 }
 
+// An empty str/bin unpacked from the wire has a null data pointer. Copying it
+// into another zone must not call memcpy with a null source.
+BOOST_AUTO_TEST_CASE(cross_zone_copy_empty_str)
+{
+    const char buf[] = { static_cast<char>(0xa0u) }; // fixstr, length 0
+    msgpack::object_handle oh = msgpack::unpack(buf, sizeof(buf));
+    BOOST_CHECK_EQUAL(oh.get().type, msgpack::type::STR);
+    BOOST_CHECK_EQUAL(oh.get().via.str.size, 0u);
+
+    msgpack::zone z;
+    msgpack::object obj(oh.get(), z);
+    BOOST_CHECK_EQUAL(obj.type, msgpack::type::STR);
+    BOOST_CHECK_EQUAL(obj.via.str.size, 0u);
+    BOOST_CHECK_EQUAL(obj, oh.get());
+    BOOST_CHECK_EQUAL(obj.as<std::string>(), std::string());
+}
+
+BOOST_AUTO_TEST_CASE(cross_zone_copy_empty_bin)
+{
+    const char buf[] = { static_cast<char>(0xc4u), 0x00 }; // bin8, length 0
+    msgpack::object_handle oh = msgpack::unpack(buf, sizeof(buf));
+    BOOST_CHECK_EQUAL(oh.get().type, msgpack::type::BIN);
+    BOOST_CHECK_EQUAL(oh.get().via.bin.size, 0u);
+
+    msgpack::zone z;
+    msgpack::object obj(oh.get(), z);
+    BOOST_CHECK_EQUAL(obj.type, msgpack::type::BIN);
+    BOOST_CHECK_EQUAL(obj.via.bin.size, 0u);
+    BOOST_CHECK_EQUAL(obj, oh.get());
+    BOOST_CHECK(obj.as<std::vector<char> >().empty());
+}
+
 BOOST_AUTO_TEST_CASE(clone_array)
 {
     msgpack::object_handle oh;
