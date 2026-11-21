@@ -31,6 +31,7 @@ LIST (APPEND check_PROGRAMS
     user_class.cpp
     version.cpp
     visitor.cpp
+    zbuffer_sizes.cpp
     zone.cpp
 )
 

@@ -13,6 +13,7 @@
 #include "msgpack/v1/zbuffer_decl.hpp"
 #include "msgpack/assert.hpp"
 
+#include <limits>
 #include <stdexcept>
 #include <zlib.h>
 
@@ -51,19 +52,26 @@ public:
         if (!buf) return;
 
         m_stream.next_in = reinterpret_cast<Bytef*>(const_cast<char*>(buf));
-        m_stream.avail_in = static_cast<uInt>(len);
 
-        while(m_stream.avail_in > 0) {
-            if(m_stream.avail_out < MSGPACK_ZBUFFER_RESERVE_SIZE) {
-                if(!expand()) {
+        // avail_in is narrower than size_t on 64-bit platforms
+        const size_t max_avail = std::numeric_limits<uInt>::max();
+        do {
+            uInt chunk = (len > max_avail) ? std::numeric_limits<uInt>::max() : static_cast<uInt>(len);
+            m_stream.avail_in = chunk;
+            len -= chunk;
+
+            while(m_stream.avail_in > 0) {
+                if(m_stream.avail_out < MSGPACK_ZBUFFER_RESERVE_SIZE) {
+                    if(!expand()) {
+                        throw std::bad_alloc();
+                    }
+                }
+
+                if(deflate(&m_stream, Z_NO_FLUSH) != Z_OK) {
                     throw std::bad_alloc();
                 }
             }
-
-            if(deflate(&m_stream, Z_NO_FLUSH) != Z_OK) {
-                throw std::bad_alloc();
-            }
-        }
+        } while(len > 0);
     }
 
     char* flush()
@@ -139,9 +147,13 @@ private:
             return false;
         }
 
+        const size_t avail = nsize - used;
+        const size_t max_avail = std::numeric_limits<uInt>::max();
+
         m_data = tmp;
         m_stream.next_out  = reinterpret_cast<Bytef*>(tmp + used);
-        m_stream.avail_out = static_cast<uInt>(nsize - used);
+        // avail_out is narrower than size_t on 64-bit platforms
+        m_stream.avail_out = (avail > max_avail) ? std::numeric_limits<uInt>::max() : static_cast<uInt>(avail);
 
         return true;
     }
