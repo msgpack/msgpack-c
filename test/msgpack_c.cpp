@@ -820,6 +820,40 @@ TEST(MSGPACKC, simple_buffer_timestamp_96)
     msgpack_sbuffer_destroy(&sbuf);
 }
 
+TEST(MSGPACKC, timestamp_nsec_out_of_range)
+{
+    // timestamp 64 with nanoseconds 1000000000
+    const char ts64[] = {
+        (char)0xd7, (char)0xff,
+        (char)0xee, (char)0x6b, (char)0x28, (char)0x00,
+        (char)0x00, (char)0x00, (char)0x00, (char)0x00
+    };
+    // timestamp 96 with nanoseconds 0xffffffff and seconds -1
+    const char ts96[] = {
+        (char)0xc7, (char)0x0c, (char)0xff,
+        (char)0xff, (char)0xff, (char)0xff, (char)0xff,
+        (char)0xff, (char)0xff, (char)0xff, (char)0xff,
+        (char)0xff, (char)0xff, (char)0xff, (char)0xff
+    };
+    msgpack_zone z;
+    msgpack_zone_init(&z, 2048);
+    msgpack_object obj;
+    msgpack_timestamp ts;
+
+    msgpack_unpack_return ret =
+        msgpack_unpack(ts64, sizeof(ts64), NULL, &z, &obj);
+    EXPECT_EQ(MSGPACK_UNPACK_SUCCESS, ret);
+    EXPECT_EQ(8u, obj.via.ext.size);
+    EXPECT_FALSE(msgpack_object_to_timestamp(&obj, &ts));
+
+    ret = msgpack_unpack(ts96, sizeof(ts96), NULL, &z, &obj);
+    EXPECT_EQ(MSGPACK_UNPACK_SUCCESS, ret);
+    EXPECT_EQ(12u, obj.via.ext.size);
+    EXPECT_FALSE(msgpack_object_to_timestamp(&obj, &ts));
+
+    msgpack_zone_destroy(&z);
+}
+
 TEST(MSGPACKC, simple_buffer_array)
 {
     unsigned int array_size = 5;
