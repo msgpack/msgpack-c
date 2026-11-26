@@ -12,6 +12,9 @@
 
 #include "msgpack/v1/adaptor/adaptor_base_decl.hpp"
 
+#include "msgpack/v1/cpp_config.hpp"
+
+
 namespace msgpack {
 
 /// @cond
@@ -21,12 +24,49 @@ MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 namespace adaptor {
 
+// Unpack detector
+
+#ifndef MSGPACK_USE_CPP03
+
+namespace impl {
+
+template < typename T >
+using msgpack_unpack_t
+    = decltype( std::declval< T >().msgpack_unpack( std::declval< msgpack::object::implicit_type >() ) );
+
+template < typename T, typename = void_t<> >
+struct has_msgpack_unpack : std::false_type
+{};
+
+template < typename T >
+struct has_msgpack_unpack< T, void_t< impl::msgpack_unpack_t< T > > > : std::true_type
+{};
+
+} // namespace impl
+
+#endif
+
 // Adaptor functors
+
+#ifdef MSGPACK_USE_CPP03
 
 template <typename T, typename Enabler>
 struct convert {
     msgpack::object const& operator()(msgpack::object const& o, T& v) const;
 };
+
+#else
+
+template <typename T, typename Enabler>
+struct convert;
+
+template<typename T>
+struct convert<T, typename std::enable_if<adaptor::impl::has_msgpack_unpack<T>::value>::type>
+{
+    msgpack::object const &operator()(msgpack::object const &o, T &v) const;
+};
+
+#endif
 
 template <typename T, typename Enabler>
 struct pack {
