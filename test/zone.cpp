@@ -94,7 +94,14 @@ BOOST_AUTO_TEST_CASE(allocate_no_align)
     msgpack::zone z;
     char* buf1 = reinterpret_cast<char*>(z.allocate_no_align(4));
     char* buf2 = reinterpret_cast<char*>(z.allocate_no_align(4));
+#if defined(MSGPACK_ZONE_ASAN_ANNOTATIONS)
+    // With ASan annotations a poisoned redzone separates the allocations.
+    BOOST_CHECK(buf1+4 < buf2);
+    BOOST_CHECK(__asan_address_is_poisoned(buf1+4));
+    BOOST_CHECK(!__asan_address_is_poisoned(buf2+3));
+#else
     BOOST_CHECK_EQUAL(reinterpret_cast<void*>(buf1+4), reinterpret_cast<void*>(buf2));
+#endif
 }
 
 BOOST_AUTO_TEST_CASE(allocate_size_overflow)
