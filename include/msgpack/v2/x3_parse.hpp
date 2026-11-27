@@ -21,6 +21,9 @@
 #include "msgpack/unpack_exception.hpp"
 
 #include <limits>
+#include <iterator>
+#include <cstdint>
+#include <vector>
 
 #if __GNUC__ >= 4
 #pragma GCC diagnostic push
@@ -127,6 +130,33 @@ struct app_specific {
     app_specific(Vis&& vis):vis(vis) {}
     std::vector<index_size> index_sizes;
     Visitor vis;
+
+    // The matched str/bin/ext range may live in non-contiguous storage
+    // (std::deque, std::list, ...), where &range.front() cannot be read as
+    // `size` contiguous bytes. Return a pointer into the input only if the
+    // range is contiguous; otherwise copy it into a buffer.
+    template <typename Range>
+    char const* contiguous(Range const& r) {
+        auto first = r.begin();
+        auto last = r.end();
+        if (is_contiguous(first, last, typename std::iterator_traits<decltype(first)>::iterator_category())) {
+            return &*first;
+        }
+        buf.assign(first, last);
+        return buf.data();
+    }
+private:
+    template <typename It>
+    static bool is_contiguous(It first, It last, std::random_access_iterator_tag) {
+        // the range is not empty here
+        return reinterpret_cast<std::uintptr_t>(&*(last - 1)) - reinterpret_cast<std::uintptr_t>(&*first)
+            == static_cast<std::uintptr_t>(last - first - 1);
+    }
+    template <typename It>
+    static bool is_contiguous(It, It, std::input_iterator_tag) {
+        return false;
+    }
+    std::vector<char> buf;
 };
 
 template <typename Visitor>
@@ -344,7 +374,7 @@ const auto mp_object_def =
                 auto& app_specific = x3::get<tag_app_specific>(ctx).get();
                 auto const& str = _attr(ctx);
                 auto size = static_cast<uint32_t>(std::distance(str.begin(), str.end()));
-                app_specific.vis.visit_str(size ? &str.front() : nullptr, size);
+                app_specific.vis.visit_str(size ? app_specific.contiguous(str) : nullptr, size);
             }
         )
     ]
@@ -368,7 +398,7 @@ const auto mp_object_def =
                 auto& app_specific = x3::get<tag_app_specific>(ctx).get();
                 auto const& str = _attr(ctx);
                 auto size = static_cast<uint32_t>(std::distance(str.begin(), str.end()));
-                app_specific.vis.visit_str(size ? &str.front() : nullptr, size);
+                app_specific.vis.visit_str(size ? app_specific.contiguous(str) : nullptr, size);
             }
         )
     ]
@@ -392,7 +422,7 @@ const auto mp_object_def =
                 auto& app_specific = x3::get<tag_app_specific>(ctx).get();
                 auto const& str = _attr(ctx);
                 auto size = static_cast<uint32_t>(std::distance(str.begin(), str.end()));
-                app_specific.vis.visit_str(size ? &str.front() : nullptr, size);
+                app_specific.vis.visit_str(size ? app_specific.contiguous(str) : nullptr, size);
             }
         )
     ]
@@ -416,7 +446,7 @@ const auto mp_object_def =
                 auto& app_specific = x3::get<tag_app_specific>(ctx).get();
                 auto const& str = _attr(ctx);
                 auto size = static_cast<uint32_t>(std::distance(str.begin(), str.end()));
-                app_specific.vis.visit_str(size ? &str.front() : nullptr, size);
+                app_specific.vis.visit_str(size ? app_specific.contiguous(str) : nullptr, size);
             }
         )
     ]
@@ -440,7 +470,7 @@ const auto mp_object_def =
                 auto& app_specific = x3::get<tag_app_specific>(ctx).get();
                 auto const& bin = _attr(ctx);
                 auto size = static_cast<uint32_t>(std::distance(bin.begin(), bin.end()));
-                app_specific.vis.visit_bin(size ? &bin.front() : nullptr, size);
+                app_specific.vis.visit_bin(size ? app_specific.contiguous(bin) : nullptr, size);
             }
         )
     ]
@@ -464,7 +494,7 @@ const auto mp_object_def =
                 auto& app_specific = x3::get<tag_app_specific>(ctx).get();
                 auto const& bin = _attr(ctx);
                 auto size = static_cast<uint32_t>(std::distance(bin.begin(), bin.end()));
-                app_specific.vis.visit_bin(size ? &bin.front() : nullptr, size);
+                app_specific.vis.visit_bin(size ? app_specific.contiguous(bin) : nullptr, size);
             }
         )
     ]
@@ -488,7 +518,7 @@ const auto mp_object_def =
                 auto& app_specific = x3::get<tag_app_specific>(ctx).get();
                 auto const& bin = _attr(ctx);
                 auto size = static_cast<uint32_t>(std::distance(bin.begin(), bin.end()));
-                app_specific.vis.visit_bin(size ? &bin.front() : nullptr, size);
+                app_specific.vis.visit_bin(size ? app_specific.contiguous(bin) : nullptr, size);
             }
         )
     ]
@@ -596,7 +626,7 @@ const auto mp_object_def =
                 auto& app_specific = x3::get<tag_app_specific>(ctx).get();
                 auto const& ext = _attr(ctx);
                 auto size = static_cast<std::size_t>(std::distance(ext.begin(), ext.end()));
-                app_specific.vis.visit_ext(size ? &ext.front() : nullptr, size);
+                app_specific.vis.visit_ext(size ? app_specific.contiguous(ext) : nullptr, size);
             }
         )
     ]
@@ -620,7 +650,7 @@ const auto mp_object_def =
                 auto& app_specific = x3::get<tag_app_specific>(ctx).get();
                 auto const& ext = _attr(ctx);
                 auto size = static_cast<std::size_t>(std::distance(ext.begin(), ext.end()));
-                app_specific.vis.visit_ext(size ? &ext.front() : nullptr, size);
+                app_specific.vis.visit_ext(size ? app_specific.contiguous(ext) : nullptr, size);
             }
         )
     ]
@@ -644,7 +674,7 @@ const auto mp_object_def =
                 auto& app_specific = x3::get<tag_app_specific>(ctx).get();
                 auto const& ext = _attr(ctx);
                 auto size = static_cast<std::size_t>(std::distance(ext.begin(), ext.end()));
-                app_specific.vis.visit_ext(size ? &ext.front() : nullptr, size);
+                app_specific.vis.visit_ext(size ? app_specific.contiguous(ext) : nullptr, size);
             }
         )
     ]
@@ -668,7 +698,7 @@ const auto mp_object_def =
                 auto& app_specific = x3::get<tag_app_specific>(ctx).get();
                 auto const& ext = _attr(ctx);
                 auto size = static_cast<std::size_t>(std::distance(ext.begin(), ext.end()));
-                app_specific.vis.visit_ext(size ? &ext.front() : nullptr, size);
+                app_specific.vis.visit_ext(size ? app_specific.contiguous(ext) : nullptr, size);
             }
         )
     ]
@@ -692,7 +722,7 @@ const auto mp_object_def =
                 auto& app_specific = x3::get<tag_app_specific>(ctx).get();
                 auto const& ext = _attr(ctx);
                 auto size = static_cast<std::size_t>(std::distance(ext.begin(), ext.end()));
-                app_specific.vis.visit_ext(size ? &ext.front() : nullptr, size);
+                app_specific.vis.visit_ext(size ? app_specific.contiguous(ext) : nullptr, size);
             }
         )
     ]
@@ -716,7 +746,7 @@ const auto mp_object_def =
                 auto& app_specific = x3::get<tag_app_specific>(ctx).get();
                 auto const& ext = _attr(ctx);
                 auto size = static_cast<std::size_t>(std::distance(ext.begin(), ext.end()));
-                app_specific.vis.visit_ext(size ? &ext.front() : nullptr, size);
+                app_specific.vis.visit_ext(size ? app_specific.contiguous(ext) : nullptr, size);
             }
         )
     ]
@@ -740,7 +770,7 @@ const auto mp_object_def =
                 auto& app_specific = x3::get<tag_app_specific>(ctx).get();
                 auto const& ext = _attr(ctx);
                 auto size = static_cast<std::size_t>(std::distance(ext.begin(), ext.end()));
-                app_specific.vis.visit_ext(size ? &ext.front() : nullptr, size);
+                app_specific.vis.visit_ext(size ? app_specific.contiguous(ext) : nullptr, size);
             }
         )
     ]
@@ -768,7 +798,7 @@ const auto mp_object_def =
                 auto& app_specific = x3::get<tag_app_specific>(ctx).get();
                 auto const& ext = _attr(ctx);
                 auto size = static_cast<std::size_t>(std::distance(ext.begin(), ext.end()));
-                app_specific.vis.visit_ext(size ? &ext.front() : nullptr, size);
+                app_specific.vis.visit_ext(size ? app_specific.contiguous(ext) : nullptr, size);
             }
         )
     ];

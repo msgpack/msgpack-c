@@ -3,6 +3,10 @@
 #include <sstream>
 #include <limits>
 #include <cmath>
+#include <deque>
+#include <list>
+#include <vector>
+#include <algorithm>
 
 #define BOOST_TEST_MODULE MSGPACK_X3_PARSE
 #include <boost/test/unit_test.hpp>
@@ -843,5 +847,64 @@ BOOST_AUTO_TEST_CASE(unpack_zone_3)
     BOOST_CHECK(r);
     BOOST_CHECK_EQUAL(v, obj.as<std::string>());
 }
+
+// The matched str/bin/ext range must be read through the iterators.
+// std::deque and std::list are not contiguous, so the visitor must not
+// read `size` bytes starting from the first element.
+template <typename Container>
+static Container to_container(std::string const& s) {
+    return Container(s.begin(), s.end());
+}
+
+template <typename Container>
+static void check_non_contiguous_str() {
+    std::string v(5000, 'A');
+    for (std::size_t i = 0; i < v.size(); ++i) v[i] = static_cast<char>('A' + i % 26);
+    std::stringstream ss;
+    msgpack::pack(ss, v);
+    Container c = to_container<Container>(ss.str());
+
+    auto oh = msgpack::unpack(c.begin(), c.end());
+    BOOST_CHECK_EQUAL(v, oh.get().template as<std::string>());
+}
+
+template <typename Container>
+static void check_non_contiguous_bin() {
+    std::vector<char> v(5000);
+    for (std::size_t i = 0; i < v.size(); ++i) v[i] = static_cast<char>(i % 251);
+    std::stringstream ss;
+    msgpack::packer<std::stringstream> pk(ss);
+    pk.pack_bin(static_cast<uint32_t>(v.size()));
+    pk.pack_bin_body(v.data(), static_cast<uint32_t>(v.size()));
+    Container c = to_container<Container>(ss.str());
+
+    auto oh = msgpack::unpack(c.begin(), c.end());
+    BOOST_CHECK(oh.get().template as<std::vector<char> >() == v);
+}
+
+template <typename Container>
+static void check_non_contiguous_ext() {
+    std::vector<char> v(5000);
+    for (std::size_t i = 0; i < v.size(); ++i) v[i] = static_cast<char>(i % 251);
+    std::stringstream ss;
+    msgpack::packer<std::stringstream> pk(ss);
+    pk.pack_ext(v.size(), 7);
+    pk.pack_ext_body(v.data(), static_cast<uint32_t>(v.size()));
+    Container c = to_container<Container>(ss.str());
+
+    auto oh = msgpack::unpack(c.begin(), c.end());
+    msgpack::object const& o = oh.get();
+    BOOST_REQUIRE_EQUAL(o.type, msgpack::type::EXT);
+    BOOST_CHECK_EQUAL(o.via.ext.type(), 7);
+    BOOST_REQUIRE_EQUAL(o.via.ext.size, v.size());
+    BOOST_CHECK(std::equal(v.begin(), v.end(), o.via.ext.data()));
+}
+
+BOOST_AUTO_TEST_CASE(non_contiguous_deque_str) { check_non_contiguous_str<std::deque<char> >(); }
+BOOST_AUTO_TEST_CASE(non_contiguous_list_str) { check_non_contiguous_str<std::list<char> >(); }
+BOOST_AUTO_TEST_CASE(non_contiguous_deque_bin) { check_non_contiguous_bin<std::deque<char> >(); }
+BOOST_AUTO_TEST_CASE(non_contiguous_list_bin) { check_non_contiguous_bin<std::list<char> >(); }
+BOOST_AUTO_TEST_CASE(non_contiguous_deque_ext) { check_non_contiguous_ext<std::deque<char> >(); }
+BOOST_AUTO_TEST_CASE(non_contiguous_list_ext) { check_non_contiguous_ext<std::list<char> >(); }
 
 #endif // defined(MSGPACK_USE_X3_PARSE) && MSGPACK_DEFAULT_API_VERSION >= 2
