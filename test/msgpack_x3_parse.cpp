@@ -12,6 +12,8 @@
 #include <cstddef>
 #include <cstdint>
 
+#include <boost/spirit/include/support_multi_pass.hpp>
+
 #define BOOST_TEST_MODULE MSGPACK_X3_PARSE
 #include <boost/test/unit_test.hpp>
 
@@ -991,6 +993,81 @@ BOOST_AUTO_TEST_CASE(non_contiguous_segmented_bin_cxx20)
     BOOST_CHECK(!msgpack::v2::detail::is_contiguous(m.begin(), m.end()));
 
     auto oh = msgpack::unpack(m.begin(), m.end());
+    BOOST_CHECK(oh.get().as<std::vector<char> >() == m.payload);
+}
+#endif // defined(MSGPACK_X3_EXACT_CONTIGUITY)
+
+// Reference mode (zero-copy) must only hand out pointers into the caller's
+// own contiguous input. A buffering input iterator such as
+// boost::spirit::multi_pass keeps its data in an internal buffer that is
+// reallocated while parsing, so those pointers would dangle.
+static bool reference_all(msgpack::type::object_type, std::size_t, void*) { return true; }
+
+static std::string pack_strings(int n, std::size_t len) {
+    std::stringstream ss;
+    msgpack::packer<std::stringstream> pk(ss);
+    pk.pack_array(static_cast<uint32_t>(n));
+    for (int i = 0; i < n; ++i) {
+        std::string e(len, static_cast<char>('A' + i));
+        pk.pack_str(static_cast<uint32_t>(e.size()));
+        pk.pack_str_body(e.data(), static_cast<uint32_t>(e.size()));
+    }
+    return ss.str();
+}
+
+BOOST_AUTO_TEST_CASE(reference_multi_pass)
+{
+    const int n = 8;
+    std::string src = pack_strings(n, 600);
+    std::istringstream iss(src);
+    iss.unsetf(std::ios::skipws);
+    typedef std::istreambuf_iterator<char> base_it;
+    boost::spirit::multi_pass<base_it> first{base_it(iss)};
+    boost::spirit::multi_pass<base_it> last{base_it()};
+
+    bool referenced = true;
+    auto oh = msgpack::unpack(first, last, referenced, reference_all, nullptr, msgpack::unpack_limit());
+    BOOST_CHECK(!referenced);
+    msgpack::object const& o = oh.get();
+    BOOST_REQUIRE_EQUAL(o.type, msgpack::type::ARRAY);
+    BOOST_REQUIRE_EQUAL(o.via.array.size, static_cast<uint32_t>(n));
+    for (int i = 0; i < n; ++i) {
+        BOOST_CHECK_EQUAL(o.via.array.ptr[i].as<std::string>(), std::string(600, static_cast<char>('A' + i)));
+    }
+}
+
+BOOST_AUTO_TEST_CASE(reference_contiguous_still_zero_copy)
+{
+    std::string src = pack_strings(2, 600);
+    {
+        bool referenced = false;
+        char const* b = src.data();
+        char const* e = src.data() + src.size();
+        auto oh = msgpack::unpack(b, e, referenced, reference_all, nullptr, msgpack::unpack_limit());
+        BOOST_CHECK(referenced);
+        char const* p = oh.get().via.array.ptr[0].via.str.ptr;
+        BOOST_CHECK(p >= src.data() && p < src.data() + src.size());
+    }
+    {
+        bool referenced = false;
+        auto b = src.cbegin();
+        auto e = src.cend();
+        auto oh = msgpack::unpack(b, e, referenced, reference_all, nullptr, msgpack::unpack_limit());
+        BOOST_CHECK(referenced);
+        char const* p = oh.get().via.array.ptr[0].via.str.ptr;
+        BOOST_CHECK(p >= src.data() && p < src.data() + src.size());
+    }
+}
+
+#if defined(MSGPACK_X3_EXACT_CONTIGUITY)
+BOOST_AUTO_TEST_CASE(reference_segmented_cxx20)
+{
+    segmented_bin m;
+    bool referenced = true;
+    auto b = m.begin();
+    auto e = m.end();
+    auto oh = msgpack::unpack(b, e, referenced, reference_all, nullptr, msgpack::unpack_limit());
+    BOOST_CHECK(!referenced);
     BOOST_CHECK(oh.get().as<std::vector<char> >() == m.payload);
 }
 #endif // defined(MSGPACK_X3_EXACT_CONTIGUITY)
