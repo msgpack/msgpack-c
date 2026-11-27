@@ -25,6 +25,17 @@
 #include <cstdint>
 #include <vector>
 
+#if defined(__has_include)
+#if __has_include(<version>)
+#include <version>
+#endif
+#endif
+
+// Since C++20 the standard library can say exactly whether an iterator walks contiguous memory.
+#if defined(__cpp_lib_ranges) && __cpp_lib_ranges >= 201911L
+#define MSGPACK_X3_EXACT_CONTIGUITY 1
+#endif
+
 #if __GNUC__ >= 4
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
@@ -124,6 +135,36 @@ struct index_size {
     type_t type;
 };
 
+// Whether [first, last) is one block of memory, so that &*first can be read as last - first bytes.
+//
+// With C++20 the answer is exact: only an iterator that models std::contiguous_iterator is contiguous.
+// Before that only an O(1) check is possible: a random-access range whose first and last elements are
+// exactly size - 1 bytes apart is taken as contiguous. A container whose first and last blocks happen to
+// be that far apart while a block between them lives elsewhere fools it (for example a std::deque with
+// an allocator that hands its blocks out in a particular order), and the bytes after the first block are
+// then read in place. An iterator that is not random access is never contiguous.
+#if defined(MSGPACK_X3_EXACT_CONTIGUITY)
+template <typename It>
+inline bool is_contiguous(It, It) {
+    return std::contiguous_iterator<It>;
+}
+#else
+template <typename It>
+inline bool is_contiguous(It first, It last, std::random_access_iterator_tag) {
+    return first == last ||
+        reinterpret_cast<std::uintptr_t>(&*(last - 1)) - reinterpret_cast<std::uintptr_t>(&*first)
+            == static_cast<std::uintptr_t>(last - first - 1);
+}
+template <typename It>
+inline bool is_contiguous(It, It, std::input_iterator_tag) {
+    return false;
+}
+template <typename It>
+inline bool is_contiguous(It first, It last) {
+    return is_contiguous(first, last, typename std::iterator_traits<It>::iterator_category());
+}
+#endif
+
 template <typename Visitor>
 struct app_specific {
     template <typename Vis>
@@ -139,23 +180,13 @@ struct app_specific {
     char const* contiguous(Range const& r) {
         auto first = r.begin();
         auto last = r.end();
-        if (is_contiguous(first, last, typename std::iterator_traits<decltype(first)>::iterator_category())) {
+        if (is_contiguous(first, last)) {
             return &*first;
         }
         buf.assign(first, last);
         return buf.data();
     }
 private:
-    template <typename It>
-    static bool is_contiguous(It first, It last, std::random_access_iterator_tag) {
-        // the range is not empty here
-        return reinterpret_cast<std::uintptr_t>(&*(last - 1)) - reinterpret_cast<std::uintptr_t>(&*first)
-            == static_cast<std::uintptr_t>(last - first - 1);
-    }
-    template <typename It>
-    static bool is_contiguous(It, It, std::input_iterator_tag) {
-        return false;
-    }
     std::vector<char> buf;
 };
 

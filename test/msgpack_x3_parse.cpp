@@ -7,6 +7,10 @@
 #include <list>
 #include <vector>
 #include <algorithm>
+#include <iterator>
+#include <string>
+#include <cstddef>
+#include <cstdint>
 
 #define BOOST_TEST_MODULE MSGPACK_X3_PARSE
 #include <boost/test/unit_test.hpp>
@@ -906,5 +910,89 @@ BOOST_AUTO_TEST_CASE(non_contiguous_deque_bin) { check_non_contiguous_bin<std::d
 BOOST_AUTO_TEST_CASE(non_contiguous_list_bin) { check_non_contiguous_bin<std::list<char> >(); }
 BOOST_AUTO_TEST_CASE(non_contiguous_deque_ext) { check_non_contiguous_ext<std::deque<char> >(); }
 BOOST_AUTO_TEST_CASE(non_contiguous_list_ext) { check_non_contiguous_ext<std::list<char> >(); }
+
+BOOST_AUTO_TEST_CASE(is_contiguous_helper)
+{
+    std::string s("0123456789");
+    std::vector<char> v(s.begin(), s.end());
+    std::list<char> l(s.begin(), s.end());
+    BOOST_CHECK(msgpack::v2::detail::is_contiguous(s.begin(), s.end()));
+    BOOST_CHECK(msgpack::v2::detail::is_contiguous(v.begin(), v.end()));
+    BOOST_CHECK(msgpack::v2::detail::is_contiguous(s.data(), s.data() + s.size()));
+    BOOST_CHECK(!msgpack::v2::detail::is_contiguous(l.begin(), l.end()));
+}
+
+#if defined(MSGPACK_X3_EXACT_CONTIGUITY)
+// A random-access range that is not contiguous: element i is blocks[i / 8][i % 8]. The first and the
+// last block sit at the two ends of one array and the block between them lives elsewhere, so the first
+// and the last element are exactly size - 1 bytes apart. The endpoint check before C++20 cannot tell it
+// from a contiguous range; with C++20 the iterator is not a std::contiguous_iterator and the data is copied.
+class segmented_iterator {
+public:
+    typedef std::random_access_iterator_tag iterator_category;
+    typedef char value_type;
+    typedef std::ptrdiff_t difference_type;
+    typedef char const* pointer;
+    typedef char const& reference;
+    segmented_iterator() : blocks_(nullptr), i_(0) {}
+    segmented_iterator(char const* const* blocks, difference_type i) : blocks_(blocks), i_(i) {}
+    reference operator*() const { return blocks_[i_ / 8][i_ % 8]; }
+    pointer operator->() const { return &**this; }
+    reference operator[](difference_type n) const { return *(*this + n); }
+    segmented_iterator& operator++() { ++i_; return *this; }
+    segmented_iterator operator++(int) { segmented_iterator t(*this); ++i_; return t; }
+    segmented_iterator& operator--() { --i_; return *this; }
+    segmented_iterator operator--(int) { segmented_iterator t(*this); --i_; return t; }
+    segmented_iterator& operator+=(difference_type n) { i_ += n; return *this; }
+    segmented_iterator& operator-=(difference_type n) { i_ -= n; return *this; }
+    friend segmented_iterator operator+(segmented_iterator a, difference_type n) { return a += n; }
+    friend segmented_iterator operator+(difference_type n, segmented_iterator a) { return a += n; }
+    friend segmented_iterator operator-(segmented_iterator a, difference_type n) { return a -= n; }
+    friend difference_type operator-(segmented_iterator const& a, segmented_iterator const& b) { return a.i_ - b.i_; }
+    friend bool operator==(segmented_iterator const& a, segmented_iterator const& b) { return a.i_ == b.i_; }
+    friend bool operator!=(segmented_iterator const& a, segmented_iterator const& b) { return a.i_ != b.i_; }
+    friend bool operator<(segmented_iterator const& a, segmented_iterator const& b) { return a.i_ < b.i_; }
+    friend bool operator>(segmented_iterator const& a, segmented_iterator const& b) { return a.i_ > b.i_; }
+    friend bool operator<=(segmented_iterator const& a, segmented_iterator const& b) { return a.i_ <= b.i_; }
+    friend bool operator>=(segmented_iterator const& a, segmented_iterator const& b) { return a.i_ >= b.i_; }
+private:
+    char const* const* blocks_;
+    difference_type i_;
+};
+
+// bin8 with 22 bytes of payload is 24 bytes, laid out in three blocks of 8: the first and the last
+// block at the two ends of one arena, the middle block elsewhere.
+struct segmented_bin {
+    std::vector<char> payload;
+    char arena[24];
+    char middle[8];
+    char const* blocks[3];
+    // blocks points into this object's own arrays
+    segmented_bin(segmented_bin const&) = delete;
+    segmented_bin& operator=(segmented_bin const&) = delete;
+    segmented_bin() : payload(22) {
+        std::string msg("\xc4\x16", 2);
+        for (std::size_t i = 0; i < payload.size(); ++i) payload[i] = static_cast<char>('a' + i);
+        msg.append(payload.begin(), payload.end());
+        std::fill(arena, arena + 24, 'X');
+        std::copy(msg.begin(), msg.begin() + 8, arena);
+        std::copy(msg.begin() + 16, msg.end(), arena + 16);
+        std::copy(msg.begin() + 8, msg.begin() + 16, middle);
+        blocks[0] = arena; blocks[1] = middle; blocks[2] = arena + 16;
+    }
+    segmented_iterator begin() const { return segmented_iterator(blocks, 0); }
+    segmented_iterator end() const { return segmented_iterator(blocks, 24); }
+};
+
+BOOST_AUTO_TEST_CASE(non_contiguous_segmented_bin_cxx20)
+{
+    segmented_bin m;
+    BOOST_REQUIRE_EQUAL(reinterpret_cast<std::uintptr_t>(&*(m.end() - 1)) - reinterpret_cast<std::uintptr_t>(&*m.begin()), 23u);
+    BOOST_CHECK(!msgpack::v2::detail::is_contiguous(m.begin(), m.end()));
+
+    auto oh = msgpack::unpack(m.begin(), m.end());
+    BOOST_CHECK(oh.get().as<std::vector<char> >() == m.payload);
+}
+#endif // defined(MSGPACK_X3_EXACT_CONTIGUITY)
 
 #endif // defined(MSGPACK_USE_X3_PARSE) && MSGPACK_DEFAULT_API_VERSION >= 2
