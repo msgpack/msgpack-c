@@ -21,6 +21,8 @@
 #include "msgpack/x3_unpack_decl.hpp"
 #include "msgpack/x3_parse.hpp"
 
+#include <cstddef>
+
 namespace msgpack {
 
 /// @cond
@@ -29,6 +31,15 @@ MSGPACK_API_VERSION_NAMESPACE(v2) {
 
 namespace detail {
 
+// Reference mode hands out pointers into the input, so it is only safe when
+// the whole input is one contiguous block that the caller keeps alive.
+// Buffering iterators such as boost::spirit::multi_pass reallocate their
+// internal storage while parsing; for those (and any non-contiguous input,
+// see is_contiguous in x3_parse.hpp) the data is always copied.
+inline bool never_reference(msgpack::type::object_type, std::size_t, void*) {
+    return false;
+}
+
 template <typename Iterator>
 inline void
 unpack_imp(Iterator&& begin, Iterator&& end,
@@ -36,6 +47,9 @@ unpack_imp(Iterator&& begin, Iterator&& end,
            unpack_reference_func f, void* user_data,
            unpack_limit const& limit)
 {
+    if (f && !is_contiguous(begin, end)) {
+        f = never_reference;
+    }
     create_object_visitor v(f, user_data, limit);
     v.set_zone(result_zone);
     referenced = false;
